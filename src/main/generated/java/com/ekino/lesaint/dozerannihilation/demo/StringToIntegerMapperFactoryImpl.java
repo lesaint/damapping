@@ -13,16 +13,16 @@ public class StringToIntegerMapperFactoryImpl implements StringToIntegerMapperFa
 
     @Override
     public StringToIntegerMapper bigDecimal() {
-        return StringToInteger.integer();
+        return new StringToIntegerMapperImpl(StringToInteger.integer());
     }
 
     @Override
     public StringToIntegerMapper integer() {
-        return StringToInteger.integer();
+        return new StringToIntegerMapperImpl(StringToInteger.integer());
     }
 
     @Override
     public StringToIntegerMapper instance(boolean bigDecimal) {
-        return StringToInteger.instance(bigDecimal);
+        return new StringToIntegerMapperImpl(StringToInteger.instance(bigDecimal));
     }
 }

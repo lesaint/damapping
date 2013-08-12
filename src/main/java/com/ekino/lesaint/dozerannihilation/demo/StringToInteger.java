@@ -14,7 +14,7 @@ import com.ekino.lesaint.dozerannihilation.annotation.MapperFactory;
  * @author Sébastien Lesaint
  */
 @MapperFactory
-public enum StringToInteger implements Function<String, Integer>, StringToIntegerMapper {
+public enum StringToInteger implements Function<String, Integer> {
     BIG_DECIMAL(true),
     INTEGER(false);
 
