@@ -2,15 +2,12 @@ package java.com.ekino.lesaint.dozerannihilation.demo;
 
 import javax.annotation.Nullable;
 
-import org.springframework.stereotype.Component;
-
 /**
- * EnumIntegerToStringMapperImpl - Classe générée qui implémente l'interface générée
- * et délègue à la classe annotée via une factory statique
+ * EnumIntegerToStringMapperImpl - classe générée qui implémente l'interface générée
+ * et délègue son implémentation, via une factory statique, à la classe initiale annotée @Mapper.
  *
  * @author lesaint
  */
-@Component
 class EnumIntegerToStringMapperImpl implements EnumIntegerToStringMapper {
 
     @Override

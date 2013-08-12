@@ -8,4 +8,5 @@ package com.ekino.lesaint.dozerannihilation.demo;
 public interface AnyService {
     void method1();
     void method2();
+    void method3();
 }
