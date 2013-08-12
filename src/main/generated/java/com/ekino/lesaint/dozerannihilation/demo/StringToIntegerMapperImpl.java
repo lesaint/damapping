@@ -1,8 +1,6 @@
-package java.com.ekino.lesaint.dozerannihilation.demo;
+package com.ekino.lesaint.dozerannihilation.demo;
 
 import javax.annotation.Nullable;
-
-import com.ekino.lesaint.dozerannihilation.demo.StringToInteger;
 
 /**
  * StringToIntegerMapperImpl -

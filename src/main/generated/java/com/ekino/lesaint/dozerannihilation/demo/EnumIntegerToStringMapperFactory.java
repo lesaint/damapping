@@ -1,6 +1,4 @@
-package java.com.ekino.lesaint.dozerannihilation.demo;
-
-import com.ekino.lesaint.dozerannihilation.demo.EnumIntegerToString;
+package com.ekino.lesaint.dozerannihilation.demo;
 
 /**
  * StringToIntegerMapperFactory -

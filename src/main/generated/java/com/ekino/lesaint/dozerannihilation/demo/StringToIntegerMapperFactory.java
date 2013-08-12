@@ -1,4 +1,4 @@
-package java.com.ekino.lesaint.dozerannihilation.demo;
+package com.ekino.lesaint.dozerannihilation.demo;
 
 /**
  * StringToIntegerMapperFactory -

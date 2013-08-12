@@ -6,7 +6,7 @@ package com.ekino.lesaint.dozerannihilation.demo;
  * @author Sébastien Lesaint
  */
 public interface AnyService {
-    void method1();
-    void method2();
-    void method3();
+    Integer method1();
+    String method2();
+    String method3();
 }

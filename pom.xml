@@ -133,6 +133,12 @@
             <artifactId>spring-context</artifactId>
         </dependency>
         <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>2.2.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>2.0.1</version>
@@ -186,7 +192,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${basedir}/src/main/generated</source>
+                                <source>${basedir}/src/main/generated/java</source>
                             </sources>
                         </configuration>
                     </execution>

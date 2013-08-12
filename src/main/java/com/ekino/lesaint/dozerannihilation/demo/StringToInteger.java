@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import javax.annotation.Nullable;
 import com.google.common.base.Function;
 
-import com.ekino.lesaint.dozerannihilation.annotation.MapperFactoryMethod;
 import com.ekino.lesaint.dozerannihilation.annotation.MapperFactory;
+import com.ekino.lesaint.dozerannihilation.annotation.MapperFactoryMethod;
 
 /**
  * StringToInteger - Exemple de mapper nécessitant d'être instancié avec un paramètre (implémenté sous forme d'enum,

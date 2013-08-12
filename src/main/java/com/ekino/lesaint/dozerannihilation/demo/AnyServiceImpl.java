@@ -1,8 +1,5 @@
 package com.ekino.lesaint.dozerannihilation.demo;
 
-import java.com.ekino.lesaint.dozerannihilation.demo.EnumIntegerToStringMapper;
-import java.com.ekino.lesaint.dozerannihilation.demo.IntegerToStringMapper;
-import java.com.ekino.lesaint.dozerannihilation.demo.StringToIntegerMapperFactory;
 import javax.annotation.Resource;
 
 /**
@@ -20,17 +17,17 @@ public class AnyServiceImpl implements AnyService {
 
 
     @Override
-    public void method1() {
-        stringToIntegerMapperFactory.integer().apply("1");
+    public Integer method1() {
+        return stringToIntegerMapperFactory.integer().apply("1");
     }
 
     @Override
-    public void method2() {
-        enumIntegerToStringMapper.apply(1);
+    public String method2() {
+        return enumIntegerToStringMapper.apply(1);
     }
 
     @Override
-    public void method3() {
-        integerToStringMapper.apply(1);
+    public String method3() {
+        return integerToStringMapper.apply(1);
     }
 }
