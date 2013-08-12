@@ -1,5 +1,9 @@
  - concept :
     => !! très important !! ne plus avoir besoin de modifier la classe annotée avec @Mapper ou @MapperFactory
+    => améliorer @Mapper pour qu'elle n'étende plus forcément @Componen
+        idée : ajouter un paramètre enum SPRING_COMPONENT/CONSTRUCTOR
+         SPRING_COMPONENT : l'implémentation se fait injecter l'instance via @Component
+         CONSTRUCTOR : l'implémentation instancie un singleton via son constructeur par défaut
  - conf maven : passer le projet en JDK1.7, compléter la gestion de version des plugins
  - dépendances : ajouter la dépendance pour disposer des annotations @Nullable et @Nonnull
  - demo : écrire des samples de test U, qu'est-ce que l'on test effectivement
