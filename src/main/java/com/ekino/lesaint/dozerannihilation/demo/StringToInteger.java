@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import javax.annotation.Nullable;
 import com.google.common.base.Function;
 
-import com.ekino.lesaint.dozerannihilation.annotation.FactoryMethod;
+import com.ekino.lesaint.dozerannihilation.annotation.MapperFactoryMethod;
 import com.ekino.lesaint.dozerannihilation.annotation.MapperFactory;
 
 /**
@@ -20,7 +20,7 @@ public enum StringToInteger implements Function<String, Integer> {
 
     private final boolean bigDecimal;
 
-    @FactoryMethod
+    @MapperFactoryMethod
     public static StringToInteger bigDecimal() {
         return BIG_DECIMAL;
     }
@@ -28,7 +28,7 @@ public enum StringToInteger implements Function<String, Integer> {
     /**
      * Factory method
      */
-    @FactoryMethod
+    @MapperFactoryMethod
     public static StringToInteger integer() {
         return INTEGER;
     }
@@ -36,7 +36,7 @@ public enum StringToInteger implements Function<String, Integer> {
     /**
      * Exemple de factory method à paramètre
      */
-    @FactoryMethod
+    @MapperFactoryMethod
     public static StringToInteger instance(boolean bigDecimal) {
         if (bigDecimal) {
             return BIG_DECIMAL;
