@@ -3,9 +3,14 @@ package com.ekino.lesaint.dozerannihilation.demo;
 import javax.annotation.Nullable;
 
 /**
- * StringToIntegerMapperImpl -
+ * StringToIntegerMapperImpl - il s'agit de l'implémentation réellement exécutée au runtime.
  *
- * @author lesaint
+ * Elle utilise StringToIntegerMapperFactory afin de déléguer son implémentation à l'une des implémentations originales
+ * (StringToInteger) déterminées par StringToIntegerMapperFactoryImpl.
+ *
+ * Cette implémentation n'est pas destinée à être utilisée directement en dehors de ce framework.
+ *
+ * @author Sébastien Lesaint
  */
 class StringToIntegerMapperImpl implements StringToIntegerMapper {
     private final StringToInteger stringToInteger;

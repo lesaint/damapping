@@ -3,10 +3,13 @@ package com.ekino.lesaint.dozerannihilation.demo;
 import javax.annotation.Nullable;
 
 /**
- * EnumIntegerToStringMapperImpl - classe générée qui implémente l'interface générée
- * et délègue son implémentation, via une factory statique, à la classe initiale annotée @Mapper.
+ * EnumIntegerToStringMapperImpl - il s'agit de l'implémentation réellement exécutée au runtime.
+ * Elle utilise EnumIntegerToStringMapperFactory afin de déléguer son implémentation à l'implémentation originale
+ * (EnumIntegerToString).
  *
- * @author lesaint
+ * Cette implémentation n'est pas destinée à être utilisée directement en dehors de ce framework.
+ *
+ * @author Sébastien Lesaint
  */
 class EnumIntegerToStringMapperImpl implements EnumIntegerToStringMapper {
 

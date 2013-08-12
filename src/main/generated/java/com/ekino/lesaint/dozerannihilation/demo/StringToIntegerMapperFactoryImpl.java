@@ -1,7 +1,12 @@
 package com.ekino.lesaint.dozerannihilation.demo;
 
 /**
- * StringToIntegerMapperFactory -
+ * StringToIntegerMapperFactoryImpl - implémentation non exposée de la factory de mapper.
+ * Elle se contente de construire la nouvelle implémentation de StringToIntegerMapper
+ * en fonction des différentes méthodes d'instanciation de StringToInteger annotées
+ * MapperFactoryMethod.
+ *
+ * Cette implémentation n'est pas destinée à être utilisée directement en dehors de ce framework.
  *
  * @author Sébastien Lesaint
  */
