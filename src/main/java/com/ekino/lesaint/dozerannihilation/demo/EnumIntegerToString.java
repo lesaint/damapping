@@ -1,6 +1,5 @@
 package com.ekino.lesaint.dozerannihilation.demo;
 
-import java.com.ekino.lesaint.dozerannihilation.demo.EnumIntegerToStringMapper;
 import com.google.common.base.Function;
 
 import com.ekino.lesaint.dozerannihilation.annotation.Mapper;

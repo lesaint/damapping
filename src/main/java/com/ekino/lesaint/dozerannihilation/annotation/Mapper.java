@@ -10,5 +10,5 @@ package com.ekino.lesaint.dozerannihilation.annotation;
 @java.lang.annotation.Documented
 public @interface Mapper {
 
-    InstantiationMethod value() default InstantiationMethod.ENUM_SINGLETON;
+    InstantiationType value() default InstantiationType.SINGLETON_ENUM;
 }

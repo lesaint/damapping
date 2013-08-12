@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @author Sébastien Lesaint
  */
 @Component
-public class StringToIntegerMapperFactoryImpl implements StringToIntegerMapperFactory {
+class StringToIntegerMapperFactoryImpl implements StringToIntegerMapperFactory {
 
     @Override
     public StringToIntegerMapper bigDecimal() {

@@ -7,7 +7,7 @@ import com.ekino.lesaint.dozerannihilation.demo.StringToInteger;
  *
  * @author lesaint
  */
-public class StringToIntegerMapperImpl implements StringToIntegerMapper {
+class StringToIntegerMapperImpl implements StringToIntegerMapper {
     private final StringToInteger stringToInteger;
 
     protected StringToIntegerMapperImpl(StringToInteger stringToInteger) {

@@ -1,6 +1,5 @@
 package com.ekino.lesaint.dozerannihilation.demo;
 
-import java.com.ekino.lesaint.dozerannihilation.demo.StringToIntegerMapper;
 import java.math.BigDecimal;
 import com.google.common.base.Function;
 

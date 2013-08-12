@@ -1,8 +1,5 @@
 package java.com.ekino.lesaint.dozerannihilation.demo;
 
-import javax.annotation.Resource;
-
-import com.ekino.lesaint.dozerannihilation.demo.EnumIntegerToString;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @author lesaint
  */
 @Component
-public class EnumIntegerToStringMapperImpl implements EnumIntegerToStringMapper {
+class EnumIntegerToStringMapperImpl implements EnumIntegerToStringMapper {
 
     @Override
     public String apply(//@javax.annotation.Nullable
