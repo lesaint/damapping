@@ -8,7 +8,8 @@ import com.ekino.lesaint.dozerannihilation.annotation.FactoryMethod;
 import com.ekino.lesaint.dozerannihilation.annotation.MapperFactory;
 
 /**
- * StringToInteger -
+ * StringToInteger - Exemple de mapper nécessitant d'être instancié avec un paramètre (implémenté sous forme d'enum,
+ * mais ce n'est pas obligatoire)
  *
  * @author Sébastien Lesaint
  */
@@ -24,11 +25,17 @@ public enum StringToInteger implements Function<String, Integer>, StringToIntege
         return BIG_DECIMAL;
     }
 
+    /**
+     * Factory method
+     */
     @FactoryMethod
     public static StringToInteger integer() {
         return INTEGER;
     }
 
+    /**
+     * Exemple de factory method à paramètre
+     */
     @FactoryMethod
     public static StringToInteger instance(boolean bigDecimal) {
         if (bigDecimal) {
