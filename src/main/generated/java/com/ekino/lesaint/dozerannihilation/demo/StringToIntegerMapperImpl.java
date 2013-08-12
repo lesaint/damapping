@@ -1,5 +1,7 @@
 package java.com.ekino.lesaint.dozerannihilation.demo;
 
+import javax.annotation.Nullable;
+
 import com.ekino.lesaint.dozerannihilation.demo.StringToInteger;
 
 /**
@@ -15,8 +17,7 @@ class StringToIntegerMapperImpl implements StringToIntegerMapper {
     }
 
     @Override
-    public Integer apply(//@javax.annotation.Nullable
-                        java.lang.String input) {
+    public Integer apply(@Nullable String input) {
         return stringToInteger.apply(input);
     }
 }

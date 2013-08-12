@@ -1,6 +1,7 @@
 package com.ekino.lesaint.dozerannihilation.demo;
 
 import java.math.BigDecimal;
+import javax.annotation.Nullable;
 import com.google.common.base.Function;
 
 import com.ekino.lesaint.dozerannihilation.annotation.FactoryMethod;
@@ -48,7 +49,7 @@ public enum StringToInteger implements Function<String, Integer> {
     }
 
     @Override
-    public Integer apply(java.lang.String input) {
+    public Integer apply(@Nullable String input) {
         if (bigDecimal) {
             return new BigDecimal(input).intValue();
         }
