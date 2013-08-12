@@ -11,7 +11,7 @@ import com.ekino.lesaint.dozerannihilation.annotation.Mapper;
  * @author Sébastien Lesaint
  */
 @Mapper
-public enum EnumIntegerToString implements Function<Integer, String>, EnumIntegerToStringMapper {
+public enum EnumIntegerToString implements Function<Integer, String> {
     INSTANCE;
 
     @Override
