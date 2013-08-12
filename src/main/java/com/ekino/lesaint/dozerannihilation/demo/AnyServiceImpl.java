@@ -1,6 +1,6 @@
 package com.ekino.lesaint.dozerannihilation.demo;
 
-import javax.annotation.Resource;
+import javax.inject.Inject;
 
 /**
  * AnyServiceImpl -
@@ -8,12 +8,20 @@ import javax.annotation.Resource;
  * @author Sébastien Lesaint
  */
 public class AnyServiceImpl implements AnyService {
-    @Resource
+
     private StringToIntegerMapperFactory stringToIntegerMapperFactory;
-    @Resource
     private EnumIntegerToStringMapper enumIntegerToStringMapper;
-    @Resource
     private IntegerToStringMapper integerToStringMapper;
+
+    @Inject
+    public AnyServiceImpl(StringToIntegerMapperFactory stringToIntegerMapperFactory,
+                          EnumIntegerToStringMapper enumIntegerToStringMapper,
+                          IntegerToStringMapper integerToStringMapper) {
+
+        this.stringToIntegerMapperFactory = stringToIntegerMapperFactory;
+        this.enumIntegerToStringMapper = enumIntegerToStringMapper;
+        this.integerToStringMapper = integerToStringMapper;
+    }
 
 
     @Override
