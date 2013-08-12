@@ -12,7 +12,8 @@ import org.springframework.context.annotation.Configuration;
  * Comme illustré ci-dessous, les seuls types exposés sont:
  *
  *  - pour une classe annotée @Mapper, son interface générée
- *  - pour une classe annotée @MapperFactory, son interface de factory générée
+ *  - pour une classe annotée @MapperFactory, son interface de factory générée,
+ *  qui retourne l'interface de mapper générée
  */
 @Configuration
 public class SpringMapperContext {
