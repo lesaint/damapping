@@ -1,6 +1,6 @@
  - concept :
     => !! très important !! ne plus avoir besoin de modifier la classe annotée avec @Mapper ou @MapperFactory
-    => améliorer @Mapper pour qu'elle n'étende plus forcément @Componen
+    => améliorer @Mapper pour qu'elle n'étende plus forcément @Component
         idée : ajouter un paramètre enum SPRING_COMPONENT/CONSTRUCTOR
          SPRING_COMPONENT : l'implémentation se fait injecter l'instance via @Component
          CONSTRUCTOR : l'implémentation instancie un singleton via son constructeur par défaut
