@@ -1,7 +1,5 @@
 package com.ekino.lesaint.dozerannihilation.annotation;
 
-import org.springframework.stereotype.Component;
-
 /**
  * Mapper -
  *
@@ -10,6 +8,7 @@ import org.springframework.stereotype.Component;
 @java.lang.annotation.Target({java.lang.annotation.ElementType.TYPE})
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 @java.lang.annotation.Documented
-@org.springframework.stereotype.Component
 public @interface Mapper {
+
+    InstantiationMethod value() default InstantiationMethod.ENUM_SINGLETON;
 }
