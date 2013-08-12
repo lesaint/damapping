@@ -1,0 +1,2 @@
+ - conf maven : passer le projet en JDK1.7, compléter la gestion de version des plugins
+ - dépendances : ajouter la dépendance pour disposer des annotations @Nullable et @Nonnull
