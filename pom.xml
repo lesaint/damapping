@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ekino.sfrsandbox</groupId>
     <artifactId>dozerannihilation</artifactId>
@@ -125,6 +126,16 @@
                 <artifactId>spring-core</artifactId>
                 <version>${springframework.version}</version>
             </dependency>
+            <!-- contient les interfaces et classes d'APT -->
+            <!--dépendance requise pour utiliser APT avant java 6 et l'intégration du process-->
+            <!--d'annotation directement dans javac dans Java 6-->
+            <!--<dependency>-->
+            <!--<groupId>com.sun</groupId>-->
+            <!--<artifactId>tools</artifactId>-->
+            <!--<version>1.4.2</version>-->
+            <!--<scope>system</scope>-->
+            <!--<systemPath>${java.home}/../lib/tools.jar</systemPath>-->
+            <!--</dependency>-->
         </dependencies>
     </dependencyManagement>
 
@@ -154,6 +165,12 @@
             <artifactId>javax.inject</artifactId>
             <version>1</version>
         </dependency>
+        <!--dépendance requise pour utiliser APT avant java 6 et l'intégration du process-->
+        <!--d'annotation directement dans javac dans Java 6-->
+        <!--<dependency>-->
+        <!--<groupId>com.sun</groupId>-->
+        <!--<artifactId>tools</artifactId>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>
@@ -166,6 +183,10 @@
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
+                    <annotationProcessors>
+                        <annotationProcessor>com.ekino.lesaint.dozerannihilation.apt.DAAnnotationProcessor
+                        </annotationProcessor>
+                    </annotationProcessors>
                 </configuration>
             </plugin>
             <plugin>
@@ -222,6 +243,12 @@
                     <artifactId>build-helper-maven-plugin</artifactId>
                     <version>1.4</version>
                 </plugin>
+                <!--plugin requis pour utiliser APT, ce qui n'est plus nécessaire depuis java 6-->
+                <!--<plugin>-->
+                    <!--<groupId>org.codehaus.mojo</groupId>-->
+                    <!--<artifactId>apt-maven-plugin</artifactId>-->
+                    <!--<version>1.0-alpha-5</version>-->
+                <!--</plugin>-->
             </plugins>
         </pluginManagement>
     </build>
