@@ -1,11 +1,9 @@
-package com.ekino.lesaint.dozerannihilation.apt;
+package com.ekino.lesaint.dozerannihilation.processor;
 
 import com.ekino.lesaint.dozerannihilation.annotation.Mapper;
 import com.ekino.lesaint.dozerannihilation.annotation.MapperFactory;
 import com.ekino.lesaint.dozerannihilation.annotation.MapperFactoryMethod;
 import com.google.common.collect.ImmutableSet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -27,9 +25,9 @@ public class DAAnnotationProcessor implements Processor {
     private static final Set<String> SUPPORTED_OPTIONS = Collections.emptySet();
     private static final Set<String> SUPPORTED_ANNOTATION_TYPES =
             ImmutableSet.of(
-                    Mapper.class.getName(),
-                    MapperFactory.class.getName(),
-                    MapperFactoryMethod.class.getName()
+                    Mapper.class.getCanonicalName(),
+                    MapperFactory.class.getCanonicalName(),
+                    MapperFactoryMethod.class.getCanonicalName()
             );
     private ProcessingEnvironment processingEnvironment;
 
