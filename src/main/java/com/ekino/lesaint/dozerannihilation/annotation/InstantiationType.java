@@ -5,5 +5,16 @@ package com.ekino.lesaint.dozerannihilation.annotation;
  * de l'interface générée *Mapper.
  */
 public enum InstantiationType {
-    SPRING_COMPONENT, CONSTRUCTOR, SINGLETON_ENUM;
+    /**
+     * La classe Mapper générée sera annotée avec l'annotation @Component de Spring (sans argument)
+     */
+    SPRING_COMPONENT,
+    /**
+     * TODO : je ne sais à quel type d'instantiation correspond CONSTRUCTOR
+     */
+    CONSTRUCTOR,
+    /**
+     * La classe Mapper générée sera une enum possédant une seule valeur : INSTANCE. (singleton pattern)
+     */
+    SINGLETON_ENUM;
 }
