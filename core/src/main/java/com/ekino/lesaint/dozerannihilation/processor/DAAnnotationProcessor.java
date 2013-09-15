@@ -53,12 +53,29 @@ public class DAAnnotationProcessor implements Processor {
 
     @Override
     public boolean process(Set<? extends TypeElement> typeElements, RoundEnvironment roundEnvironment) {
-        processingEnvironment.getMessager().printMessage(Diagnostic.Kind.NOTE,
-                String.format("typeElements [%s], RoundEnvironment  [%s]", typeElements, roundEnvironment)
-        );
+        // Diagnostic.Kind.WARNING and NOTE ne sont pas affichés dans la console maven, il faut utiliser
+        // Diagnostic.Kind.MADATORY_WARNING pour être sûr d'afficher un message visible lorsque le compilateur
+        // est lancé avec ses options par défaut. Le message est prefixé d'un "[WARNING] "
+        // D'autre part, System.out.println fonctionne sous maven (et forcément System.err aussi) et affiche un message
+        // lors du lancement du compilateur sans option particulière. Le message n'a pas de prefix.
+        // passer le javac en debug ou verbose ne semble pas permettre l'affichage des Kind.NOTE ou WARNING
 
-        // retourner true pour empêcher que l'annotation soit traitées par un autre Processor
-        return false;
+        System.out.println("System.out.println message");
+        System.err.println("System.err.println message");
+        Messager messager = processingEnvironment.getMessager();
+
+        messager.printMessage(Diagnostic.Kind.NOTE, "Note level message");
+        for (TypeElement te : typeElements) {
+            messager.printMessage(Diagnostic.Kind.WARNING, "Traitement annotation "
+            + te.getQualifiedName());
+
+            for (Element element : roundEnvironment.getElementsAnnotatedWith(te)) {
+                messager.printMessage(Diagnostic.Kind.MANDATORY_WARNING, "  Traitement element "
+                + element.getSimpleName());
+            }
+        }
+
+        return true;
     }
 
     @Override
