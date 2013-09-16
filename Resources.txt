@@ -1,0 +1,8 @@
+API dans Javac pour le processing des Annotations
+ http://docs.oracle.com/javase/7/docs/api/javax/annotation/processing/Processor.html
+
+Ressources sur le processing d'annotation
+ http://www.jmdoudoux.fr/java/dej/chap-annotations.htm
+ http://deors.wordpress.com/2011/09/26/annotation-types/
+ http://deors.wordpress.com/2011/10/08/annotation-processors/
+ http://deors.wordpress.com/2011/10/31/annotation-generators/
