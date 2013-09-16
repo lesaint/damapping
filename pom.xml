@@ -12,6 +12,7 @@
     <modules>
         <module>core</module>
         <module>demo</module>
+        <module>test</module>
     </modules>
 
     <organization>

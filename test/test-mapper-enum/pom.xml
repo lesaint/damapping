@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>test</artifactId>
+        <groupId>com.ekino.sfrsandbox.dozerannihilation</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>test-mapper-enum</artifactId>
+    <description></description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.ekino.sfrsandbox.dozerannihilation</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                    <!--déclare un ou plusieurs Processor à utiliser par le compilateur javac
+                        cet argument est optionnel car il existe aussi une méthode de découverte automatique des
+                        processor par le compilateur-->
+                    <annotationProcessors>
+                        <annotationProcessor>com.ekino.lesaint.dozerannihilation.processor.DAAnnotationProcessor
+                        </annotationProcessor>
+                    </annotationProcessors>
+                    <!--vérifie si le traitement des annotations et/ou la compilation sont effectués-->
+                    <proc />
+                    <compilerArgs>
+                        <!--option non standard qui permet d'afficher des informations sur le traitement des annotations par les processeurs-->
+                        <compilerArg>-XprintRounds</compilerArg>
+                        <!--option non standard qui affiche la liste des annotations qui seront traitées par les processeurs d'annotations-->
+                        <compilerArg>-XprintProcessorInfo</compilerArg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>
