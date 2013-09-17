@@ -1,5 +1,4 @@
  - TODO or not TODO: InstantiationType.SPRING_COMPONENT ?
         Ça hardcode une dépendance avec Spring.
         Ce serait sans doute mieux dans un module à part (qui s'occuperait aussi de générer SpringMapperContext.java).
- - demo : 
-    - écrire des samples de test U, qu'est-ce que l'on teste effectivement
+ - TODO : déplacer l'annotatio processor et son implémentation dans son propore module => séparation en 2 artifacts des annotations et du processor
