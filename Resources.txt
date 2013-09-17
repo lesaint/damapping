@@ -6,3 +6,12 @@ Ressources sur le processing d'annotation
  http://deors.wordpress.com/2011/09/26/annotation-types/
  http://deors.wordpress.com/2011/10/08/annotation-processors/
  http://deors.wordpress.com/2011/10/31/annotation-generators/
+
+
+découverte automatique du Processor :
+ * The easiest way to register the processor is to leverage the standard Java services mechanism:
+   - Package your Annotation Processor in a Jar file.
+   - Include in the Jar file a directory META-INF/services.
+   - Include in the directory a file named javax.annotation.processing.Processor.
+   - Write in the file the fully qualified names of the processors contained in the Jar file, one per line.
+
