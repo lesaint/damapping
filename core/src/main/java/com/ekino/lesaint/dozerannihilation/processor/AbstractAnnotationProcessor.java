@@ -1,10 +1,14 @@
 package com.ekino.lesaint.dozerannihilation.processor;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic;
 
 /**
  * AbstractAnnotationProcessor -
@@ -21,13 +25,17 @@ public abstract class AbstractAnnotationProcessor<T extends Annotation> implemen
     }
 
     @Override
-    public void processAll(RoundEnvironment roundEnv) {
+    public void processAll(TypeElement annotation, RoundEnvironment roundEnv) {
         Set<? extends Element> elementsAnnotatedWith = roundEnv.getElementsAnnotatedWith(annotationType);
 //        System.out.println("Elements retrieved " + elementsAnnotatedWith);
         for (Element element : elementsAnnotatedWith) {
-            process(element, roundEnv);
+            try {
+                process(element, roundEnv);
+            } catch (IOException e) {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "TODO", element);
+            }
         }
     }
 
-    protected abstract void process(Element element, RoundEnvironment roundEnv);
+    protected abstract void process(Element element, RoundEnvironment roundEnv) throws IOException;
 }

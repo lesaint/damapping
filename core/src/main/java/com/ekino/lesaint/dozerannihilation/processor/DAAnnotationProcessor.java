@@ -14,6 +14,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -72,7 +73,7 @@ public class DAAnnotationProcessor implements Processor {
             AnnotationProcessor annotationProcessor = annotationProcessors.get(annotation.getQualifiedName().toString());
 //            System.out.println("looking up AnnotationProcessor for " + annotation.getQualifiedName() + " in " + annotationProcessors + " found=" + annotationProcessor);
             if (annotationProcessor != null) {
-                annotationProcessor.processAll(roundEnv);
+                annotationProcessor.processAll(annotation, roundEnv);
             }
         }
         return true;

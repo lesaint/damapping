@@ -1,6 +1,8 @@
 package com.ekino.lesaint.dozerannihilation.processor;
 
+import java.io.IOException;
 import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.element.TypeElement;
 
 /**
  * AnnotationProcessor -
@@ -8,5 +10,5 @@ import javax.annotation.processing.RoundEnvironment;
  * @author lesaint
  */
 public interface AnnotationProcessor {
-    void processAll(RoundEnvironment roundEnv);
+    void processAll(TypeElement annotation, RoundEnvironment roundEnv);
 }
