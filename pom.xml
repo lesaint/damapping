@@ -132,6 +132,12 @@
                 <artifactId>spring-core</artifactId>
                 <version>${springframework.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>6.7</version>
+                <scope>test</scope>
+            </dependency>
             <!-- contient les interfaces et classes d'APT -->
             <!--dépendance requise pour utiliser APT avant java 6 et l'intégration du process-->
             <!--d'annotation directement dans javac dans Java 6-->
