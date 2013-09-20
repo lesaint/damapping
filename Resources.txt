@@ -15,3 +15,11 @@ découverte automatique du Processor :
    - Include in the directory a file named javax.annotation.processing.Processor.
    - Write in the file the fully qualified names of the processors contained in the Jar file, one per line.
 
+
+Debugger l'AnnotationProcessor
+  http://stackoverflow.com/questions/8587096/how-do-you-debug-java-annotation-processors-using-intellij
+   avec Maven : lancer la compilation maven avec mvnDebug, maven se met en attente de la connexion d'un debugger sur le
+   port indiqué dans le terminal. Il suffit de s'y connecter en Remote Debug via IDEA (en mode Attach).
+
+
+http://blog.retep.org/2009/02/13/getting-class-values-from-annotations-in-an-annotationprocessor/
