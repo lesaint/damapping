@@ -3,6 +3,8 @@ package com.ekino.lesaint.dozerannihilation.annotation;
 /**
  * Différentes façon d'instancier la classe annotée @Mapper, pour lui déléguer l'implémentation
  * de l'interface générée *Mapper.
+ *
+ * TODO : l'utilisation d'une enum pour indiquer la manière d'instancier le mapper n'est pas extensible (ie. ajout d'un support Guice, JEE, ...) utiliser plutôt une interface ?
  */
 public enum InstantiationType {
     /**
