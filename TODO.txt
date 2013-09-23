@@ -1,4 +1,10 @@
  - TODO or not TODO: InstantiationType.SPRING_COMPONENT ?
         Ça hardcode une dépendance avec Spring.
         Ce serait sans doute mieux dans un module à part (qui s'occuperait aussi de générer SpringMapperContext.java).
- - TODO : déplacer l'annotatio processor et son implémentation dans son propore module => séparation en 2 artifacts des annotations et du processor
+        corrolaire : l'utilisation d'une enum pour indiquer la manière d'instancier le mapper n'est pas extensible
+                     (ie. ajout d'un support Guice, JEE, ...) utiliser plutôt une interface ?
+ - TODO : déplacer l'annotation processor et son implémentation dans son propore module => séparation en 2 artifacts
+          des annotations et du processor, sera sûrement pratique pour test U par exemple$
+          (surtout quand Processor sera en auto discovery)
+ - TODO : ajouter un paramètre à @Mapper pour préciser la visibilité de la classe Mapper générée (public par défaut, sinon protected)
+           -> on n'ajoute pas de paramètre, la visibilité de l'interface générée sera la même que celle de la classe annotée avec @Mapper
