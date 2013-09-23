@@ -42,6 +42,45 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         InstantiationType instantiationType = getInstantiationType(classElement);
         System.out.println("Processing " + classElement.getQualifiedName() + " in " + getClass().getCanonicalName());
 
+        // retrieve name of the package of the class with @Mapper
+
+        // retrieve name of the class with @Mapper
+
+        // retrieve qualifiers of the class with @Mapper + make check : must be public or protected sinon erreur de compilation
+
+        // retrieve instantiation type from @Mapper annotation
+        //  - CONSTRUCTOR : check public/protected default constructor exists sinon erreur de compilation
+        //  - SINGLETON_ENUM : check @Mapper class is an enum + check there is only one value sinon erreur de compilation
+        //  - SPRING_COMPONENT : TOFINISH quelles vérifications sur la class si le InstantiationType est SPRING_COMPONENT ?
+
+        // retrieve interfaces implemented (directly and if any) by the class with @Mapper (+ their generics)
+        // chercher si l'une d'elles est Function (Guava)
+
+        // pour le moment, on ne traite pas les classes abstraites implémentées par la class @Mapper ni les interfaces
+        // implémentées indirectement
+
+        // rechercher une ou plusieurs méthodes annontées avec @MapperFunction
+        // si classe @Mapper implémente Function, la rechercher en commençant par les méthodes annotées avec @MapperFunction
+        // si aucune méthode trouvée => erreur  de compilation
+
+        // 1 - générer l'interface du Mapper
+        //     -> nom de package
+        //     -> nom de la classe (infère nom du Mapper)
+        //     -> visibilite de la classe (protected ou public ?)
+        //     -> liste des interfaces implémentées
+        //     -> compute liste des imports à réaliser
+
+        // 2 - générer la factory
+        //     -> nom du package
+        //     -> nom de la classe (infère nom de la factory et nom du Mapper)
+        //     -> type d'instantiation (si enum, le nom de la valeur d'enum à utiliser)
+
+        // 3 - générer l'implémentation du Mapper
+        //     -> nom de package
+        //     -> nom de la classe (infère nom du Mapper, nom de la factory, nom de l'implémentation)
+        //     -> liste des méthodes mapper
+        //     -> compute liste des imports à réaliser
+
         // TODO switch on the various InstantiationType values
 
 //        JavaFileObject jfo = processingEnv.getFiler().createSourceFile(classElement.getQualifiedName() + "Mapper", element);
