@@ -1,8 +1,10 @@
 package com.ekino.lesaint.dozerannihilation.processor;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,17 +21,18 @@ import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.QualifiedNameable;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
+import javax.tools.JavaFileObject;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
 
 import com.ekino.lesaint.dozerannihilation.annotation.InstantiationType;
 import com.ekino.lesaint.dozerannihilation.annotation.Mapper;
@@ -56,16 +59,16 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         InstantiationType instantiationType = retrieveInstantiationType(classElement);
         System.out.println("Processing " + classElement.getQualifiedName() + " in " + getClass().getCanonicalName());
 
-        DAClass daClass = new DAClass();
+        DAMapperClass daMapperClass = new DAMapperClass(classElement);
         // retrieve name of the package of the class with @Mapper
-        daClass.packageName = retrievePackageName(classElement);
+        daMapperClass.packageName = retrievePackageName(classElement);
 
         // retrieve names of the class with @Mapper
-        daClass.type =  extractType((DeclaredType) classElement.asType());
+        daMapperClass.type =  extractType((DeclaredType) classElement.asType());
 
         // retrieve qualifiers of the class with @Mapper + make check : must be public or protected sinon erreur de compilation
-        daClass.modifiers = classElement.getModifiers();
-        if (daClass.modifiers.contains(Modifier.PRIVATE)) {
+        daMapperClass.modifiers = classElement.getModifiers();
+        if (daMapperClass.modifiers.contains(Modifier.PRIVATE)) {
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Class annoted with @Mapper can not be private", classElement);
             return;
         }
@@ -74,17 +77,17 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         //  - CONSTRUCTOR : check public/protected default constructor exists sinon erreur de compilation
         //  - SINGLETON_ENUM : check @Mapper class is an enum + check there is only one value sinon erreur de compilation
         //  - SPRING_COMPONENT : TOFINISH quelles vérifications sur la class si le InstantiationType est SPRING_COMPONENT ?
-        daClass.instantiationType = retrieveInstantiationType(classElement);
+        daMapperClass.instantiationType = retrieveInstantiationType(classElement);
 
         // retrieve interfaces implemented (directly and if any) by the class with @Mapper (+ their generics)
         // chercher si l'une d'elles est Function (Guava)
-        daClass.interfaces = retrieveInterfaces(classElement);
+        daMapperClass.interfaces = retrieveInterfaces(classElement);
 
         // pour le moment, on ne traite pas les classes abstraites implémentées par la class @Mapper ni les interfaces
         // implémentées indirectement
 
         // rechercher si la classe Mapper implémente Function
-        List<DAInterface> guavaFunctionInterfaces = FluentIterable.from(daClass.interfaces).filter(new Predicate<DAInterface>() {
+        List<DAInterface> guavaFunctionInterfaces = FluentIterable.from(daMapperClass.interfaces).filter(new Predicate<DAInterface>() {
             @Override
             public boolean apply(@Nullable DAInterface daInterface) {
                 return daInterface != null && daInterface.isGuavaFunction();
@@ -92,14 +95,43 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         }).toList();
 
         if (guavaFunctionInterfaces.size() > 1) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Mapper implementing more than one Function is not supported", classElement);
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Mapper implementing more than one Function interface is not supported", classElement);
+            return;
+        }
+        if (guavaFunctionInterfaces.isEmpty()) { // TOIMPROVE cette vérification ne sera plus obligatoire si on introduit @MapperMethod
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Mapper not implementing Function interface is not supported", classElement);
             return;
         }
 
         // rechercher une ou plusieurs méthodes annontées avec @MapperFunction
         // si classe @Mapper implémente Function, la rechercher en commençant par les méthodes annotées avec @MapperFunction
         // si aucune méthode trouvée => erreur  de compilation
-        daClass.methods = retrieveMethods(classElement);
+        daMapperClass.methods = retrieveMethods(classElement);
+        if (daMapperClass.methods.isEmpty()) {
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Class annoted with @Mapper must have at least one methode", classElement);
+            return;
+        }
+        ImmutableList<DAMethod> guavaFunctionMethods = FluentIterable.from(daMapperClass.methods).filter(new Predicate<DAMethod>() {
+            @Override
+            public boolean apply(@Nullable DAMethod daMethod) {
+                return daMethod != null && daMethod.isGuavaFunction();
+            }
+        }).toList();
+        if (guavaFunctionMethods.size() > 1) {
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Mapper having more than one apply method is not supported", classElement);
+            return;
+        }
+        if (guavaFunctionMethods.isEmpty()) { // TOIMPROVE cette vérification ne sera plus obligatoire si on introduit @MapperMethod
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Mapper not having a apply method is not supported", classElement);
+            return;
+        }
+        // TOIMPROVE : la récupération et les constrôles sur la méthode apply sont faibles
+
+        // contrôles en fonction du InstantiationType
+
+        // construction des listes d'imports
+        DefaultImportVisitor visitor = new DefaultImportVisitor();
+        daMapperClass.visite(visitor);
 
         // 1 - générer l'interface du Mapper
         //     -> nom de package
@@ -107,11 +139,13 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         //     -> visibilite de la classe (protected ou public ?)
         //     -> liste des interfaces implémentées
         //     -> compute liste des imports à réaliser
+        generateMapperInterface(daMapperClass, visitor);
 
         // 2 - générer la factory
         //     -> nom du package
         //     -> nom de la classe (infère nom de la factory et nom du Mapper)
         //     -> type d'instantiation (si enum, le nom de la valeur d'enum à utiliser)
+        generateMapperFactoryInterface(daMapperClass, visitor);
 
         // 3 - générer l'implémentation du Mapper
         //     -> nom de package
@@ -120,21 +154,82 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         //     -> compute liste des imports à réaliser
 
         // TODO switch on the various InstantiationType values
+    }
 
-//        JavaFileObject jfo = processingEnv.getFiler().createSourceFile(classElement.getQualifiedName() + "Mapper", element);
-//        System.out.println("generating " + jfo.toUri());
-//        BufferedWriter bw = new BufferedWriter(jfo.openWriter());
-//        bw.append("package ");
-//        bw.append(packageElement.getQualifiedName());
-//        bw.append(";");
-//        bw.newLine();
-//        bw.append("import com.google.common.base.Function;");
-//        bw.newLine();
-//        bw.append("public interface ");
-//        bw.append(classElement.getSimpleName() + "Mapper");
-//        bw.append(" implements Function<");
-//        bw.flush();
-//        bw.close();
+    private void generateMapperInterface(DAMapperClass daMapperClass, DefaultImportVisitor visitor) throws IOException {
+
+        JavaFileObject jfo = processingEnv.getFiler().createSourceFile(daMapperClass.type.qualifiedName + "Mapper", daMapperClass.classElement);
+        System.out.println("generating " + jfo.toUri());
+
+        BufferedWriter bw = new BufferedWriter(jfo.openWriter());
+        bw.append("package ");
+        bw.append(daMapperClass.packageName);
+        bw.append(";");
+        bw.newLine();
+        bw.newLine();
+        for (Name name : filterImports(visitor.getMapperImports(), daMapperClass)) {
+            bw.append("import ").append(name).append(";");
+        }
+        bw.newLine();
+        bw.newLine();
+        bw.append("// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE");
+        bw.newLine();
+        bw.newLine();
+        for (Modifier modifier : daMapperClass.modifiers) {
+            bw.append(modifier.toString()).append(" ");
+        }
+        bw.append("interface ");
+        bw.append(daMapperClass.type.simpleName).append("Mapper");
+        if (!daMapperClass.interfaces.isEmpty()) {
+            bw.append(" extends ");
+        }
+        for (DAInterface anInterface : daMapperClass.interfaces) {
+            bw.append(anInterface.type.simpleName);
+            Iterator<DAType> iterator = anInterface.typeArgs.iterator();
+            if (iterator.hasNext()) {
+                bw.append("<");
+                while (iterator.hasNext()) {
+                    DAType arg = iterator.next();
+                    bw.append(arg.simpleName);
+                    if (iterator.hasNext()) {
+                        bw.append(", ");
+                    }
+                }
+                bw.append(">");
+            }
+        }
+        bw.append(" {");
+        bw.newLine();
+        bw.newLine();
+        bw.append("}");
+        bw.newLine();
+        bw.flush();
+        bw.close();
+    }
+
+    private void generateMapperFactoryInterface(DAMapperClass daMapperClass, DefaultImportVisitor visitor) {
+        //To change body of created methods use File | Settings | File Templates.
+    }
+
+    private Iterable<? extends Name> filterImports(List<Name> mapperImports, final DAMapperClass daMapperClass) {
+        return FluentIterable.from(mapperImports).filter(Predicates.not(
+                Predicates.or(
+                        // imports in the same package as the generated class (ie. the package of the Mapper class)
+                        new Predicate<Name>() {
+                            @Override
+                            public boolean apply(@Nullable Name name) {
+                                return name.toString().startsWith(daMapperClass.packageName.toString());
+                            }
+                        },
+                        // imports from java itself
+                        new Predicate<Name>() {
+                            @Override
+                            public boolean apply(@Nullable Name name) {
+                                return name.toString().startsWith("java.lang.");
+                            }
+                        }
+                )
+        ));
     }
 
     private List<DAMethod> retrieveMethods(final TypeElement classElement) {
@@ -158,12 +253,17 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                         res.kind = o.getKind();
                         res.name = o.getSimpleName();
                         ExecutableElement methodElement = (ExecutableElement) o;
+                        res.returnType = extractReturnType(methodElement);
                         res.parameters = extractParameters(methodElement);
                         res.mapperMethod = isMapperMethod(methodElement);
                         return res;
                     }
                 })
                 .toList();
+    }
+
+    private DAType extractReturnType(ExecutableElement methodElement) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
     }
 
     private boolean isMapperMethod(ExecutableElement methodElement) {
@@ -184,7 +284,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                         DeclaredType declaredType = (DeclaredType) o.asType();
 
                         DAParameter res = new DAParameter();
-                        res.simpleName = o.getSimpleName();
+                        res.name = o.getSimpleName();
                         res.type = extractType(declaredType);
                         res.modifiers = o.getModifiers();
                         return res;
@@ -266,7 +366,8 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         return null;
     }
 
-    private class DAClass {
+    private class DAMapperClass implements ImportVisitable {
+        final TypeElement classElement;
         Name packageName;
         DAType type;
         Set<Modifier> modifiers;
@@ -274,14 +375,50 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         List<DAMethod> methods;
         // specific to the class annoted with @Mapper
         InstantiationType instantiationType;
+
+        private DAMapperClass(TypeElement classElement) {
+            this.classElement = classElement;
+        }
+
+        @Override
+        public void visite(ImportVisitor visitor) {
+            visitor.addMapperImport(type.qualifiedName);
+            visitor.addMapperFactoryImport(type.qualifiedName);
+            visitor.addMapperFactoryImplImport(type.qualifiedName);
+            for (DAInterface daInterface : interfaces) {
+                daInterface.visite(visitor);
+            }
+            for (DAMethod daMethod : methods) {
+                daMethod.visite(visitor);
+            }
+        }
+
     }
 
-    private class DAInterface {
+    private class DAInterface extends AbstractImportVisitable {
         DAType type;
         List<DAType> typeArgs;
 
         public boolean isGuavaFunction() {
             return type.qualifiedName != null && Function.class.getCanonicalName().equals(type.qualifiedName.toString());
+        }
+
+        @Override
+        protected void visiteForMapper(ImportVisitor visitor) {
+            visitor.addMapperImport(type.qualifiedName);
+            for (DAType typeArg : typeArgs) {
+                visitor.addMapperImport(typeArg.qualifiedName);
+            }
+        }
+
+        @Override
+        protected void visiteForMapperFactory(ImportVisitor visitor) {
+            // TODO implémenter visiteForMapperFactory pour DAInterface
+        }
+
+        @Override
+        protected void visiteForMapperFactoryImpl(ImportVisitor visitor) {
+            // TODO implémenter visiteForMapperFactoryImpl pour DAInterface
         }
     }
 
@@ -290,22 +427,122 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         Name simpleName;
     }
 
-    private class DAMethod {
+    private class DAMethod extends AbstractImportVisitable {
         ElementKind kind;
+        /*nom de la méthode/function*/
         Name name;
+        DAType returnType; // attention au cas des primitifs si on ajoute @MapperMethod !
         List<DAParameter> parameters;
+        /*non utilisé tant que pas de @MapperMethod*/
         boolean mapperMethod;
 
         public boolean isDefaultConstructor() {
             return kind == ElementKind.CONSTRUCTOR;
         }
+
+        public boolean isGuavaFunction() {
+            // TOIMPROVE, check more specific info in the model, can we know if method override from an interface ? we should check the parameter type and the return type
+            return kind == ElementKind.METHOD && "apply".equals(name.toString());
+        }
+
+        @Override
+        protected void visiteForMapper(ImportVisitor visitor) {
+            if (isGuavaFunction()) {
+                // guava function is not generated in Mapper interface because it is declared by implemented Function interface
+                return;
+            }
+            if (isDefaultConstructor()) {
+                // constructor is not generated in Mapper interface
+                return;
+            }
+            for (DAParameter parameter : parameters) {
+                visitor.addMapperImport(parameter.type.qualifiedName);
+            }
+            visitor.addMapperImport(returnType.qualifiedName);
+        }
+
+        @Override
+        protected void visiteForMapperFactory(ImportVisitor visitor) {
+            // none
+        }
+
+        @Override
+        protected void visiteForMapperFactoryImpl(ImportVisitor visitor) {
+            // TODO implémenter visiteForMapperFactoryImpl de DAMethod
+        }
     }
 
     private class DAParameter {
-        Name simpleName;
+        /*nom du paramètre*/
+        Name name;
         DAType type;
         Set<Modifier> modifiers;
 
+    }
+
+    private class DefaultImportVisitor implements ImportVisitor {
+        private final ImmutableList.Builder<Name> mapperImports = ImmutableList.builder();
+        private final ImmutableList.Builder<Name> mapperFactoryImports = ImmutableList.builder();
+        private final ImmutableList.Builder<Name> mapperFactoryImplImports = ImmutableList.builder();
+
+        @Override
+        public void addMapperImport(@Nullable Name qualifiedName) {
+            if (qualifiedName != null) {
+                mapperImports.add(qualifiedName);
+            }
+        }
+
+        @Override
+        public void addMapperFactoryImport(@Nullable Name qualifiedName) {
+            if (qualifiedName != null) {
+                mapperFactoryImports.add(qualifiedName);
+            }
+        }
+
+        @Override
+        public void addMapperFactoryImplImport(@Nullable Name qualifiedName) {
+            if (qualifiedName != null) {
+                mapperFactoryImplImports.add(qualifiedName);
+            }
+        }
+
+        private List<Name> getMapperImports() {
+            return mapperImports.build();
+        }
+
+        private List<Name> getMapperFactoryImports() {
+            return mapperFactoryImports.build();
+        }
+
+        private List<Name> getMapperFactoryImplImports() {
+            return mapperFactoryImplImports.build();
+        }
+    }
+
+    private interface ImportVisitor {
+        void addMapperImport(@Nullable Name qualifiedName);
+        void addMapperFactoryImport(@Nullable Name qualifiedName);
+        void addMapperFactoryImplImport(@Nullable Name qualifiedName);
+    }
+
+    private interface ImportVisitable {
+        void visite(ImportVisitor visitor);
+    }
+
+    private abstract class AbstractImportVisitable implements ImportVisitable {
+
+        @Override
+        public void visite(ImportVisitor visitor) {
+            visiteForMapper(visitor);
+            visiteForMapperFactory(visitor);
+            visiteForMapperFactoryImpl(visitor);
+        }
+
+        protected abstract void visiteForMapper(ImportVisitor visitor);
+
+        protected abstract void visiteForMapperFactory(ImportVisitor visitor);
+
+        protected abstract void visiteForMapperFactoryImpl(ImportVisitor visitor);
     }
 
     private static Name retrievePackageName(TypeElement classElement) {
@@ -313,16 +550,23 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         return packageElement.getQualifiedName();
     }
 
-    private static InstantiationType retrieveInstantiationType(TypeElement classElement) {
+    private InstantiationType retrieveInstantiationType(TypeElement classElement) {
         Optional<AnnotationMirror> annotationMirror = getAnnotationMirror(classElement, Mapper.class);
         if (!annotationMirror.isPresent()) {
-//            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, ); TODO add an error message if expected Annotation is not found on element
+            // ce cas est pratiquement impossible !
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Annotation Mapper non trouvée sur la classe annotée avec @Mapper", classElement);
             return null;
         }
 
         String enumValue = getEnumNameElementValue(annotationMirror.get(), "value");
-
-        // TODO quel est le comportement s'il n'y a pas de valeur explicite ? on récupère null et on doit aller récupérer la valeur par défaut dans l'AnnotationMiror ou la valeur par défaut est automatiquement inférée ?
+        if (enumValue == null) {
+            // TOIMPROVE la valeur par défaut est décrite dans l'annotation @Mapper, récupérer la valeur directement depuis le AnnotationMirror
+            InstantiationType defaultValue = InstantiationType.SINGLETON_ENUM;
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
+                    "Annotation Mapper has no explicite value, using defaut one", classElement, annotationMirror.get()
+            );
+            return defaultValue;
+        }
 
         return InstantiationType.valueOf(enumValue);
     }
