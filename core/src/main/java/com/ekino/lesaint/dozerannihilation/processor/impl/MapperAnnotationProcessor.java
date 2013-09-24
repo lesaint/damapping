@@ -1,4 +1,4 @@
-package com.ekino.lesaint.dozerannihilation.processor;
+package com.ekino.lesaint.dozerannihilation.processor.impl;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -44,7 +43,7 @@ import com.ekino.lesaint.dozerannihilation.annotation.Mapper;
  * @author lesaint
  */
 public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mapper> {
-    protected MapperAnnotationProcessor(ProcessingEnvironment processingEnv) {
+    public MapperAnnotationProcessor(ProcessingEnvironment processingEnv) {
         super(processingEnv, Mapper.class);
     }
 
@@ -200,8 +199,8 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
 
         bw.flush();
         bw.close();
-    }
 
+    }
     private static final String INDENT = "    ";
 
     private void generateMapperFactoryInterface(DAMapperClass daMapperClass, DefaultImportVisitor visitor) throws IOException {
@@ -473,200 +472,6 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
             return ((QualifiedNameable) o.asElement()).getQualifiedName();
         }
         return null;
-    }
-
-    private class DAMapperClass implements ImportVisitable {
-        final TypeElement classElement;
-        Name packageName;
-        DAType type;
-        Set<Modifier> modifiers;
-        List<DAInterface> interfaces;
-        List<DAMethod> methods;
-        // specific to the class annoted with @Mapper
-        InstantiationType instantiationType;
-
-        private DAMapperClass(TypeElement classElement) {
-            this.classElement = classElement;
-        }
-
-        @Override
-        public void visite(ImportVisitor visitor) {
-            visitor.addMapperImport(type.qualifiedName);
-            visitor.addMapperImplImport(type.qualifiedName);
-            visitor.addMapperFactoryImport(type.qualifiedName);
-            for (DAInterface daInterface : interfaces) {
-                daInterface.visite(visitor);
-            }
-            for (DAMethod daMethod : methods) {
-                daMethod.visite(visitor);
-            }
-        }
-
-    }
-
-    private class DAInterface extends AbstractImportVisitable {
-        DAType type;
-        List<DAType> typeArgs;
-
-        public boolean isGuavaFunction() {
-            return type.qualifiedName != null && Function.class.getCanonicalName().equals(type.qualifiedName.toString());
-        }
-
-        @Override
-        protected void visiteForMapper(ImportVisitor visitor) {
-            visitor.addMapperImport(type.qualifiedName);
-            for (DAType typeArg : typeArgs) {
-                visitor.addMapperImport(typeArg.qualifiedName);
-            }
-        }
-
-        @Override
-        protected void visiteForMapperImpl(ImportVisitor visitor) {
-            visitor.addMapperImport(type.qualifiedName);
-            for (DAType typeArg : typeArgs) {
-                visitor.addMapperImport(typeArg.qualifiedName);
-            }
-        }
-
-        @Override
-        protected void visiteForMapperFactory(ImportVisitor visitor) {
-            // interfaces are not used in the Factory
-        }
-    }
-
-    private class DAType {
-        Name qualifiedName;
-        Name simpleName;
-    }
-
-    private class DAMethod extends AbstractImportVisitable {
-        ElementKind kind;
-        /*nom de la méthode/function*/
-        Name name;
-        /*le type de retour de la méthode. Null si la méthode est un constructeur*/
-        @Nullable DAType returnType; // attention au cas des primitifs si on ajoute @MapperMethod !
-        List<DAParameter> parameters;
-        /*non utilisé tant que pas de @MapperMethod*/
-        boolean mapperMethod;
-
-        public boolean isDefaultConstructor() {
-            return kind == ElementKind.CONSTRUCTOR;
-        }
-
-        public boolean isGuavaFunction() {
-            // TOIMPROVE, check more specific info in the model, can we know if method override from an interface ? we should check the parameter type and the return type
-            return kind == ElementKind.METHOD && "apply".equals(name.toString());
-        }
-
-        @Override
-        protected void visiteForMapper(ImportVisitor visitor) {
-            if (isGuavaFunction()) {
-                // guava function is not generated in Mapper interface because it is declared by implemented Function interface
-                return;
-            }
-            if (isDefaultConstructor()) {
-                // constructor is not generated in Mapper interface
-                return;
-            }
-            for (DAParameter parameter : parameters) {
-                visitor.addMapperImport(parameter.type.qualifiedName);
-            }
-            if (returnType != null) {
-                visitor.addMapperImport(returnType.qualifiedName);
-            }
-        }
-
-        @Override
-        protected void visiteForMapperImpl(ImportVisitor visitor) {
-            if (isDefaultConstructor()) {
-                // constructor is not generated in MapperImpl class
-                return;
-            }
-            for (DAParameter parameter : parameters) {
-                visitor.addMapperImport(parameter.type.qualifiedName);
-            }
-            if (returnType != null) {
-                visitor.addMapperImport(returnType.qualifiedName);
-            }
-        }
-
-        @Override
-        protected void visiteForMapperFactory(ImportVisitor visitor) {
-            // none
-        }
-    }
-
-    private class DAParameter {
-        /*nom du paramètre*/
-        Name name;
-        DAType type;
-        Set<Modifier> modifiers;
-
-    }
-
-    private class DefaultImportVisitor implements ImportVisitor {
-        private final ImmutableList.Builder<Name> mapperImports = ImmutableList.builder();
-        private final ImmutableList.Builder<Name> mapperFactoryImports = ImmutableList.builder();
-        private final ImmutableList.Builder<Name> mapperImplImports = ImmutableList.builder();
-
-        @Override
-        public void addMapperImport(@Nullable Name qualifiedName) {
-            if (qualifiedName != null) {
-                mapperImports.add(qualifiedName);
-            }
-        }
-
-        @Override
-        public void addMapperImplImport(@Nullable Name qualifiedName) {
-            if (qualifiedName != null) {
-                mapperImplImports.add(qualifiedName);
-            }
-        }
-
-        @Override
-        public void addMapperFactoryImport(@Nullable Name qualifiedName) {
-            if (qualifiedName != null) {
-                mapperFactoryImports.add(qualifiedName);
-            }
-        }
-
-        private List<Name> getMapperImports() {
-            return mapperImports.build();
-        }
-
-        private List<Name> getMapperImplImports() {
-            return mapperImplImports.build();
-        }
-
-        private List<Name> getMapperFactoryImports() {
-            return mapperFactoryImports.build();
-        }
-    }
-
-    private interface ImportVisitor {
-        void addMapperImport(@Nullable Name qualifiedName);
-        void addMapperFactoryImport(@Nullable Name qualifiedName);
-        void addMapperImplImport(@Nullable Name qualifiedName);
-    }
-
-    private interface ImportVisitable {
-        void visite(ImportVisitor visitor);
-    }
-
-    private abstract class AbstractImportVisitable implements ImportVisitable {
-
-        @Override
-        public void visite(ImportVisitor visitor) {
-            visiteForMapper(visitor);
-            visiteForMapperFactory(visitor);
-            visiteForMapperImpl(visitor);
-        }
-
-        protected abstract void visiteForMapper(ImportVisitor visitor);
-
-        protected abstract void visiteForMapperFactory(ImportVisitor visitor);
-
-        protected abstract void visiteForMapperImpl(ImportVisitor visitor);
     }
 
     private static Name retrievePackageName(TypeElement classElement) {

@@ -3,6 +3,8 @@ package com.ekino.lesaint.dozerannihilation.processor;
 import com.ekino.lesaint.dozerannihilation.annotation.Mapper;
 import com.ekino.lesaint.dozerannihilation.annotation.MapperFactory;
 import com.ekino.lesaint.dozerannihilation.annotation.MapperFactoryMethod;
+import com.ekino.lesaint.dozerannihilation.processor.impl.AnnotationProcessor;
+import com.ekino.lesaint.dozerannihilation.processor.impl.MapperAnnotationProcessor;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 

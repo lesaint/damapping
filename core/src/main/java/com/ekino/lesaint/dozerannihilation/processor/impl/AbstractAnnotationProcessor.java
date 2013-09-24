@@ -1,4 +1,4 @@
-package com.ekino.lesaint.dozerannihilation.processor;
+package com.ekino.lesaint.dozerannihilation.processor.impl;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
