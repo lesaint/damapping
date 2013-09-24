@@ -8,3 +8,4 @@
           (surtout quand Processor sera en auto discovery)
  - TODO : ajouter un paramètre à @Mapper pour préciser la visibilité de la classe Mapper générée (public par défaut, sinon protected)
            -> on n'ajoute pas de paramètre, la visibilité de l'interface générée sera la même que celle de la classe annotée avec @Mapper
+ - framework d'injection super léger : essayer Dagger
