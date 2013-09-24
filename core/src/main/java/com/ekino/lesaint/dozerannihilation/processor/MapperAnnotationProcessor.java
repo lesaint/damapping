@@ -162,19 +162,8 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         System.out.println("generating " + jfo.toUri());
 
         BufferedWriter bw = new BufferedWriter(jfo.openWriter());
-        bw.append("package ");
-        bw.append(daMapperClass.packageName);
-        bw.append(";");
-        bw.newLine();
-        bw.newLine();
-        for (Name name : filterImports(visitor.getMapperImports(), daMapperClass)) {
-            bw.append("import ").append(name).append(";");
-        }
-        bw.newLine();
-        bw.newLine();
-        bw.append("// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE");
-        bw.newLine();
-        bw.newLine();
+        List<Name> mapperImports = visitor.getMapperImports();
+        appendHeader(bw, daMapperClass, mapperImports);
         for (Modifier modifier : daMapperClass.modifiers) {
             bw.append(modifier.toString()).append(" ");
         }
@@ -207,29 +196,79 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         bw.close();
     }
 
-    private void generateMapperFactoryInterface(DAMapperClass daMapperClass, DefaultImportVisitor visitor) {
-        //To change body of created methods use File | Settings | File Templates.
+    private static final String INDENT = "    ";
+
+    private void generateMapperFactoryInterface(DAMapperClass daMapperClass, DefaultImportVisitor visitor) throws IOException {
+
+        JavaFileObject jfo = processingEnv.getFiler().createSourceFile(daMapperClass.type.qualifiedName + "MapperFactory", daMapperClass.classElement);
+        System.out.println("generating " + jfo.toUri());
+
+        BufferedWriter bw = new BufferedWriter(jfo.openWriter());
+        appendHeader(bw, daMapperClass, visitor.getMapperFactoryImports());
+        bw.append("class ").append(daMapperClass.type.simpleName).append("MapperFactory").append(" {");
+        bw.newLine();
+        bw.newLine();
+        bw.append(INDENT).append("public ").append(daMapperClass.type.simpleName).append(" instance() {");
+        bw.newLine();
+        switch (daMapperClass.instantiationType) {
+            case SINGLETON_ENUM:
+                // TOIMPROVE générer le code de la factory dans le cas enum avec un nom d'enum dynamique
+                bw.append(INDENT).append(INDENT).append("return ").append(daMapperClass.type.simpleName).append(".INSTANCE;");
+                break;
+            case CONSTRUCTOR:
+                bw.append(INDENT).append(INDENT).append("return new ").append(daMapperClass.type.simpleName).append("();");
+                break;
+            case SPRING_COMPONENT:
+                // cas qui ne doit pas survenir
+                break;
+        }
+        bw.newLine();
+        bw.append(INDENT).append("}");
+        bw.newLine();
+        bw.append("}");
+        bw.newLine();
+        bw.flush();
+        bw.close();
     }
 
-    private Iterable<? extends Name> filterImports(List<Name> mapperImports, final DAMapperClass daMapperClass) {
-        return FluentIterable.from(mapperImports).filter(Predicates.not(
-                Predicates.or(
-                        // imports in the same package as the generated class (ie. the package of the Mapper class)
-                        new Predicate<Name>() {
-                            @Override
-                            public boolean apply(@Nullable Name name) {
-                                return name.toString().startsWith(daMapperClass.packageName.toString());
-                            }
-                        },
-                        // imports from java itself
-                        new Predicate<Name>() {
-                            @Override
-                            public boolean apply(@Nullable Name name) {
-                                return name.toString().startsWith("java.lang.");
-                            }
-                        }
+    private void appendHeader(BufferedWriter bw, DAMapperClass daMapperClass, List<Name> mapperImports) throws IOException {
+        List<Name> imports = filterImports(mapperImports, daMapperClass);
+
+        bw.append("package ").append(daMapperClass.packageName).append(";");
+        bw.newLine();
+        bw.newLine();
+        if (!imports.isEmpty()) {
+            for (Name name : imports) {
+                bw.append("import ").append(name).append(";");
+            }
+            bw.newLine();
+            bw.newLine();
+        }
+        bw.append("// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE");
+        bw.newLine();
+    }
+
+    private List<Name> filterImports(List<Name> mapperImports, final DAMapperClass daMapperClass) {
+        return FluentIterable.from(mapperImports).filter(
+                Predicates.not(
+                        Predicates.or(
+                                // imports in the same package as the generated class (ie. the package of the Mapper class)
+                                new Predicate<Name>() {
+                                    @Override
+                                    public boolean apply(@Nullable Name name) {
+                                        return name.toString().startsWith(daMapperClass.packageName.toString());
+                                    }
+                                },
+                                // imports from java itself
+                                new Predicate<Name>() {
+                                    @Override
+                                    public boolean apply(@Nullable Name name) {
+                                        return name.toString().startsWith("java.lang.");
+                                    }
+                                }
+                        )
                 )
-        ));
+        ).toList();
     }
 
     private List<DAMethod> retrieveMethods(final TypeElement classElement) {
@@ -383,8 +422,8 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         @Override
         public void visite(ImportVisitor visitor) {
             visitor.addMapperImport(type.qualifiedName);
+            visitor.addMapperImplImport(type.qualifiedName);
             visitor.addMapperFactoryImport(type.qualifiedName);
-            visitor.addMapperFactoryImplImport(type.qualifiedName);
             for (DAInterface daInterface : interfaces) {
                 daInterface.visite(visitor);
             }
@@ -412,13 +451,16 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         }
 
         @Override
-        protected void visiteForMapperFactory(ImportVisitor visitor) {
-            // TODO implémenter visiteForMapperFactory pour DAInterface
+        protected void visiteForMapperImpl(ImportVisitor visitor) {
+            visitor.addMapperImport(type.qualifiedName);
+            for (DAType typeArg : typeArgs) {
+                visitor.addMapperImport(typeArg.qualifiedName);
+            }
         }
 
         @Override
-        protected void visiteForMapperFactoryImpl(ImportVisitor visitor) {
-            // TODO implémenter visiteForMapperFactoryImpl pour DAInterface
+        protected void visiteForMapperFactory(ImportVisitor visitor) {
+            // interfaces are not used in the Factory
         }
     }
 
@@ -462,13 +504,20 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         }
 
         @Override
-        protected void visiteForMapperFactory(ImportVisitor visitor) {
-            // none
+        protected void visiteForMapperImpl(ImportVisitor visitor) {
+            if (isDefaultConstructor()) {
+                // constructor is not generated in MapperImpl class
+                return;
+            }
+            for (DAParameter parameter : parameters) {
+                visitor.addMapperImport(parameter.type.qualifiedName);
+            }
+            visitor.addMapperImport(returnType.qualifiedName);
         }
 
         @Override
-        protected void visiteForMapperFactoryImpl(ImportVisitor visitor) {
-            // TODO implémenter visiteForMapperFactoryImpl de DAMethod
+        protected void visiteForMapperFactory(ImportVisitor visitor) {
+            // none
         }
     }
 
@@ -500,7 +549,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         }
 
         @Override
-        public void addMapperFactoryImplImport(@Nullable Name qualifiedName) {
+        public void addMapperImplImport(@Nullable Name qualifiedName) {
             if (qualifiedName != null) {
                 mapperFactoryImplImports.add(qualifiedName);
             }
@@ -522,7 +571,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     private interface ImportVisitor {
         void addMapperImport(@Nullable Name qualifiedName);
         void addMapperFactoryImport(@Nullable Name qualifiedName);
-        void addMapperFactoryImplImport(@Nullable Name qualifiedName);
+        void addMapperImplImport(@Nullable Name qualifiedName);
     }
 
     private interface ImportVisitable {
@@ -535,14 +584,14 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         public void visite(ImportVisitor visitor) {
             visiteForMapper(visitor);
             visiteForMapperFactory(visitor);
-            visiteForMapperFactoryImpl(visitor);
+            visiteForMapperImpl(visitor);
         }
 
         protected abstract void visiteForMapper(ImportVisitor visitor);
 
         protected abstract void visiteForMapperFactory(ImportVisitor visitor);
 
-        protected abstract void visiteForMapperFactoryImpl(ImportVisitor visitor);
+        protected abstract void visiteForMapperImpl(ImportVisitor visitor);
     }
 
     private static Name retrievePackageName(TypeElement classElement) {
