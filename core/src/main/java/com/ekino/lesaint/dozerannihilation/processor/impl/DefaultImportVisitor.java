@@ -11,7 +11,7 @@ import java.util.List;
 *
 * @author Sébastien Lesaint
 */
-class DefaultImportVisitor implements ImportVisitor {
+class DefaultImportVisitor implements ImportVisitor, DAImports {
     private final ImmutableList.Builder<Name> mapperImports = ImmutableList.builder();
     private final ImmutableList.Builder<Name> mapperFactoryImports = ImmutableList.builder();
     private final ImmutableList.Builder<Name> mapperImplImports = ImmutableList.builder();
@@ -37,14 +37,17 @@ class DefaultImportVisitor implements ImportVisitor {
         }
     }
 
+    @Override
     public List<Name> getMapperImports() {
         return mapperImports.build();
     }
 
+    @Override
     public List<Name> getMapperImplImports() {
         return mapperImplImports.build();
     }
 
+    @Override
     public List<Name> getMapperFactoryImports() {
         return mapperFactoryImports.build();
     }
