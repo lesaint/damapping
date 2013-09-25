@@ -4,6 +4,9 @@ import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Set;
+import com.google.common.base.Predicates;
+import com.google.common.collect.FluentIterable;
 
 /**
 * MapperFileGenerator -
@@ -27,7 +30,7 @@ class MapperFileGenerator extends AbstractFileGenerator {
         //     -> compute liste des imports à réaliser
         DAMapperClass daMapperClass = context.getMapperClass();
         appendHeader(bw, daMapperClass, context.getMapperImports());
-        for (Modifier modifier : daMapperClass.modifiers) {
+        for (Modifier modifier : filterModifiers(daMapperClass.modifiers)) {
             bw.append(modifier.toString()).append(" ");
         }
         bw.append("interface ");
@@ -58,5 +61,16 @@ class MapperFileGenerator extends AbstractFileGenerator {
 
         bw.flush();
         bw.close();
+    }
+
+    private static Set<Modifier> filterModifiers(Set<Modifier> modifiers) {
+        return FluentIterable.from(modifiers)
+                .filter(
+                        Predicates.not(
+                                // an interface can not be final, will not compile
+                                Predicates.equalTo(Modifier.FINAL)
+                        )
+                )
+                .toSet();
     }
 }

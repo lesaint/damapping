@@ -17,6 +17,7 @@
     <modules>
         <module>test-core</module>
         <module>test-mapper-enum</module>
+        <module>test-mapper-constructor</module>
     </modules>
 
     <dependencies>

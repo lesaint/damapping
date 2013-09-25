@@ -6,6 +6,7 @@ import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -20,6 +21,7 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.QualifiedNameable;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.NoType;
 import javax.lang.model.type.TypeMirror;
@@ -29,6 +31,7 @@ import javax.tools.JavaFileObject;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableSet;
 
 import com.ekino.lesaint.dozerannihilation.annotation.InstantiationType;
 import com.ekino.lesaint.dozerannihilation.annotation.Mapper;
@@ -41,14 +44,24 @@ import static com.google.common.collect.FluentIterable.from;
  * @author lesaint
  */
 public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mapper> {
+
+    private static final Set<ElementKind> SUPPORTED_ELEMENTKINDS = ImmutableSet.of(
+            ElementKind.CLASS, ElementKind.ENUM
+    );
+
     public MapperAnnotationProcessor(ProcessingEnvironment processingEnv) {
         super(processingEnv, Mapper.class);
     }
 
     @Override
     protected void process(Element element, RoundEnvironment roundEnv) throws IOException {
-        if (element.getKind() != ElementKind.CLASS) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Type annoted with @Mapper annotation is not class " + element);
+        if (!SUPPORTED_ELEMENTKINDS.contains(element.getKind())) {
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                   String.format(
+                           "Type %s annoted with @Mapper annotation is not a class nor an enum (kind found = %s)",
+                           element, element.getKind()
+                   )
+            );
             return;
         }
 
@@ -165,17 +178,15 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         }
 
         return from(classElement.getEnclosedElements())
+                // all enclosed elements are supposed to be ExecutableElement, just making sure
+                .filter(Predicates.instanceOf(ExecutableElement.class))
+                // excludes enum values
+                .filter(Predicates.not(Predicates.instanceOf(VariableElement.class)))
+                // transform
                 .transform(new Function<Element, DAMethod>() {
                     @Nullable
                     @Override
                     public DAMethod apply(@Nullable Element o) {
-                        if (!(o instanceof ExecutableElement)) {
-                            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                                    "EnclosedElement is not ExecutableElement. Not supported", classElement
-                            );
-                            return null;
-                        }
-
                         DAMethod res = new DAMethod();
                         res.kind = o.getKind();
                         res.name = DANameFactory.from(o.getSimpleName());
@@ -186,11 +197,17 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                         return res;
                     }
                 })
+                .filter(Predicates.notNull())
                 .toList();
     }
 
     private DAType extractReturnType(ExecutableElement methodElement) {
         if (methodElement.getReturnType() instanceof NoType) {
+            return null;
+        }
+        if (methodElement.getReturnType() instanceof ArrayType) {
+            // FIXME add support for les types de retours basés sur des tableaux
+            // pour l'instant, retourner null nous évite de ClassCastException sur la méthode getValues() des enums
             return null;
         }
         return extractType((DeclaredType) methodElement.getReturnType());
