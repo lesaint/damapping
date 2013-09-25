@@ -11,18 +11,22 @@
     </parent>
 
     <artifactId>test-mapper-enum</artifactId>
-    <description></description>
+    <description>tests de génération de fichiers java pour une enum annotée avec @Mapper</description>
 
     <dependencies>
         <dependency>
-            <groupId>com.ekino.sfrsandbox.dozerannihilation</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version}</version>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -42,7 +46,7 @@
                         </annotationProcessor>
                     </annotationProcessors>
                     <!--vérifie si le traitement des annotations et/ou la compilation sont effectués-->
-                    <proc />
+                    <proc/>
                     <compilerArgs>
                         <!--option non standard qui permet d'afficher des informations sur le traitement des annotations par les processeurs-->
                         <compilerArg>-XprintRounds</compilerArg>
