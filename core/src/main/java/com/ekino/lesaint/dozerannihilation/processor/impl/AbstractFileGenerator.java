@@ -29,8 +29,8 @@ abstract class AbstractFileGenerator implements FileGenerator {
         if (!imports.isEmpty()) {
             for (Name name : imports) {
                 bw.append("import ").append(name).append(";");
+                bw.newLine();
             }
-            bw.newLine();
             bw.newLine();
         }
         bw.append("// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE");
@@ -51,8 +51,12 @@ abstract class AbstractFileGenerator implements FileGenerator {
                                         new Predicate<Name>() {
                                             @Override
                                             public boolean apply(@Nullable Name qualifiedName) {
+                                                if (qualifiedName == null) {
+                                                    return true;
+                                                }
                                                 // FIXME ce predicate répond true à tort pour un sous package de daMapperClass.packageName
-                                                return qualifiedName != null && qualifiedName.toString().equals(daMapperClass.packageName.toString());
+                                                String name = qualifiedName.toString();
+                                                return name.substring(0, name.lastIndexOf(".")).equals(daMapperClass.packageName.toString());
                                             }
                                         },
                                         // imports from java itself
