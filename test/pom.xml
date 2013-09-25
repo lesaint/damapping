@@ -15,6 +15,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>test-core</module>
         <module>test-mapper-enum</module>
     </modules>
 
