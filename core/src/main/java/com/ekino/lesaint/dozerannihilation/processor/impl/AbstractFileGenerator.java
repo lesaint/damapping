@@ -2,10 +2,12 @@ package com.ekino.lesaint.dozerannihilation.processor.impl;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Lists;
 
 import javax.annotation.Nullable;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.collect.FluentIterable.from;
@@ -42,7 +44,8 @@ abstract class AbstractFileGenerator implements FileGenerator {
     }
 
     private List<DAName> filterImports(List<DAName> mapperImports, final DAMapperClass daMapperClass) {
-        return from(mapperImports)
+        List<DAName> res = Lists.newArrayList(
+        from(mapperImports)
                 .filter(
                         Predicates.not(
                                 Predicates.or(
@@ -67,7 +70,10 @@ abstract class AbstractFileGenerator implements FileGenerator {
                                         }
                                 )
                         )
-                ).toList();
+                ).toSet()
+        );
+        Collections.sort(res);
+        return res;
     }
 
 }

@@ -11,7 +11,7 @@ import javax.annotation.concurrent.Immutable;
  * @author Sébastien Lesaint
  */
 @Immutable
-public class DAName implements CharSequence {
+public class DAName implements CharSequence, Comparable<DAName> {
     @Nonnull
     private final String name;
 
@@ -42,5 +42,10 @@ public class DAName implements CharSequence {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public int compareTo(DAName o) {
+        return name.compareTo(o.getName());
     }
 }

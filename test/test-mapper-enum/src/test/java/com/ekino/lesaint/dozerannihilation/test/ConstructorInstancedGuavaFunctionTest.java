@@ -18,12 +18,12 @@ public class ConstructorInstancedGuavaFunctionTest {
 
     private final String CHARSET_NAME = "UTF-8";
 
-    @Test(enabled = false)
+    @Test
     public void check_generated_mapper_file() throws Exception {
         checkGeneratedFile("Mapper");
     }
 
-    @Test(enabled = false)
+    @Test
     public void check_generated_mapperImpl_file() throws Exception {
         checkGeneratedFile("MapperImpl");
     }
