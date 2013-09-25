@@ -11,7 +11,7 @@ import java.io.IOException;
 class MapperFactoryFileGenerator extends AbstractFileGenerator {
     @Override
     public String fileName(FileGeneratorContext context) {
-        return context.getMapperClass().type.qualifiedName + "MapperFactory";
+        return context.getMapperClass().type.qualifiedName.getName() + "MapperFactory";
     }
 
     @Override

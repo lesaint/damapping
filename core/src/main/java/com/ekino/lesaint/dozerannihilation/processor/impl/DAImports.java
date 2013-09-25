@@ -1,6 +1,5 @@
 package com.ekino.lesaint.dozerannihilation.processor.impl;
 
-import javax.lang.model.element.Name;
 import java.util.List;
 
 /**
@@ -9,9 +8,9 @@ import java.util.List;
  * @author Sébastien Lesaint
  */
 public interface DAImports {
-    List<Name> getMapperImports();
+    List<DAName> getMapperImports();
 
-    List<Name> getMapperImplImports();
+    List<DAName> getMapperImplImports();
 
-    List<Name> getMapperFactoryImports();
+    List<DAName> getMapperFactoryImports();
 }

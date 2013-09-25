@@ -13,7 +13,7 @@ import java.util.Iterator;
 class MapperFileGenerator extends AbstractFileGenerator {
     @Override
     public String fileName(FileGeneratorContext context) {
-        return context.getMapperClass().type.qualifiedName + "Mapper";
+        return context.getMapperClass().type.qualifiedName.getName() + "Mapper";
     }
 
     @Override

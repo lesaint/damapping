@@ -14,7 +14,7 @@ class DAInterface extends AbstractImportVisitable {
     List<DAType> typeArgs;
 
     public boolean isGuavaFunction() {
-        return type.qualifiedName != null && Function.class.getCanonicalName().equals(type.qualifiedName.toString());
+        return type.qualifiedName != null && Function.class.getCanonicalName().equals(type.qualifiedName.getName());
     }
 
     @Override

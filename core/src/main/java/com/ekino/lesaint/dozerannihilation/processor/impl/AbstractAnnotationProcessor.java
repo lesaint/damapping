@@ -32,6 +32,7 @@ public abstract class AbstractAnnotationProcessor<T extends Annotation> implemen
             try {
                 process(element, roundEnv);
             } catch (IOException e) {
+                e.printStackTrace();
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "TODO", element);
             }
         }

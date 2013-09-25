@@ -3,7 +3,6 @@ package com.ekino.lesaint.dozerannihilation.processor.impl;
 import com.google.common.collect.ImmutableList;
 
 import javax.annotation.Nullable;
-import javax.lang.model.element.Name;
 import java.util.List;
 
 /**
@@ -12,43 +11,43 @@ import java.util.List;
 * @author Sébastien Lesaint
 */
 class DefaultImportVisitor implements ImportVisitor, DAImports {
-    private final ImmutableList.Builder<Name> mapperImports = ImmutableList.builder();
-    private final ImmutableList.Builder<Name> mapperFactoryImports = ImmutableList.builder();
-    private final ImmutableList.Builder<Name> mapperImplImports = ImmutableList.builder();
+    private final ImmutableList.Builder<DAName> mapperImports = ImmutableList.builder();
+    private final ImmutableList.Builder<DAName> mapperFactoryImports = ImmutableList.builder();
+    private final ImmutableList.Builder<DAName> mapperImplImports = ImmutableList.builder();
 
     @Override
-    public void addMapperImport(@Nullable Name qualifiedName) {
-        if (qualifiedName != null) {
-            mapperImports.add(qualifiedName);
+    public void addMapperImport(@Nullable DAName qualifiedDAName) {
+        if (qualifiedDAName != null) {
+            mapperImports.add(qualifiedDAName);
         }
     }
 
     @Override
-    public void addMapperImplImport(@Nullable Name qualifiedName) {
-        if (qualifiedName != null) {
-            mapperImplImports.add(qualifiedName);
+    public void addMapperImplImport(@Nullable DAName qualifiedDAName) {
+        if (qualifiedDAName != null) {
+            mapperImplImports.add(qualifiedDAName);
         }
     }
 
     @Override
-    public void addMapperFactoryImport(@Nullable Name qualifiedName) {
-        if (qualifiedName != null) {
-            mapperFactoryImports.add(qualifiedName);
+    public void addMapperFactoryImport(@Nullable DAName qualifiedDAName) {
+        if (qualifiedDAName != null) {
+            mapperFactoryImports.add(qualifiedDAName);
         }
     }
 
     @Override
-    public List<Name> getMapperImports() {
+    public List<DAName> getMapperImports() {
         return mapperImports.build();
     }
 
     @Override
-    public List<Name> getMapperImplImports() {
+    public List<DAName> getMapperImplImports() {
         return mapperImplImports.build();
     }
 
     @Override
-    public List<Name> getMapperFactoryImports() {
+    public List<DAName> getMapperFactoryImports() {
         return mapperFactoryImports.build();
     }
 }

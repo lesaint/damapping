@@ -178,7 +178,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
 
                         DAMethod res = new DAMethod();
                         res.kind = o.getKind();
-                        res.name = o.getSimpleName();
+                        res.name = DANameFactory.from(o.getSimpleName());
                         ExecutableElement methodElement = (ExecutableElement) o;
                         res.returnType = extractReturnType(methodElement);
                         res.parameters = extractParameters(methodElement);
@@ -214,7 +214,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                         DeclaredType declaredType = (DeclaredType) o.asType();
 
                         DAParameter res = new DAParameter();
-                        res.name = o.getSimpleName();
+                        res.name = DANameFactory.from(o.getSimpleName());
                         res.type = extractType(declaredType);
                         res.modifiers = o.getModifiers();
                         return res;
@@ -227,9 +227,9 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     private DAType extractType(DeclaredType declaredType) {
         Element element = declaredType.asElement();
         DAType res = new DAType();
-        res.simpleName = element.getSimpleName();
+        res.simpleName = DANameFactory.from(element.getSimpleName());
         if (element instanceof QualifiedNameable) {
-            res.qualifiedName = ((QualifiedNameable) element).getQualifiedName();
+            res.qualifiedName = DANameFactory.from(((QualifiedNameable) element).getQualifiedName());
         }
         return res;
     }
@@ -280,7 +280,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
 
                         DAType res = new DAType();
                         DeclaredType o1 = (DeclaredType) o;
-                        res.simpleName = o1.asElement().getSimpleName();
+                        res.simpleName = DANameFactory.from(o1.asElement().getSimpleName());
                         res.qualifiedName = extractQualifiedName(o1);
                         return res;
                     }
@@ -289,16 +289,16 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                 .toList();
     }
 
-    private static Name extractQualifiedName(DeclaredType o) {
+    private static DAName extractQualifiedName(DeclaredType o) {
         if (o.asElement() instanceof QualifiedNameable) {
-            return ((QualifiedNameable) o.asElement()).getQualifiedName();
+            return DANameFactory.from(((QualifiedNameable) o.asElement()).getQualifiedName());
         }
         return null;
     }
 
-    private static Name retrievePackageName(TypeElement classElement) {
+    private static DAName retrievePackageName(TypeElement classElement) {
         PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();
-        return packageElement.getQualifiedName();
+        return DANameFactory.from(packageElement.getQualifiedName());
     }
 
     private InstantiationType retrieveInstantiationType(TypeElement classElement) {

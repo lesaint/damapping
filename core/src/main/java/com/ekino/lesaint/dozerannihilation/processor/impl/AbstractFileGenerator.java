@@ -4,7 +4,6 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
 import javax.annotation.Nullable;
-import javax.lang.model.element.Name;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
@@ -20,14 +19,14 @@ abstract class AbstractFileGenerator implements FileGenerator {
 
     protected static final String INDENT = "    ";
 
-    protected void appendHeader(BufferedWriter bw, DAMapperClass daMapperClass, List<Name> mapperImports) throws IOException {
-        List<Name> imports = filterImports(mapperImports, daMapperClass);
+    protected void appendHeader(BufferedWriter bw, DAMapperClass daMapperClass, List<DAName> mapperImports) throws IOException {
+        List<DAName> imports = filterImports(mapperImports, daMapperClass);
 
-        bw.append("package ").append(daMapperClass.packageName).append(";");
+        bw.append("package ").append(daMapperClass.packageName.toString()).append(";");
         bw.newLine();
         bw.newLine();
         if (!imports.isEmpty()) {
-            for (Name name : imports) {
+            for (DAName name : imports) {
                 bw.append("import ").append(name).append(";");
                 bw.newLine();
             }
@@ -42,15 +41,15 @@ abstract class AbstractFileGenerator implements FileGenerator {
         bw.newLine();
     }
 
-    private List<Name> filterImports(List<Name> mapperImports, final DAMapperClass daMapperClass) {
+    private List<DAName> filterImports(List<DAName> mapperImports, final DAMapperClass daMapperClass) {
         return from(mapperImports)
                 .filter(
                         Predicates.not(
                                 Predicates.or(
                                         // imports in the same package as the generated class (ie. the package of the Mapper class)
-                                        new Predicate<Name>() {
+                                        new Predicate<DAName>() {
                                             @Override
-                                            public boolean apply(@Nullable Name qualifiedName) {
+                                            public boolean apply(@Nullable DAName qualifiedName) {
                                                 if (qualifiedName == null) {
                                                     return true;
                                                 }
@@ -60,9 +59,9 @@ abstract class AbstractFileGenerator implements FileGenerator {
                                             }
                                         },
                                         // imports from java itself
-                                        new Predicate<Name>() {
+                                        new Predicate<DAName>() {
                                             @Override
-                                            public boolean apply(@Nullable Name qualifiedName) {
+                                            public boolean apply(@Nullable DAName qualifiedName) {
                                                 return qualifiedName != null && qualifiedName.toString().startsWith("java.lang.");
                                             }
                                         }

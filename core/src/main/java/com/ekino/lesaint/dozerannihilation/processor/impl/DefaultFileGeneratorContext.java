@@ -23,17 +23,17 @@ class DefaultFileGeneratorContext implements FileGeneratorContext {
     }
 
     @Override
-    public List<Name> getMapperImports() {
+    public List<DAName> getMapperImports() {
         return importVisitor.getMapperImports();
     }
 
     @Override
-    public List<Name> getMapperImplImports() {
+    public List<DAName> getMapperImplImports() {
         return importVisitor.getMapperImplImports();
     }
 
     @Override
-    public List<Name> getMapperFactoryImports() {
+    public List<DAName> getMapperFactoryImports() {
         return importVisitor.getMapperFactoryImports();
     }
 }

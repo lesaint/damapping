@@ -15,7 +15,7 @@ import java.util.Set;
 */
 class DAMapperClass implements ImportVisitable {
     final TypeElement classElement;
-    Name packageName;
+    DAName packageName;
     DAType type;
     Set<Modifier> modifiers;
     List<DAInterface> interfaces;

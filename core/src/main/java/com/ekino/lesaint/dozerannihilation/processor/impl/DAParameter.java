@@ -1,7 +1,6 @@
 package com.ekino.lesaint.dozerannihilation.processor.impl;
 
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
 import java.util.Set;
 
 /**
@@ -11,7 +10,7 @@ import java.util.Set;
 */
 class DAParameter {
     /*nom du paramètre*/
-    Name name;
+    DAName name;
     DAType type;
     Set<Modifier> modifiers;
 }

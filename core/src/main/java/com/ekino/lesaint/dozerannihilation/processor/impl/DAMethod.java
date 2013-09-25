@@ -13,7 +13,7 @@ import java.util.List;
 class DAMethod extends AbstractImportVisitable {
     ElementKind kind;
     /*nom de la méthode/function*/
-    Name name;
+    DAName name;
     /*le type de retour de la méthode. Null si la méthode est un constructeur*/
     @Nullable
     DAType returnType; // attention au cas des primitifs si on ajoute @MapperMethod !
@@ -27,7 +27,7 @@ class DAMethod extends AbstractImportVisitable {
 
     public boolean isGuavaFunction() {
         // TOIMPROVE, check more specific info in the model, can we know if method override from an interface ? we should check the parameter type and the return type
-        return kind == ElementKind.METHOD && "apply".equals(name.toString());
+        return kind == ElementKind.METHOD && "apply".equals(name.getName());
     }
 
     @Override

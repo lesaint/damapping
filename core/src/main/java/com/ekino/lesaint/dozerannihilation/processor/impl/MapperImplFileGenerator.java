@@ -14,7 +14,7 @@ import static com.google.common.collect.FluentIterable.from;
 class MapperImplFileGenerator extends AbstractFileGenerator {
     @Override
     public String fileName(FileGeneratorContext context) {
-        return context.getMapperClass().type.qualifiedName + "MapperImpl";
+        return context.getMapperClass().type.qualifiedName.getName() + "MapperImpl";
     }
 
     @Override
