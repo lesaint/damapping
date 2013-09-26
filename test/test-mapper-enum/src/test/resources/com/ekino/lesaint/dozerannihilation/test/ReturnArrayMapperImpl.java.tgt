@@ -1,0 +1,10 @@
+package com.ekino.lesaint.dozerannihilation.test;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+class ReturnArrayMapperImpl implements ReturnArrayMapper {
+
+    @Override
+    public String[] apply(Integer input) {
+        return ReturnArrayMapperFactory.instance().apply(input);
+    }
+}
