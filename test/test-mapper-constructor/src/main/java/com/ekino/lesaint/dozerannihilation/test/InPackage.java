@@ -5,5 +5,5 @@ package com.ekino.lesaint.dozerannihilation.test;
  *
  * @author Sébastien Lesaint
  */
-public class InPackage {
+class InPackage {
 }
