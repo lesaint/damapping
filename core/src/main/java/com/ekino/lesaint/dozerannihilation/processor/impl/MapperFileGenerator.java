@@ -46,11 +46,17 @@ class MapperFileGenerator extends AbstractFileGenerator {
                 while (iterator.hasNext()) {
                     DAType arg = iterator.next();
                     bw.append(arg.simpleName);
+                    if (arg.isArray()) {
+                        bw.append("[]");
+                    }
                     if (iterator.hasNext()) {
                         bw.append(", ");
                     }
                 }
                 bw.append(">");
+            }
+            if (anInterface.type.isArray()) {
+                bw.append("[]");
             }
         }
         bw.append(" {");

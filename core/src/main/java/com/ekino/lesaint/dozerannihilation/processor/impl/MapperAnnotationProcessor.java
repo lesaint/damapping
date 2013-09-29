@@ -24,13 +24,16 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.NoType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import com.ekino.lesaint.dozerannihilation.annotation.InstantiationType;
@@ -202,15 +205,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     }
 
     private DAType extractReturnType(ExecutableElement methodElement) {
-        if (methodElement.getReturnType() instanceof NoType) {
-            return null;
-        }
-        if (methodElement.getReturnType() instanceof ArrayType) {
-            // FIXME add support for les types de retours basés sur des tableaux
-            // pour l'instant, retourner null nous évite de ClassCastException sur la méthode getValues() des enums
-            return null;
-        }
-        return extractType((DeclaredType) methodElement.getReturnType());
+        return extractType(methodElement.getReturnType());
     }
 
     private boolean isMapperMethod(ExecutableElement methodElement) {
@@ -228,27 +223,15 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                     @Nullable
                     @Override
                     public DAParameter apply(@Nullable VariableElement o) {
-                        DeclaredType declaredType = (DeclaredType) o.asType();
-
                         DAParameter res = new DAParameter();
                         res.name = DANameFactory.from(o.getSimpleName());
-                        res.type = extractType(declaredType);
+                        res.type = extractType(o.asType());
                         res.modifiers = o.getModifiers();
                         return res;
                     }
                 })
                 .filter(Predicates.notNull())
                 .toList();
-    }
-
-    private DAType extractType(DeclaredType declaredType) {
-        Element element = declaredType.asElement();
-        DAType res = new DAType();
-        res.simpleName = DANameFactory.from(element.getSimpleName());
-        if (element instanceof QualifiedNameable) {
-            res.qualifiedName = DANameFactory.from(((QualifiedNameable) element).getQualifiedName());
-        }
-        return res;
     }
 
     private List<DAInterface> retrieveInterfaces(final TypeElement classElement) {
@@ -287,23 +270,39 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                     @Nullable
                     @Override
                     public DAType apply(@Nullable TypeMirror o) {
-                        if (!(o instanceof DeclaredType)) {
-                            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                                    "Type argument of interface is not a DeclaredType. Not supported.",
-                                    interfaceType.asElement()
-                            );
-                            return null;
-                        }
-
-                        DAType res = new DAType();
-                        DeclaredType o1 = (DeclaredType) o;
-                        res.simpleName = DANameFactory.from(o1.asElement().getSimpleName());
-                        res.qualifiedName = extractQualifiedName(o1);
-                        return res;
+                        return extractType(o);
                     }
                 })
                 .filter(Predicates.notNull())
                 .toList();
+    }
+
+    private DAType extractType(TypeMirror type) {
+        Types typeUtils = processingEnv.getTypeUtils();
+        Element element = typeUtils.asElement(type);
+        if (type.getKind() == TypeKind.ARRAY) {
+            element = typeUtils.asElement(((ArrayType) type).getComponentType());
+        }
+
+        return extractDAType(type, element);
+    }
+
+    private static DAType extractDAType(TypeMirror type, Element element) {
+        if (type.getKind() == TypeKind.VOID) {
+            return null;
+        }
+        DAType res = new DAType();
+        res.kind = type.getKind();
+        res.simpleName = DANameFactory.from(element.getSimpleName());
+        res.qualifiedName = extractQualifiedName(element);
+        return res;
+    }
+
+    private static DAName extractQualifiedName(Element element) {
+        if (element instanceof QualifiedNameable) {
+            return DANameFactory.from(((QualifiedNameable) element).getQualifiedName());
+        }
+        return null;
     }
 
     private static DAName extractQualifiedName(DeclaredType o) {

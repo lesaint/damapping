@@ -36,7 +36,11 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
 
         bw.append(INDENT).append("@Override");
         bw.newLine();
-        bw.append(INDENT).append("public ").append(guavaMethod.returnType.simpleName).append(" ").append(guavaMethod.name).append("(");
+        bw.append(INDENT).append("public ").append(guavaMethod.returnType.simpleName);
+        if (guavaMethod.returnType.isArray()) {
+            bw.append("[]");
+        }
+        bw.append(" ").append(guavaMethod.name).append("(");
         Iterator<DAType> typeArgsIterator = guavaInterface.typeArgs.iterator();
         Iterator<DAParameter> parametersIterator = guavaMethod.parameters.iterator();
         while (hasNext(typeArgsIterator, parametersIterator)) {
