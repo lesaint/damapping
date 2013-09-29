@@ -23,6 +23,13 @@ class DefaultImportVisitor implements ImportVisitor, DAImports {
     }
 
     @Override
+    public void addMapperImport(@Nullable Iterable<DAName> qualifiedNames) {
+        if (qualifiedNames != null) {
+            mapperImports.addAll(qualifiedNames);
+        }
+    }
+
+    @Override
     public void addMapperImplImport(@Nullable DAName qualifiedDAName) {
         if (qualifiedDAName != null) {
             mapperImplImports.add(qualifiedDAName);
@@ -30,9 +37,23 @@ class DefaultImportVisitor implements ImportVisitor, DAImports {
     }
 
     @Override
+    public void addMapperImplImport(@Nullable Iterable<DAName> qualifiedNames) {
+        if (qualifiedNames != null) {
+            mapperImplImports.addAll(qualifiedNames);
+        }
+    }
+
+    @Override
     public void addMapperFactoryImport(@Nullable DAName qualifiedDAName) {
         if (qualifiedDAName != null) {
             mapperFactoryImports.add(qualifiedDAName);
+        }
+    }
+
+    @Override
+    public void addMapperFactoryImport(@Nullable Iterable<DAName> qualifiedNames) {
+        if (qualifiedNames != null) {
+            mapperFactoryImports.addAll(qualifiedNames);
         }
     }
 

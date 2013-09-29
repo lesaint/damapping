@@ -4,6 +4,7 @@ import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
@@ -39,25 +40,7 @@ class MapperFileGenerator extends AbstractFileGenerator {
             bw.append(" extends ");
         }
         for (DAInterface anInterface : daMapperClass.interfaces) {
-            bw.append(anInterface.type.simpleName);
-            Iterator<DAType> iterator = anInterface.typeArgs.iterator();
-            if (iterator.hasNext()) {
-                bw.append("<");
-                while (iterator.hasNext()) {
-                    DAType arg = iterator.next();
-                    bw.append(arg.simpleName);
-                    if (arg.isArray()) {
-                        bw.append("[]");
-                    }
-                    if (iterator.hasNext()) {
-                        bw.append(", ");
-                    }
-                }
-                bw.append(">");
-            }
-            if (anInterface.type.isArray()) {
-                bw.append("[]");
-            }
+            appendType(bw, anInterface.type);
         }
         bw.append(" {");
         bw.newLine();

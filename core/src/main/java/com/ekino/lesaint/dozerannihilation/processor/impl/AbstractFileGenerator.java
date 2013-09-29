@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.google.common.collect.FluentIterable.from;
@@ -41,6 +42,29 @@ abstract class AbstractFileGenerator implements FileGenerator {
     protected void appendFooter(BufferedWriter bw) throws IOException {
         bw.append("}");
         bw.newLine();
+    }
+
+    protected void appendType(BufferedWriter bw, DAType type) throws IOException {
+        bw.append(type.simpleName);
+        appendTypeArgs(bw, type.typeArgs);
+        if (type.isArray()) {
+            bw.append("[]");
+        }
+    }
+
+    protected void appendTypeArgs(BufferedWriter bw, List<DAType> typeArgs) throws IOException {
+        if (!typeArgs.isEmpty()) {
+            Iterator<DAType> iterator = typeArgs.iterator();
+            bw.append("<");
+            while (iterator.hasNext()) {
+                DAType arg = iterator.next();
+                appendType(bw, arg);
+                if (iterator.hasNext()) {
+                    bw.append(", ");
+                }
+            }
+            bw.append(">");
+        }
     }
 
     private List<DAName> filterImports(List<DAName> mapperImports, final DAMapperClass daMapperClass) {

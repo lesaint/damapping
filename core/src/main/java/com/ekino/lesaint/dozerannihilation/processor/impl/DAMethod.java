@@ -41,10 +41,10 @@ class DAMethod extends AbstractImportVisitable {
             return;
         }
         for (DAParameter parameter : parameters) {
-            visitor.addMapperImport(parameter.type.qualifiedName);
+            visitor.addMapperImport(parameter.type.getImports());
         }
         if (returnType != null) {
-            visitor.addMapperImport(returnType.qualifiedName);
+            visitor.addMapperImport(returnType.getImports());
         }
     }
 
@@ -55,10 +55,10 @@ class DAMethod extends AbstractImportVisitable {
             return;
         }
         for (DAParameter parameter : parameters) {
-            visitor.addMapperImplImport(parameter.type.qualifiedName);
+            visitor.addMapperImplImport(parameter.type.getImports());
         }
         if (returnType != null) {
-            visitor.addMapperImplImport(returnType.qualifiedName);
+            visitor.addMapperImplImport(returnType.getImports());
         }
     }
 

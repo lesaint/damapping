@@ -16,14 +16,12 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.QualifiedNameable;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.NoType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
@@ -33,6 +31,7 @@ import javax.tools.JavaFileObject;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicates;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -190,6 +189,10 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                     @Nullable
                     @Override
                     public DAMethod apply(@Nullable Element o) {
+                        if (o == null) {
+                            return null;
+                        }
+
                         DAMethod res = new DAMethod();
                         res.kind = o.getKind();
                         res.name = DANameFactory.from(o.getSimpleName());
@@ -244,6 +247,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
             @Nullable
             @Override
             public DAInterface apply(@Nullable TypeMirror o) {
+                // TOIMPROVE : le filtrage des interfaces de la classe annotée avec @Mapper sur DeclaredType est-il pertinent ?
                 if (!(o instanceof DeclaredType)) {
                     processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
                             "Interface is not a DeclaredType, not supported", classElement
@@ -254,22 +258,30 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                 DeclaredType interfaceType = (DeclaredType) o;
                 DAInterface daInterface = new DAInterface();
                 daInterface.type = extractType(interfaceType);
-                daInterface.typeArgs = extractTypeArgs(interfaceType);
                 return daInterface;
             }
         }).filter(Predicates.notNull()).toList();
     }
 
-    private List<DAType> extractTypeArgs(final DeclaredType interfaceType) {
-        if (interfaceType.getTypeArguments() == null) {
+    private List<DAType> extractTypeArgs(TypeMirror typeMirror) {
+        if (!(typeMirror instanceof DeclaredType)) {
             return Collections.emptyList();
         }
 
-        return from(interfaceType.getTypeArguments())
+        List<? extends TypeMirror> typeArguments = ((DeclaredType) typeMirror).getTypeArguments();
+        if (typeArguments == null) {
+            return Collections.emptyList();
+        }
+
+        return from(typeArguments)
                 .transform(new Function<TypeMirror, DAType>() {
                     @Nullable
                     @Override
                     public DAType apply(@Nullable TypeMirror o) {
+                        if (o == null) {
+                            return null;
+                        }
+
                         return extractType(o);
                     }
                 })
@@ -284,10 +296,10 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
             element = typeUtils.asElement(((ArrayType) type).getComponentType());
         }
 
-        return extractDAType(type, element);
+        return extractType(type, element);
     }
 
-    private static DAType extractDAType(TypeMirror type, Element element) {
+    private DAType extractType(TypeMirror type, Element element) {
         if (type.getKind() == TypeKind.VOID) {
             return null;
         }
@@ -295,6 +307,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         res.kind = type.getKind();
         res.simpleName = DANameFactory.from(element.getSimpleName());
         res.qualifiedName = extractQualifiedName(element);
+        res.typeArgs = extractTypeArgs(type);
         return res;
     }
 

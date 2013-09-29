@@ -11,7 +11,6 @@ import java.util.List;
 */
 class DAInterface extends AbstractImportVisitable {
     DAType type;
-    List<DAType> typeArgs;
 
     public boolean isGuavaFunction() {
         return type.qualifiedName != null && Function.class.getCanonicalName().equals(type.qualifiedName.getName());
@@ -19,9 +18,9 @@ class DAInterface extends AbstractImportVisitable {
 
     @Override
     protected void visiteForMapper(ImportVisitor visitor) {
-        visitor.addMapperImport(type.qualifiedName);
-        for (DAType typeArg : typeArgs) {
-            visitor.addMapperImport(typeArg.qualifiedName);
+        visitor.addMapperImport(type.getImports());
+        for (DAType typeArg : type.typeArgs) {
+            visitor.addMapperImport(typeArg.getImports());
         }
     }
 
