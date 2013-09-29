@@ -55,10 +55,10 @@ class DAMethod extends AbstractImportVisitable {
             return;
         }
         for (DAParameter parameter : parameters) {
-            visitor.addMapperImport(parameter.type.qualifiedName);
+            visitor.addMapperImplImport(parameter.type.qualifiedName);
         }
         if (returnType != null) {
-            visitor.addMapperImport(returnType.qualifiedName);
+            visitor.addMapperImplImport(returnType.qualifiedName);
         }
     }
 

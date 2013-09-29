@@ -27,10 +27,8 @@ class DAInterface extends AbstractImportVisitable {
 
     @Override
     protected void visiteForMapperImpl(ImportVisitor visitor) {
-        visitor.addMapperImport(type.qualifiedName);
-        for (DAType typeArg : typeArgs) {
-            visitor.addMapperImport(typeArg.qualifiedName);
-        }
+        // interface are declared directly only in Mapper
+        // in MapperImpl there is no need to import them again since they are inherited from Mapper
     }
 
     @Override
