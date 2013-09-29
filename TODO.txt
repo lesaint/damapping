@@ -3,6 +3,13 @@
         Ce serait sans doute mieux dans un module à part (qui s'occuperait aussi de générer SpringMapperContext.java).
         corrolaire : l'utilisation d'une enum pour indiquer la manière d'instancier le mapper n'est pas extensible
                      (ie. ajout d'un support Guice, JEE, ...) utiliser plutôt une interface ?
+        meilleure idée
+           => supprimer le paramètre de @Mapper
+           => déduire le cas enum si c'est une enum qui est annotée
+               le nom de la valeur de l'enum n'a pas d'importance, on valide juste à la compilation qu'il n'y en a qu'une
+           => déduire le cas constructeur que c'est une enum qui est annotée
+           => une API permet d'ajouter une annotation en plus de @Mapper qui fera que l'on créera une classe avec un @Component
+              et une autre implémentation de factory
  - TODO : déplacer l'annotation processor et son implémentation dans son propore module => séparation en 2 artifacts
           des annotations et du processor, sera sûrement pratique pour test U par exemple$
           (surtout quand Processor sera en auto discovery)
