@@ -6,17 +6,17 @@
 
     <parent>
         <groupId>com.ekino.sfrsandbox.dozerannihilation</groupId>
-        <artifactId>test</artifactId>
+        <artifactId>integration-test</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>test-mapper-enum</artifactId>
-    <description>tests de génération de fichiers java pour une enum annotée avec @Mapper</description>
+    <artifactId>mapper-constructor</artifactId>
+    <description>tests de génération de fichiers java pour une classe annotée avec @Mapper</description>
 
     <dependencies>
         <dependency>
             <groupId>${groupId}</groupId>
-            <artifactId>test-core</artifactId>
+            <artifactId>integration-test-core</artifactId>
             <version>${version}</version>
             <scope>test</scope>
         </dependency>

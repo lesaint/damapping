@@ -6,25 +6,19 @@
 
     <parent>
         <groupId>com.ekino.sfrsandbox.dozerannihilation</groupId>
-        <artifactId>parent</artifactId>
+        <artifactId>integration-test</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>test</artifactId>
-    <description>Parent module for test modules</description>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>test-core</module>
-        <module>test-mapper-enum</module>
-        <module>test-mapper-constructor</module>
-    </modules>
+    <artifactId>mapper-enum</artifactId>
+    <description>tests de génération de fichiers java pour une enum annotée avec @Mapper</description>
 
     <dependencies>
         <dependency>
-            <groupId>com.ekino.sfrsandbox.dozerannihilation</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version}</version>
+            <groupId>${groupId}</groupId>
+            <artifactId>integration-test-core</artifactId>
+            <version>${version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -45,7 +39,7 @@
                         </annotationProcessor>
                     </annotationProcessors>
                     <!--vérifie si le traitement des annotations et/ou la compilation sont effectués-->
-                    <proc />
+                    <proc/>
                     <compilerArgs>
                         <!--option non standard qui permet d'afficher des informations sur le traitement des annotations par les processeurs-->
                         <compilerArg>-XprintRounds</compilerArg>
@@ -56,5 +50,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>
