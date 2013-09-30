@@ -27,7 +27,7 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
         DAMapperClass daMapperClass = context.getMapperClass();
         appendHeader(bw, daMapperClass, context.getMapperImplImports());
 
-        bw.append("class ").append(daMapperClass.type.simpleName).append("MapperImpl").append(" implements ").append(daMapperClass.type.simpleName).append("Mapper").append(" {");
+        bw.append("public class ").append(daMapperClass.type.simpleName).append("MapperImpl").append(" implements ").append(daMapperClass.type.simpleName).append("Mapper").append(" {");
         bw.newLine();
         bw.newLine();
 
