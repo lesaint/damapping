@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
-import com.ekino.lesaint.dozerannihilation.annotation.InstantiationType;
 import com.ekino.lesaint.dozerannihilation.annotation.Mapper;
 import com.ekino.lesaint.dozerannihilation.test.fullhardcoded.dto.HotelDto;
 import com.ekino.lesaint.dozerannihilation.test.fullhardcoded.service.Hotel;
@@ -14,7 +13,7 @@ import com.ekino.lesaint.dozerannihilation.test.fullhardcoded.service.Hotel;
  *
  * @author Sébastien Lesaint
  */
-@Mapper(InstantiationType.CONSTRUCTOR)
+@Mapper
 public class HotelToHotelDto implements Function<Hotel, HotelDto> {
     private FloorToFloorDtoMapper floorToFloorDtoMapper = new FloorToFloorDtoMapperImpl();
 

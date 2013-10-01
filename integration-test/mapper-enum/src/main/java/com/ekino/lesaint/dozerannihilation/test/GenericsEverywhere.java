@@ -9,10 +9,9 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 
-import com.ekino.lesaint.dozerannihilation.annotation.InstantiationType;
 import com.ekino.lesaint.dozerannihilation.annotation.Mapper;
 
-@Mapper(InstantiationType.SINGLETON_ENUM)
+@Mapper
 public enum GenericsEverywhere implements Function<Optional<Integer[]>, Collection<Predicate<Map<Long, File>>>> {
     INSTANCE;
 

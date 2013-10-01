@@ -27,15 +27,11 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
-
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicates;
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-import com.ekino.lesaint.dozerannihilation.annotation.InstantiationType;
 import com.ekino.lesaint.dozerannihilation.annotation.Mapper;
 
 import static com.google.common.collect.FluentIterable.from;
@@ -69,8 +65,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
 
         TypeElement classElement = (TypeElement) element;
 
-        InstantiationType instantiationType = retrieveInstantiationType(classElement);
-        System.out.println("Processing " + classElement.getQualifiedName() + " in " + getClass().getCanonicalName());
+//        System.out.println("Processing " + classElement.getQualifiedName() + " in " + getClass().getCanonicalName());
 
         DAMapperClass daMapperClass = new DAMapperClass(classElement);
         // retrieve name of the package of the class with @Mapper
@@ -131,7 +126,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         //  - CONSTRUCTOR : check public/protected default constructor exists sinon erreur de compilation
         //  - SINGLETON_ENUM : check @Mapper class is an enum + check there is only one value sinon erreur de compilation
         //  - SPRING_COMPONENT : TOFINISH quelles vérifications sur la class si le InstantiationType est SPRING_COMPONENT ?
-        daMapperClass.instantiationType = retrieveInstantiationType(classElement);
+        daMapperClass.instantiationType = computeInstantiationType(classElement);
         // TODO contrôles en fonction du InstantiationType
 
         // construction des listes d'imports
@@ -330,25 +325,11 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         return DANameFactory.from(packageElement.getQualifiedName());
     }
 
-    private InstantiationType retrieveInstantiationType(TypeElement classElement) {
-        Optional<AnnotationMirror> annotationMirror = getAnnotationMirror(classElement, Mapper.class);
-        if (!annotationMirror.isPresent()) {
-            // ce cas est pratiquement impossible !
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Annotation Mapper non trouvée sur la classe annotée avec @Mapper", classElement);
-            return null;
+    private static InstantiationType computeInstantiationType(TypeElement classElement) {
+        if (classElement.getKind() == ElementKind.ENUM) {
+            return InstantiationType.SINGLETON_ENUM;
         }
-
-        String enumValue = getEnumNameElementValue(annotationMirror.get(), "value");
-        if (enumValue == null) {
-            // TOIMPROVE la valeur par défaut est décrite dans l'annotation @Mapper, récupérer la valeur directement depuis le AnnotationMirror
-            InstantiationType defaultValue = InstantiationType.SINGLETON_ENUM;
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
-                    "Annotation Mapper has no explicite value, using defaut one", classElement, annotationMirror.get()
-            );
-            return defaultValue;
-        }
-
-        return InstantiationType.valueOf(enumValue);
+        return InstantiationType.CONSTRUCTOR;
     }
 
     private static Optional<AnnotationMirror> getAnnotationMirror(TypeElement classElement,

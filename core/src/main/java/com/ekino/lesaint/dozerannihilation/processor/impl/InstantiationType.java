@@ -1,4 +1,4 @@
-package com.ekino.lesaint.dozerannihilation.annotation;
+package com.ekino.lesaint.dozerannihilation.processor.impl;
 
 /**
  * Différentes façon d'instancier la classe annotée @Mapper, pour lui déléguer l'implémentation

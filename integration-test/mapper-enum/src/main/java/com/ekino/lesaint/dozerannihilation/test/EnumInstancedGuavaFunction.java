@@ -1,12 +1,11 @@
 package com.ekino.lesaint.dozerannihilation.test;
 
-import com.ekino.lesaint.dozerannihilation.annotation.InstantiationType;
-import com.ekino.lesaint.dozerannihilation.annotation.Mapper;
+import javax.annotation.Nullable;
 import com.google.common.base.Function;
 
-import javax.annotation.Nullable;
+import com.ekino.lesaint.dozerannihilation.annotation.Mapper;
 
-@Mapper(InstantiationType.SINGLETON_ENUM)
+@Mapper
 public enum EnumInstancedGuavaFunction implements Function<Integer, String> {
     INSTANCE;
 

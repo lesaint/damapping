@@ -1,5 +1,7 @@
 package com.ekino.lesaint.dozerannihilation.annotation;
 
+import com.ekino.lesaint.dozerannihilation.processor.impl.InstantiationType;
+
 /**
  * Mapper -
  *
