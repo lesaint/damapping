@@ -33,6 +33,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
 
 import com.ekino.lesaint.dozerannihilation.annotation.Mapper;
+import org.springframework.stereotype.Component;
 
 import static com.google.common.collect.FluentIterable.from;
 
@@ -328,6 +329,10 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     private static InstantiationType computeInstantiationType(TypeElement classElement) {
         if (classElement.getKind() == ElementKind.ENUM) {
             return InstantiationType.SINGLETON_ENUM;
+        }
+        Optional<AnnotationMirror> annotationMirror = getAnnotationMirror(classElement, Component.class);
+        if (annotationMirror.isPresent()) {
+            return InstantiationType.SPRING_COMPONENT;
         }
         return InstantiationType.CONSTRUCTOR;
     }

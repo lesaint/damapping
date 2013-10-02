@@ -26,6 +26,13 @@ class MapperFactoryFileGenerator extends AbstractFileGenerator {
         bw.append("class ").append(daMapperClass.type.simpleName).append("MapperFactory").append(" {");
         bw.newLine();
         bw.newLine();
+        if (daMapperClass.instantiationType == InstantiationType.SPRING_COMPONENT) {
+            bw.append(INDENT).append("@Resource");
+            bw.newLine();
+            bw.append(INDENT).append("private ").append(daMapperClass.type.simpleName).append(" instance").append(";");
+            bw.newLine();
+            bw.newLine();
+        }
         bw.append(INDENT).append("public static ").append(daMapperClass.type.simpleName).append(" instance() {");
         bw.newLine();
         switch (daMapperClass.instantiationType) {
@@ -37,7 +44,7 @@ class MapperFactoryFileGenerator extends AbstractFileGenerator {
                 bw.append(INDENT).append(INDENT).append("return new ").append(daMapperClass.type.simpleName).append("();");
                 break;
             case SPRING_COMPONENT:
-                // cas qui ne doit pas survenir
+                bw.append(INDENT).append(INDENT).append("return instance;");
                 break;
         }
         bw.newLine();
