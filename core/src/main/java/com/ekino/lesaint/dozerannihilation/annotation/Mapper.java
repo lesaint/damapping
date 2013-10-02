@@ -12,5 +12,4 @@ import com.ekino.lesaint.dozerannihilation.processor.impl.InstantiationType;
 @java.lang.annotation.Documented
 public @interface Mapper {
 
-    InstantiationType value() default InstantiationType.SINGLETON_ENUM;
 }
