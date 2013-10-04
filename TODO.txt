@@ -16,3 +16,11 @@
  - TODO : ajouter un paramètre à @Mapper pour préciser la visibilité de la classe Mapper générée (public par défaut, sinon protected)
            -> on n'ajoute pas de paramètre, la visibilité de l'interface générée sera la même que celle de la classe annotée avec @Mapper
  - framework d'injection super léger : essayer Dagger
+
+
+ROADMAP
+ - intégration avec Spring, générer des classes annotées @Component pour les classes @Mapper elles-mêmes annotées avec @Mapper
+ - implémentation du traitement des classes annotées @MapperFactory
+ - refacto de la génération de code source, écriture d'un writer maison pour clarifier la génération de code
+ - rendre optionel la dépendance à Spring
+ - ajouter une annotation pour définir ou surcharger le comportement par défaut qui ajoute des @Component
