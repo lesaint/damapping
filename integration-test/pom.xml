@@ -18,6 +18,7 @@
         <module>integration-test-core</module>
         <module>mapper-enum</module>
         <module>mapper-constructor</module>
+        <module>mapper-component</module>
         <module>use-mapper</module>
     </modules>
 
