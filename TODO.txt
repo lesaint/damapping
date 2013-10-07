@@ -20,6 +20,8 @@
 
 ROADMAP
  - intégration avec Spring, générer des classes annotées @Component pour les classes @Mapper elles-mêmes annotées avec @Mapper
+ - auto discovery de l'annotation processor
+ - séparation en modules spécifiques des annotations et du processor
  - implémentation du traitement des classes annotées @MapperFactory
  - refacto de la génération de code source, écriture d'un writer maison pour clarifier la génération de code
  - rendre optionel la dépendance à Spring
