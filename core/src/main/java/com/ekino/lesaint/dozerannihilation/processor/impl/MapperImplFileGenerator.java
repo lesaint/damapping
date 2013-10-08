@@ -3,6 +3,13 @@ package com.ekino.lesaint.dozerannihilation.processor.impl;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
+
+import javax.annotation.Resource;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+
+import org.springframework.stereotype.Component;
 
 import static com.google.common.collect.FluentIterable.from;
 
@@ -12,6 +19,11 @@ import static com.google.common.collect.FluentIterable.from;
 * @author Sébastien Lesaint
 */
 class MapperImplFileGenerator extends AbstractFileGenerator {
+    private static final List<DAName> SPRING_COMPONENT_IMPORTS = ImmutableList.of(
+            DANameFactory.from(Resource.class.getCanonicalName()),
+            DANameFactory.from(Component.class.getCanonicalName())
+    );
+
     @Override
     public String fileName(FileGeneratorContext context) {
         return context.getMapperClass().type.qualifiedName.getName() + "MapperImpl";
@@ -25,10 +37,26 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
         //     -> liste des méthodes mapper
         //     -> compute liste des imports à réaliser
         DAMapperClass daMapperClass = context.getMapperClass();
-        appendHeader(bw, daMapperClass, context.getMapperImplImports());
+        if (daMapperClass.instantiationType == InstantiationType.SPRING_COMPONENT) {
+            appendHeader(bw, daMapperClass, ImmutableList.copyOf(Iterables.concat(context.getMapperImplImports(), SPRING_COMPONENT_IMPORTS)));
+        }
+        else {
+            appendHeader(bw, daMapperClass, context.getMapperImplImports());
+        }
 
+        if (daMapperClass.instantiationType == InstantiationType.SPRING_COMPONENT) {
+            bw.append("@Component");
+            bw.newLine();
+        }
         bw.append("public class ").append(daMapperClass.type.simpleName).append("MapperImpl").append(" implements ").append(daMapperClass.type.simpleName).append("Mapper").append(" {");
         bw.newLine();
+
+        if (daMapperClass.instantiationType == InstantiationType.SPRING_COMPONENT) {
+            bw.append(INDENT).append("@Resource");
+            bw.newLine();
+            bw.append(INDENT).append("private ").append(daMapperClass.type.simpleName).append(" instance;");
+            bw.newLine();
+        }
         bw.newLine();
 
         DAInterface guavaInterface = from(daMapperClass.interfaces).firstMatch(DAInterfacePredicates.isGuavaFunction()).get();
@@ -50,7 +78,14 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
         }
         bw.append(")").append(" {");
         bw.newLine();
-        bw.append(INDENT).append(INDENT).append("return ").append(daMapperClass.type.simpleName).append("MapperFactory").append(".instance()").append(".").append(guavaMethod.name).append("(");
+        bw.append(INDENT).append(INDENT).append("return ");
+        if (daMapperClass.instantiationType == InstantiationType.SPRING_COMPONENT) {
+            bw.append("instance");
+        }
+        else {
+            bw.append(daMapperClass.type.simpleName).append("MapperFactory").append(".instance()");
+        }
+        bw.append(".").append(guavaMethod.name).append("(");
         parametersIterator = guavaMethod.parameters.iterator();
         while (parametersIterator.hasNext()) {
             bw.append(parametersIterator.next().name);

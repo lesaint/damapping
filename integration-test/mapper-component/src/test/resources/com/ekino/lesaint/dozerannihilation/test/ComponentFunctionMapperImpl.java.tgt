@@ -1,18 +1,16 @@
 package com.ekino.lesaint.dozerannihilation.test;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import java.io.File;
-import java.util.Collection;
-import java.util.Map;
-import org.springframework.stereotype.Component
+import javax.annotation.Resource;
+import org.springframework.stereotype.Component;
 
 // GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
 @Component
 public class ComponentFunctionMapperImpl implements ComponentFunctionMapper {
+    @Resource
+    private ComponentFunction instance;
 
     @Override
-    public String apply(A input) {
-        return ComponentFunctionMapperFactory.instance().apply(input);
+    public String apply(A a) {
+        return instance.apply(a);
     }
 }

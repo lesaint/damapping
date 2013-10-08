@@ -163,7 +163,13 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     }
 
     private void generateMapperFactory(FileGeneratorContext context) throws IOException {
-        generateFile(new MapperFactoryFileGenerator(), context);
+        if (shouldGenerateMapperFactory(context)) {
+            generateFile(new MapperFactoryFileGenerator(), context);
+        }
+    }
+
+    private boolean shouldGenerateMapperFactory(FileGeneratorContext context) {
+        return context.getMapperClass().instantiationType != InstantiationType.SPRING_COMPONENT;
     }
 
     private void generateMapperImpl(FileGeneratorContext context) throws IOException {

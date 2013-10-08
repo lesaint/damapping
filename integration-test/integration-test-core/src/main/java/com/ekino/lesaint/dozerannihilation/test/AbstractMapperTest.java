@@ -39,7 +39,7 @@ public abstract class AbstractMapperTest {
     }
 
     private void checkGeneratedFile(String suffix) throws URISyntaxException, IOException {
-        String tgtName = classUnderTest.getSimpleName() + suffix + ".java.tgt";
+        String tgtName = buildTargetFilename(suffix);
 
         File tgtFile = new File(getClass().getResource(tgtName).toURI());
         // assuming tgtFile is in the form [path_to_clone_of_dozer-annihilation]/test/test-mapper-enum/target/test-classes/com/ekino/lesaint/dozerannihilation/test/ConstructorInstancedGuavaFunctionMapper.java.tgt
@@ -47,5 +47,9 @@ public abstract class AbstractMapperTest {
         File srcFile = new File(mavenTargetDir, "generated-sources/annotations/" + classUnderTest.getCanonicalName().replaceAll("\\.", "/") + suffix + ".java");
 
         assertThat(srcFile).usingCharset(CHARSET_NAME).hasContent(FileUtils.readFileToString(tgtFile, "UTF-8"));
+    }
+
+    protected String buildTargetFilename(String suffix) {
+        return classUnderTest.getSimpleName() + suffix + ".java.tgt";
     }
 }
