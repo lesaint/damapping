@@ -23,7 +23,7 @@ abstract class AbstractFileGenerator implements FileGenerator {
     protected static final String INDENT = "    ";
 
     protected void appendHeader(BufferedWriter bw, DAMapperClass daMapperClass, List<DAName> mapperImports) throws IOException {
-        List<DAName> imports = filterImports(mapperImports, daMapperClass);
+        List<DAName> imports = filterAndSortImports(mapperImports, daMapperClass);
 
         bw.append("package ").append(daMapperClass.packageName.toString()).append(";");
         bw.newLine();
@@ -67,7 +67,7 @@ abstract class AbstractFileGenerator implements FileGenerator {
         }
     }
 
-    private List<DAName> filterImports(List<DAName> mapperImports, final DAMapperClass daMapperClass) {
+    private List<DAName> filterAndSortImports(List<DAName> mapperImports, final DAMapperClass daMapperClass) {
         List<DAName> res = Lists.newArrayList(
         from(mapperImports)
                 .filter(

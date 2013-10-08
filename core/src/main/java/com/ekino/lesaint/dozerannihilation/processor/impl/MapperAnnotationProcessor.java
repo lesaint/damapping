@@ -137,10 +137,10 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         DefaultFileGeneratorContext context = new DefaultFileGeneratorContext(daMapperClass, visitor);
 
         // 1 - générer l'interface du Mapper
-        generateMapperInterface(context);
+        generateMapper(context);
 
         // 2 - générer la factory
-        generateMapperFactoryInterface(context);
+        generateMapperFactory(context);
 
         // 3 - générer l'implémentation du Mapper
         generateMapperImpl(context);
@@ -158,11 +158,11 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         fileGenerator.writeFile(new BufferedWriter(jfo.openWriter()), context);
     }
 
-    private void generateMapperInterface(FileGeneratorContext context) throws IOException {
+    private void generateMapper(FileGeneratorContext context) throws IOException {
         generateFile(new MapperFileGenerator(), context);
     }
 
-    private void generateMapperFactoryInterface(FileGeneratorContext context) throws IOException {
+    private void generateMapperFactory(FileGeneratorContext context) throws IOException {
         generateFile(new MapperFactoryFileGenerator(), context);
     }
 
