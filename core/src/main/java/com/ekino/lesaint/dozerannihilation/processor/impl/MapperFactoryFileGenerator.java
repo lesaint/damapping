@@ -2,12 +2,6 @@ package com.ekino.lesaint.dozerannihilation.processor.impl;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.List;
-import javax.annotation.Resource;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
-
-import org.springframework.stereotype.Component;
 
 /**
 * MapperFactoryFileGenerator -
@@ -15,11 +9,6 @@ import org.springframework.stereotype.Component;
 * @author Sébastien Lesaint
 */
 class MapperFactoryFileGenerator extends AbstractFileGenerator {
-    private static final List<DAName> SPRING_COMPONENT_EXTRA_IMPORTS = ImmutableList.of(
-            DANameFactory.from(Component.class.getCanonicalName()),
-            DANameFactory.from(Resource.class.getCanonicalName())
-    );
-
     @Override
     public String fileName(FileGeneratorContext context) {
         return context.getMapperClass().type.qualifiedName.getName() + "MapperFactory";
@@ -28,22 +17,12 @@ class MapperFactoryFileGenerator extends AbstractFileGenerator {
     @Override
     public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
         DAMapperClass daMapperClass = context.getMapperClass();
-        List<DAName> imports = context.getMapperFactoryImports();
-        if (daMapperClass.instantiationType == InstantiationType.SPRING_COMPONENT) {
-            appendHeader(bw, daMapperClass, ImmutableList.copyOf(Iterables.concat(imports, SPRING_COMPONENT_EXTRA_IMPORTS)));
-        }
-        else {
-            appendHeader(bw, daMapperClass, imports);
-        }
+        appendHeader(bw, daMapperClass, context.getMapperFactoryImports());
 
         // générer la factory
         //     -> nom du package
         //     -> nom de la classe (infère nom de la factory et nom du Mapper)
         //     -> type d'instantiation (si enum, le nom de la valeur d'enum à utiliser)
-        if (daMapperClass.instantiationType == InstantiationType.SPRING_COMPONENT) {
-            bw.append("@Component");
-            bw.newLine();
-        }
         bw.append("class ").append(daMapperClass.type.simpleName).append("MapperFactory").append(" {");
         bw.newLine();
         bw.newLine();
