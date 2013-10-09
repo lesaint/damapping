@@ -11,4 +11,8 @@ public class RoomDto {
     public RoomDto(String number) {
         this.number = number;
     }
+
+    public String getNumber() {
+        return number;
+    }
 }

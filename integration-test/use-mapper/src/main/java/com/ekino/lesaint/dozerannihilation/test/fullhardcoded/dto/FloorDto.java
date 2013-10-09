@@ -13,4 +13,8 @@ public class FloorDto {
     public FloorDto(List<RoomDto> rooms) {
         this.rooms = rooms;
     }
+
+    public List<RoomDto> getRooms() {
+        return rooms;
+    }
 }

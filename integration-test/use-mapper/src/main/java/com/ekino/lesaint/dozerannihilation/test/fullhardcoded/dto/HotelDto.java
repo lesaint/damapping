@@ -13,4 +13,8 @@ public class HotelDto {
     public HotelDto(List<FloorDto> floors) {
         this.floors = floors;
     }
+
+    public List<FloorDto> getFloors() {
+        return floors;
+    }
 }
