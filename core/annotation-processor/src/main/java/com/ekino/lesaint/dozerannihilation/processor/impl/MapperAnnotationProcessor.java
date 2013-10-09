@@ -153,7 +153,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                 fileGenerator.fileName(context),
                 context.getMapperClass().classElement
         );
-        System.out.println("generating " + jfo.toUri());
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "generating " + jfo.toUri());
 
         fileGenerator.writeFile(new BufferedWriter(jfo.openWriter()), context);
     }

@@ -61,7 +61,7 @@ public class DAAnnotationProcessor implements Processor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        investigatingLogging(annotations, roundEnv);
+//        investigatingLogging(annotations, roundEnv);
 
         if (roundEnv.processingOver()) {
             return false;
