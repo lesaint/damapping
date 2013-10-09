@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>com.ekino.sfrsandbox.dozerannihilation</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>annotation-processor</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
