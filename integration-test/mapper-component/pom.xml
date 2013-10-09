@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>mapper-component</artifactId>
+    <name>Integration tests - class @Mapper par @Component</name>
     <description>tests de génération de fichiers java pour une classe annotée avec @Mapper et @Component</description>
 
     <dependencies>

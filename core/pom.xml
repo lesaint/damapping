@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>core</artifactId>
+    <name>Core - POM Parent</name>
     <packaging>pom</packaging>
 
     <modules>

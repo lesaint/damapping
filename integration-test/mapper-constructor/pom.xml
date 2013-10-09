@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>mapper-constructor</artifactId>
+    <name>Integration tests - class @Mapper par constructeur</name>
     <description>tests de génération de fichiers java pour une classe annotée avec @Mapper</description>
 
     <dependencies>

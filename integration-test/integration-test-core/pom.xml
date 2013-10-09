@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>integration-test-core</artifactId>
+    <name>Integration tests - classes communes</name>
     <description>classes communes pour les tests de génération de fichiers java</description>
 
     <dependencies>

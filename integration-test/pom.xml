@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>integration-test</artifactId>
+    <name>Integration tests - POM Parent</name>
     <description>Parent module for integration test modules</description>
     <packaging>pom</packaging>
 

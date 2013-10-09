@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>mapper-enum</artifactId>
+    <name>Integration tests - enum @Mapper</name>
     <description>tests de génération de fichiers java pour une enum annotée avec @Mapper</description>
 
     <dependencies>
