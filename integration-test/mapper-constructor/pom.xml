@@ -31,15 +31,6 @@
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
-                    <!--déclare un ou plusieurs Processor à utiliser par le compilateur javac
-                        cet argument est optionnel car il existe aussi une méthode de découverte automatique des
-                        processor par le compilateur-->
-                    <annotationProcessors>
-                        <annotationProcessor>com.ekino.lesaint.dozerannihilation.processor.DAAnnotationProcessor
-                        </annotationProcessor>
-                    </annotationProcessors>
-                    <!--vérifie si le traitement des annotations et/ou la compilation sont effectués-->
-                    <proc/>
                     <compilerArgs>
                         <!--option non standard qui permet d'afficher des informations sur le traitement des annotations par les processeurs-->
                         <compilerArg>-XprintRounds</compilerArg>
@@ -51,5 +42,33 @@
         </plugins>
     </build>
 
+    <!--pour mémoire, la configuration ci-dessous permet d'utiliser un AnnotationProcessor qui n'est pas déclaré dans META-INF-->
+    <!--<build>-->
+        <!--<plugins>-->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-compiler-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<source>${jdk.version}</source>-->
+                    <!--<target>${jdk.version}</target>-->
+                    <!--&lt;!&ndash;déclare un ou plusieurs Processor à utiliser par le compilateur javac-->
+                        <!--cet argument est optionnel car il existe aussi une méthode de découverte automatique des-->
+                        <!--processor par le compilateur&ndash;&gt;-->
+                    <!--<annotationProcessors>-->
+                        <!--<annotationProcessor>com.ekino.lesaint.dozerannihilation.processor.DAAnnotationProcessor-->
+                        <!--</annotationProcessor>-->
+                    <!--</annotationProcessors>-->
+                    <!--&lt;!&ndash;vérifie si le traitement des annotations et/ou la compilation sont effectués&ndash;&gt;-->
+                    <!--<proc/>-->
+                    <!--<compilerArgs>-->
+                        <!--&lt;!&ndash;option non standard qui permet d'afficher des informations sur le traitement des annotations par les processeurs&ndash;&gt;-->
+                        <!--<compilerArg>-XprintRounds</compilerArg>-->
+                        <!--&lt;!&ndash;option non standard qui affiche la liste des annotations qui seront traitées par les processeurs d'annotations&ndash;&gt;-->
+                        <!--<compilerArg>-XprintProcessorInfo</compilerArg>-->
+                    <!--</compilerArgs>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+        <!--</plugins>-->
+    <!--</build>-->
 
 </project>

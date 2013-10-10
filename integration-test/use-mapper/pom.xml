@@ -38,15 +38,6 @@
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
-                    <!--déclare un ou plusieurs Processor à utiliser par le compilateur javac
-                        cet argument est optionnel car il existe aussi une méthode de découverte automatique des
-                        processor par le compilateur-->
-                    <annotationProcessors>
-                        <annotationProcessor>com.ekino.lesaint.dozerannihilation.processor.DAAnnotationProcessor
-                        </annotationProcessor>
-                    </annotationProcessors>
-                    <!--vérifie si le traitement des annotations et/ou la compilation sont effectués-->
-                    <proc/>
                     <compilerArgs>
                         <!--option non standard qui permet d'afficher des informations sur le traitement des annotations par les processeurs-->
                         <compilerArg>-XprintRounds</compilerArg>
@@ -57,6 +48,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>
