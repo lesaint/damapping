@@ -2,8 +2,10 @@ package com.ekino.lesaint.dozerannihilation.processor.impl;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import java.util.List;
+import java.util.Set;
 
 /**
 * DAMethod -
@@ -14,9 +16,11 @@ class DAMethod extends AbstractImportVisitable {
     ElementKind kind;
     /*nom de la méthode/function*/
     DAName name;
+    /*modifiers de la méthode (private, final, ...)*/
+    Set<Modifier> modifiers;
     /*le type de retour de la méthode. Null si la méthode est un constructeur*/
     @Nullable
-    DAType returnType; // attention au cas des primitifs si on ajoute @MapperMethod !
+    DAType returnType; // TOIMPROVE : attention au cas des primitifs si on ajoute @MapperMethod !
     List<DAParameter> parameters;
     /*non utilisé tant que pas de @MapperMethod*/
     boolean mapperMethod;

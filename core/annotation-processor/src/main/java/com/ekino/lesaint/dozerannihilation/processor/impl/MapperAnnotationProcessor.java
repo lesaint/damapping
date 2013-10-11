@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -29,7 +30,9 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 
 import com.ekino.lesaint.dozerannihilation.annotation.Mapper;
@@ -103,7 +106,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
             return;
         }
 
-        // rechercher une ou plusieurs méthodes annontées avec @MapperFunction
+        // rechercher une ou plusieurs méthodes annotées avec @MapperFunction
         // si classe @Mapper implémente Function, la rechercher en commençant par les méthodes annotées avec @MapperFunction
         // si aucune méthode trouvée => erreur  de compilation
         daMapperClass.methods = retrieveMethods(classElement);
@@ -120,7 +123,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Mapper not having a apply method is not supported", classElement);
             return;
         }
-        // TOIMPROVE : la récupération et les constrôles sur la méthode apply sont faibles
+        // TOIMPROVE : la récupération et les contrôles sur la méthode apply sont faibles
 
 
         // retrieve instantiation type from @Mapper annotation
@@ -128,7 +131,9 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         //  - SINGLETON_ENUM : check @Mapper class is an enum + check there is only one value sinon erreur de compilation
         //  - SPRING_COMPONENT : TOFINISH quelles vérifications sur la class si le InstantiationType est SPRING_COMPONENT ?
         daMapperClass.instantiationType = computeInstantiationType(classElement);
-        // TODO contrôles en fonction du InstantiationType
+        if (!checkInstantiationTypeRequirements(daMapperClass)) {
+            return;
+        }
 
         // construction des listes d'imports
         DefaultImportVisitor visitor = new DefaultImportVisitor();
@@ -144,6 +149,68 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
 
         // 3 - générer l'implémentation du Mapper
         generateMapperImpl(context);
+    }
+
+    private boolean checkInstantiationTypeRequirements(DAMapperClass daMapperClass) {
+        switch (daMapperClass.instantiationType) {
+            case SPRING_COMPONENT:
+                return true; // requirements are enforced by Spring
+            case CONSTRUCTOR:
+                return hasAccessibleConstructor(daMapperClass.classElement, daMapperClass.methods);
+            case SINGLETON_ENUM:
+                return hasOnlyOneEnumValue(daMapperClass.classElement);
+            default:
+                throw new IllegalArgumentException("Unsupported instantiationType " + daMapperClass.instantiationType);
+        }
+    }
+
+    private boolean hasAccessibleConstructor(TypeElement classElement, List<DAMethod> methods) {
+        Optional<DAMethod> accessibleConstructor = FluentIterable.from(methods).filter(new Predicate<DAMethod>() {
+            @Override
+            public boolean apply(@Nullable DAMethod daMethod) {
+                return daMethod.kind == ElementKind.CONSTRUCTOR;
+            }
+        }).filter(new Predicate<DAMethod>() {
+            @Override
+            public boolean apply(@Nullable DAMethod daMethod) {
+                return !FluentIterable.from(daMethod.modifiers).firstMatch(Predicates.equalTo(Modifier.PRIVATE)).isPresent();
+            }
+        }).first();
+
+        if (!accessibleConstructor.isPresent()) {
+            processingEnv.getMessager().printMessage(
+                    Diagnostic.Kind.ERROR,
+                    "Classe does not exposed an accessible default constructor",
+                    classElement
+            );
+        }
+
+        return accessibleConstructor.isPresent();
+    }
+
+    private boolean hasOnlyOneEnumValue(TypeElement classElement) {
+        if (classElement.getEnclosedElements() == null) {
+            // this case can not occurs because it is enforced by the java compiler
+            processingEnv.getMessager().printMessage(
+                    Diagnostic.Kind.ERROR,
+                    "Enum annoted wih @Mapper must have one value",
+                    classElement
+            );
+            return false;
+        }
+
+        int res = from(classElement.getEnclosedElements())
+                // enum values are VariableElement
+                .filter(Predicates.instanceOf(VariableElement.class))
+                .size();
+        if (res != 1) {
+            processingEnv.getMessager().printMessage(
+                    Diagnostic.Kind.ERROR,
+                    "Enum annoted with @Mapper must have just one value",
+                    classElement
+            );
+        }
+        return res == 1;
     }
 
     private void generateFile(FileGenerator fileGenerator,
@@ -182,10 +249,8 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         }
 
         return from(classElement.getEnclosedElements())
-                // all enclosed elements are supposed to be ExecutableElement, just making sure
+                // methods are ExecutableElement
                 .filter(Predicates.instanceOf(ExecutableElement.class))
-                // excludes enum values
-                .filter(Predicates.not(Predicates.instanceOf(VariableElement.class)))
                 // transform
                 .transform(new Function<Element, DAMethod>() {
                     @Nullable
@@ -199,6 +264,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                         res.kind = o.getKind();
                         res.name = DANameFactory.from(o.getSimpleName());
                         ExecutableElement methodElement = (ExecutableElement) o;
+                        res.modifiers = extractModifiers(methodElement);
                         res.returnType = extractReturnType(methodElement);
                         res.parameters = extractParameters(methodElement);
                         res.mapperMethod = isMapperMethod(methodElement);
@@ -207,6 +273,13 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                 })
                 .filter(Predicates.notNull())
                 .toList();
+    }
+
+    private @Nonnull Set<Modifier> extractModifiers(ExecutableElement methodElement) {
+        if (methodElement.getModifiers() == null) {
+            return Collections.emptySet();
+        }
+        return methodElement.getModifiers();
     }
 
     private DAType extractReturnType(ExecutableElement methodElement) {
