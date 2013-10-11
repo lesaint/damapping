@@ -3,20 +3,19 @@ package com.ekino.lesaint.dozerannihilation.processor.impl;
 /**
  * Différentes façon d'instancier la classe annotée @Mapper, pour lui déléguer l'implémentation
  * de l'interface générée *Mapper.
- *
- * TODO : l'utilisation d'une enum pour indiquer la manière d'instancier le mapper n'est pas extensible (ie. ajout d'un support Guice, JEE, ...) utiliser plutôt une interface ?
  */
 public enum InstantiationType {
     /**
-     * La classe Mapper générée sera annotée avec l'annotation @Component de Spring (sans argument)
+     * Type d'instantiation pour une classe annotée avec @Mapper et @Component
      */
     SPRING_COMPONENT,
     /**
-     * TODO : je ne sais à quel type d'instantiation correspond CONSTRUCTOR
+     * Type d'instantiation par défaut pour une classe annotée avec @Mapper
      */
     CONSTRUCTOR,
     /**
-     * La classe Mapper générée sera une enum possédant une seule valeur : INSTANCE. (singleton pattern)
+     * Type d'instantiation par défaut pour une enum annotée avec @Mapper.
+     * L'enum ne doit avoir qu'une seule valeur (singleton enum pattern)
      */
     SINGLETON_ENUM;
 }
