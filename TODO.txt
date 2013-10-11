@@ -16,11 +16,12 @@
 
 
 ROADMAP
- - intégration avec Spring, générer des classes annotées @Component pour les classes @Mapper elles-mêmes annotées avec @Mapper
- - écriture d'un cas d'intégration avec un Spring contexte
- - auto discovery de l'annotation processor
- - séparation en modules spécifiques des annotations et du processor
+ * intégration avec Spring, générer des classes annotées @Component pour les classes @Mapper elles-mêmes annotées avec @Mapper
+ * écriture d'un cas d'intégration avec un Spring contexte
+ * auto discovery de l'annotation processor
+ * séparation en modules spécifiques des annotations et du processor
  - traiter les TODO et FIXME qui trainent dans les sources
+ - passe de refacto : sortir code de lecture de API javac des annotation processors, predicates singleton si applicable, ajouter des tests U
  - étudier l'intégration avec l'IDE
  - implémentation du traitement des classes annotées @MapperFactory
  - refacto de la génération de code source, écriture d'un writer maison pour clarifier la génération de code
