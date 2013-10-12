@@ -1,11 +1,11 @@
 package com.ekino.lesaint.dozerannihilation.test;
 
+import org.apache.commons.io.FileUtils;
+import org.testng.annotations.Test;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import org.apache.commons.io.FileUtils;
-
-import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,11 +14,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Sébastien Lesaint
  */
-public abstract class AbstractMapperTest {
+public abstract class AbstractMapperFactoryTest {
 
     protected final TestUtil testUtil;
 
-    protected AbstractMapperTest(Class<?> classUnderTest) {
+    public AbstractMapperFactoryTest(Class<?> classUnderTest) {
         this.testUtil = new TestUtil(classUnderTest);
     }
 
@@ -28,8 +28,8 @@ public abstract class AbstractMapperTest {
     }
 
     @Test
-    public void check_generated_mapperImpl_file() throws Exception {
-        testUtil.checkGeneratedFile("MapperImpl");
+    public void check_generated_mapperFactoryImpl_file() throws Exception {
+        testUtil.checkGeneratedFile("MapperFactoryImpl");
     }
 
     @Test

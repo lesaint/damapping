@@ -19,7 +19,7 @@ public class ComponentFunctionTest extends AbstractMapperTest {
     @Test
     @Override
     public void check_generated_mapperFactory_file() throws Exception {
-        String tgtFilename = buildTargetFilename("MapperFactory");
+        String tgtFilename = testUtil.buildTargetFilename("MapperFactory");
 
         assertThat(getClass().getResource(tgtFilename)).isNull();
     }
