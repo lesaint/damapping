@@ -1,0 +1,7 @@
+package com.ekino.lesaint.dozerannihilation.test;
+
+import com.google.common.base.Function;
+
+public interface ConstructorWithParameterMapper implements Function<BigDecimal, String> {
+
+}

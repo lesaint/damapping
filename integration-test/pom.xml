@@ -21,6 +21,7 @@
         <module>mapper-constructor</module>
         <module>mapper-component</module>
         <module>use-mapper</module>
+        <module>mapper-factory</module>
     </modules>
 
     <dependencies>

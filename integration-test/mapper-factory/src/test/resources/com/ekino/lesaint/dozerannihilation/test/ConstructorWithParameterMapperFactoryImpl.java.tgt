@@ -1,0 +1,20 @@
+package com.ekino.lesaint.dozerannihilation.test;
+
+public class ConstructorWithParameterMapperFactoryImpl implements ConstructorWithParameterMapperFactory {
+
+    public ConstructorWithParameterMapper instance(String salt) {
+        return new ConstructorWithParameterMapperImpl(new ConstructorWithParameter(salt));
+    }
+
+    private static class ConstructorWithParameterMapperImpl implements ConstructorWithParameterMapper {
+        private final ConstructorWithParameter instance;
+
+        public ConstructorWithParameterMapperImpl(ConstructorWithParameter instance) {
+            this.instance = intance;
+        }
+
+        public String apply(BigDecimal bigDecimal) {
+            return instance.apply(bigDecimal);
+        }
+    }
+}
