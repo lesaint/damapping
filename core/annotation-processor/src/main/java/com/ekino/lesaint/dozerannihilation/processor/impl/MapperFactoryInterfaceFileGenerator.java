@@ -4,7 +4,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 /**
-* MapperFactoryInterfaceFileGenerator -
+* MapperFactoryInterfaceFileGenerator - Générateur du fichier source de l'interface MapperFactory générée dans le cas
+* où il existe au moins une méthode annotée avec @MapperFactoryMethod dans la class annotée avec @Mapper.
 *
 * @author Sébastien Lesaint
 */
