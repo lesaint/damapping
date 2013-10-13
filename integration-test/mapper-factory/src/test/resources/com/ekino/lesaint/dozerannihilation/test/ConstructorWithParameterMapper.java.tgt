@@ -2,6 +2,7 @@ package com.ekino.lesaint.dozerannihilation.test;
 
 import com.google.common.base.Function;
 
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
 public interface ConstructorWithParameterMapper implements Function<BigDecimal, String> {
 
 }
