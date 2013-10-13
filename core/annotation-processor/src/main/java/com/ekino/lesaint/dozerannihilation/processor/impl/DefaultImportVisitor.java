@@ -44,14 +44,14 @@ class DefaultImportVisitor implements ImportVisitor, DAImports {
     }
 
     @Override
-    public void addMapperFactoryImport(@Nullable DAName qualifiedDAName) {
+    public void addMapperFactoryClassImport(@Nullable DAName qualifiedDAName) {
         if (qualifiedDAName != null) {
             mapperFactoryImports.add(qualifiedDAName);
         }
     }
 
     @Override
-    public void addMapperFactoryImport(@Nullable Iterable<DAName> qualifiedNames) {
+    public void addMapperFactoryClassImport(@Nullable Iterable<DAName> qualifiedNames) {
         if (qualifiedNames != null) {
             mapperFactoryImports.addAll(qualifiedNames);
         }

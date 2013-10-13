@@ -145,7 +145,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         generateMapper(context);
 
         // 2 - générer la factory
-        generateMapperFactory(context);
+        generateMapperFactoryClass(context);
 
         // 3 - générer l'implémentation du Mapper
         generateMapperImpl(context);
@@ -229,13 +229,13 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         generateFile(new MapperFileGenerator(), context);
     }
 
-    private void generateMapperFactory(FileGeneratorContext context) throws IOException {
-        if (shouldGenerateMapperFactory(context)) {
-            generateFile(new MapperFactoryFileGenerator(), context);
+    private void generateMapperFactoryClass(FileGeneratorContext context) throws IOException {
+        if (shouldGenerateMapperFactoryClass(context)) {
+            generateFile(new MapperFactoryClassFileGenerator(), context);
         }
     }
 
-    private boolean shouldGenerateMapperFactory(FileGeneratorContext context) {
+    private boolean shouldGenerateMapperFactoryClass(FileGeneratorContext context) {
         return context.getMapperClass().instantiationType != InstantiationType.SPRING_COMPONENT;
     }
 

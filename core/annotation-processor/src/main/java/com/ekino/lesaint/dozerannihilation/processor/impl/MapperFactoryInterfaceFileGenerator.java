@@ -4,11 +4,11 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 /**
-* MapperFactoryFileGenerator -
+* MapperFactoryClassFileGenerator -
 *
 * @author Sébastien Lesaint
 */
-class MapperFactoryFileGenerator extends AbstractFileGenerator {
+class MapperFactoryInterfaceFileGenerator extends AbstractFileGenerator {
     @Override
     public String fileName(FileGeneratorContext context) {
         return context.getMapperClass().type.qualifiedName.getName() + "MapperFactory";

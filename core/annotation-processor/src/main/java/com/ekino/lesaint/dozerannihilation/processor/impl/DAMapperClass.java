@@ -28,7 +28,7 @@ class DAMapperClass implements ImportVisitable {
     public void visite(ImportVisitor visitor) {
         visitor.addMapperImport(type.qualifiedName);
         visitor.addMapperImplImport(type.qualifiedName);
-        visitor.addMapperFactoryImport(type.qualifiedName);
+        visitor.addMapperFactoryClassImport(type.qualifiedName);
         for (DAInterface daInterface : interfaces) {
             daInterface.visite(visitor);
         }
