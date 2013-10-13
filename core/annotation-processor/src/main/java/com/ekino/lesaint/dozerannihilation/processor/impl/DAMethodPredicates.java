@@ -1,8 +1,12 @@
 package com.ekino.lesaint.dozerannihilation.processor.impl;
 
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.FluentIterable;
 
 import javax.annotation.Nullable;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 
 /**
  * DAMethodPredicates -
@@ -15,16 +19,56 @@ public class DAMethodPredicates {
         // prevents instantiation
     }
 
-    private static enum GuavaFunction implements  Predicate<DAMethod> {
+    public static Predicate<DAMethod> isConstructor() {
+        return ConstructorPredicate.INSTANCE;
+    }
+
+    private static enum ConstructorPredicate implements Predicate<DAMethod> {
+        INSTANCE;
+
+        @Override
+        public boolean apply(@Nullable DAMethod daMethod) {
+            return daMethod.isConstructor();
+        }
+    }
+
+    public static Predicate<DAMethod> notPrivate() {
+        return NotPrivatePredicate.INSTANCE;
+    }
+
+    private static enum NotPrivatePredicate implements Predicate<DAMethod> {
+        INSTANCE;
+        @Override
+        public boolean apply(@Nullable DAMethod daMethod) {
+            return !FluentIterable.from(daMethod.modifiers).firstMatch(Predicates.equalTo(Modifier.PRIVATE)).isPresent();
+        }
+
+    }
+
+    public static Predicate<DAMethod> isMapperFactoryMethod() {
+        return MapperFactoryMethodPredicate.INSTANCE;
+    }
+
+    private static enum MapperFactoryMethodPredicate implements Predicate<DAMethod> {
+        INSTANCE;
+
+        @Override
+        public boolean apply(@Nullable DAMethod daMethod) {
+            return daMethod != null && daMethod.mapperFactoryMethod;
+        }
+
+    }
+
+    public static Predicate<DAMethod> isGuavaFunction() {
+        return GuavaFunction.INSTANCE;
+    }
+
+    private static enum GuavaFunction implements Predicate<DAMethod> {
         INSTANCE;
 
         @Override
         public boolean apply(@Nullable DAMethod daMethod) {
             return daMethod != null && daMethod.isGuavaFunction();
         }
-    }
-
-    public static Predicate<DAMethod> isGuavaFunction() {
-        return GuavaFunction.INSTANCE;
     }
 }

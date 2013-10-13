@@ -17,5 +17,10 @@ public enum InstantiationType {
      * Type d'instantiation par défaut pour une enum annotée avec @Mapper.
      * L'enum ne doit avoir qu'une seule valeur (singleton enum pattern)
      */
-    SINGLETON_ENUM;
+    SINGLETON_ENUM,
+    /**
+     * Type d'instantiation pour une classe sans constructeur par défaut mais avec un ou plusieurs
+     * constructeurs annotés avec @MapperFactoryMethod
+     */
+    CONSTRUCTOR_FACTORY;
 }

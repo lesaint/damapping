@@ -28,6 +28,8 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
+
+import com.ekino.lesaint.dozerannihilation.annotation.MapperFactoryMethod;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -50,6 +52,10 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     private static final Set<ElementKind> SUPPORTED_ELEMENTKINDS = ImmutableSet.of(
             ElementKind.CLASS, ElementKind.ENUM
     );
+    private static final Set<InstantiationType> MAPPER_FACTORY_CLASS_INTANTIATIONTYPES =
+            ImmutableSet.of(InstantiationType.CONSTRUCTOR, InstantiationType.SINGLETON_ENUM);
+    private static final Set<InstantiationType> MAPPER_FACTORY_INTERFACE_INTANTIATIONTYPES =
+            ImmutableSet.of(InstantiationType.CONSTRUCTOR_FACTORY);
 
     public MapperAnnotationProcessor(ProcessingEnvironment processingEnv) {
         super(processingEnv, Mapper.class);
@@ -130,7 +136,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         //  - CONSTRUCTOR : check public/protected default constructor exists sinon erreur de compilation
         //  - SINGLETON_ENUM : check @Mapper class is an enum + check there is only one value sinon erreur de compilation
         //  - SPRING_COMPONENT : TOFINISH quelles vérifications sur la class si le InstantiationType est SPRING_COMPONENT ?
-        daMapperClass.instantiationType = computeInstantiationType(classElement);
+        daMapperClass.instantiationType = computeInstantiationType(classElement, daMapperClass.methods);
         if (!checkInstantiationTypeRequirements(daMapperClass)) {
             return;
         }
@@ -144,7 +150,11 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         // 1 - générer l'interface du Mapper
         generateMapper(context);
 
-        // 2 - générer la factory
+        // 2 - générer la factory interface (si @MapperFactoryMethod)
+        generateMapperFactoryInterface(context);
+        generateMapperFactoryImpl(context);
+
+        // 3 - generer la factory class (si pas de @MapperFactoryMethod)
         generateMapperFactoryClass(context);
 
         // 3 - générer l'implémentation du Mapper
@@ -165,17 +175,10 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     }
 
     private boolean hasAccessibleConstructor(TypeElement classElement, List<DAMethod> methods) {
-        Optional<DAMethod> accessibleConstructor = FluentIterable.from(methods).filter(new Predicate<DAMethod>() {
-            @Override
-            public boolean apply(@Nullable DAMethod daMethod) {
-                return daMethod.kind == ElementKind.CONSTRUCTOR;
-            }
-        }).filter(new Predicate<DAMethod>() {
-            @Override
-            public boolean apply(@Nullable DAMethod daMethod) {
-                return !FluentIterable.from(daMethod.modifiers).firstMatch(Predicates.equalTo(Modifier.PRIVATE)).isPresent();
-            }
-        }).first();
+        Optional<DAMethod> accessibleConstructor = FluentIterable.from(methods)
+                .filter(DAMethodPredicates.isConstructor())
+                .filter(DAMethodPredicates.notPrivate())
+                .first();
 
         if (!accessibleConstructor.isPresent()) {
             processingEnv.getMessager().printMessage(
@@ -236,11 +239,29 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     }
 
     private boolean shouldGenerateMapperFactoryClass(FileGeneratorContext context) {
-        return context.getMapperClass().instantiationType != InstantiationType.SPRING_COMPONENT;
+        return MAPPER_FACTORY_CLASS_INTANTIATIONTYPES.contains(context.getMapperClass().instantiationType);
+    }
+
+    private void generateMapperFactoryInterface(FileGeneratorContext context) throws IOException {
+        if (shouldGenerateMapperFactoryInterface(context)) {
+            generateFile(new MapperFactoryClassFileGenerator(), context);
+        }
+    }
+
+    private void generateMapperFactoryImpl(FileGeneratorContext context) throws IOException {
+        if (shouldGenerateMapperFactoryInterface(context)) {
+            generateFile(new MapperFactoryImplFileGenerator(), context);
+        }
     }
 
     private void generateMapperImpl(FileGeneratorContext context) throws IOException {
-        generateFile(new MapperImplFileGenerator(), context);
+        if (!shouldGenerateMapperFactoryInterface(context)) {
+            generateFile(new MapperImplFileGenerator(), context);
+        }
+    }
+
+    private boolean shouldGenerateMapperFactoryInterface(FileGeneratorContext context) {
+        return MAPPER_FACTORY_INTERFACE_INTANTIATIONTYPES.contains(context.getMapperClass().instantiationType);
     }
 
     private List<DAMethod> retrieveMethods(final TypeElement classElement) {
@@ -268,6 +289,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                         res.returnType = extractReturnType(methodElement);
                         res.parameters = extractParameters(methodElement);
                         res.mapperMethod = isMapperMethod(methodElement);
+                        res.mapperFactoryMethod = isMapperFactoryMethod(methodElement);
                         return res;
                     }
                 })
@@ -289,6 +311,11 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     private boolean isMapperMethod(ExecutableElement methodElement) {
         // TODO implementer isMapperMethod si on ajoute une annotation MapperMethod
         return false;
+    }
+
+    private boolean isMapperFactoryMethod(ExecutableElement methodElement) {
+        Optional<AnnotationMirror> annotationMirror = getAnnotationMirror(methodElement, MapperFactoryMethod.class);
+        return annotationMirror.isPresent();
     }
 
     private List<DAParameter> extractParameters(ExecutableElement methodElement) {
@@ -405,7 +432,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         return DANameFactory.from(packageElement.getQualifiedName());
     }
 
-    private static InstantiationType computeInstantiationType(TypeElement classElement) {
+    private static InstantiationType computeInstantiationType(TypeElement classElement, List<DAMethod> methods) {
         if (classElement.getKind() == ElementKind.ENUM) {
             return InstantiationType.SINGLETON_ENUM;
         }
@@ -413,10 +440,17 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         if (annotationMirror.isPresent()) {
             return InstantiationType.SPRING_COMPONENT;
         }
+        Optional<DAMethod> mapperFactoryConstructor = from(methods)
+                .filter(DAMethodPredicates.isConstructor())
+                .filter(DAMethodPredicates.isMapperFactoryMethod())
+                .first();
+        if (mapperFactoryConstructor.isPresent()) {
+            return InstantiationType.CONSTRUCTOR_FACTORY;
+        }
         return InstantiationType.CONSTRUCTOR;
     }
 
-    private static Optional<AnnotationMirror> getAnnotationMirror(TypeElement classElement,
+    private static Optional<AnnotationMirror> getAnnotationMirror(Element classElement,
                                                                   Class<? extends Annotation> annotationClass) {
         for (AnnotationMirror annotationMirror : classElement.getAnnotationMirrors()) {
             if (annotationClass.getCanonicalName().equals(annotationMirror.getAnnotationType().toString())) { // TODO put test to identify AnnotationMirror by Class into a Predicate

@@ -24,8 +24,14 @@ class DAMethod extends AbstractImportVisitable {
     List<DAParameter> parameters;
     /*non utilisé tant que pas de @MapperMethod*/
     boolean mapperMethod;
+    /*indique si cette méthode était annotée avec @MapperFactoryMethod*/
+    boolean mapperFactoryMethod;
 
     public boolean isDefaultConstructor() {
+        return isConstructor() && parameters.isEmpty();
+    }
+
+    public boolean isConstructor() {
         return kind == ElementKind.CONSTRUCTOR;
     }
 
