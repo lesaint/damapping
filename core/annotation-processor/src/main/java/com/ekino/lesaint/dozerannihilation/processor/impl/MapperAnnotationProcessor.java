@@ -169,6 +169,9 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                 return hasAccessibleConstructor(daMapperClass.classElement, daMapperClass.methods);
             case SINGLETON_ENUM:
                 return hasOnlyOneEnumValue(daMapperClass.classElement);
+            case CONSTRUCTOR_FACTORY:
+                // TODO ajouter checks pour InstantiationType.CONSTRUCTOR_FACTORY
+                return true;
             default:
                 throw new IllegalArgumentException("Unsupported instantiationType " + daMapperClass.instantiationType);
         }
@@ -244,7 +247,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
 
     private void generateMapperFactoryInterface(FileGeneratorContext context) throws IOException {
         if (shouldGenerateMapperFactoryInterface(context)) {
-            generateFile(new MapperFactoryClassFileGenerator(), context);
+            generateFile(new MapperFactoryInterfaceFileGenerator(), context);
         }
     }
 
