@@ -21,7 +21,7 @@ public class DAInterfaceWriterTest {
         TestWriters testWriters = new TestWriters();
         daInterfaceWriter(testWriters, "name").start().end();
 
-        assertThat(testWriters.getRes()).isEqualTo(INDENT + "interface name {" + LINE_SEPARATOR
+        assertThat(testWriters.getRes()).isEqualTo(INDENT + "interface name {" + LINE_SEPARATOR + LINE_SEPARATOR
                 + INDENT + "}" + LINE_SEPARATOR);
     }
 
@@ -32,7 +32,7 @@ public class DAInterfaceWriterTest {
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
                 .start().end();
 
-        assertThat(testWriters.getRes()).isEqualTo(INDENT + "public interface name {" + LINE_SEPARATOR
+        assertThat(testWriters.getRes()).isEqualTo(INDENT + "public interface name {" + LINE_SEPARATOR + LINE_SEPARATOR
                 + INDENT + "}" + LINE_SEPARATOR);
     }
 
@@ -44,7 +44,7 @@ public class DAInterfaceWriterTest {
                 .start().end();
 
         assertThat(testWriters.getRes()).isEqualTo(INDENT + "@Nullable" + LINE_SEPARATOR
-                + INDENT + "interface name {" + LINE_SEPARATOR
+                + INDENT + "interface name {" + LINE_SEPARATOR + LINE_SEPARATOR
                 + INDENT + "}" + LINE_SEPARATOR);
     }
 
@@ -55,7 +55,7 @@ public class DAInterfaceWriterTest {
                 .withExtended(ImmutableList.of(DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE))
                 .start().end();
 
-        assertThat(testWriters.getRes()).isEqualTo(INDENT + "interface name extends Function<Integer, String> {" + LINE_SEPARATOR
+        assertThat(testWriters.getRes()).isEqualTo(INDENT + "interface name extends Function<Integer, String> {" + LINE_SEPARATOR + LINE_SEPARATOR
                 + INDENT + "}" + LINE_SEPARATOR);
     }
 
@@ -66,7 +66,7 @@ public class DAInterfaceWriterTest {
                 .withExtended(ImmutableList.of(DAWriterTestUtil.SERIALIZABLE_INTERFACE, DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE))
                 .start().end();
 
-        assertThat(testWriters.getRes()).isEqualTo(INDENT + "interface name extends Serializable, Function<Integer, String> {" + LINE_SEPARATOR
+        assertThat(testWriters.getRes()).isEqualTo(INDENT + "interface name extends Serializable, Function<Integer, String> {" + LINE_SEPARATOR + LINE_SEPARATOR
                 + INDENT + "}" + LINE_SEPARATOR);
     }
 

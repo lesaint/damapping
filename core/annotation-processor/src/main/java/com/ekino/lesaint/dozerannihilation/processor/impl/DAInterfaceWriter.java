@@ -50,6 +50,7 @@ public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         appendExtended();
         bw.append("{");
         bw.newLine();
+        bw.newLine();
         return this;
     }
 

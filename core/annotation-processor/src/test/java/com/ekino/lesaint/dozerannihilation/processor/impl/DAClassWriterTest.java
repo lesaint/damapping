@@ -29,7 +29,10 @@ public class DAClassWriterTest {
         daClassWriter(testWriters, "name").start().end();
 
         assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "class name {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR);
+                .isEqualTo(INDENT + "class name {" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                        + INDENT + "}" + LINE_SEPARATOR
+                );
     }
 
     @Test
@@ -38,7 +41,10 @@ public class DAClassWriterTest {
         daClassWriter(testWriters, "name").withModifiers(ImmutableSet.of(Modifier.PUBLIC)).start().end();
 
         assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "public class name {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR);
+                .isEqualTo(INDENT + "public class name {" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                        + INDENT + "}" + LINE_SEPARATOR
+                );
     }
 
     @Test
@@ -47,7 +53,10 @@ public class DAClassWriterTest {
         daClassWriter(testWriters, "name").withModifiers(ImmutableSet.of(Modifier.PUBLIC, Modifier.FINAL)).start().end();
 
         assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "public final class name {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR);
+                .isEqualTo(INDENT + "public final class name {" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                        + INDENT + "}" + LINE_SEPARATOR
+                );
     }
 
     @Test
@@ -57,7 +66,10 @@ public class DAClassWriterTest {
 
         assertThat(testWriters.getRes())
                 .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR +
-                        INDENT + "class name {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR);
+                        INDENT + "class name {" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                        + INDENT + "}" + LINE_SEPARATOR
+                );
     }
 
     @Test
@@ -70,7 +82,10 @@ public class DAClassWriterTest {
         assertThat(testWriters.getRes())
                 .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR +
                         INDENT + "@Nullable" + LINE_SEPARATOR +
-                        INDENT + "class name {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR);
+                        INDENT + "class name {" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                        + INDENT + "}" + LINE_SEPARATOR
+                );
     }
 
     @Test
@@ -79,7 +94,10 @@ public class DAClassWriterTest {
         daClassWriter(testWriters, "name").withImplemented(ImmutableList.of(DAWriterTestUtil.SERIALIZABLE_INTERFACE)).start().end();
 
         assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "class name implements Serializable {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR);
+                .isEqualTo(INDENT + "class name implements Serializable {" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                        + INDENT + "}" + LINE_SEPARATOR
+                );
     }
 
     @Test
@@ -88,7 +106,10 @@ public class DAClassWriterTest {
         daClassWriter(testWriters, "name").withImplemented(ImmutableList.of(DAWriterTestUtil.SERIALIZABLE_INTERFACE, DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE)).start().end();
 
         assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "class name implements Serializable, Function<Integer, String> {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR);
+                .isEqualTo(INDENT + "class name implements Serializable, Function<Integer, String> {" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                        + INDENT + "}" + LINE_SEPARATOR
+                );
     }
 
     @Test
@@ -97,7 +118,10 @@ public class DAClassWriterTest {
         daClassWriter(testWriters, "name").withExtended(DAWriterTestUtil.DAWRITER_ABSTACT_CLASS).start().end();
 
         assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "class name extends DAWriter {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR);
+                .isEqualTo(INDENT + "class name extends DAWriter {" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                        + INDENT + "}" + LINE_SEPARATOR
+                );
     }
 
     @Test
@@ -106,7 +130,10 @@ public class DAClassWriterTest {
         daClassWriter(testWriters, "name").withExtended(DAWriterTestUtil.BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS).start().end();
 
         assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "class name extends Bidon<Integer, String> {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR);
+                .isEqualTo(INDENT + "class name extends Bidon<Integer, String> {" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                        + INDENT + "}" + LINE_SEPARATOR
+                );
     }
 
     @Test
@@ -120,8 +147,11 @@ public class DAClassWriterTest {
                 .start().end();
 
         assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR +
-                        INDENT + "public final class name extends Bidon<Integer, String> implements Function<Integer, String> {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR);
+                .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR
+                        + INDENT + "public final class name extends Bidon<Integer, String> implements Function<Integer, String> {" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                        + INDENT + "}" + LINE_SEPARATOR
+                );
     }
 
     @Test
@@ -145,10 +175,12 @@ public class DAClassWriterTest {
 
         assertThat(testWriters.getRes())
                 .isEqualTo(INDENT + "class name {" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
                         + INDENT + INDENT + "String methodName() {" + LINE_SEPARATOR
                         + INDENT + INDENT + "}" + LINE_SEPARATOR
                         + LINE_SEPARATOR
-                        + INDENT + "}" + LINE_SEPARATOR);
+                        + INDENT + "}" + LINE_SEPARATOR
+                );
     }
 
     private DAClassWriter<DAWriter> daClassWriter(TestWriters testWriters, String className) {

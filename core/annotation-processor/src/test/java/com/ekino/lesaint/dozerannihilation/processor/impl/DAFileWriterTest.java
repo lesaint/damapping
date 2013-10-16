@@ -65,6 +65,7 @@ public class DAFileWriterTest {
         assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
                 + LINE_SEPARATOR
                 + "public class name {" + LINE_SEPARATOR
+                + LINE_SEPARATOR
                 + "}" + LINE_SEPARATOR
         );
     }
@@ -81,6 +82,7 @@ public class DAFileWriterTest {
         assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
                 + LINE_SEPARATOR
                 + "interface name {" + LINE_SEPARATOR
+                + LINE_SEPARATOR
                 + "}" + LINE_SEPARATOR
         );
     }

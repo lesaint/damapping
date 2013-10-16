@@ -68,6 +68,7 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         appendImplemented();
         bw.append("{");
         bw.newLine();
+        bw.newLine();
         return this;
     }
 
