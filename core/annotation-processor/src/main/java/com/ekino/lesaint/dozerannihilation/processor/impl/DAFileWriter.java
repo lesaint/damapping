@@ -10,7 +10,6 @@ import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -89,8 +88,8 @@ public class DAFileWriter extends DAWriter {
         return this;
     }
 
-    public DAClassWriter startClass(String name, @Nullable Set<Modifier> modifiers, @Nullable List<DAType> annotations) throws IOException {
-        return new DAClassWriter(bw, 1).withModifiers(modifiers).withAnnotations(annotations).startClass(name);
+    public DAClassWriter<DAFileWriter> publicClass(String name) throws IOException {
+        return new DAClassWriter(name, bw, 1, this);
     }
 
     private static enum JavaLangDANamePredicate implements Predicate<DAName> {
