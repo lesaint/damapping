@@ -1,19 +1,22 @@
 package com.ekino.lesaint.dozerannihilation.processor.impl;
 
+import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
 
 /**
-* MapperFileGenerator -
-*
-* @author Sébastien Lesaint
-*/
+ * MapperFileGenerator -
+ *
+ * @author Sébastien Lesaint
+ */
 class MapperFileGenerator extends AbstractFileGenerator {
     @Override
     public String fileName(FileGeneratorContext context) {
@@ -30,26 +33,32 @@ class MapperFileGenerator extends AbstractFileGenerator {
         //     -> liste des interfaces implémentées
         //     -> compute liste des imports à réaliser
         DAMapperClass daMapperClass = context.getMapperClass();
-        appendHeader(bw, daMapperClass, context.getMapperImports());
-        for (Modifier modifier : filterModifiers(daMapperClass.modifiers)) {
-            bw.append(modifier.toString()).append(" ");
-        }
-        bw.append("interface ");
-        bw.append(daMapperClass.type.simpleName).append("Mapper");
-        if (!daMapperClass.interfaces.isEmpty()) {
-            bw.append(" extends ");
-        }
-        for (DAInterface anInterface : daMapperClass.interfaces) {
-            appendType(bw, anInterface.type);
-        }
-        bw.append(" {");
-        bw.newLine();
-        bw.newLine();
+        DAFileWriter fileWriter = new DAFileWriter(bw)
+                .appendPackage(daMapperClass.packageName)
+                .appendImports(context.getMapperImports())
+                .appendWarningComment();
 
-        appendFooter(bw);
+        fileWriter.newInterface(daMapperClass.type.simpleName + "Mapper")
+                .withModifiers(filterModifiers(daMapperClass.modifiers))
+                .withExtended(toDAType(daMapperClass.interfaces)).start().end();
 
         bw.flush();
         bw.close();
+    }
+
+    private static List<DAType> toDAType(List<DAInterface> interfaces) {
+        return FluentIterable.from(interfaces)
+                .transform(new Function<DAInterface, DAType>() {
+                    @Nullable
+                    @Override
+                    public DAType apply(@Nullable DAInterface daInterface) {
+                        if (daInterface == null) {
+                            return null;
+                        }
+                        return daInterface.type;
+                    }
+                }).filter(Predicates.notNull())
+                .toList();
     }
 
     private static Set<Modifier> filterModifiers(Set<Modifier> modifiers) {
