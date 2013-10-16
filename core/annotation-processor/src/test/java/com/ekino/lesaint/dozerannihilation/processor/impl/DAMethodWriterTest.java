@@ -101,6 +101,20 @@ public class DAMethodWriterTest {
     }
 
     @Test
+    public void method_with_statement() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        methodWriter("name", "java.lang.String", testWriters)
+                .start()
+                .newStatement().start().append("return this").end()
+                .end();
+
+        assertThat(testWriters.getRes())
+                .isEqualTo(INDENT + "String name() {" + LINE_SEPARATOR
+                        + INDENT + INDENT + "return this;" + LINE_SEPARATOR
+                        + INDENT + "}" + LINE_SEPARATOR + LINE_SEPARATOR);
+    }
+
+    @Test
     public void end_returns_parent_writer() throws Exception {
         TestWriters testWriters = new TestWriters();
         DAWriter parent = new DAWriter() {

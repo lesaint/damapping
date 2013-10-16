@@ -71,6 +71,10 @@ public class DAMethodWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         }
     }
 
+    DAStatementWriter<DAMethodWriter<T>> newStatement() {
+        return new DAStatementWriter<DAMethodWriter<T>>(bw, this, indent + 1);
+    }
+
     public T end() throws IOException {
         appendIndent();
         bw.append("}");
@@ -78,5 +82,4 @@ public class DAMethodWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         bw.newLine();
         return parent;
     }
-
 }
