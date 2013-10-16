@@ -71,6 +71,10 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         return this;
     }
 
+    DAMethodWriter<DAClassWriter<T>> newMethod(String name, DAType returnType) {
+        return new DAMethodWriter<DAClassWriter<T>>(name, returnType, bw, indent + 1, this);
+    }
+
     T end() throws IOException {
         appendIndent();
         bw.append("}");

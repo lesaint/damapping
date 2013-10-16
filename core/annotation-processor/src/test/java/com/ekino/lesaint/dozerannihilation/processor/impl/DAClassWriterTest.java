@@ -8,6 +8,7 @@ import javax.lang.model.element.Modifier;
 
 import static com.ekino.lesaint.dozerannihilation.processor.impl.AbstractFileGenerator.INDENT;
 import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.LINE_SEPARATOR;
+import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.daType;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -143,6 +144,22 @@ public class DAClassWriterTest {
         DAClassWriter<DAWriter> classWriter = new DAClassWriter<DAWriter>("name", testWriters.bw, 1, parent);
 
         assertThat(classWriter.end()).isSameAs(parent);
+    }
+
+    @Test
+    public void one_method_class() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        daClassWriter(testWriters, "name")
+                .start()
+                .newMethod("methodName", daType("java.lang.String")).start().end()
+                .end();
+
+        assertThat(testWriters.getRes())
+                .isEqualTo(INDENT + "class name {" + LINE_SEPARATOR
+                        + INDENT + INDENT + "String methodName() {" + LINE_SEPARATOR
+                        + INDENT + INDENT + "}" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                        + INDENT + "}");
     }
 
     private DAClassWriter<DAWriter> daClassWriter(TestWriters testWriters, String className) {

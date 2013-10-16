@@ -17,7 +17,7 @@ public class AbstractDAWriter<T extends DAWriter> implements DAWriter {
 
     protected final BufferedWriter bw;
     protected final T parent;
-    private final int indent;
+    protected final int indent;
 
     AbstractDAWriter(BufferedWriter bw, T parent, int indent) {
         this.bw = bw;
