@@ -19,6 +19,7 @@ import java.util.Set;
  *     <li>ajouter un contrôle sur les modifiers autorisés pour une classe</li>
  *     <li>ajouter un paramètre "boolean classOfJavaSource" pour refuser le modifier PUBLIC si ce paramètre est false</li>
  *     <li>ajouter une vérification d'état, si start() a été appelé, withModifiers, withAnnotations, withImplemented, withExtented échouent</li>
+ *     <li>ajouter le tri automatique des modifiers</li>
  *     <li>ajouter vérification d'état : end() must be called after start()</li>
  *     <li>ajouter vérification d'état : plus de call sur aucune méthode si end() a été appelé</li>
  *     <li>ajouter vérification des paramètres de withModifiers, withAnnotations, withImplemented, withExtented</li>
@@ -26,21 +27,16 @@ import java.util.Set;
  *
  * @author Sébastien Lesaint
  */
-public class DAClassWriter<T extends DAWriter> extends DAWriter {
-    private final BufferedWriter bw;
-    private final int indent;
+public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     private final String name;
-    private final T parent;
     private Set<Modifier> modifiers = Collections.emptySet();
     private List<DAType> annotations = Collections.emptyList();
     private List<DAType> implemented = Collections.emptyList();
     private DAType extended;
 
     DAClassWriter(String name, BufferedWriter bw, int indent, T parent) {
+        super(bw, parent, indent);
         this.name = name;
-        this.bw = bw;
-        this.indent = indent;
-        this.parent = parent;
     }
 
     DAClassWriter<T> withModifiers(Set<Modifier> modifiers) {
@@ -65,8 +61,8 @@ public class DAClassWriter<T extends DAWriter> extends DAWriter {
 
     DAClassWriter<T> start() throws IOException {
         appendAnnotations();
-        appendIndent(bw, indent);
-        appendModifiers();
+        appendIndent();
+        appendModifiers(modifiers);
         bw.append("class ").append(name).append(" ");
         appendExtended();
         appendImplemented();
@@ -76,7 +72,7 @@ public class DAClassWriter<T extends DAWriter> extends DAWriter {
     }
 
     T end() throws IOException {
-        appendIndent(bw, indent);
+        appendIndent();
         bw.append("}");
         return parent;
     }
@@ -87,21 +83,14 @@ public class DAClassWriter<T extends DAWriter> extends DAWriter {
         }
 
         for (DAType annotation : annotations) {
-            appendIndent(bw, indent);
+            appendIndent();
             bw.append("@").append(annotation.simpleName);
             bw.newLine();
         }
     }
 
-    private void appendModifiers() throws IOException {
-        if (modifiers.isEmpty()) {
-            return;
-        }
-        Iterator<Modifier> it = modifiers.iterator();
-        while (it.hasNext()) {
-            bw.append(it.next().toString()).append(" ");
-        }
-    }
+
+
 
     private void appendExtended() throws IOException {
         if (extended == null) {

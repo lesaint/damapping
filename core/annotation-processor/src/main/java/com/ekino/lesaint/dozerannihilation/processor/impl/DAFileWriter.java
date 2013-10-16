@@ -22,7 +22,7 @@ import static com.google.common.collect.FluentIterable.from;
  *
  * @author Sébastien Lesaint
  */
-public class DAFileWriter extends DAWriter {
+public class DAFileWriter implements DAWriter {
     private final BufferedWriter bw;
     private DAName packageName;
 
