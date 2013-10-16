@@ -51,7 +51,7 @@ public class DAMethodWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     }
 
     private void appendReturnType() throws IOException {
-        appendType(bw, returnType);
+        appendType(returnType);
         bw.append(" ");
     }
 
@@ -63,7 +63,7 @@ public class DAMethodWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         Iterator<DAParameter> it = params.iterator();
         while (it.hasNext()) {
             DAParameter parameter = it.next();
-            appendType(bw, parameter.type);
+            appendType(parameter.type);
             bw.append(" ").append(parameter.name);
             if (it.hasNext()) {
                 bw.append(", ");

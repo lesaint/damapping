@@ -23,17 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class DAClassWriterTest {
 
-    private static final DAType OVERRIDE_ANNOTATION = DAWriterTestUtil.daType("java.lang.Override");
-    private static final DAType NULLABLE_ANNOTATION = DAWriterTestUtil.daType("javax.annotation.Nullable");
-    private static final DAType SERIALIZABLE_INTERFACE = DAWriterTestUtil.daType("java.io.Serializable");
-    private static final DAType FUNCTION_INTEGER_TO_STRING_INTERFACE = DAWriterTestUtil.daType("com.google.common.base.Function",
-            ImmutableList.of(DAWriterTestUtil.daType("java.lang.Integer"), DAWriterTestUtil.daType("java.lang.String"))
-    );
-    private static final DAType DAWRITER_ABSTACT_CLASS = DAWriterTestUtil.daType("com.ekino.lesaint.dozerannihilation.processor.impl.DAWriter");
-    private static final DAType BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS = DAWriterTestUtil.daType("com.acme.Bidon",
-            ImmutableList.of(DAWriterTestUtil.daType("java.lang.Integer"), DAWriterTestUtil.daType("java.lang.String"))
-    );
-
     @Test
     public void empty_empty_class() throws Exception {
         TestWriters testWriters = new TestWriters();
@@ -64,7 +53,7 @@ public class DAClassWriterTest {
     @Test
     public void empty_class_annoted_class() throws Exception {
         TestWriters testWriters = new TestWriters();
-        daClassWriter(testWriters, "name").withAnnotations(ImmutableList.of(OVERRIDE_ANNOTATION)).start().end();
+        daClassWriter(testWriters, "name").withAnnotations(ImmutableList.of(DAWriterTestUtil.OVERRIDE_ANNOTATION)).start().end();
 
         assertThat(testWriters.getRes())
                 .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR +
@@ -75,7 +64,7 @@ public class DAClassWriterTest {
     public void empty_class_annoted_twice_class() throws Exception {
         TestWriters testWriters = new TestWriters();
         daClassWriter(testWriters, "name")
-                .withAnnotations(ImmutableList.of(OVERRIDE_ANNOTATION, NULLABLE_ANNOTATION))
+                .withAnnotations(ImmutableList.of(DAWriterTestUtil.OVERRIDE_ANNOTATION, DAWriterTestUtil.NULLABLE_ANNOTATION))
                 .start().end();
 
         assertThat(testWriters.getRes())
@@ -87,7 +76,7 @@ public class DAClassWriterTest {
     @Test
     public void empty_class_implements_once() throws Exception {
         TestWriters testWriters = new TestWriters();
-        daClassWriter(testWriters, "name").withImplemented(ImmutableList.of(SERIALIZABLE_INTERFACE)).start().end();
+        daClassWriter(testWriters, "name").withImplemented(ImmutableList.of(DAWriterTestUtil.SERIALIZABLE_INTERFACE)).start().end();
 
         assertThat(testWriters.getRes())
                 .isEqualTo(INDENT + "class name implements Serializable {" + LINE_SEPARATOR + INDENT + "}");
@@ -96,7 +85,7 @@ public class DAClassWriterTest {
     @Test
     public void empty_class_implements_twice_one_with_types() throws Exception {
         TestWriters testWriters = new TestWriters();
-        daClassWriter(testWriters, "name").withImplemented(ImmutableList.of(SERIALIZABLE_INTERFACE, FUNCTION_INTEGER_TO_STRING_INTERFACE)).start().end();
+        daClassWriter(testWriters, "name").withImplemented(ImmutableList.of(DAWriterTestUtil.SERIALIZABLE_INTERFACE, DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE)).start().end();
 
         assertThat(testWriters.getRes())
                 .isEqualTo(INDENT + "class name implements Serializable, Function<Integer, String> {" + LINE_SEPARATOR + INDENT + "}");
@@ -105,7 +94,7 @@ public class DAClassWriterTest {
     @Test
     public void empty_class_extends() throws Exception {
         TestWriters testWriters = new TestWriters();
-        daClassWriter(testWriters, "name").withExtended(DAWRITER_ABSTACT_CLASS).start().end();
+        daClassWriter(testWriters, "name").withExtended(DAWriterTestUtil.DAWRITER_ABSTACT_CLASS).start().end();
 
         assertThat(testWriters.getRes())
                 .isEqualTo(INDENT + "class name extends DAWriter {" + LINE_SEPARATOR + INDENT + "}");
@@ -114,7 +103,7 @@ public class DAClassWriterTest {
     @Test
     public void empty_class_extends_one_with_types() throws Exception {
         TestWriters testWriters = new TestWriters();
-        daClassWriter(testWriters, "name").withExtended(BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS).start().end();
+        daClassWriter(testWriters, "name").withExtended(DAWriterTestUtil.BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS).start().end();
 
         assertThat(testWriters.getRes())
                 .isEqualTo(INDENT + "class name extends Bidon<Integer, String> {" + LINE_SEPARATOR + INDENT + "}");
@@ -125,9 +114,9 @@ public class DAClassWriterTest {
         TestWriters testWriters = new TestWriters();
         daClassWriter(testWriters, "name")
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC, Modifier.FINAL))
-                .withAnnotations(ImmutableList.of(OVERRIDE_ANNOTATION))
-                .withImplemented(ImmutableList.of(FUNCTION_INTEGER_TO_STRING_INTERFACE))
-                .withExtended(BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS)
+                .withAnnotations(ImmutableList.of(DAWriterTestUtil.OVERRIDE_ANNOTATION))
+                .withImplemented(ImmutableList.of(DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE))
+                .withExtended(DAWriterTestUtil.BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS)
                 .start().end();
 
         assertThat(testWriters.getRes())

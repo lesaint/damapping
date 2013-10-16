@@ -3,6 +3,7 @@ package com.ekino.lesaint.dozerannihilation.processor.impl;
 import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +43,19 @@ public class AbstractDAWriter<T extends DAWriter> implements DAWriter {
         }
     }
 
-    protected void appendType(BufferedWriter bw, DAType type) throws IOException {
+    void appendAnnotations(Collection<DAType> annotations) throws IOException {
+        if (annotations.isEmpty()) {
+            return;
+        }
+
+        for (DAType annotation : annotations) {
+            appendIndent();
+            bw.append("@").append(annotation.simpleName);
+            bw.newLine();
+        }
+    }
+
+   void appendType(DAType type) throws IOException {
         bw.append(type.simpleName);
         appendTypeArgs(bw, type.typeArgs);
         if (type.isArray()) {
@@ -56,7 +69,7 @@ public class AbstractDAWriter<T extends DAWriter> implements DAWriter {
             bw.append("<");
             while (iterator.hasNext()) {
                 DAType arg = iterator.next();
-                appendType(bw, arg);
+                appendType(arg);
                 if (iterator.hasNext()) {
                     bw.append(", ");
                 }
