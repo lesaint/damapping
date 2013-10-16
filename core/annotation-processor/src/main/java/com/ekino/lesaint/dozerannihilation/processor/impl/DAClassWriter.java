@@ -78,6 +78,7 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     T end() throws IOException {
         appendIndent();
         bw.append("}");
+        bw.newLine();
         return parent;
     }
 

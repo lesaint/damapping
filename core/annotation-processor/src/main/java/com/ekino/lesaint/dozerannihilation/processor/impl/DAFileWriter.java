@@ -88,8 +88,12 @@ public class DAFileWriter implements DAWriter {
         return this;
     }
 
-    public DAClassWriter<DAFileWriter> publicClass(String name) throws IOException {
-        return new DAClassWriter(name, bw, 1, this);
+    public DAClassWriter<DAFileWriter> newClass(String name) throws IOException {
+        return new DAClassWriter<DAFileWriter>(name, bw, 0, this);
+    }
+
+    public DAInterfaceWriter<DAFileWriter> newInterface(String name) throws IOException {
+        return new DAInterfaceWriter<DAFileWriter>(name, bw, this, 0);
     }
 
     private static enum JavaLangDANamePredicate implements Predicate<DAName> {
