@@ -8,9 +8,9 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeKind;
 
 import static com.ekino.lesaint.dozerannihilation.processor.impl.AbstractFileGenerator.INDENT;
+import static com.ekino.lesaint.dozerannihilation.processor.impl.DATypeFactory.declared;
 import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.LINE_SEPARATOR;
 import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.daParameter;
-import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.daType;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -35,8 +35,8 @@ public class DAMethodWriterTest {
     private static DAParameter superComplexeParameter(String name) {
         DAParameter res = new DAParameter();
         res.name = DANameFactory.from(name);
-        DAType parameterType = daType("com.google.common.base.Function",
-                ImmutableList.of(daType("java.lang.String"), daType("java.lang.Integer")));
+        DAType parameterType = declared("com.google.common.base.Function",
+                ImmutableList.of(DATypeFactory.declared("java.lang.String"), DATypeFactory.declared("java.lang.Integer")));
         parameterType.kind = TypeKind.ARRAY;
         res.type = parameterType;
         return res;
@@ -120,7 +120,7 @@ public class DAMethodWriterTest {
         DAWriter parent = new DAWriter() {
 
         };
-        DAMethodWriter<DAWriter> classWriter = new DAMethodWriter<DAWriter>("name", daType("java.lang.String"), testWriters.bw, 1, parent);
+        DAMethodWriter<DAWriter> classWriter = new DAMethodWriter<DAWriter>("name", DATypeFactory.declared("java.lang.String"), testWriters.bw, 1, parent);
 
         assertThat(classWriter.end()).isSameAs(parent);
     }
@@ -129,7 +129,7 @@ public class DAMethodWriterTest {
         DAWriter parent = new DAWriter() {
 
         };
-        return new DAMethodWriter<DAWriter>(name, daType(returnType), testWriters.bw, 1, parent);
+        return new DAMethodWriter<DAWriter>(name, DATypeFactory.declared(returnType), testWriters.bw, 1, parent);
     }
 
 

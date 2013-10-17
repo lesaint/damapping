@@ -9,7 +9,6 @@ import javax.lang.model.element.Modifier;
 import static com.ekino.lesaint.dozerannihilation.processor.impl.AbstractFileGenerator.INDENT;
 import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.LINE_SEPARATOR;
 import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.NULLABLE_ANNOTATION;
-import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.daType;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -171,7 +170,7 @@ public class DAClassWriterTest {
         TestWriters testWriters = new TestWriters();
         daClassWriter(testWriters, "name")
                 .start()
-                .newMethod("methodName", daType("java.lang.String")).start().end()
+                .newMethod("methodName", DATypeFactory.declared("java.lang.String")).start().end()
                 .end();
 
         assertThat(testWriters.getRes())
@@ -189,7 +188,7 @@ public class DAClassWriterTest {
         TestWriters testWriters = new TestWriters();
         daClassWriter(testWriters, "name")
                 .start()
-                .newProperty("variableName", daType("java.lang.String"))
+                .newProperty("variableName", DATypeFactory.declared("java.lang.String"))
                     .withAnnotations(ImmutableList.of(NULLABLE_ANNOTATION))
                     .write()
                 .end();

@@ -2,7 +2,6 @@ package com.ekino.lesaint.dozerannihilation.processor.impl;
 
 import org.testng.annotations.Test;
 
-import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.daType;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
