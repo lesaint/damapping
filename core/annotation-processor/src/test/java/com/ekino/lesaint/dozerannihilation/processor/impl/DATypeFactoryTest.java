@@ -57,4 +57,38 @@ public class DATypeFactoryTest {
         assertThat(daType.qualifiedName.getName()).isEqualTo("com.acme.Toto");
         assertThat(daType.typeArgs).isSameAs(typeArgs);
     }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void from_null_qualifiedname_raises_NPE() throws Exception {
+        DATypeFactory.from(null);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void from_with_types_null_qualifiedname_raises_NPE() throws Exception {
+        DATypeFactory.from(null, Collections.<DAType>emptyList());
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void fromWithTypes_null_daType_list_raises_NPE() throws Exception {
+        DATypeFactory.from(this.getClass(), null);
+    }
+
+    @Test
+    public void from() throws Exception {
+        DAType daType = DATypeFactory.from(getClass());
+        assertThat(daType.kind).isEqualTo(TypeKind.DECLARED);
+        assertThat(daType.simpleName.getName()).isEqualTo(getClass().getSimpleName());
+        assertThat(daType.qualifiedName.getName()).isEqualTo(getClass().getCanonicalName());
+        assertThat(daType.typeArgs).isEmpty();
+    }
+
+    @Test
+    public void fromWithTypes() throws Exception {
+        ImmutableList<DAType> typeArgs = ImmutableList.of(DATypeFactory.declared("java.lang.String"));
+        DAType daType = DATypeFactory.from(getClass(), typeArgs);
+        assertThat(daType.kind).isEqualTo(TypeKind.DECLARED);
+        assertThat(daType.simpleName.getName()).isEqualTo(getClass().getSimpleName());
+        assertThat(daType.qualifiedName.getName()).isEqualTo(getClass().getCanonicalName());
+        assertThat(daType.typeArgs).isSameAs(typeArgs);
+    }
 }

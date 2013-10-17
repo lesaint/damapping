@@ -18,6 +18,28 @@ public final class DATypeFactory {
     }
 
     /**
+     * Créer un objet DAType à partir de la Class d'une enum/classe/annotation.
+     * <br/>
+     * La liste <code>typeArgs</code> est vide.
+     *
+     * @param clazz une {@link Class}
+     * @return un objet {@link DAType}
+     */
+    static DAType from(@Nonnull Class<?> clazz) {
+        return instance(clazz.getSimpleName(), clazz.getCanonicalName(), Collections.<DAType>emptyList());
+    }
+
+    /**
+     * Créer un objet DAType à partir de la Class d'une enum/classe/annotation et la liste typeArgs.
+     *
+     * @param clazz une {@link Class}
+     * @return un objet {@link DAType}
+     */
+    static DAType from(@Nonnull Class<?> clazz, @Nonnull List<DAType> typeArgs) {
+        return instance(clazz.getSimpleName(), clazz.getCanonicalName(), typeArgs);
+    }
+
+    /**
      * Créer un objet DAType de type <code>TypeKind.DECLARED</code> à partir du nom qualifié d'une enum/classe/interface.
      * <br/>
      * Le simpleName de l'objet retourné est inféré à partir du qualifiedName spécifié comme la sous string commençant
@@ -45,9 +67,14 @@ public final class DATypeFactory {
      * @return un objet {@link DAType}
      */
     static DAType declared(@Nonnull String qualifiedName, @Nonnull List<DAType> typeArgs) {
+        String simpleName = qualifiedName.substring(qualifiedName.lastIndexOf(".") + 1);
+        return instance(simpleName, qualifiedName, typeArgs);
+    }
+
+    private static DAType instance(String simpleName, String qualifiedName, List<DAType> typeArgs) {
         DAType annotationDAType = new DAType();
         annotationDAType.kind = TypeKind.DECLARED;
-        annotationDAType.simpleName = DANameFactory.from(qualifiedName.substring(qualifiedName.lastIndexOf(".") + 1));
+        annotationDAType.simpleName = DANameFactory.from(simpleName);
         annotationDAType.qualifiedName = DANameFactory.from(qualifiedName);
         annotationDAType.typeArgs = Preconditions.checkNotNull(typeArgs);
         return annotationDAType;
