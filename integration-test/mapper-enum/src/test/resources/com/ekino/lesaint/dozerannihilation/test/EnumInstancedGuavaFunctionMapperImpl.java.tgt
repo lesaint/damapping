@@ -7,4 +7,5 @@ public class EnumInstancedGuavaFunctionMapperImpl implements EnumInstancedGuavaF
     public String apply(Integer input) {
         return EnumInstancedGuavaFunctionMapperFactory.instance().apply(input);
     }
+
 }

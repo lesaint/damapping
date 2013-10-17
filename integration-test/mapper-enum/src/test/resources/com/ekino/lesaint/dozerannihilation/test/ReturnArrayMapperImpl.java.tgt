@@ -7,4 +7,5 @@ public class ReturnArrayMapperImpl implements ReturnArrayMapper {
     public String[] apply(Integer input) {
         return ReturnArrayMapperFactory.instance().apply(input);
     }
+
 }

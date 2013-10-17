@@ -9,4 +9,5 @@ public class HandleCustomTypesMapperImpl implements HandleCustomTypesMapper {
     public InPackage apply(OutOfPackage input) {
         return HandleCustomTypesMapperFactory.instance().apply(input);
     }
+
 }

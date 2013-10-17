@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 // GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
 @Component
 public class ComponentFunctionMapperImpl implements ComponentFunctionMapper {
+
     @Resource
     private ComponentFunction instance;
 
@@ -13,4 +14,5 @@ public class ComponentFunctionMapperImpl implements ComponentFunctionMapper {
     public String apply(A a) {
         return instance.apply(a);
     }
+
 }

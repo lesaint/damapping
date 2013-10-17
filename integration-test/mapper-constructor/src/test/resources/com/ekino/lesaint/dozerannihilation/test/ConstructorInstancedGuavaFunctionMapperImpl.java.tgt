@@ -7,4 +7,5 @@ public class ConstructorInstancedGuavaFunctionMapperImpl implements ConstructorI
     public String apply(Integer input) {
         return ConstructorInstancedGuavaFunctionMapperFactory.instance().apply(input);
     }
+
 }

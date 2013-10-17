@@ -13,4 +13,5 @@ public class GenericsEverywhereMapperImpl implements GenericsEverywhereMapper {
     public Collection<Predicate<Map<Long, File>>> apply(Optional<Integer[]> input) {
         return GenericsEverywhereMapperFactory.instance().apply(input);
     }
+
 }
