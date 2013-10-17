@@ -48,7 +48,9 @@ public class DAMethodWriterTest {
         methodWriter("name", "java.lang.String", testWriters).start().end();
 
         assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "String name() {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR + LINE_SEPARATOR);
+                .isEqualTo(INDENT + "String name() {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                );
     }
 
     @Test
@@ -60,7 +62,9 @@ public class DAMethodWriterTest {
                 .end();
 
         assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "public static String name() {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR + LINE_SEPARATOR);
+                .isEqualTo(INDENT + "public static String name() {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                );
     }
 
     @Test
@@ -72,7 +76,9 @@ public class DAMethodWriterTest {
                 .end();
 
         assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "String name(String toto) {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR + LINE_SEPARATOR);
+                .isEqualTo(INDENT + "String name(String toto) {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                );
     }
 
     @Test
@@ -97,7 +103,25 @@ public class DAMethodWriterTest {
                 .end();
 
         assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "public static String name(Function<String, Integer>[] complexeParam) {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR + LINE_SEPARATOR);
+                .isEqualTo(INDENT + "public static String name(Function<String, Integer>[] complexeParam) {" + LINE_SEPARATOR
+                        + INDENT + "}" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                );
+    }
+
+    @Test
+    public void annoted_empty_method_with() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        methodWriter("name", "java.lang.String", testWriters)
+                .withAnnotations(ImmutableList.of(DAWriterTestUtil.OVERRIDE_ANNOTATION))
+                .start()
+                .end();
+
+        assertThat(testWriters.getRes())
+                .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR
+                        + INDENT + "String name() {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                );
     }
 
     @Test
@@ -111,7 +135,8 @@ public class DAMethodWriterTest {
         assertThat(testWriters.getRes())
                 .isEqualTo(INDENT + "String name() {" + LINE_SEPARATOR
                         + INDENT + INDENT + "return this;" + LINE_SEPARATOR
-                        + INDENT + "}" + LINE_SEPARATOR + LINE_SEPARATOR);
+                        + INDENT + "}" + LINE_SEPARATOR + LINE_SEPARATOR
+                );
     }
 
     @Test

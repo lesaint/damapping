@@ -20,6 +20,7 @@ public class DAMethodWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     private final String name;
     private final DAType returnType;
     private Set<Modifier> modifiers = Collections.<Modifier>emptySet();
+    private List<DAType> annotations = Collections.emptyList();
     private List<DAParameter> params = Collections.<DAParameter>emptyList();
 
     public DAMethodWriter(String name, DAType returnType, BufferedWriter bw, int indent, T parent) {
@@ -33,12 +34,18 @@ public class DAMethodWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         return this;
     }
 
+    public DAMethodWriter<T> withAnnotations(List<DAType> annotations) {
+        this.annotations = annotations == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(annotations);
+        return this;
+    }
+
     public DAMethodWriter<T> withParams(List<DAParameter> params) {
         this.params = params == null ? Collections.<DAParameter>emptyList() : ImmutableList.copyOf(params);
         return this;
     }
 
     public DAMethodWriter<T> start() throws IOException {
+        appendAnnotations(annotations);
         appendIndent();
         appendModifiers(modifiers);
         appendReturnType();
@@ -71,7 +78,7 @@ public class DAMethodWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         }
     }
 
-    DAStatementWriter<DAMethodWriter<T>> newStatement() {
+    public DAStatementWriter<DAMethodWriter<T>> newStatement() {
         return new DAStatementWriter<DAMethodWriter<T>>(bw, this, indent + 1);
     }
 
