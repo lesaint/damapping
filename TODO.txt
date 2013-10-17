@@ -21,6 +21,9 @@ ROADMAP
  * auto discovery de l'annotation processor
  * séparation en modules spécifiques des annotations et du processor
  - réordonner paramètre constructeur DAClassWriter
+ - ajouter le flush+close dans DAFileWriter
+ - exposer les addParams, addType dans DAStatementWriter
+ - remettre DATypeTest dans le bon module
  - traiter les TODO et FIXME qui trainent dans les sources
  - supprimer les propriétés publiques dans les beans utilisés dans la genération de fichiers sources
  - ajouter test U pour les méthodes de DAMethod
