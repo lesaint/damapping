@@ -72,6 +72,10 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         return this;
     }
 
+    DAPropertyWriter<DAClassWriter<T>> newProperty(String name, DAType type) {
+        return new DAPropertyWriter<DAClassWriter<T>>(name, type, bw, this, indent + 1);
+    }
+
     DAMethodWriter<DAClassWriter<T>> newMethod(String name, DAType returnType) {
         return new DAMethodWriter<DAClassWriter<T>>(name, returnType, bw, indent + 1, this);
     }

@@ -8,6 +8,7 @@ import javax.lang.model.element.Modifier;
 
 import static com.ekino.lesaint.dozerannihilation.processor.impl.AbstractFileGenerator.INDENT;
 import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.LINE_SEPARATOR;
+import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.NULLABLE_ANNOTATION;
 import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.daType;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -178,6 +179,26 @@ public class DAClassWriterTest {
                         + LINE_SEPARATOR
                         + INDENT + INDENT + "String methodName() {" + LINE_SEPARATOR
                         + INDENT + INDENT + "}" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                        + INDENT + "}" + LINE_SEPARATOR
+                );
+    }
+
+    @Test
+    public void one_property_class() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        daClassWriter(testWriters, "name")
+                .start()
+                .newProperty("variableName", daType("java.lang.String"))
+                    .withAnnotations(ImmutableList.of(NULLABLE_ANNOTATION))
+                    .write()
+                .end();
+
+        assertThat(testWriters.getRes())
+                .isEqualTo(INDENT + "class name {" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
+                        + INDENT + INDENT + "@Nullable" + LINE_SEPARATOR
+                        + INDENT + INDENT + "String variableName;" + LINE_SEPARATOR
                         + LINE_SEPARATOR
                         + INDENT + "}" + LINE_SEPARATOR
                 );
