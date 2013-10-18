@@ -6,4 +6,5 @@ class ReturnArrayMapperFactory {
     public static ReturnArray instance() {
         return ReturnArray.INSTANCE;
     }
+
 }

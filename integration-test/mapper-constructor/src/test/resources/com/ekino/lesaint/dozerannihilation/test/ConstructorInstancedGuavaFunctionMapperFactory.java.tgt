@@ -6,4 +6,5 @@ class ConstructorInstancedGuavaFunctionMapperFactory {
     public static ConstructorInstancedGuavaFunction instance() {
         return new ConstructorInstancedGuavaFunction();
     }
+
 }

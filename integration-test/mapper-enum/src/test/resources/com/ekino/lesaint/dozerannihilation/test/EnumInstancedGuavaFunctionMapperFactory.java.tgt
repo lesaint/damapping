@@ -6,4 +6,5 @@ class EnumInstancedGuavaFunctionMapperFactory {
     public static EnumInstancedGuavaFunction instance() {
         return EnumInstancedGuavaFunction.INSTANCE;
     }
+
 }

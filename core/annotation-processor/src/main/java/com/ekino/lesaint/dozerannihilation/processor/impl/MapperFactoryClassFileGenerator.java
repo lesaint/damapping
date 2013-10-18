@@ -1,7 +1,13 @@
 package com.ekino.lesaint.dozerannihilation.processor.impl;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+
+import javax.annotation.Resource;
+import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Collections;
 
 /**
 * MapperFactoryClassFileGenerator -
@@ -17,43 +23,54 @@ class MapperFactoryClassFileGenerator extends AbstractFileGenerator {
     @Override
     public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
         DAMapperClass daMapperClass = context.getMapperClass();
-        appendHeader(bw, daMapperClass, context.getMapperFactoryImports());
+
+        DAFileWriter fileWriter = new DAFileWriter(bw)
+                .appendPackage(daMapperClass.packageName)
+                .appendImports(context.getMapperFactoryImports())
+                .appendWarningComment();
 
         // générer la factory
         //     -> nom du package
         //     -> nom de la classe (infère nom de la factory et nom du Mapper)
         //     -> type d'instantiation (si enum, le nom de la valeur d'enum à utiliser)
-        bw.append("class ").append(daMapperClass.type.simpleName).append("MapperFactory").append(" {");
-        bw.newLine();
-        bw.newLine();
+        DAClassWriter<DAFileWriter> classWriter = fileWriter.newClass(daMapperClass.type.simpleName + "MapperFactory")
+                .start();
         if (daMapperClass.instantiationType == InstantiationType.SPRING_COMPONENT) {
-            bw.append(INDENT).append("@Resource");
-            bw.newLine();
-            bw.append(INDENT).append("private ").append(daMapperClass.type.simpleName).append(" instance").append(";");
-            bw.newLine();
-            bw.newLine();
+            classWriter.newProperty("instance", DATypeFactory.declared(daMapperClass.type.qualifiedName.getName()))
+                    .withModifier(ImmutableSet.of(Modifier.PRIVATE))
+                    .withAnnotations(ImmutableList.of(DATypeFactory.from(Resource.class)))
+                    .write();
         }
-        bw.append(INDENT).append("public static ").append(daMapperClass.type.simpleName).append(" instance() {");
-        bw.newLine();
+
+        DAMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter.newMethod("instance", DATypeFactory.declared(daMapperClass.type.qualifiedName.getName()))
+                .withModifiers(ImmutableSet.of(Modifier.PUBLIC, Modifier.STATIC))
+                .start();
         switch (daMapperClass.instantiationType) {
             case SINGLETON_ENUM:
                 // TOIMPROVE générer le code de la factory dans le cas enum avec un nom d'enum dynamique
-                bw.append(INDENT).append(INDENT).append("return ").append(daMapperClass.type.simpleName).append(".INSTANCE;");
+                methodWriter.newStatement()
+                        .start()
+                        .append("return ").append(daMapperClass.type.simpleName).append(".INSTANCE")
+                        .end();
                 break;
             case CONSTRUCTOR:
-                bw.append(INDENT).append(INDENT).append("return new ").append(daMapperClass.type.simpleName).append("();");
+                methodWriter.newStatement()
+                        .start()
+                        .append("return ").append("new ").append(daMapperClass.type.simpleName).appendParamValues(Collections.<DAParameter>emptyList())
+                        .end();
                 break;
             case SPRING_COMPONENT:
-                bw.append(INDENT).append(INDENT).append("return instance;");
+                methodWriter.newStatement()
+                        .start()
+                        .append("return ").append("instance")
+                        .end();
                 break;
         }
-        bw.newLine();
-        bw.append(INDENT).append("}");
-        bw.newLine();
 
-        appendFooter(bw);
+        methodWriter.end();
 
-        bw.flush();
-        bw.close();
+        classWriter.end();
+
+        fileWriter.end();
     }
 }

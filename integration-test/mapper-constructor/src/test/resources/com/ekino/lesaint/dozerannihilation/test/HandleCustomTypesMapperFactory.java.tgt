@@ -6,4 +6,5 @@ class HandleCustomTypesMapperFactory {
     public static HandleCustomTypes instance() {
         return new HandleCustomTypes();
     }
+
 }

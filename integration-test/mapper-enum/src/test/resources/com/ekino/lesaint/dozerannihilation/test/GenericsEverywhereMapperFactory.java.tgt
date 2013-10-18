@@ -6,4 +6,5 @@ class GenericsEverywhereMapperFactory {
     public static GenericsEverywhere instance() {
         return GenericsEverywhere.INSTANCE;
     }
+
 }
