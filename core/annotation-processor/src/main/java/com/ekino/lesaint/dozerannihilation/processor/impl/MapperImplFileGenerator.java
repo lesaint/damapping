@@ -88,8 +88,8 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
         // clos la classe
         classWriter.end();
 
-        bw.flush();
-        bw.close();
+        // clos le fichier
+        fileWriter.end();
     }
 
     private String computeInstanceObject(DAMapperClass daMapperClass) {

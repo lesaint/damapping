@@ -6,6 +6,8 @@ import org.testng.annotations.Test;
 
 import javax.lang.model.element.Modifier;
 
+import java.io.IOException;
+
 import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.LINE_SEPARATOR;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -85,5 +87,13 @@ public class DAFileWriterTest {
                 + LINE_SEPARATOR
                 + "}" + LINE_SEPARATOR
         );
+    }
+
+    @Test(expectedExceptions = IOException.class, expectedExceptionsMessageRegExp = "Stream closed")
+    public void end_closes_writer() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        new DAFileWriter(testWriters.bw).end();
+
+        testWriters.bw.append("toto"); // raises IOException
     }
 }

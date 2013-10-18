@@ -94,6 +94,11 @@ public class DAFileWriter implements DAWriter {
         return new DAInterfaceWriter<DAFileWriter>(name, bw, this, 0);
     }
 
+    public void end() throws IOException {
+        bw.flush();
+        bw.close();
+    }
+
     private static enum JavaLangDANamePredicate implements Predicate<DAName> {
         INSTANCE;
 
