@@ -160,7 +160,7 @@ public class DAClassWriterTest {
         DAWriter parent = new DAWriter() {
 
         };
-        DAClassWriter<DAWriter> classWriter = new DAClassWriter<DAWriter>("name", testWriters.bw, 1, parent);
+        DAClassWriter<DAWriter> classWriter = new DAClassWriter<DAWriter>("name", testWriters.bw, parent, 1);
 
         assertThat(classWriter.end()).isSameAs(parent);
     }
@@ -207,7 +207,7 @@ public class DAClassWriterTest {
         DAWriter parent = new DAWriter() {
 
         };
-        return new DAClassWriter<DAWriter>(className, testWriters.bw, 1, parent);
+        return new DAClassWriter<DAWriter>(className, testWriters.bw, parent, 1);
     }
 
 }

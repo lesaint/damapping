@@ -7,13 +7,11 @@ import com.google.common.collect.Lists;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import static com.google.common.collect.FluentIterable.from;
 
@@ -89,7 +87,7 @@ public class DAFileWriter implements DAWriter {
     }
 
     public DAClassWriter<DAFileWriter> newClass(String name) throws IOException {
-        return new DAClassWriter<DAFileWriter>(name, bw, 0, this);
+        return new DAClassWriter<DAFileWriter>(name, bw, this, 0);
     }
 
     public DAInterfaceWriter<DAFileWriter> newInterface(String name) throws IOException {

@@ -34,7 +34,7 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     private List<DAType> implemented = Collections.emptyList();
     private DAType extended;
 
-    DAClassWriter(String name, BufferedWriter bw, int indent, T parent) {
+    DAClassWriter(String name, BufferedWriter bw, T parent, int indent) {
         super(bw, parent, indent);
         this.name = name;
     }
