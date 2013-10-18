@@ -43,17 +43,20 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
         //     -> compute liste des imports à réaliser
         DAMapperClass daMapperClass = context.getMapperClass();
 
+        // package + imports + comment
         DAFileWriter fileWriter = new DAFileWriter(bw)
                 .appendPackage(daMapperClass.packageName)
                 .appendImports(computeMapperImplImports(context, daMapperClass))
                 .appendWarningComment();
 
+        // declaration de la class
         DAClassWriter<DAFileWriter> classWriter = fileWriter.newClass(daMapperClass.type.simpleName + "MapperImpl")
                 .withAnnotations(computeAnnotations(daMapperClass))
                 .withImplemented(computeImplemented(daMapperClass))
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
                 .start();
 
+        // instance de la class annotée @Mapper injectée via @Resource le cas échéant
         if (daMapperClass.instantiationType == InstantiationType.SPRING_COMPONENT) {
             classWriter.newProperty("instance", DATypeFactory.declared(daMapperClass.packageName.getName() + "." + daMapperClass.type.simpleName))
                     .withAnnotations(ImmutableList.of(DATypeFactory.from(Resource.class)))
@@ -61,6 +64,7 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
                     .write();
         }
 
+        // implémentation de la méthode de mapping (Function.apply tant qu'on ne supporte pas @MapperMethod)
         DAMethod guavaMethod = from(daMapperClass.methods).firstMatch(DAMethodPredicates.isGuavaFunction()).get();
         DAMethodWriter<?> methodWriter = classWriter.newMethod(guavaMethod.name.getName(), guavaMethod.returnType)
                 .withAnnotations(ImmutableList.<DAType>of(DATypeFactory.from(Override.class)))
@@ -68,31 +72,35 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
                 .withParams(guavaMethod.parameters)
                 .start();
 
-        DAStatementWriter<?> statementWriter = methodWriter.newStatement().start();
-        statementWriter.append("return ");
-        if (daMapperClass.instantiationType == InstantiationType.SPRING_COMPONENT) {
-            statementWriter.append("instance");
-        }
-        else {
-            statementWriter.append(daMapperClass.type.simpleName).append("MapperFactory").append(".instance()");
-        }
-        statementWriter.append(".").append(guavaMethod.name).append("(");
-        Iterator<DAParameter> it = guavaMethod.parameters.iterator();
-        while (it.hasNext()) {
-            statementWriter.append(it.next().name);
-            if (it.hasNext()) {
-                statementWriter.append(", ");
-            }
-        }
-        statementWriter.append(")");
-        statementWriter.end();
+        // retourne le résultat de la méhode apply de l'instance de la classe @Mapper
+        methodWriter.newStatement()
+                .start()
+                .append("return ")
+                .append(computeInstanceObject(daMapperClass))
+                .append(".")
+                .append(guavaMethod.name)
+                .appendParamValues(guavaMethod.parameters)
+                .end();
 
+        // clos la méthode
         methodWriter.end();
 
+        // clos la classe
         classWriter.end();
 
         bw.flush();
         bw.close();
+    }
+
+    private String computeInstanceObject(DAMapperClass daMapperClass) {
+        String instance;
+        if (daMapperClass.instantiationType == InstantiationType.SPRING_COMPONENT) {
+            instance = "instance";
+        }
+        else {
+            instance = daMapperClass.type.simpleName + "MapperFactory.instance()";
+        }
+        return instance;
     }
 
     private List<DAType> computeImplemented(DAMapperClass daMapperClass) {
