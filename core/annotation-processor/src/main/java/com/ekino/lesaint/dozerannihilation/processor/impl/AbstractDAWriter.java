@@ -27,12 +27,12 @@ public class AbstractDAWriter<T extends DAWriter> implements DAWriter {
     }
 
     void appendIndent() throws IOException {
-        for (int i = 0 ; i < indent ; i++) {
+        for (int i = 0; i < indent; i++) {
             bw.append(INDENT);
         }
     }
 
-    void appendModifiers(Set<Modifier> modifiers) throws IOException {
+    void appendModifiers(BufferedWriter bw, Set<Modifier> modifiers) throws IOException {
         // TODO add sorting of Modifiers according to best practice
         if (modifiers.isEmpty()) {
             return;
@@ -55,7 +55,7 @@ public class AbstractDAWriter<T extends DAWriter> implements DAWriter {
         }
     }
 
-   void appendType(DAType type) throws IOException {
+    void appendType(BufferedWriter bw, DAType type) throws IOException {
         bw.append(type.simpleName);
         appendTypeArgs(bw, type.typeArgs);
         if (type.isArray()) {
@@ -63,13 +63,13 @@ public class AbstractDAWriter<T extends DAWriter> implements DAWriter {
         }
     }
 
-    protected void appendTypeArgs(BufferedWriter bw, List<DAType> typeArgs) throws IOException {
+    void appendTypeArgs(BufferedWriter bw, List<DAType> typeArgs) throws IOException {
         if (!typeArgs.isEmpty()) {
             Iterator<DAType> iterator = typeArgs.iterator();
             bw.append("<");
             while (iterator.hasNext()) {
                 DAType arg = iterator.next();
-                appendType(arg);
+                appendType(bw, arg);
                 if (iterator.hasNext()) {
                     bw.append(", ");
                 }

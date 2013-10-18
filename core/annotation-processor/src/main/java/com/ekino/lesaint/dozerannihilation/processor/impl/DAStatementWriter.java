@@ -2,6 +2,8 @@ package com.ekino.lesaint.dozerannihilation.processor.impl;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * DAStatementWriter -
@@ -26,6 +28,35 @@ public class DAStatementWriter<T extends DAWriter> extends AbstractDAWriter<T> {
 
     DAStatementWriter<T> append(char c) throws IOException {
         bw.append(c);
+        return this;
+    }
+
+    DAStatementWriter<T> appendType(DAType type) throws IOException {
+        appendType(bw, type);
+        return this;
+    }
+
+    DAStatementWriter<T> appendTypeArgs(List<DAType> typeArgs) throws IOException {
+        appendTypeArgs(bw, typeArgs);
+        return this;
+    }
+
+    DAStatementWriter<T> appendParamValues(List<DAParameter> params) throws IOException {
+        if (params.isEmpty()) {
+            bw.append("()");
+            return this;
+        }
+
+        bw.append("(");
+        Iterator<DAParameter> it = params.iterator();
+        while (it.hasNext()) {
+            DAParameter parameter = it.next();
+            bw.append(parameter.name);
+            if (it.hasNext()) {
+                bw.append(", ");
+            }
+        }
+        bw.append(")");
         return this;
     }
 

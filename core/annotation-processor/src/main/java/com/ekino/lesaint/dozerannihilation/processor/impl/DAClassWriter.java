@@ -62,7 +62,7 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     DAClassWriter<T> start() throws IOException {
         appendAnnotations(annotations);
         appendIndent();
-        appendModifiers(modifiers);
+        appendModifiers(bw, modifiers);
         bw.append("class ").append(name).append(" ");
         appendExtended();
         appendImplemented();
@@ -93,7 +93,7 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         }
 
         bw.append("extends ");
-        appendType(extended);
+        appendType(bw, extended);
         bw.append(" ");
     }
 
@@ -105,7 +105,7 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         bw.append("implements ");
         Iterator<DAType> it = implemented.iterator();
         while (it.hasNext()) {
-            appendType(it.next());
+            appendType(bw, it.next());
             if (it.hasNext()) {
                 bw.append(",");
             }

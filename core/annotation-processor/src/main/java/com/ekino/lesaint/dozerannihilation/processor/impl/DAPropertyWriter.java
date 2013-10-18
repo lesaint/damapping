@@ -39,8 +39,8 @@ public class DAPropertyWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     T write() throws IOException {
         appendAnnotations(annotations);
         appendIndent();
-        appendModifiers(modifiers);
-        appendType(type);
+        appendModifiers(bw, modifiers);
+        appendType(bw, type);
         bw.append(" ").append(name).append(";");
         bw.newLine();
         bw.newLine();

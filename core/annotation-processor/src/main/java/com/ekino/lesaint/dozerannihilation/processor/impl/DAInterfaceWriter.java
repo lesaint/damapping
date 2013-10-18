@@ -45,7 +45,7 @@ public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     DAInterfaceWriter<T> start() throws IOException {
         appendAnnotations(annotations);
         appendIndent();
-        appendModifiers(modifiers);
+        appendModifiers(bw, modifiers);
         bw.append("interface ").append(name).append(" ");
         appendExtended();
         bw.append("{");
@@ -62,7 +62,7 @@ public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         bw.append("extends ");
         Iterator<DAType> it = extended.iterator();
         while (it.hasNext()) {
-            appendType(it.next());
+            appendType(bw, it.next());
             if (it.hasNext()) {
                 bw.append(",");
             }

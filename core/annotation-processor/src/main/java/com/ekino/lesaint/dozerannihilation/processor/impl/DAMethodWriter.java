@@ -47,35 +47,41 @@ public class DAMethodWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     public DAMethodWriter<T> start() throws IOException {
         appendAnnotations(annotations);
         appendIndent();
-        appendModifiers(modifiers);
+        appendModifiers(bw, modifiers);
         appendReturnType();
         bw.append(name);
-        bw.append("(");
-        appendParams();
-        bw.append(") {");
+        appendParams(bw, params);
+        bw.append(" {");
         bw.newLine();
         return this;
     }
 
     private void appendReturnType() throws IOException {
-        appendType(returnType);
+        appendType(bw, returnType);
         bw.append(" ");
     }
 
-    private void appendParams() throws IOException {
+    /**
+     * Ajoute les parenthèses et les paramètres d'une méthode, les paramètres étant représentés, dans l'ordre
+     * par la liste de DAType en argument.
+     */
+    private void appendParams(BufferedWriter bw, List<DAParameter> params) throws IOException {
         if (params.isEmpty()) {
+            bw.append("()");
             return;
         }
 
+        bw.append("(");
         Iterator<DAParameter> it = params.iterator();
         while (it.hasNext()) {
             DAParameter parameter = it.next();
-            appendType(parameter.type);
+            appendType(bw, parameter.type);
             bw.append(" ").append(parameter.name);
             if (it.hasNext()) {
                 bw.append(", ");
             }
         }
+        bw.append(")");
     }
 
     public DAStatementWriter<DAMethodWriter<T>> newStatement() {

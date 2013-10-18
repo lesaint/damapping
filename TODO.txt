@@ -22,7 +22,7 @@ ROADMAP
  * séparation en modules spécifiques des annotations et du processor
  - réordonner paramètre constructeur DAClassWriter
  - ajouter le flush+close dans DAFileWriter
- - exposer les addParams, addType dans DAStatementWriter
+ - test U pour les méthodes appendType, appendParams, ... de DAStatementWriter ?
  - traiter les TODO et FIXME qui trainent dans les sources
  - supprimer les propriétés publiques dans les beans utilisés dans la genération de fichiers sources
  - ajouter test U pour les méthodes de DAMethod
