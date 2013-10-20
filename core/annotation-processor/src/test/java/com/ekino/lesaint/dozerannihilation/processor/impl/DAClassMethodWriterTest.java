@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeKind;
 
-import static com.ekino.lesaint.dozerannihilation.processor.impl.AbstractFileGenerator.INDENT;
+import static com.ekino.lesaint.dozerannihilation.processor.impl.AbstractDAWriter.INDENT;
 import static com.ekino.lesaint.dozerannihilation.processor.impl.DATypeFactory.declared;
 import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
