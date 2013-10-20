@@ -3,7 +3,7 @@ package com.ekino.lesaint.dozerannihilation.test;
 // GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
 public class ConstructorWithParameterMapperFactoryImpl implements ConstructorWithParameterMapperFactory {
 
-    public ConstructorWithParameterMapper instance(String salt) {
+    public ConstructorWithParameterMapper instanceByConstructor(String salt) {
         return new ConstructorWithParameterMapperImpl(new ConstructorWithParameter(salt));
     }
 

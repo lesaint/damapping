@@ -39,6 +39,7 @@ import com.google.common.collect.ImmutableSet;
 
 import com.ekino.lesaint.dozerannihilation.annotation.Mapper;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import static com.google.common.collect.FluentIterable.from;
 
@@ -288,7 +289,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                         ExecutableElement methodElement = (ExecutableElement) o;
                         res.kind = o.getKind();
                         if (o.getKind() == ElementKind.CONSTRUCTOR) {
-                            res.name = DANameFactory.from(classElement.getSimpleName());
+                            res.name = DANameFactory.from(StringUtils.uncapitalize(classElement.getSimpleName().toString()));
                             res.returnType = extractType(classElement.asType());
                         }
                         else {
