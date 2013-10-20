@@ -20,6 +20,7 @@ ROADMAP
  * écriture d'un cas d'intégration avec un Spring contexte
  * auto discovery de l'annotation processor
  * séparation en modules spécifiques des annotations et du processor
+ - remplacer les usages de DATypeFactory.declared par DATypeFactory.from quand possible
  - test U pour les méthodes appendType, appendParams, ... de DAStatementWriter ?
  - traiter les TODO et FIXME qui trainent dans les sources
  - supprimer les propriétés publiques dans les beans utilisés dans la genération de fichiers sources
