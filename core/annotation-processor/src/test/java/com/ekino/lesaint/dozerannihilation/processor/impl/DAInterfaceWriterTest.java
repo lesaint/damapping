@@ -70,6 +70,24 @@ public class DAInterfaceWriterTest {
                 + INDENT + "}" + LINE_SEPARATOR);
     }
 
+    @Test
+    public void one_method_interface() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        daInterfaceWriter(testWriters, "name")
+                .start()
+                    .newMethod("methodName", DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE)
+                    .withAnnotations(ImmutableList.of(DAWriterTestUtil.OVERRIDE_ANNOTATION))
+                    .write()
+                .end();
+
+        assertThat(testWriters.getRes()).isEqualTo(INDENT + "interface name {" + LINE_SEPARATOR
+                + LINE_SEPARATOR
+                + INDENT + INDENT + "@Override" + LINE_SEPARATOR
+                + INDENT + INDENT + "Function<Integer, String> methodName();" + LINE_SEPARATOR
+                + LINE_SEPARATOR
+                + INDENT + "}" + LINE_SEPARATOR);
+    }
+
     private DAInterfaceWriter<DAWriter> daInterfaceWriter(TestWriters testWriters, String interfaceName) {
         DAWriter parent = new DAWriter() {
 

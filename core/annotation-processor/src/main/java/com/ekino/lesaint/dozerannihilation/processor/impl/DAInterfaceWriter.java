@@ -70,8 +70,8 @@ public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         }
     }
 
-    DAMethodWriter<DAInterfaceWriter<T>> newMethod(String name, DAType returnType) {
-        return new DAMethodWriter<DAInterfaceWriter<T>>(name, returnType, bw, indent + 1, this);
+    DAInterfaceMethodWriter<DAInterfaceWriter<T>> newMethod(String name, DAType returnType) {
+        return new DAInterfaceMethodWriter<DAInterfaceWriter<T>>(name, returnType, bw, indent + 1, this);
     }
 
     T end() throws IOException {

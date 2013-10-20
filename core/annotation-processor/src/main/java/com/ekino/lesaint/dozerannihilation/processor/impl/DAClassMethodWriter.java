@@ -12,39 +12,39 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * DAMethodWriter -
+ * DAClassMethodWriter - Writer pour les méthodes d'une classe ou enum
  *
  * @author Sébastien Lesaint
  */
-public class DAMethodWriter<T extends DAWriter> extends AbstractDAWriter<T> {
+public class DAClassMethodWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     private final String name;
     private final DAType returnType;
     private Set<Modifier> modifiers = Collections.<Modifier>emptySet();
     private List<DAType> annotations = Collections.emptyList();
     private List<DAParameter> params = Collections.<DAParameter>emptyList();
 
-    public DAMethodWriter(String name, DAType returnType, BufferedWriter bw, int indent, T parent) {
+    public DAClassMethodWriter(String name, DAType returnType, BufferedWriter bw, int indent, T parent) {
         super(bw, parent, indent);
         this.name = name;
         this.returnType = returnType;
     }
 
-    public DAMethodWriter<T> withModifiers(Set<Modifier> modifiers) {
+    public DAClassMethodWriter<T> withModifiers(Set<Modifier> modifiers) {
         this.modifiers = modifiers == null ? Collections.<Modifier>emptySet() : ImmutableSet.copyOf(modifiers);
         return this;
     }
 
-    public DAMethodWriter<T> withAnnotations(List<DAType> annotations) {
+    public DAClassMethodWriter<T> withAnnotations(List<DAType> annotations) {
         this.annotations = annotations == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(annotations);
         return this;
     }
 
-    public DAMethodWriter<T> withParams(List<DAParameter> params) {
+    public DAClassMethodWriter<T> withParams(List<DAParameter> params) {
         this.params = params == null ? Collections.<DAParameter>emptyList() : ImmutableList.copyOf(params);
         return this;
     }
 
-    public DAMethodWriter<T> start() throws IOException {
+    public DAClassMethodWriter<T> start() throws IOException {
         appendAnnotations(annotations);
         appendIndent();
         appendModifiers(bw, modifiers);
@@ -84,8 +84,8 @@ public class DAMethodWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         bw.append(")");
     }
 
-    public DAStatementWriter<DAMethodWriter<T>> newStatement() {
-        return new DAStatementWriter<DAMethodWriter<T>>(bw, this, indent + 1);
+    public DAStatementWriter<DAClassMethodWriter<T>> newStatement() {
+        return new DAStatementWriter<DAClassMethodWriter<T>>(bw, this, indent + 1);
     }
 
     public T end() throws IOException {

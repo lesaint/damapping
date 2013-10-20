@@ -9,25 +9,20 @@ import javax.lang.model.type.TypeKind;
 
 import static com.ekino.lesaint.dozerannihilation.processor.impl.AbstractFileGenerator.INDENT;
 import static com.ekino.lesaint.dozerannihilation.processor.impl.DATypeFactory.declared;
-import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.LINE_SEPARATOR;
-import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.daParameter;
+import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * DAMethodWriterTest -
+ * DAClassMethodWriterTest -
  *
- * TODO compléter les tests unitaires DAMethodWriter
+ * TODO compléter les tests unitaires DAClassMethodWriter
  * <ul>
- *     <li>tester l'objet retourné par end()</li>
  *     <li>tester l'objet retourné par chaque méthode (ie. vérifier le codage de la fluent) ?</li>
  * </ul>
  *
  * @author Sébastien Lesaint
  */
-public class DAMethodWriterTest {
-    private static final DAParameter STRING_TOTO_PARAMETER = daParameter("java.lang.String", "toto");
-    private static final DAParameter STRING_TITI_PARAMETER = daParameter("java.lang.String", "titi");
-    private static final DAParameter SUPER_COMPLEXE_PARAMETER = superComplexeParameter("complexeParam");
+public class DAClassMethodWriterTest {
 
     /**
      * Un paramètre de type tableau de Function<String, Integer>
@@ -85,7 +80,7 @@ public class DAMethodWriterTest {
     public void empty_method_two_parameters() throws Exception {
         TestWriters testWriters = new TestWriters();
         methodWriter("name", "java.lang.String", testWriters)
-                .withParams(ImmutableList.of(STRING_TITI_PARAMETER, SUPER_COMPLEXE_PARAMETER))
+                .withParams(ImmutableList.of(STRING_TITI_PARAMETER, FUNCTION_STRING_INTEGER_ARRAY_PARAMETER))
                 .start()
                 .end();
 
@@ -98,7 +93,7 @@ public class DAMethodWriterTest {
         TestWriters testWriters = new TestWriters();
         methodWriter("name", "java.lang.String", testWriters)
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC, Modifier.STATIC))
-                .withParams(ImmutableList.of(SUPER_COMPLEXE_PARAMETER))
+                .withParams(ImmutableList.of(FUNCTION_STRING_INTEGER_ARRAY_PARAMETER))
                 .start()
                 .end();
 
@@ -145,16 +140,16 @@ public class DAMethodWriterTest {
         DAWriter parent = new DAWriter() {
 
         };
-        DAMethodWriter<DAWriter> classWriter = new DAMethodWriter<DAWriter>("name", DATypeFactory.declared("java.lang.String"), testWriters.bw, 1, parent);
+        DAClassMethodWriter<DAWriter> classWriter = new DAClassMethodWriter<DAWriter>("name", DATypeFactory.declared("java.lang.String"), testWriters.bw, 1, parent);
 
         assertThat(classWriter.end()).isSameAs(parent);
     }
 
-    private static DAMethodWriter<DAWriter> methodWriter(String name, String returnType, TestWriters testWriters) {
+    private static DAClassMethodWriter<DAWriter> methodWriter(String name, String returnType, TestWriters testWriters) {
         DAWriter parent = new DAWriter() {
 
         };
-        return new DAMethodWriter<DAWriter>(name, DATypeFactory.declared(returnType), testWriters.bw, 1, parent);
+        return new DAClassMethodWriter<DAWriter>(name, DATypeFactory.declared(returnType), testWriters.bw, 1, parent);
     }
 
 

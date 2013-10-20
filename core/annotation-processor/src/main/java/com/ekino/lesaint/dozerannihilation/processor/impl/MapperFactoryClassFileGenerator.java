@@ -42,7 +42,7 @@ class MapperFactoryClassFileGenerator extends AbstractFileGenerator {
                     .write();
         }
 
-        DAMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter.newMethod("instance", DATypeFactory.declared(daMapperClass.type.qualifiedName.getName()))
+        DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter.newMethod("instance", DATypeFactory.declared(daMapperClass.type.qualifiedName.getName()))
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC, Modifier.STATIC))
                 .start();
         switch (daMapperClass.instantiationType) {

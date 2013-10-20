@@ -2,6 +2,10 @@ package com.ekino.lesaint.dozerannihilation.processor.impl;
 
 import com.google.common.collect.ImmutableList;
 
+import javax.lang.model.type.TypeKind;
+
+import static com.ekino.lesaint.dozerannihilation.processor.impl.DATypeFactory.declared;
+
 /**
  * DAWriterTestUtil -
  *
@@ -19,6 +23,9 @@ final class DAWriterTestUtil {
     static final DAType BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS = DATypeFactory.declared("com.acme.Bidon",
             ImmutableList.of(DATypeFactory.declared("java.lang.Integer"), DATypeFactory.declared("java.lang.String"))
     );
+    static final DAParameter STRING_TOTO_PARAMETER = daParameter("java.lang.String", "toto");
+    static final DAParameter STRING_TITI_PARAMETER = daParameter("java.lang.String", "titi");
+    static final DAParameter FUNCTION_STRING_INTEGER_ARRAY_PARAMETER = functionStringToIntegerArray("complexeParam");
 
     private DAWriterTestUtil() {
         // prevents instantiation
@@ -28,6 +35,19 @@ final class DAWriterTestUtil {
         DAParameter res = new DAParameter();
         res.name = DANameFactory.from(name);
         res.type = DATypeFactory.declared(typeQualifiedName);
+        return res;
+    }
+
+    /**
+     * Un paramètre de type tableau de Function<String, Integer>
+     */
+    private static DAParameter functionStringToIntegerArray(String name) {
+        DAParameter res = new DAParameter();
+        res.name = DANameFactory.from(name);
+        DAType parameterType = declared("com.google.common.base.Function",
+                ImmutableList.of(DATypeFactory.declared("java.lang.String"), DATypeFactory.declared("java.lang.Integer")));
+        parameterType.kind = TypeKind.ARRAY;
+        res.type = parameterType;
         return res;
     }
 }

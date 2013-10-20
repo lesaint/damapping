@@ -2,7 +2,6 @@ package com.ekino.lesaint.dozerannihilation.processor.impl;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -66,7 +65,7 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
 
         // implémentation de la méthode de mapping (Function.apply tant qu'on ne supporte pas @MapperMethod)
         DAMethod guavaMethod = from(daMapperClass.methods).firstMatch(DAMethodPredicates.isGuavaFunction()).get();
-        DAMethodWriter<?> methodWriter = classWriter.newMethod(guavaMethod.name.getName(), guavaMethod.returnType)
+        DAClassMethodWriter<?> methodWriter = classWriter.newMethod(guavaMethod.name.getName(), guavaMethod.returnType)
                 .withAnnotations(ImmutableList.<DAType>of(DATypeFactory.from(Override.class)))
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
                 .withParams(guavaMethod.parameters)
