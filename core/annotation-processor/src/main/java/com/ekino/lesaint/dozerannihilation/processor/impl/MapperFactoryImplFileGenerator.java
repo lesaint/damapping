@@ -17,23 +17,23 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
 
     @Override
     public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
-        DAMapperClass daMapperClass = context.getMapperClass();
-        appendHeader(bw, daMapperClass, context.getMapperFactoryImports());
-
-        bw.append("public class ").append(daMapperClass.type.simpleName).append("MapperFactoryImpl").append(" {");
-        bw.newLine();
-        bw.newLine();
-
-        appendFactoryMethods(bw, context);
-        bw.newLine();
-
-        appendPrivateMapperImpl(bw, context);
-        bw.newLine();
-
-        appendFooter(bw);
-
-        bw.flush();
-        bw.close();
+//        DAMapperClass daMapperClass = context.getMapperClass();
+//        appendHeader(bw, daMapperClass, context.getMapperFactoryImports());
+//
+//        bw.append("public class ").append(daMapperClass.type.simpleName).append("MapperFactoryImpl").append(" {");
+//        bw.newLine();
+//        bw.newLine();
+//
+//        appendFactoryMethods(bw, context);
+//        bw.newLine();
+//
+//        appendPrivateMapperImpl(bw, context);
+//        bw.newLine();
+//
+//        appendFooter(bw);
+//
+//        bw.flush();
+//        bw.close();
     }
 
     private void appendFactoryMethods(BufferedWriter bw, FileGeneratorContext context) {

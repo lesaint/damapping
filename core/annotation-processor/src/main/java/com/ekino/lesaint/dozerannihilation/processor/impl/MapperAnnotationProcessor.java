@@ -285,11 +285,17 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                         }
 
                         DAMethod res = new DAMethod();
-                        res.kind = o.getKind();
-                        res.name = DANameFactory.from(o.getSimpleName());
                         ExecutableElement methodElement = (ExecutableElement) o;
+                        res.kind = o.getKind();
+                        if (o.getKind() == ElementKind.CONSTRUCTOR) {
+                            res.name = DANameFactory.from(classElement.getSimpleName());
+                            res.returnType = extractType(classElement.asType());
+                        }
+                        else {
+                            res.name = DANameFactory.from(o.getSimpleName());
+                            res.returnType = extractReturnType(methodElement);
+                        }
                         res.modifiers = extractModifiers(methodElement);
-                        res.returnType = extractReturnType(methodElement);
                         res.parameters = extractParameters(methodElement);
                         res.mapperMethod = isMapperMethod(methodElement);
                         res.mapperFactoryMethod = isMapperFactoryMethod(methodElement);

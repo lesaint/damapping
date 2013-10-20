@@ -1,5 +1,12 @@
 package com.ekino.lesaint.dozerannihilation.processor.impl;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+
+import javax.annotation.Nullable;
+import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
@@ -18,15 +25,28 @@ class MapperFactoryInterfaceFileGenerator extends AbstractFileGenerator {
     @Override
     public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
         DAMapperClass daMapperClass = context.getMapperClass();
-        appendHeader(bw, daMapperClass, context.getMapperFactoryImports());
+        DAFileWriter fileWriter = new DAFileWriter(bw)
+                .appendPackage(daMapperClass.packageName)
+                .appendImports(context.getMapperFactoryImports())
+                .appendWarningComment();
 
-        bw.append("public interface ").append(daMapperClass.type.simpleName).append("MapperFactory").append(" {");
-        bw.newLine();
-        bw.newLine();
+        DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter.newInterface(daMapperClass.type.simpleName + "MapperFactory")
+                .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
+                .start();
 
-        appendFooter(bw);
+        ImmutableList<DAMethod> mapperFactoryMethods = FluentIterable.from(daMapperClass.methods).filter(new Predicate<DAMethod>() {
+            @Override
+            public boolean apply(@Nullable DAMethod daMethod) {
+                return daMethod != null && daMethod.mapperFactoryMethod;
+            }
+        }).toList();
 
-        bw.flush();
-        bw.close();
+        for (DAMethod method : mapperFactoryMethods) {
+            interfaceWriter.newMethod(method.name.getName(), method.returnType)
+                    .withParams(method.parameters);
+        }
+
+        interfaceWriter.end();
+        fileWriter.end();
     }
 }
