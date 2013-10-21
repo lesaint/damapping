@@ -22,6 +22,9 @@ ROADMAP
  * séparation en modules spécifiques des annotations et du processor
  - remplacer les usages de DATypeFactory.declared par DATypeFactory.from quand possible
  - test U pour les méthodes appendType, appendParams, ... de DAStatementWriter ?
+ - ajouter une méthode appendReturn à DAStatementWriter ?
+ - factoriser les créations de DAType de Mapper, MapperFactory, MapperFactoryImpl, ... ?
+ - ajouter les @Override manquant dans les classes générées Mapper*Impl
  - traiter les TODO et FIXME qui trainent dans les sources
  - supprimer les propriétés publiques dans les beans utilisés dans la genération de fichiers sources
  - ajouter test U pour les méthodes de DAMethod
