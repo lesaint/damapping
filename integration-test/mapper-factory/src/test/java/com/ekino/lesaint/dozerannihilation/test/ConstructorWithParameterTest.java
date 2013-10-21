@@ -24,4 +24,9 @@ public class ConstructorWithParameterTest {
     public void check_generated_mapperFactory_file() throws Exception {
         testUtil.checkGeneratedFile("MapperFactory");
     }
+
+    @Test
+    public void check_generated_mapperFactoryImpl_file() throws Exception {
+        testUtil.checkGeneratedFile("MapperFactoryImpl");
+    }
 }

@@ -4,6 +4,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
@@ -34,15 +35,8 @@ class MapperFactoryInterfaceFileGenerator extends AbstractFileGenerator {
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
                 .start();
 
-        ImmutableList<DAMethod> mapperFactoryMethods = FluentIterable.from(daMapperClass.methods).filter(new Predicate<DAMethod>() {
-            @Override
-            public boolean apply(@Nullable DAMethod daMethod) {
-                return daMethod != null && daMethod.mapperFactoryMethod;
-            }
-        }).toList();
-
         DAType mapperClass = DATypeFactory.declared(daMapperClass.type.qualifiedName + "Mapper");
-        for (DAMethod method : mapperFactoryMethods) {
+        for (DAMethod method : Iterables.filter(daMapperClass.methods, DAMethodPredicates.isMapperFactoryMethod())) {
             String name = method.isConstructor() ? "instanceByConstructor" : method.name.getName();
             interfaceWriter.newMethod(name, mapperClass)
                     .withParams(method.parameters).write();

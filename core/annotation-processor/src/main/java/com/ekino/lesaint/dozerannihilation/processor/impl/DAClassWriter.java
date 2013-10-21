@@ -87,6 +87,10 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         return parent;
     }
 
+    DAClassWriter<DAClassWriter<T>> newClass(String name) {
+        return new DAClassWriter<DAClassWriter<T>>(name, bw, this, indent + 1);
+    }
+
     private void appendExtended() throws IOException {
         if (extended == null) {
             return;
