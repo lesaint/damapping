@@ -24,19 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class DAClassMethodWriterTest {
 
-    /**
-     * Un paramètre de type tableau de Function<String, Integer>
-     */
-    private static DAParameter superComplexeParameter(String name) {
-        DAParameter res = new DAParameter();
-        res.name = DANameFactory.from(name);
-        DAType parameterType = declared("com.google.common.base.Function",
-                ImmutableList.of(DATypeFactory.declared("java.lang.String"), DATypeFactory.declared("java.lang.Integer")));
-        parameterType.kind = TypeKind.ARRAY;
-        res.type = parameterType;
-        return res;
-    }
-
     @Test
     public void empty_method() throws Exception {
         TestWriters testWriters = new TestWriters();
@@ -151,6 +138,5 @@ public class DAClassMethodWriterTest {
         };
         return new DAClassMethodWriter<DAWriter>(name, DATypeFactory.declared(returnType), testWriters.bw, 1, parent);
     }
-
 
 }
