@@ -59,14 +59,14 @@ public class DAFileWriterTest {
         TestWriters testWriters = new TestWriters();
         new DAFileWriter(testWriters.bw)
                 .appendPackage(PACKAGE_NAME)
-                .newClass("name")
+                .newClass(DAWriterTestUtil.NAME_DATYPE)
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
                 .start()
                 .end();
 
         assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
                 + LINE_SEPARATOR
-                + "public class name {" + LINE_SEPARATOR
+                + "public class Name {" + LINE_SEPARATOR
                 + LINE_SEPARATOR
                 + "}" + LINE_SEPARATOR
         );

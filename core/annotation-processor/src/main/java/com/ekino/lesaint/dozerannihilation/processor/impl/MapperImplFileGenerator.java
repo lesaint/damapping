@@ -49,7 +49,7 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
                 .appendWarningComment();
 
         // declaration de la class
-        DAClassWriter<DAFileWriter> classWriter = fileWriter.newClass(daMapperClass.type.simpleName + "MapperImpl")
+        DAClassWriter<DAFileWriter> classWriter = fileWriter.newClass(context.getMapperImplDAType())
                 .withAnnotations(computeAnnotations(daMapperClass))
                 .withImplemented(computeImplemented(daMapperClass))
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
@@ -75,7 +75,7 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
         methodWriter.newStatement()
                 .start()
                 .append("return ")
-                .append(computeInstanceObject(daMapperClass))
+                .append(computeInstanceObject(context))
                 .append(".")
                 .append(guavaMethod.name)
                 .appendParamValues(guavaMethod.parameters)
@@ -91,13 +91,13 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
         fileWriter.end();
     }
 
-    private String computeInstanceObject(DAMapperClass daMapperClass) {
+    private String computeInstanceObject(FileGeneratorContext context) {
         String instance;
-        if (daMapperClass.instantiationType == InstantiationType.SPRING_COMPONENT) {
+        if (context.getMapperClass().instantiationType == InstantiationType.SPRING_COMPONENT) {
             instance = "instance";
         }
         else {
-            instance = daMapperClass.type.simpleName + "MapperFactory.instance()";
+            instance = context.getMapperFactoryClassDAType().simpleName + ".instance()";
         }
         return instance;
     }

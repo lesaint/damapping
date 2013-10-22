@@ -20,7 +20,7 @@ import java.io.IOException;
 class MapperFactoryInterfaceFileGenerator extends AbstractFileGenerator {
     @Override
     public String fileName(FileGeneratorContext context) {
-        return context.getMapperClass().type.qualifiedName.getName() + "MapperFactory";
+        return context.getMapperFactoryInterfaceDAType().qualifiedName.getName();
     }
 
     @Override
@@ -31,7 +31,7 @@ class MapperFactoryInterfaceFileGenerator extends AbstractFileGenerator {
                 .appendImports(context.getMapperFactoryImports())
                 .appendWarningComment();
 
-        DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter.newInterface(daMapperClass.type.simpleName + "MapperFactory")
+        DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter.newInterface(context.getMapperFactoryInterfaceDAType().simpleName.getName())
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
                 .start();
 

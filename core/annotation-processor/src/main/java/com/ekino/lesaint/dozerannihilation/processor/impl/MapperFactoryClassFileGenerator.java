@@ -17,7 +17,7 @@ import java.util.Collections;
 class MapperFactoryClassFileGenerator extends AbstractFileGenerator {
     @Override
     public String fileName(FileGeneratorContext context) {
-        return context.getMapperClass().type.qualifiedName.getName() + "MapperFactory";
+        return context.getMapperFactoryClassDAType().qualifiedName.getName();
     }
 
     @Override
@@ -33,7 +33,7 @@ class MapperFactoryClassFileGenerator extends AbstractFileGenerator {
         //     -> nom du package
         //     -> nom de la classe (infère nom de la factory et nom du Mapper)
         //     -> type d'instantiation (si enum, le nom de la valeur d'enum à utiliser)
-        DAClassWriter<DAFileWriter> classWriter = fileWriter.newClass(daMapperClass.type.simpleName + "MapperFactory")
+        DAClassWriter<DAFileWriter> classWriter = fileWriter.newClass(context.getMapperFactoryClassDAType())
                 .start();
         if (daMapperClass.instantiationType == InstantiationType.SPRING_COMPONENT) {
             classWriter.newProperty("instance", DATypeFactory.declared(daMapperClass.type.qualifiedName.getName()))

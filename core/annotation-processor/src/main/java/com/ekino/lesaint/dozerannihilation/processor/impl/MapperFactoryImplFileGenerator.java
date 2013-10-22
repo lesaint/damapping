@@ -21,7 +21,7 @@ import java.io.IOException;
 class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
     @Override
     public String fileName(FileGeneratorContext context) {
-        return context.getMapperClass().type.qualifiedName.getName() + "MapperFactoryImpl";
+        return context.getMapperFactoryImplDAType().qualifiedName.getName();
     }
 
     @Override
@@ -32,24 +32,24 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
                 .appendImports(context.getMapperFactoryImports())
                 .appendWarningComment();
 
-        DAClassWriter<DAFileWriter> classWriter = fileWriter.newClass(daMapperClass.type.simpleName + "MapperFactoryImpl")
-                .withImplemented(ImmutableList.of(DATypeFactory.declared(daMapperClass.type.qualifiedName + "MapperFactory")))
+        DAClassWriter<DAFileWriter> classWriter = fileWriter.newClass(context.getMapperFactoryImplDAType())
+                .withImplemented(ImmutableList.of(context.getMapperFactoryInterfaceDAType()))
                 .start();
 
-        appendFactoryMethods(daMapperClass, classWriter);
+        appendFactoryMethods(context, classWriter);
 
-        appendInnerClass(daMapperClass, classWriter);
+        appendInnerClass(context, classWriter);
 
         classWriter.end();
 
         fileWriter.end();
     }
 
-    private void appendFactoryMethods(DAMapperClass daMapperClass, DAClassWriter<DAFileWriter> classWriter) throws IOException {
-        DAType mapperClass = DATypeFactory.declared(daMapperClass.type.qualifiedName + "Mapper");
-        for (DAMethod method : Iterables.filter(daMapperClass.methods, DAMethodPredicates.isMapperFactoryMethod())) {
+    private void appendFactoryMethods(FileGeneratorContext context, DAClassWriter<DAFileWriter> classWriter) throws IOException {
+        DAMapperClass mapperClass = context.getMapperClass();
+        for (DAMethod method : Iterables.filter(mapperClass.methods, DAMethodPredicates.isMapperFactoryMethod())) {
             String name = method.isConstructor() ? "instanceByConstructor" : method.name.getName();
-            DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter.newMethod(name, mapperClass)
+            DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter.newMethod(name, context.getMapperClass().type)
                     .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
                     .withParams(method.parameters)
                     .start();
@@ -57,7 +57,7 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
                     .start()
                     .append("return new ConstructorWithParameterMapperImpl(");
             if (method.isConstructor()) {
-                statementWriter.append("new ").append(daMapperClass.type.simpleName)
+                statementWriter.append("new ").append(mapperClass.type.simpleName)
                         .appendParamValues(method.parameters);
             }
             else {
@@ -71,15 +71,14 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
         }
     }
 
-    private void appendInnerClass(DAMapperClass daMapperClass, DAClassWriter<DAFileWriter> factortClassWriter) throws IOException {
-        DAType mapperDAType = DATypeFactory.declared(daMapperClass.type.qualifiedName + "Mapper");
+    private void appendInnerClass(FileGeneratorContext context, DAClassWriter<DAFileWriter> factortClassWriter) throws IOException {
         DAClassWriter<DAClassWriter<DAFileWriter>> mapperClassWriter = factortClassWriter
-                .newClass(daMapperClass.type.simpleName + "MapperImpl")
+                .newClass(context.getMapperImplDAType())
                 .withModifiers(ImmutableSet.of(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL))
-                .withImplemented(ImmutableList.of(mapperDAType))
+                .withImplemented(ImmutableList.of(context.getMapperDAType()))
                 .start();
 
-        mapperClassWriter.newProperty("instance", DATypeFactory.declared(daMapperClass.type.qualifiedName.getName()))
+        mapperClassWriter.newProperty("instance", context.getMapperClass().type)
                 .withModifier(ImmutableSet.of(Modifier.PRIVATE, Modifier.FINAL))
                 .write();
 

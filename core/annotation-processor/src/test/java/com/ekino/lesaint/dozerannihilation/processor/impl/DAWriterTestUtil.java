@@ -26,6 +26,7 @@ final class DAWriterTestUtil {
     static final DAParameter STRING_TOTO_PARAMETER = daParameter("java.lang.String", "toto");
     static final DAParameter STRING_TITI_PARAMETER = daParameter("java.lang.String", "titi");
     static final DAParameter FUNCTION_STRING_INTEGER_ARRAY_PARAMETER = functionStringToIntegerArray("complexeParam");
+    static final DAType NAME_DATYPE = declared("com.acme.Name");
 
     private DAWriterTestUtil() {
         // prevents instantiation

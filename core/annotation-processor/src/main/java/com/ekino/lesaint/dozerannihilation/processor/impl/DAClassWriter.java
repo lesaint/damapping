@@ -29,14 +29,16 @@ import java.util.Set;
  */
 public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     private final String name;
+    private final DAType classType;
     private Set<Modifier> modifiers = Collections.emptySet();
     private List<DAType> annotations = Collections.emptyList();
     private List<DAType> implemented = Collections.emptyList();
     private DAType extended;
 
-    DAClassWriter(String name, BufferedWriter bw, T parent, int indent) {
+    DAClassWriter(DAType classType, BufferedWriter bw, T parent, int indent) {
         super(bw, parent, indent);
-        this.name = name;
+        this.name = classType.simpleName.getName();
+        this.classType = classType;
     }
 
     DAClassWriter<T> withModifiers(Set<Modifier> modifiers) {
@@ -76,6 +78,10 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         return new DAPropertyWriter<DAClassWriter<T>>(name, type, bw, this, indent + 1);
     }
 
+    DAConstructorWriter<DAClassWriter<T>> newConstructor() {
+        return new DAConstructorWriter<DAClassWriter<T>>(classType, bw, this, indent + 1);
+    }
+
     DAClassMethodWriter<DAClassWriter<T>> newMethod(String name, DAType returnType) {
         return new DAClassMethodWriter<DAClassWriter<T>>(name, returnType, bw, indent + 1, this);
     }
@@ -87,8 +93,8 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         return parent;
     }
 
-    DAClassWriter<DAClassWriter<T>> newClass(String name) {
-        return new DAClassWriter<DAClassWriter<T>>(name, bw, this, indent + 1);
+    DAClassWriter<DAClassWriter<T>> newClass(DAType classType) {
+        return new DAClassWriter<DAClassWriter<T>>(classType, bw, this, indent + 1);
     }
 
     private void appendExtended() throws IOException {

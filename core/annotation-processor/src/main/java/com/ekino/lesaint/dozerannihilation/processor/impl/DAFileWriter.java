@@ -86,8 +86,8 @@ public class DAFileWriter implements DAWriter {
         return this;
     }
 
-    public DAClassWriter<DAFileWriter> newClass(String name) throws IOException {
-        return new DAClassWriter<DAFileWriter>(name, bw, this, 0);
+    public DAClassWriter<DAFileWriter> newClass(DAType classType) throws IOException {
+        return new DAClassWriter<DAFileWriter>(classType, bw, this, 0);
     }
 
     public DAInterfaceWriter<DAFileWriter> newInterface(String name) throws IOException {
