@@ -28,7 +28,6 @@ ROADMAP
  - reduire duplication dans le calcul des imports (ImportVisitable implemenations)
  - factoriser la génération des méthodes @MapperMethod (pour l'instant juste apply de Guava.Function) entre
    MapperImplFileGenerator et MapperFactoryImplFileGenerator ?
- - factoriser les créations de DAType de Mapper, MapperFactory, MapperFactoryImpl, ... ?
  - ajouter les @Override manquant dans les classes générées Mapper*Impl
  - traiter les TODO et FIXME qui trainent dans les sources
  - supprimer les propriétés publiques dans les beans utilisés dans la genération de fichiers sources
@@ -36,12 +35,6 @@ ROADMAP
  - ajouter test U pour DAMethodPredicates
  - passe de refacto : sortir code de lecture de API javac des annotation processors, predicates singleton si applicable, ajouter des tests U
  - étudier l'intégration avec l'IDE
- - implémentation du traitement des classes annotées @MapperFactory
-    -> supprimer l'annotation @MapperFactory et utiliser uniquement l'annotation @MapperFactoryMethod
-       pour discerner le cas "factory"
-        - uniquement une classe
-        - si aucune méthode @MapperFactoryMethod, classe doit avoir default constructor accessible (cas @Mapper connu)
- - refacto de la génération de code source, écriture d'un writer maison pour clarifier la génération de code
  - visibilité du mapper généré
  - rendre optionel la dépendance à Spring
  - ajouter une annotation pour définir ou surcharger le comportement par défaut qui ajoute des @Component
