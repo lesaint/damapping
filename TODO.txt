@@ -22,8 +22,10 @@ ROADMAP
  * séparation en modules spécifiques des annotations et du processor
  - remplacer les usages de DATypeFactory.declared par DATypeFactory.from quand possible
  - test U pour les méthodes appendType, appendParams, ... de DAStatementWriter ?
+ - ajouter un contrôle : les MapperFactoryMethods doivent retourner le type de l'objet annotée avec @Mapper
  - ajouter une méthode appendReturn à DAStatementWriter ?
  - test U pour DAClassWriter.newClass
+ - reduire duplication dans le calcul des imports (ImportVisitable implemenations)
  - factoriser la génération des méthodes @MapperMethod (pour l'instant juste apply de Guava.Function) entre
    MapperImplFileGenerator et MapperFactoryImplFileGenerator ?
  - factoriser les créations de DAType de Mapper, MapperFactory, MapperFactoryImpl, ... ?
