@@ -12,6 +12,8 @@ import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
+import static com.google.common.collect.FluentIterable.from;
+
 /**
  * MapperFactoryImplFileGenerator - Générateur du fichier source de la classe MapperFactoryImpl générée dans le cas
  * où il existe au moins une méthode annotée avec @MapperFactoryMethod dans la class annotée avec @Mapper.
@@ -49,7 +51,8 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
         DAMapperClass mapperClass = context.getMapperClass();
         for (DAMethod method : Iterables.filter(mapperClass.methods, DAMethodPredicates.isMapperFactoryMethod())) {
             String name = method.isConstructor() ? "instanceByConstructor" : method.name.getName();
-            DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter.newMethod(name, context.getMapperClass().type)
+            DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter
+                    .newMethod(name, context.getMapperDAType())
                     .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
                     .withParams(method.parameters)
                     .start();
@@ -78,11 +81,45 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
                 .withImplemented(ImmutableList.of(context.getMapperDAType()))
                 .start();
 
+        // private final [SourceClassType] instance;
         mapperClassWriter.newProperty("instance", context.getMapperClass().type)
                 .withModifier(ImmutableSet.of(Modifier.PRIVATE, Modifier.FINAL))
                 .write();
 
-        //mapperClassWriter.newMethod(StringUtils.uncapitalize(daMapperClass.type.simpleName + "MapperImpl"), )
+        // constructor with instance parameter
+        DAParameter parameter = new DAParameter();
+        parameter.name = DANameFactory.from("instance");
+        parameter.type = context.getMapperClass().type;
+
+        mapperClassWriter.newConstructor()
+                .withParams(ImmutableList.of(parameter))
+                .start()
+                    .newStatement()
+                    .start()
+                    .append("this.instance = instance")
+                    .end()
+                .end();
+
+        // mapper method(s)
+        // implémentation de la méthode de mapping (Function.apply tant qu'on ne supporte pas @MapperMethod)
+        DAMethod guavaMethod = from(context.getMapperClass().methods).firstMatch(DAMethodPredicates.isGuavaFunction()).get();
+        DAClassMethodWriter<?> methodWriter = mapperClassWriter.newMethod(guavaMethod.name.getName(), guavaMethod.returnType)
+                .withAnnotations(ImmutableList.<DAType>of(DATypeFactory.from(Override.class)))
+                .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
+                .withParams(guavaMethod.parameters)
+                .start();
+
+        // retourne le résultat de la méhode apply de l'instance de la classe @Mapper
+        methodWriter.newStatement()
+                .start()
+                .append("return ")
+                .append("instance")
+                .append(".")
+                .append(guavaMethod.name)
+                .appendParamValues(guavaMethod.parameters)
+                .end();
+
+        methodWriter.end();
 
         mapperClassWriter.end();
     }
