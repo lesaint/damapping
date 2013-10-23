@@ -24,7 +24,7 @@ class MapperFactoryInterfaceFileGenerator extends AbstractFileGenerator {
         DASourceClass sourceClass = context.getSourceClass();
         DAFileWriter fileWriter = new DAFileWriter(bw)
                 .appendPackage(sourceClass.packageName)
-                .appendImports(context.getMapperFactoryImports())
+                .appendImports(context.getMapperFactoryInterfaceImports())
                 .appendWarningComment();
 
         DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter.newInterface(context.getMapperFactoryInterfaceDAType().simpleName.getName())

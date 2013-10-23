@@ -73,7 +73,33 @@ class DAMethod extends AbstractImportVisitable {
     }
 
     @Override
-    protected void visiteForMapperFactory(ImportVisitor visitor) {
+    protected void visiteForMapperFactoryClass(ImportVisitor visitor) {
         // none
+    }
+
+    @Override
+    protected void visiteForMapperFactoryInterface(ImportVisitor visitor) {
+        // mapperFactoryMethod are exposed as methods of the MapperFactory
+        if (mapperFactoryMethod) {
+            for (DAParameter parameter : parameters) {
+                visitor.addMapperFactoryInterfaceImport(parameter.type.getImports());
+            }
+        }
+    }
+
+    @Override
+    protected void visiteForMapperFactoryImpl(ImportVisitor visitor) {
+        // mapperFactoryMethod are exposed as methods of the MapperFactory
+        if (isConstructor()&& mapperFactoryMethod) {
+            for (DAParameter parameter : parameters) {
+                visitor.addMapperFactoryImplImport(parameter.type.getImports());
+            }
+        }
+
+        if (isGuavaFunction()) { // remplacer par isMapperMethod
+            for (DAParameter parameter : parameters) {
+                visitor.addMapperFactoryImplImport(parameter.type.getImports());
+            }
+        }
     }
 }

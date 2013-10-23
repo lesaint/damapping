@@ -29,6 +29,8 @@ class DASourceClass implements ImportVisitable {
         visitor.addMapperImport(type.qualifiedName);
         visitor.addMapperImplImport(type.qualifiedName);
         visitor.addMapperFactoryClassImport(type.qualifiedName);
+        visitor.addMapperFactoryInterfaceImport(type.qualifiedName);
+        visitor.addMapperFactoryImplImport(type.qualifiedName);
         for (DAInterface daInterface : interfaces) {
             daInterface.visite(visitor);
         }

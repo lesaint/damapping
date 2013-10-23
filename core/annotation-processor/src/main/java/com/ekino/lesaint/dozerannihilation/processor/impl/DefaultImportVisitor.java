@@ -12,8 +12,10 @@ import java.util.List;
 */
 class DefaultImportVisitor implements ImportVisitor, DAImports {
     private final ImmutableList.Builder<DAName> mapperImports = ImmutableList.builder();
-    private final ImmutableList.Builder<DAName> mapperFactoryImports = ImmutableList.builder();
     private final ImmutableList.Builder<DAName> mapperImplImports = ImmutableList.builder();
+    private final ImmutableList.Builder<DAName> mapperFactoryClassImports = ImmutableList.builder();
+    private final ImmutableList.Builder<DAName> mapperFactoryInterfaceImports = ImmutableList.builder();
+    private final ImmutableList.Builder<DAName> mapperFactoryImplImports = ImmutableList.builder();
 
     @Override
     public void addMapperImport(@Nullable DAName qualifiedDAName) {
@@ -46,14 +48,42 @@ class DefaultImportVisitor implements ImportVisitor, DAImports {
     @Override
     public void addMapperFactoryClassImport(@Nullable DAName qualifiedDAName) {
         if (qualifiedDAName != null) {
-            mapperFactoryImports.add(qualifiedDAName);
+            mapperFactoryClassImports.add(qualifiedDAName);
         }
     }
 
     @Override
     public void addMapperFactoryClassImport(@Nullable Iterable<DAName> qualifiedNames) {
         if (qualifiedNames != null) {
-            mapperFactoryImports.addAll(qualifiedNames);
+            mapperFactoryClassImports.addAll(qualifiedNames);
+        }
+    }
+
+    @Override
+    public void addMapperFactoryInterfaceImport(@Nullable DAName qualifiedDAName) {
+        if (qualifiedDAName != null) {
+            mapperFactoryInterfaceImports.add(qualifiedDAName);
+        }
+    }
+
+    @Override
+    public void addMapperFactoryInterfaceImport(@Nullable Iterable<DAName> qualifiedNames) {
+        if (qualifiedNames != null) {
+            mapperFactoryInterfaceImports.addAll(qualifiedNames);
+        }
+    }
+
+    @Override
+    public void addMapperFactoryImplImport(@Nullable DAName qualifiedDAName) {
+        if (qualifiedDAName != null) {
+            mapperFactoryImplImports.add(qualifiedDAName);
+        }
+    }
+
+    @Override
+    public void addMapperFactoryImplImport(@Nullable Iterable<DAName> qualifiedNames) {
+        if (qualifiedNames != null) {
+            mapperFactoryImplImports.addAll(qualifiedNames);
         }
     }
 
@@ -68,7 +98,17 @@ class DefaultImportVisitor implements ImportVisitor, DAImports {
     }
 
     @Override
-    public List<DAName> getMapperFactoryImports() {
-        return mapperFactoryImports.build();
+    public List<DAName> getMapperFactoryClassImports() {
+        return mapperFactoryClassImports.build();
+    }
+
+    @Override
+    public List<DAName> getMapperFactoryInterfaceImports() {
+        return mapperFactoryInterfaceImports.build();
+    }
+
+    @Override
+    public List<DAName> getMapperFactoryImplImports() {
+        return mapperFactoryImplImports.build();
     }
 }

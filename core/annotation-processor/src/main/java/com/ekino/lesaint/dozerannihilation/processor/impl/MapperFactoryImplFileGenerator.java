@@ -27,11 +27,12 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
         DASourceClass sourceClass = context.getSourceClass();
         DAFileWriter fileWriter = new DAFileWriter(bw)
                 .appendPackage(sourceClass.packageName)
-                .appendImports(context.getMapperFactoryImports())
+                .appendImports(context.getMapperFactoryImplImports())
                 .appendWarningComment();
 
         DAClassWriter<DAFileWriter> classWriter = fileWriter.newClass(context.getMapperFactoryImplDAType())
                 .withImplemented(ImmutableList.of(context.getMapperFactoryInterfaceDAType()))
+                .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
                 .start();
 
         appendFactoryMethods(context, classWriter);
@@ -73,7 +74,7 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
     private void appendInnerClass(FileGeneratorContext context, DAClassWriter<DAFileWriter> factortClassWriter) throws IOException {
         DAClassWriter<DAClassWriter<DAFileWriter>> mapperClassWriter = factortClassWriter
                 .newClass(context.getMapperImplDAType())
-                .withModifiers(ImmutableSet.of(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL))
+                .withModifiers(ImmutableSet.of(Modifier.PRIVATE, Modifier.STATIC))
                 .withImplemented(ImmutableList.of(context.getMapperDAType()))
                 .start();
 
@@ -88,6 +89,7 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
         parameter.type = context.getSourceClass().type;
 
         mapperClassWriter.newConstructor()
+                .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
                 .withParams(ImmutableList.of(parameter))
                 .start()
                     .newStatement()

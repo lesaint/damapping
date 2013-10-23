@@ -10,13 +10,19 @@ abstract class AbstractImportVisitable implements ImportVisitable {
     @Override
     public void visite(ImportVisitor visitor) {
         visiteForMapper(visitor);
-        visiteForMapperFactory(visitor);
         visiteForMapperImpl(visitor);
+        visiteForMapperFactoryClass(visitor);
+        visiteForMapperFactoryInterface(visitor);
+        visiteForMapperFactoryImpl(visitor);
     }
 
     protected abstract void visiteForMapper(ImportVisitor visitor);
 
-    protected abstract void visiteForMapperFactory(ImportVisitor visitor);
-
     protected abstract void visiteForMapperImpl(ImportVisitor visitor);
+
+    protected abstract void visiteForMapperFactoryClass(ImportVisitor visitor);
+
+    protected abstract void visiteForMapperFactoryInterface(ImportVisitor visitor);
+
+    protected abstract void visiteForMapperFactoryImpl(ImportVisitor visitor);
 }

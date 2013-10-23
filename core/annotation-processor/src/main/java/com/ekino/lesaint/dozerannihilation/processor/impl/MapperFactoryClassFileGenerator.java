@@ -26,7 +26,7 @@ class MapperFactoryClassFileGenerator extends AbstractFileGenerator {
 
         DAFileWriter fileWriter = new DAFileWriter(bw)
                 .appendPackage(sourceClass.packageName)
-                .appendImports(context.getMapperFactoryImports())
+                .appendImports(context.getMapperFactoryClassImports())
                 .appendWarningComment();
 
         // générer la factory

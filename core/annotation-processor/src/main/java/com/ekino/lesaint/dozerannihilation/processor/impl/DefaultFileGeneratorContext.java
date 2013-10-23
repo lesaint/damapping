@@ -42,8 +42,18 @@ class DefaultFileGeneratorContext implements FileGeneratorContext {
     }
 
     @Override
-    public List<DAName> getMapperFactoryImports() {
-        return importVisitor.getMapperFactoryImports();
+    public List<DAName> getMapperFactoryClassImports() {
+        return importVisitor.getMapperFactoryClassImports();
+    }
+
+    @Override
+    public List<DAName> getMapperFactoryInterfaceImports() {
+        return importVisitor.getMapperFactoryInterfaceImports();
+    }
+
+    @Override
+    public List<DAName> getMapperFactoryImplImports() {
+        return importVisitor.getMapperFactoryImplImports();
     }
 
     @Override

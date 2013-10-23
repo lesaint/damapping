@@ -8,9 +8,14 @@ import java.util.List;
  * @author Sébastien Lesaint
  */
 public interface DAImports {
+
     List<DAName> getMapperImports();
 
     List<DAName> getMapperImplImports();
 
-    List<DAName> getMapperFactoryImports();
+    List<DAName> getMapperFactoryClassImports();
+
+    List<DAName> getMapperFactoryInterfaceImports();
+
+    List<DAName> getMapperFactoryImplImports();
 }

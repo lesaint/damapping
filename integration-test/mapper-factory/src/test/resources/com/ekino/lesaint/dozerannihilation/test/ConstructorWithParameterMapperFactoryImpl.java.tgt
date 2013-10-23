@@ -10,14 +10,17 @@ public class ConstructorWithParameterMapperFactoryImpl implements ConstructorWit
     }
 
     private static class ConstructorWithParameterMapperImpl implements ConstructorWithParameterMapper {
+
         private final ConstructorWithParameter instance;
 
         public ConstructorWithParameterMapperImpl(ConstructorWithParameter instance) {
-            this.instance = intance;
+            this.instance = instance;
         }
 
+        @Override
         public String apply(BigDecimal bigDecimal) {
             return instance.apply(bigDecimal);
         }
+
     }
 }

@@ -31,7 +31,17 @@ class DAInterface extends AbstractImportVisitable {
     }
 
     @Override
-    protected void visiteForMapperFactory(ImportVisitor visitor) {
+    protected void visiteForMapperFactoryClass(ImportVisitor visitor) {
         // interfaces are not used in the Factory
+    }
+
+    @Override
+    protected void visiteForMapperFactoryInterface(ImportVisitor visitor) {
+        // interfaces are not used in MapperFactory interface
+    }
+
+    @Override
+    protected void visiteForMapperFactoryImpl(ImportVisitor visitor) {
+        // interfaces are not used in MapperFactory impl
     }
 }
