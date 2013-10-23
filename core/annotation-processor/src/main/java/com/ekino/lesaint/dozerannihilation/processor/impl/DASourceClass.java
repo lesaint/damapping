@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
-* DAMapperClass -
+* DASourceClass - Représente la class annotée avec @Mapper
 *
 * @author Sébastien Lesaint
 */
-class DAMapperClass implements ImportVisitable {
+class DASourceClass implements ImportVisitable {
     final TypeElement classElement;
     DAName packageName;
     DAType type;
@@ -20,7 +20,7 @@ class DAMapperClass implements ImportVisitable {
     // specific to the class annoted with @Mapper
     InstantiationType instantiationType;
 
-    DAMapperClass(TypeElement classElement) {
+    DASourceClass(TypeElement classElement) {
         this.classElement = classElement;
     }
 

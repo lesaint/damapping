@@ -1,12 +1,8 @@
 package com.ekino.lesaint.dozerannihilation.processor.impl;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
-import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -25,9 +21,9 @@ class MapperFactoryInterfaceFileGenerator extends AbstractFileGenerator {
 
     @Override
     public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
-        DAMapperClass daMapperClass = context.getMapperClass();
+        DASourceClass sourceClass = context.getSourceClass();
         DAFileWriter fileWriter = new DAFileWriter(bw)
-                .appendPackage(daMapperClass.packageName)
+                .appendPackage(sourceClass.packageName)
                 .appendImports(context.getMapperFactoryImports())
                 .appendWarningComment();
 
@@ -35,8 +31,8 @@ class MapperFactoryInterfaceFileGenerator extends AbstractFileGenerator {
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
                 .start();
 
-        DAType mapperClass = DATypeFactory.declared(daMapperClass.type.qualifiedName + "Mapper");
-        for (DAMethod method : Iterables.filter(daMapperClass.methods, DAMethodPredicates.isMapperFactoryMethod())) {
+        DAType mapperClass = DATypeFactory.declared(sourceClass.type.qualifiedName + "Mapper");
+        for (DAMethod method : Iterables.filter(sourceClass.methods, DAMethodPredicates.isMapperFactoryMethod())) {
             String name = method.isConstructor() ? "instanceByConstructor" : method.name.getName();
             interfaceWriter.newMethod(name, mapperClass)
                     .withParams(method.parameters).write();

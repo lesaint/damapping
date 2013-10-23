@@ -6,7 +6,7 @@ package com.ekino.lesaint.dozerannihilation.processor.impl;
 * @author Sébastien Lesaint
 */
 interface FileGeneratorContext extends DAImports {
-    DAMapperClass getMapperClass();
+    DASourceClass getSourceClass();
     DAType getMapperDAType();
     DAType getMapperImplDAType();
     DAType getMapperFactoryClassDAType();

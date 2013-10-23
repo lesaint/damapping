@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -20,7 +19,7 @@ import com.google.common.collect.FluentIterable;
 class MapperFileGenerator extends AbstractFileGenerator {
     @Override
     public String fileName(FileGeneratorContext context) {
-        return context.getMapperClass().type.qualifiedName.getName() + "Mapper";
+        return context.getSourceClass().type.qualifiedName.getName() + "Mapper";
     }
 
     @Override
@@ -32,15 +31,15 @@ class MapperFileGenerator extends AbstractFileGenerator {
         //     -> visibilite de la classe (protected ou public ?)
         //     -> liste des interfaces implémentées
         //     -> compute liste des imports à réaliser
-        DAMapperClass daMapperClass = context.getMapperClass();
+        DASourceClass sourceClass = context.getSourceClass();
         DAFileWriter fileWriter = new DAFileWriter(bw)
-                .appendPackage(daMapperClass.packageName)
+                .appendPackage(sourceClass.packageName)
                 .appendImports(context.getMapperImports())
                 .appendWarningComment();
 
-        fileWriter.newInterface(daMapperClass.type.simpleName + "Mapper")
-                .withModifiers(filterModifiers(daMapperClass.modifiers))
-                .withExtended(toDAType(daMapperClass.interfaces)).start().end();
+        fileWriter.newInterface(sourceClass.type.simpleName + "Mapper")
+                .withModifiers(filterModifiers(sourceClass.modifiers))
+                .withExtended(toDAType(sourceClass.interfaces)).start().end();
 
         bw.flush();
         bw.close();

@@ -32,7 +32,6 @@ import javax.tools.JavaFileObject;
 import com.ekino.lesaint.dozerannihilation.annotation.MapperFactoryMethod;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
@@ -78,29 +77,29 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
 
 //        System.out.println("Processing " + classElement.getQualifiedName() + " in " + getClass().getCanonicalName());
 
-        DAMapperClass daMapperClass = new DAMapperClass(classElement);
+        DASourceClass daSourceClass = new DASourceClass(classElement);
         // retrieve name of the package of the class with @Mapper
-        daMapperClass.packageName = retrievePackageName(classElement);
+        daSourceClass.packageName = retrievePackageName(classElement);
 
         // retrieve names of the class with @Mapper
-        daMapperClass.type =  extractType((DeclaredType) classElement.asType());
+        daSourceClass.type =  extractType((DeclaredType) classElement.asType());
 
         // retrieve qualifiers of the class with @Mapper + make check : must be public or protected sinon erreur de compilation
-        daMapperClass.modifiers = classElement.getModifiers();
-        if (daMapperClass.modifiers.contains(Modifier.PRIVATE)) {
+        daSourceClass.modifiers = classElement.getModifiers();
+        if (daSourceClass.modifiers.contains(Modifier.PRIVATE)) {
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Class annoted with @Mapper can not be private", classElement);
             return;
         }
 
         // retrieve interfaces implemented (directly and if any) by the class with @Mapper (+ their generics)
         // chercher si l'une d'elles est Function (Guava)
-        daMapperClass.interfaces = retrieveInterfaces(classElement);
+        daSourceClass.interfaces = retrieveInterfaces(classElement);
 
         // pour le moment, on ne traite pas les classes abstraites implémentées par la class @Mapper ni les interfaces
         // implémentées indirectement
 
         // rechercher si la classe Mapper implémente Function
-        List<DAInterface> guavaFunctionInterfaces = from(daMapperClass.interfaces)
+        List<DAInterface> guavaFunctionInterfaces = from(daSourceClass.interfaces)
                 .filter(DAInterfacePredicates.isGuavaFunction())
                 .toList();
 
@@ -116,12 +115,12 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         // rechercher une ou plusieurs méthodes annotées avec @MapperFunction
         // si classe @Mapper implémente Function, la rechercher en commençant par les méthodes annotées avec @MapperFunction
         // si aucune méthode trouvée => erreur  de compilation
-        daMapperClass.methods = retrieveMethods(classElement);
-        if (daMapperClass.methods.isEmpty()) {
+        daSourceClass.methods = retrieveMethods(classElement);
+        if (daSourceClass.methods.isEmpty()) {
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Class annoted with @Mapper must have at least one methode", classElement);
             return;
         }
-        List<DAMethod> guavaFunctionMethods = from(daMapperClass.methods).filter(DAMethodPredicates.isGuavaFunction()).toList();
+        List<DAMethod> guavaFunctionMethods = from(daSourceClass.methods).filter(DAMethodPredicates.isGuavaFunction()).toList();
         if (guavaFunctionMethods.size() > 1) {
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Mapper having more than one apply method is not supported", classElement);
             return;
@@ -137,16 +136,16 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         //  - CONSTRUCTOR : check public/protected default constructor exists sinon erreur de compilation
         //  - SINGLETON_ENUM : check @Mapper class is an enum + check there is only one value sinon erreur de compilation
         //  - SPRING_COMPONENT : TOFINISH quelles vérifications sur la class si le InstantiationType est SPRING_COMPONENT ?
-        daMapperClass.instantiationType = computeInstantiationType(classElement, daMapperClass.methods);
-        if (!checkInstantiationTypeRequirements(daMapperClass)) {
+        daSourceClass.instantiationType = computeInstantiationType(classElement, daSourceClass.methods);
+        if (!checkInstantiationTypeRequirements(daSourceClass)) {
             return;
         }
 
         // construction des listes d'imports
         DefaultImportVisitor visitor = new DefaultImportVisitor();
-        daMapperClass.visite(visitor);
+        daSourceClass.visite(visitor);
 
-        DefaultFileGeneratorContext context = new DefaultFileGeneratorContext(daMapperClass, visitor);
+        DefaultFileGeneratorContext context = new DefaultFileGeneratorContext(daSourceClass, visitor);
 
         // 1 - générer l'interface du Mapper
         generateMapper(context);
@@ -162,19 +161,19 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         generateMapperImpl(context);
     }
 
-    private boolean checkInstantiationTypeRequirements(DAMapperClass daMapperClass) {
-        switch (daMapperClass.instantiationType) {
+    private boolean checkInstantiationTypeRequirements(DASourceClass daSourceClass) {
+        switch (daSourceClass.instantiationType) {
             case SPRING_COMPONENT:
                 return true; // requirements are enforced by Spring
             case CONSTRUCTOR:
-                return hasAccessibleConstructor(daMapperClass.classElement, daMapperClass.methods);
+                return hasAccessibleConstructor(daSourceClass.classElement, daSourceClass.methods);
             case SINGLETON_ENUM:
-                return hasOnlyOneEnumValue(daMapperClass.classElement);
+                return hasOnlyOneEnumValue(daSourceClass.classElement);
             case CONSTRUCTOR_FACTORY:
                 // TODO ajouter checks pour InstantiationType.CONSTRUCTOR_FACTORY
                 return true;
             default:
-                throw new IllegalArgumentException("Unsupported instantiationType " + daMapperClass.instantiationType);
+                throw new IllegalArgumentException("Unsupported instantiationType " + daSourceClass.instantiationType);
         }
     }
 
@@ -225,7 +224,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
 
         JavaFileObject jfo = processingEnv.getFiler().createSourceFile(
                 fileGenerator.fileName(context),
-                context.getMapperClass().classElement
+                context.getSourceClass().classElement
         );
         processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "generating " + jfo.toUri());
 
@@ -243,7 +242,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     }
 
     private boolean shouldGenerateMapperFactoryClass(FileGeneratorContext context) {
-        return MAPPER_FACTORY_CLASS_INTANTIATIONTYPES.contains(context.getMapperClass().instantiationType);
+        return MAPPER_FACTORY_CLASS_INTANTIATIONTYPES.contains(context.getSourceClass().instantiationType);
     }
 
     private void generateMapperFactoryInterface(FileGeneratorContext context) throws IOException {
@@ -265,7 +264,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     }
 
     private boolean shouldGenerateMapperFactoryInterface(FileGeneratorContext context) {
-        return MAPPER_FACTORY_INTERFACE_INTANTIATIONTYPES.contains(context.getMapperClass().instantiationType);
+        return MAPPER_FACTORY_INTERFACE_INTANTIATIONTYPES.contains(context.getSourceClass().instantiationType);
     }
 
     private List<DAMethod> retrieveMethods(final TypeElement classElement) {

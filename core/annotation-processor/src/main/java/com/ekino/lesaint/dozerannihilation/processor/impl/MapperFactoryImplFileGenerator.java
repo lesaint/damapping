@@ -1,13 +1,9 @@
 package com.ekino.lesaint.dozerannihilation.processor.impl;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import org.springframework.util.StringUtils;
 
-import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -28,9 +24,9 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
 
     @Override
     public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
-        DAMapperClass daMapperClass = context.getMapperClass();
+        DASourceClass sourceClass = context.getSourceClass();
         DAFileWriter fileWriter = new DAFileWriter(bw)
-                .appendPackage(daMapperClass.packageName)
+                .appendPackage(sourceClass.packageName)
                 .appendImports(context.getMapperFactoryImports())
                 .appendWarningComment();
 
@@ -48,8 +44,8 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
     }
 
     private void appendFactoryMethods(FileGeneratorContext context, DAClassWriter<DAFileWriter> classWriter) throws IOException {
-        DAMapperClass mapperClass = context.getMapperClass();
-        for (DAMethod method : Iterables.filter(mapperClass.methods, DAMethodPredicates.isMapperFactoryMethod())) {
+        DASourceClass sourceClass = context.getSourceClass();
+        for (DAMethod method : Iterables.filter(sourceClass.methods, DAMethodPredicates.isMapperFactoryMethod())) {
             String name = method.isConstructor() ? "instanceByConstructor" : method.name.getName();
             DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter
                     .newMethod(name, context.getMapperDAType())
@@ -60,7 +56,7 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
                     .start()
                     .append("return new ConstructorWithParameterMapperImpl(");
             if (method.isConstructor()) {
-                statementWriter.append("new ").append(mapperClass.type.simpleName)
+                statementWriter.append("new ").append(sourceClass.type.simpleName)
                         .appendParamValues(method.parameters);
             }
             else {
@@ -82,14 +78,14 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
                 .start();
 
         // private final [SourceClassType] instance;
-        mapperClassWriter.newProperty("instance", context.getMapperClass().type)
+        mapperClassWriter.newProperty("instance", context.getSourceClass().type)
                 .withModifier(ImmutableSet.of(Modifier.PRIVATE, Modifier.FINAL))
                 .write();
 
         // constructor with instance parameter
         DAParameter parameter = new DAParameter();
         parameter.name = DANameFactory.from("instance");
-        parameter.type = context.getMapperClass().type;
+        parameter.type = context.getSourceClass().type;
 
         mapperClassWriter.newConstructor()
                 .withParams(ImmutableList.of(parameter))
@@ -102,7 +98,7 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
 
         // mapper method(s)
         // implémentation de la méthode de mapping (Function.apply tant qu'on ne supporte pas @MapperMethod)
-        DAMethod guavaMethod = from(context.getMapperClass().methods).firstMatch(DAMethodPredicates.isGuavaFunction()).get();
+        DAMethod guavaMethod = from(context.getSourceClass().methods).firstMatch(DAMethodPredicates.isGuavaFunction()).get();
         DAClassMethodWriter<?> methodWriter = mapperClassWriter.newMethod(guavaMethod.name.getName(), guavaMethod.returnType)
                 .withAnnotations(ImmutableList.<DAType>of(DATypeFactory.from(Override.class)))
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
@@ -125,7 +121,7 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
     }
 
     private void appendPrivateMapperImpl(BufferedWriter bw, FileGeneratorContext context) throws IOException {
-        DAName simpleName = context.getMapperClass().type.simpleName;
+        DAName simpleName = context.getSourceClass().type.simpleName;
         bw.append(INDENT).append("private static class ").append(simpleName).append("MapperImpl").append(" implements ").append(simpleName).append("Mapper").append(" {");
         bw.newLine();
         bw.append(INDENT).append(INDENT).append("private final ").append(simpleName).append(" instance;");

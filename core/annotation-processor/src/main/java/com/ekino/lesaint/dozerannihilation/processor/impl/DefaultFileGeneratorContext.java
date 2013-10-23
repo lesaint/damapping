@@ -1,6 +1,5 @@
 package com.ekino.lesaint.dozerannihilation.processor.impl;
 
-import javax.lang.model.element.Name;
 import java.util.List;
 
 /**
@@ -9,7 +8,7 @@ import java.util.List;
 * @author Sébastien Lesaint
 */
 class DefaultFileGeneratorContext implements FileGeneratorContext {
-    private final DAMapperClass mapperClass;
+    private final DASourceClass sourceClass;
     private final DefaultImportVisitor importVisitor;
     private final DAType mapperDAType;
     private final DAType mapperImplDAType;
@@ -17,19 +16,19 @@ class DefaultFileGeneratorContext implements FileGeneratorContext {
     private final DAType mapperFactoryInterfaceDAType;
     private final DAType mapperFactoryImplDAType;
 
-    DefaultFileGeneratorContext(DAMapperClass mapperClass, DefaultImportVisitor importVisitor) {
-        this.mapperClass = mapperClass;
+    DefaultFileGeneratorContext(DASourceClass sourceClass, DefaultImportVisitor importVisitor) {
+        this.sourceClass = sourceClass;
         this.importVisitor = importVisitor;
-        this.mapperDAType = DATypeFactory.declared(mapperClass.type.qualifiedName + "Mapper");
-        this.mapperImplDAType = DATypeFactory.declared(mapperClass.type.qualifiedName + "MapperImpl");
-        this.mapperFactoryClassDAType = DATypeFactory.declared(mapperClass.type.qualifiedName + "MapperFactory");
-        this.mapperFactoryInterfaceDAType = DATypeFactory.declared(mapperClass.type.qualifiedName + "MapperFactory");
-        this.mapperFactoryImplDAType = DATypeFactory.declared(mapperClass.type.qualifiedName + "MapperFactoryImpl");
+        this.mapperDAType = DATypeFactory.declared(sourceClass.type.qualifiedName + "Mapper");
+        this.mapperImplDAType = DATypeFactory.declared(sourceClass.type.qualifiedName + "MapperImpl");
+        this.mapperFactoryClassDAType = DATypeFactory.declared(sourceClass.type.qualifiedName + "MapperFactory");
+        this.mapperFactoryInterfaceDAType = DATypeFactory.declared(sourceClass.type.qualifiedName + "MapperFactory");
+        this.mapperFactoryImplDAType = DATypeFactory.declared(sourceClass.type.qualifiedName + "MapperFactoryImpl");
     }
 
     @Override
-    public DAMapperClass getMapperClass() {
-        return mapperClass;
+    public DASourceClass getSourceClass() {
+        return sourceClass;
     }
 
     @Override
