@@ -3,30 +3,15 @@ package com.ekino.lesaint.dozerannihilation.test;
 import org.testng.annotations.Test;
 
 /**
- * ConstructorWithParameterTest -
+ * ConstructorWithParameterTest - Test de génération des fichiers sources des classes générées à partir de la class
+ * ConstructorWithParameter
  *
  * @author Sébastien Lesaint
  */
-public class ConstructorWithParameterTest {
-
-    protected final TestUtil testUtil;
+public class ConstructorWithParameterTest extends AbstractMapperFactoryTest {
 
     public ConstructorWithParameterTest() {
-        this.testUtil = new TestUtil(ConstructorWithParameter.class);
+        super(ConstructorWithParameter.class);
     }
 
-    @Test
-    public void check_generated_mapper_file() throws Exception {
-        testUtil.checkGeneratedFile("Mapper");
-    }
-
-    @Test
-    public void check_generated_mapperFactory_file() throws Exception {
-        testUtil.checkGeneratedFile("MapperFactory");
-    }
-
-    @Test
-    public void check_generated_mapperFactoryImpl_file() throws Exception {
-        testUtil.checkGeneratedFile("MapperFactoryImpl");
-    }
 }
