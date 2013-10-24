@@ -75,7 +75,7 @@ public class DAInterfaceMethodWriterTest {
         DAWriter parent = new DAWriter() {
 
         };
-        DAInterfaceMethodWriter<DAWriter> classWriter = new DAInterfaceMethodWriter<DAWriter>("name", DATypeFactory.declared("java.lang.String"), testWriters.bw, 1, parent);
+        DAInterfaceMethodWriter<DAWriter> classWriter = new DAInterfaceMethodWriter<DAWriter>("name", DATypeFactory.from(String.class), testWriters.bw, 1, parent);
 
         assertThat(classWriter.write()).isSameAs(parent);
     }

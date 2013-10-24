@@ -21,7 +21,6 @@ ROADMAP
  * auto discovery de l'annotation processor
  * séparation en modules spécifiques des annotations et du processor
  - tester MapperFactory avec des Objets non java.lang, des génériques, ...
- - remplacer les usages de DATypeFactory.declared par DATypeFactory.from quand possible
  - test U pour les méthodes appendType, appendParams, ... de DAStatementWriter ?
  - ajouter un contrôle : les MapperFactoryMethods doivent retourner le type de l'objet annotée avec @Mapper
  - ajouter une méthode appendReturn à DAStatementWriter ?

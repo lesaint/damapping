@@ -1,8 +1,12 @@
 package com.ekino.lesaint.dozerannihilation.processor.impl;
 
+import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 
+import javax.annotation.Nullable;
 import javax.lang.model.type.TypeKind;
+
+import java.io.Serializable;
 
 import static com.ekino.lesaint.dozerannihilation.processor.impl.DATypeFactory.declared;
 
@@ -13,11 +17,11 @@ import static com.ekino.lesaint.dozerannihilation.processor.impl.DATypeFactory.d
  */
 final class DAWriterTestUtil {
     static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    static final DAType OVERRIDE_ANNOTATION = DATypeFactory.declared("java.lang.Override");
-    static final DAType NULLABLE_ANNOTATION = DATypeFactory.declared("javax.annotation.Nullable");
-    static final DAType SERIALIZABLE_INTERFACE = DATypeFactory.declared("java.io.Serializable");
-    static final DAType FUNCTION_INTEGER_TO_STRING_INTERFACE = DATypeFactory.declared("com.google.common.base.Function",
-            ImmutableList.of(DATypeFactory.declared("java.lang.Integer"), DATypeFactory.declared("java.lang.String"))
+    static final DAType OVERRIDE_ANNOTATION = DATypeFactory.from(Override.class);
+    static final DAType NULLABLE_ANNOTATION = DATypeFactory.from(Nullable.class);
+    static final DAType SERIALIZABLE_INTERFACE = DATypeFactory.from(Serializable.class);
+    static final DAType FUNCTION_INTEGER_TO_STRING_INTERFACE = DATypeFactory.from(Function.class,
+            ImmutableList.of(DATypeFactory.from(Integer.class), DATypeFactory.from(String.class))
     );
     static final DAType DAWRITER_ABSTACT_CLASS = DATypeFactory.declared("com.ekino.lesaint.dozerannihilation.processor.impl.DAWriter");
     static final DAType BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS = DATypeFactory.declared("com.acme.Bidon",

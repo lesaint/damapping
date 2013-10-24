@@ -8,7 +8,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeKind;
 
 import static com.ekino.lesaint.dozerannihilation.processor.impl.AbstractDAWriter.INDENT;
-import static com.ekino.lesaint.dozerannihilation.processor.impl.DATypeFactory.declared;
 import static com.ekino.lesaint.dozerannihilation.processor.impl.DAWriterTestUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -127,7 +126,7 @@ public class DAClassMethodWriterTest {
         DAWriter parent = new DAWriter() {
 
         };
-        DAClassMethodWriter<DAWriter> classWriter = new DAClassMethodWriter<DAWriter>("name", DATypeFactory.declared("java.lang.String"), testWriters.bw, 1, parent);
+        DAClassMethodWriter<DAWriter> classWriter = new DAClassMethodWriter<DAWriter>("name", DATypeFactory.from(String.class), testWriters.bw, 1, parent);
 
         assertThat(classWriter.end()).isSameAs(parent);
     }

@@ -170,7 +170,7 @@ public class DAClassWriterTest {
         TestWriters testWriters = new TestWriters();
         daClassWriter(testWriters)
                 .start()
-                .newMethod("methodName", DATypeFactory.declared("java.lang.String")).start().end()
+                .newMethod("methodName", DATypeFactory.from(String.class)).start().end()
                 .end();
 
         assertThat(testWriters.getRes())
@@ -232,7 +232,7 @@ public class DAClassWriterTest {
         TestWriters testWriters = new TestWriters();
         daClassWriter(testWriters)
                 .start()
-                .newProperty("variableName", DATypeFactory.declared("java.lang.String"))
+                .newProperty("variableName", DATypeFactory.from(String.class))
                     .withAnnotations(ImmutableList.of(NULLABLE_ANNOTATION))
                     .write()
                 .end();
