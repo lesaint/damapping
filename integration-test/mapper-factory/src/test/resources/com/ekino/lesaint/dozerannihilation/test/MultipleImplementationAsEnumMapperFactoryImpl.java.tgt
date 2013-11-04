@@ -1,0 +1,32 @@
+package com.ekino.lesaint.dozerannihilation.test;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public class MultipleImplementationAsEnumMapperFactoryImpl implements MultipleImplementationAsEnumMapperFactory {
+
+    public MultipleImplementationAsEnumMapper bigDecimal() {
+        return new MultipleImplementationAsEnumMapperImpl(MultipleImplementationAsEnum.bigDecimal());
+    }
+
+    public MultipleImplementationAsEnumMapper integer() {
+        return new MultipleImplementationAsEnumMapperImpl(MultipleImplementationAsEnum.integer());
+    }
+
+    public MultipleImplementationAsEnumMapper instance(boolean bigDecimal) {
+        return new MultipleImplementationAsEnumMapperImpl(MultipleImplementationAsEnum.instance(bigDecimal));
+    }
+
+    private static class MultipleImplementationAsEnumMapperImpl implements MultipleImplementationAsEnumMapper {
+
+        private final MultipleImplementationAsEnum instance;
+
+        public MultipleImplementationAsEnumMapperImpl(MultipleImplementationAsEnum instance) {
+            this.instance = instance;
+        }
+
+        @Override
+        public Integer apply(String input) {
+            return instance.apply(input);
+        }
+
+    }
+}

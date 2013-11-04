@@ -28,13 +28,13 @@ public abstract class AbstractMapperFactoryTest {
     }
 
     @Test
-    public void check_generated_mapperFactory_file() throws Exception {
-        testUtil.checkGeneratedFile("MapperFactory");
+    public void check_generated_mapperFactoryImpl_file() throws Exception {
+        testUtil.checkGeneratedFile("MapperFactoryImpl");
     }
 
     @Test
-    public void check_generated_mapperFactoryImpl_file() throws Exception {
-        testUtil.checkGeneratedFile("MapperFactoryImpl");
+    public void check_generated_mapperFactory_file() throws Exception {
+        testUtil.checkGeneratedFile("MapperFactory");
     }
 
 }
