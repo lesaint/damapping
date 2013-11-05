@@ -32,6 +32,19 @@ public class DAMethodPredicates {
         }
     }
 
+    public static Predicate<DAMethod> isStatic() {
+        return StaticPredicate.INSTANCE;
+    }
+
+    private static enum  StaticPredicate implements Predicate<DAMethod> {
+        INSTANCE;
+
+        @Override
+        public boolean apply(@Nullable DAMethod daMethod) {
+            return daMethod.modifiers.contains(Modifier.STATIC);
+        }
+    }
+
     public static Predicate<DAMethod> notPrivate() {
         return NotPrivatePredicate.INSTANCE;
     }

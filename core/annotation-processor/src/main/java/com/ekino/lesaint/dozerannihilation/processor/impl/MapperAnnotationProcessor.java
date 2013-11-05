@@ -163,6 +163,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     }
 
     private boolean checkInstantiationTypeRequirements(DASourceClass daSourceClass) {
+        // TODO vérifier qu'il n'y a pas d'usage illegal de @MapperFactoryMethod (ie. sur méthode non statique)
         switch (daSourceClass.instantiationType) {
             case SPRING_COMPONENT:
                 return true; // requirements are enforced by Spring
@@ -171,7 +172,10 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
             case SINGLETON_ENUM:
                 return hasOnlyOneEnumValue(daSourceClass.classElement);
             case CONSTRUCTOR_FACTORY:
-                // TODO ajouter checks pour InstantiationType.CONSTRUCTOR_FACTORY
+                // TODO ajouter checks pour InstantiationType.CONSTRUCTOR_FACTORY (vérifier que pas d'autre méthode annotée avec @MapperFactoryMethod)
+                return true;
+            case STATIC_FACTORY:
+                // TODO ajouter checks pour InstantiationType.STATIC_FACTORY (vérifier que pas de constructeur à paramètre)
                 return true;
             default:
                 throw new IllegalArgumentException("Unsupported instantiationType " + daSourceClass.instantiationType);
@@ -454,19 +458,29 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     }
 
     private static InstantiationType computeInstantiationType(TypeElement classElement, List<DAMethod> methods) {
-        if (classElement.getKind() == ElementKind.ENUM) {
-            return InstantiationType.SINGLETON_ENUM;
-        }
-        Optional<AnnotationMirror> annotationMirror = getAnnotationMirror(classElement, Component.class);
-        if (annotationMirror.isPresent()) {
-            return InstantiationType.SPRING_COMPONENT;
-        }
         Optional<DAMethod> mapperFactoryConstructor = from(methods)
                 .filter(DAMethodPredicates.isConstructor())
                 .filter(DAMethodPredicates.isMapperFactoryMethod())
                 .first();
         if (mapperFactoryConstructor.isPresent()) {
             return InstantiationType.CONSTRUCTOR_FACTORY;
+        }
+
+        Optional<DAMethod> mapperFactoryStaticMethods = from(methods)
+                .filter(DAMethodPredicates.isStatic())
+                .filter(DAMethodPredicates.isMapperFactoryMethod())
+                .first();
+        if (mapperFactoryStaticMethods.isPresent()) {
+            return InstantiationType.STATIC_FACTORY;
+        }
+
+        if (classElement.getKind() == ElementKind.ENUM) {
+            return InstantiationType.SINGLETON_ENUM;
+        }
+
+        Optional<AnnotationMirror> annotationMirror = getAnnotationMirror(classElement, Component.class);
+        if (annotationMirror.isPresent()) {
+            return InstantiationType.SPRING_COMPONENT;
         }
         return InstantiationType.CONSTRUCTOR;
     }

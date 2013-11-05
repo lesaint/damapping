@@ -22,5 +22,9 @@ public enum InstantiationType {
      * Type d'instantiation pour une classe sans constructeur par défaut mais avec un ou plusieurs
      * constructeurs annotés avec @MapperFactoryMethod
      */
-    CONSTRUCTOR_FACTORY;
+    CONSTRUCTOR_FACTORY,
+    /**
+     * Type d'instantiation pour une classe/enum avec des méthodes statiques annotées avec @MapperFactoryMethod
+     */
+    STATIC_FACTORY;
 }
