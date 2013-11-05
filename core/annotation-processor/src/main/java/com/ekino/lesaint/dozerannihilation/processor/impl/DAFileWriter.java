@@ -109,9 +109,10 @@ public class DAFileWriter implements DAWriter {
     }
 
     private static class PackagePredicate implements Predicate<DAName> {
+        @Nonnull
         private final DAName packageName;
 
-        public PackagePredicate(DAName packageName) {
+        public PackagePredicate(@Nonnull DAName packageName) {
             this.packageName = packageName;
         }
 
@@ -120,9 +121,12 @@ public class DAFileWriter implements DAWriter {
             if (qualifiedName == null) {
                 return true;
             }
-            // FIXME ce predicate répond true à tort pour un sous package de daMapperClass.packageName
             String name = qualifiedName.toString();
-            return name.substring(0, name.lastIndexOf(".")).equals(packageName.toString());
+            int dotIndex = name.lastIndexOf(".");
+            if (dotIndex > -1) {
+                return name.substring(0, dotIndex).equals(packageName.toString());
+            }
+            return packageName.getName().isEmpty();
         }
     }
 }

@@ -81,6 +81,7 @@ public class DATypeTest {
 
     private static DAType daType(String qualifiedName, List<DAType> typeArgs) {
         DAType res = new DAType();
+        res.kind = TypeKind.DECLARED;
         res.qualifiedName = DANameFactory.from(qualifiedName);
         res.typeArgs = typeArgs;
         return res;

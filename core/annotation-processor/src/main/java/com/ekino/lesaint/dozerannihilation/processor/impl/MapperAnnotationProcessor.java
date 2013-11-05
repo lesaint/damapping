@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -416,13 +417,24 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         }
         DAType res = new DAType();
         res.kind = type.getKind();
-        res.simpleName = DANameFactory.from(element.getSimpleName());
-        res.qualifiedName = extractQualifiedName(element);
+        res.simpleName = extractSimpleName(type, element);
+        res.qualifiedName = extractQualifiedName(type, element);
         res.typeArgs = extractTypeArgs(type);
         return res;
     }
 
-    private static DAName extractQualifiedName(Element element) {
+    private static DAName extractSimpleName(TypeMirror type, Element element) {
+        if (type.getKind().isPrimitive()) {
+            return DANameFactory.fromPrimitiveKind(type.getKind());
+        }
+        return DANameFactory.from(element.getSimpleName());
+    }
+
+    private static DAName extractQualifiedName(TypeMirror type, Element element) {
+        if (type.getKind().isPrimitive()) {
+            // primitive types do not have a qualifiedName by definition
+            return null;
+        }
         if (element instanceof QualifiedNameable) {
             return DANameFactory.from(((QualifiedNameable) element).getQualifiedName());
         }

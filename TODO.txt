@@ -26,6 +26,8 @@ ROADMAP
  - ajouter une méthode appendReturn à DAStatementWriter ?
  - test U pour DAClassWriter.newClass
  - reduire duplication dans le calcul des imports (ImportVisitable implemenations)
+ - déplacer DAFileWriter#PackagePredicate dans une classe DAName predicate et ajouter des tests U
+   (en particulier pour le package par défaut, ie. pas de package)
  - factoriser la génération des méthodes @MapperMethod (pour l'instant juste apply de Guava.Function) entre
    MapperImplFileGenerator et MapperFactoryImplFileGenerator ?
  - ajouter les @Override manquant dans les classes générées Mapper*Impl
