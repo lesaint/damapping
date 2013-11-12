@@ -55,13 +55,17 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
                     .start();
             DAStatementWriter<?> statementWriter = methodWriter.newStatement()
                     .start()
-                    .append("return new ConstructorWithParameterMapperImpl(");
+                    .append("return new ")
+                    .append(context.getMapperImplDAType().simpleName)
+                    .append("(");
             if (method.isConstructor()) {
                 statementWriter.append("new ").append(sourceClass.type.simpleName)
                         .appendParamValues(method.parameters);
             }
             else {
-                throw new IllegalArgumentException("MapperFactoryMethod not a constructor not supported yet");
+                statementWriter.append(sourceClass.type.simpleName)
+                        .append(".")
+                        .append(method.name).appendParamValues(method.parameters);
             }
             statementWriter
                     .append(")")

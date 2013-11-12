@@ -56,7 +56,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     private static final Set<InstantiationType> MAPPER_FACTORY_CLASS_INTANTIATIONTYPES =
             ImmutableSet.of(InstantiationType.CONSTRUCTOR, InstantiationType.SINGLETON_ENUM);
     private static final Set<InstantiationType> MAPPER_FACTORY_INTERFACE_INTANTIATIONTYPES =
-            ImmutableSet.of(InstantiationType.CONSTRUCTOR_FACTORY);
+            ImmutableSet.of(InstantiationType.CONSTRUCTOR_FACTORY, InstantiationType.STATIC_FACTORY);
 
     public MapperAnnotationProcessor(ProcessingEnvironment processingEnv) {
         super(processingEnv, Mapper.class);
