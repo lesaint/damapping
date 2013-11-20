@@ -26,6 +26,7 @@ import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
@@ -424,12 +425,31 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         res.simpleName = extractSimpleName(type, element);
         res.qualifiedName = extractQualifiedName(type, element);
         res.typeArgs = extractTypeArgs(type);
+        populateBounds(res, type);
         return res;
+    }
+
+    private void populateBounds(DAType res, TypeMirror type) {
+        if (type.getKind() != TypeKind.WILDCARD) {
+            return;
+        }
+
+        WildcardType wildcardType = (WildcardType) type;
+        if (wildcardType.getSuperBound() != null) {
+            res.superBound = extractType(wildcardType.getSuperBound());
+        }
+        if (wildcardType.getExtendsBound() != null) {
+            res.extendsBound = extractType(wildcardType.getExtendsBound());
+        }
     }
 
     private static DAName extractSimpleName(TypeMirror type, Element element) {
         if (type.getKind().isPrimitive()) {
             return DANameFactory.fromPrimitiveKind(type.getKind());
+        }
+        if (type.getKind() == TypeKind.WILDCARD) {
+            // wildward types do not have a name nor qualified name
+            return null;
         }
         return DANameFactory.from(element.getSimpleName());
     }

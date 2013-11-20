@@ -27,6 +27,10 @@ class DAType {
     DAName simpleName;
     @Nonnull
     List<DAType> typeArgs;
+    @Nullable
+    DAType superBound;
+    @Nullable
+    DAType extendsBound;
 
     public boolean isArray() {
         return kind == TypeKind.ARRAY;
