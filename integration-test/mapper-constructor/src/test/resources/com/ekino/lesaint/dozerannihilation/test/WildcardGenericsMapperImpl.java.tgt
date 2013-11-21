@@ -1,6 +1,7 @@
 package com.ekino.lesaint.dozerannihilation.test;
 
 import com.ekino.lesaint.dozerannihilation.test.subpackage.OutOfPackage;
+import com.google.common.base.Optional;
 
 // GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
 public class WildcardGenericsMapperImpl implements WildcardGenericsMapper {

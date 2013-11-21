@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.lang.model.type.TypeKind;
+
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -38,19 +39,25 @@ class DAType {
 
     // TODO : cache the list of imports for a specific DAType
     public Iterable<DAName> getImports() {
-        return Iterables.concat(
-                Iterables.concat(
-                        ImmutableList.of(kind.isPrimitive() ? ImmutableList.<DAName>of() : ImmutableList.of(qualifiedName)),
-                        Iterables.transform(
-                                typeArgs,
-                                new Function<DAType, Iterable<DAName>>() {
-                                    @Override
-                                    public Iterable<DAName> apply(DAType daType) {
-                                        return daType.getImports();
-                                    }
-                                }
-                        )
-                )
+        ImmutableList<DAName> qualifiedName = hasNoName(kind) ? ImmutableList.<DAName>of() : ImmutableList.of(this.qualifiedName);
+        Iterable<Iterable<DAName>> typesImports = Iterables.transform(
+                typeArgs,
+                new Function<DAType, Iterable<DAName>>() {
+                    @Override
+                    public Iterable<DAName> apply(DAType daType) {
+                        return daType.getImports();
+                    }
+                }
         );
+        return Iterables.concat(
+                qualifiedName,
+                Iterables.concat(typesImports),
+                superBound == null ? ImmutableList.<DAName>of() : ImmutableList.copyOf(superBound.getImports()),
+                extendsBound == null ? ImmutableList.<DAName>of() : ImmutableList.copyOf(extendsBound.getImports())
+        );
+    }
+
+    private static boolean hasNoName(TypeKind kind) {
+        return kind.isPrimitive() || kind == TypeKind.WILDCARD;
     }
 }

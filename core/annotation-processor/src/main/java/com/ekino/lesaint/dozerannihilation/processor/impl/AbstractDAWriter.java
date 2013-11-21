@@ -56,7 +56,17 @@ public class AbstractDAWriter<T extends DAWriter> implements DAWriter {
     }
 
     void appendType(BufferedWriter bw, DAType type) throws IOException {
-        bw.append(type.simpleName);
+        if (type.extendsBound != null) {
+            bw.append("? extends ");
+            appendType(bw, type.extendsBound);
+        }
+        else if (type.superBound!= null) {
+            bw.append("? super ");
+            appendType(bw, type.extendsBound);
+        }
+        else {
+            bw.append(type.simpleName);
+        }
         appendTypeArgs(bw, type.typeArgs);
         if (type.isArray()) {
             bw.append("[]");

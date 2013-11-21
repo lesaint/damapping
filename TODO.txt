@@ -24,6 +24,7 @@ ROADMAP
  - test U pour les méthodes appendType, appendParams, ... de DAStatementWriter ?
  - ajouter un contrôle : les MapperFactoryMethods doivent retourner le type de l'objet annotée avec @Mapper
  - ajouter une méthode appendReturn à DAStatementWriter ?
+ - ajouter un test U pour DAType.superBound
  - test U pour DAClassWriter.newClass
  - reduire duplication dans le calcul des imports (ImportVisitable implemenations)
  - déplacer DAFileWriter#PackagePredicate dans une classe DAName predicate et ajouter des tests U
