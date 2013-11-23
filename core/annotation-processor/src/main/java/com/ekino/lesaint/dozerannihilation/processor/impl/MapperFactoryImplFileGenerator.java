@@ -50,6 +50,7 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
             String name = method.isConstructor() ? "instanceByConstructor" : method.name.getName();
             DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter
                     .newMethod(name, context.getMapperDAType())
+                    .withAnnotations(ImmutableList.of(DATypeFactory.from(Override.class)))
                     .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
                     .withParams(method.parameters)
                     .start();
