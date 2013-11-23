@@ -48,4 +48,21 @@ public class DAName implements CharSequence, Comparable<DAName> {
     public int compareTo(DAName o) {
         return name.compareTo(o.getName());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        return name.equals(((DAName) o).name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }
