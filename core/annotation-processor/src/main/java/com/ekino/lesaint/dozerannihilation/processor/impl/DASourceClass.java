@@ -1,9 +1,12 @@
 package com.ekino.lesaint.dozerannihilation.processor.impl;
 
+import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import java.util.List;
 import java.util.Set;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 /**
 * DASourceClass - Représente la class annotée avec @Mapper
@@ -34,7 +37,7 @@ class DASourceClass implements ImportVisitable {
         for (DAInterface daInterface : interfaces) {
             daInterface.visite(visitor);
         }
-        for (DAMethod daMethod : methods) {
+        for (DAMethod daMethod : Iterables.filter(methods, DAMethodPredicates.isGuavaFunction())) {
             daMethod.visite(visitor);
         }
     }
