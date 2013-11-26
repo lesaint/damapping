@@ -2,22 +2,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.ekino.sfrsandbox.dozerannihilation</groupId>
+    <groupId>fr.phan.damapping</groupId>
     <artifactId>parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>POM Parent</name>
-    <description>Framework de bean mapping</description>
+    <description>DA Mapping Framework</description>
 
     <modules>
         <module>core</module>
         <module>integration-test</module>
     </modules>
 
-    <organization>
-        <name>Ekino</name>
-        <url>http://www.ekino.com</url>
-    </organization>
+    <developers>
+        <developer>
+            <name>Sébastien Lesaint</name>
+        </developer>
+    </developers>
 
     <properties>
         <git.repository>scm:git:https://gitlab.fullsix.com/sfr-sandbox/dozer-annihilation.git</git.repository>
@@ -38,72 +39,8 @@
 
     <ciManagement>
         <system>jenkins</system>
-        <url>http://hudson.sfrdev.fr</url>
+        <url>https://sebastienlesaint.ci.cloudbees.com</url>
     </ciManagement>
-
-    <distributionManagement>
-        <repository>
-            <id>ekino-releases</id>
-            <url>http://nexus.sfrdev.fr/nexus/content/repositories/ekino-releases</url>
-            <uniqueVersion>true</uniqueVersion>
-        </repository>
-        <snapshotRepository>
-            <id>ekino-snapshots</id>
-            <url>http://nexus.sfrdev.fr/nexus/content/repositories/ekino-snapshots</url>
-            <uniqueVersion>true</uniqueVersion>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>ekino-releases</id>
-            <name>SF Ekino Repository - Releases</name>
-            <url>http://nexus.sfrdev.fr/nexus/content/groups/ekino</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>ekino-snapshots</id>
-            <name>SF Ekino Repository - Snapshots</name>
-            <url>http://nexus.sfrdev.fr/nexus/content/groups/ekino</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>ekino-releases</id>
-            <name>SF Ekino Repository - Releases</name>
-            <url>http://nexus.sfrdev.fr/nexus/content/groups/ekino</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>ekino-snapshots</id>
-            <name>SF Ekino Repository - Snapshots</name>
-            <url>http://nexus.sfrdev.fr/nexus/content/groups/ekino</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
-
 
     <dependencyManagement>
         <dependencies>
