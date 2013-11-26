@@ -1,0 +1,13 @@
+package fr.phan.damapping.test;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import java.io.File;
+import java.util.Collection;
+import java.util.Map;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public interface GenericsEverywhereMapper extends Function<Optional<Integer[]>, Collection<Predicate<Map<Long, File>>>> {
+
+}

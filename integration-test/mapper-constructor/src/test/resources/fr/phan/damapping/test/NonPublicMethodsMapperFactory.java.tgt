@@ -1,0 +1,10 @@
+package fr.phan.damapping.test;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+class NonPublicMethodsMapperFactory {
+
+    public static NonPublicMethods instance() {
+        return new NonPublicMethods();
+    }
+
+}

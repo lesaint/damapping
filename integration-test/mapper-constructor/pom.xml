@@ -55,7 +55,7 @@
                         <!--cet argument est optionnel car il existe aussi une méthode de découverte automatique des-->
                         <!--processor par le compilateur&ndash;&gt;-->
                     <!--<annotationProcessors>-->
-                        <!--<annotationProcessor>com.ekino.lesaint.dozerannihilation.processor.DAAnnotationProcessor-->
+                        <!--<annotationProcessor>DAAnnotationProcessor-->
                         <!--</annotationProcessor>-->
                     <!--</annotationProcessors>-->
                     <!--&lt;!&ndash;vérifie si le traitement des annotations et/ou la compilation sont effectués&ndash;&gt;-->
