@@ -13,7 +13,7 @@ As such, Dozer is by far the best example of this. Mapping beans or even hierarc
 can just magically work ! By as your application live, developers come by and go, you hand up asking just too many
 times : where does this value come from ? is it ever set ? where/when is it set ? could it be set more than once ?
 
-This mapping framework got the first word of its name from this hell : Dozer Annihilation (and as some kind of tribute to
+This mapping framework got the first word of its name from this hell : **D**ozer **A**nnihilation (and as some kind of tribute to
 the famous RTS game).
 
 The spirit
@@ -99,8 +99,7 @@ In the previous example, notice the following :
 3. class `SomeService` instances a `FooMapperImpl` object in his default constructor
 
 DA Mapping framework uses annotation processing to generate the boiler plate interface `FooMapper` and a class
-`FooMapperImpl` which acts as a proxy class for your implementation (so called the "@Mapper class") which implements
-the `FooMapper` interface.
+`FooMapperImpl` which implements the `FooMapper` interface and acts as a proxy class to your implementation.
 
 By doing this, DA Mapping framework made your code :
 
