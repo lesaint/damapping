@@ -56,10 +56,11 @@ some limitations :
 How does it work
 ----------------
 To use DA Mapping Framework, write class Foo exposing a method creating an instance of class A from an instance of class B,
-add a @Mapper annotation on that class and then just use the FooMapper interface in your code.
+add a `@Mapper` annotation on that class and then just use the FooMapper interface in your code.
 
 Creating a Mapper
-`
+
+```java
 @Mapper
 public class Foo implements Function<Bar, Bundy> {
     @Override
@@ -67,11 +68,11 @@ public class Foo implements Function<Bar, Bundy> {
         // some code return a Bundy instance
     }
 }
-`
+```
 
 Handcrafted (no DI) use of a Mapper
 
-`
+```java
 public class SomeService {
     private final FooMapper fooMapper;
 
@@ -88,7 +89,7 @@ public class SomeService {
         // ...
     }
 }
-`
+```
 
 What just happened ?
 In the previous example, notice the following :
@@ -104,7 +105,7 @@ the `FooMapper` interface.
 By doing this, DA Mapping framework made your code :
 
 * instantly unit testable
-    * write the unit test for `Foo` and you get 100% coverage :)
+    * write the unit test for `Foo` and you get 100% coverage
 * instantly usable with any DI framework
     * just add the injection annotation of you choice, instance the `FooMapperImpl` in your DI context
     * DA Mapping framework can also handle this part for even more convenience
