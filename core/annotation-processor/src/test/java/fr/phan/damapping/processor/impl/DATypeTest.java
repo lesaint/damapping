@@ -15,13 +15,9 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import fr.phan.damapping.processor.impl.DANameFactory;
-import fr.phan.damapping.processor.impl.DAType;
-
 import java.util.Collections;
 import java.util.List;
 import javax.lang.model.type.TypeKind;
-
 import com.google.common.collect.ImmutableList;
 
 import org.testng.annotations.Test;

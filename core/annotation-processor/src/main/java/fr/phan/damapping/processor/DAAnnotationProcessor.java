@@ -15,18 +15,21 @@
  */
 package fr.phan.damapping.processor;
 
-import fr.phan.damapping.processor.impl.AnnotationProcessor;
-import fr.phan.damapping.processor.impl.MapperAnnotationProcessor;
-
 import fr.phan.damapping.annotation.Mapper;
 import fr.phan.damapping.annotation.MapperFactory;
 import fr.phan.damapping.annotation.MapperFactoryMethod;
 import fr.phan.damapping.processor.impl.AnnotationProcessor;
 import fr.phan.damapping.processor.impl.MapperAnnotationProcessor;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 
-import javax.annotation.processing.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import javax.annotation.processing.Completion;
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.Processor;
+import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
@@ -34,10 +37,8 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 
 /**
  * DAAnnotationProcessor

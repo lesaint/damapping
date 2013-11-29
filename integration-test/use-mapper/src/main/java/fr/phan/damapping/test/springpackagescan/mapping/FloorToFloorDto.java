@@ -15,19 +15,16 @@
  */
 package fr.phan.damapping.test.springpackagescan.mapping;
 
+import fr.phan.damapping.annotation.Mapper;
+import fr.phan.damapping.test.springpackagescan.dto.FloorDto;
+import fr.phan.damapping.test.springpackagescan.mapping.RoomToRoomDtoMapper;
+import fr.phan.damapping.test.springpackagescan.service.Floor;
+
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
-import fr.phan.damapping.annotation.Mapper;
-import fr.phan.damapping.test.springpackagescan.dto.FloorDto;
-import fr.phan.damapping.test.springpackagescan.service.Floor;
-import fr.phan.damapping.test.springpackagescan.dto.FloorDto;
-
-import fr.phan.damapping.test.springpackagescan.mapping.RoomToRoomDtoMapper;
-
-import fr.phan.damapping.test.springpackagescan.service.Floor;
 import org.springframework.stereotype.Component;
 
 /**

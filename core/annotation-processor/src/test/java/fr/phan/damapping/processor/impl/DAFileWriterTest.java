@@ -15,17 +15,11 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import fr.phan.damapping.processor.impl.DAFileWriter;
-import fr.phan.damapping.processor.impl.DAName;
-import fr.phan.damapping.processor.impl.DANameFactory;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import org.testng.annotations.Test;
-
-import javax.lang.model.element.Modifier;
-
 import java.io.IOException;
+import javax.lang.model.element.Modifier;
+import com.google.common.collect.ImmutableSet;
+
+import org.testng.annotations.Test;
 
 import static fr.phan.damapping.processor.impl.DAWriterTestUtil.LINE_SEPARATOR;
 import static org.assertj.core.api.Assertions.assertThat;

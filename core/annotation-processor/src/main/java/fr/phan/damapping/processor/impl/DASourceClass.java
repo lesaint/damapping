@@ -15,12 +15,10 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import javax.annotation.Nullable;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
 import java.util.List;
 import java.util.Set;
-import com.google.common.base.Predicate;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 import com.google.common.collect.Iterables;
 
 /**

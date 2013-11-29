@@ -15,18 +15,15 @@
  */
 package fr.phan.damapping.test.fullhardcoded.mapping;
 
+import fr.phan.damapping.annotation.Mapper;
+import fr.phan.damapping.test.fullhardcoded.dto.FloorDto;
+import fr.phan.damapping.test.fullhardcoded.mapping.RoomToRoomDtoMapper;
+import fr.phan.damapping.test.fullhardcoded.mapping.RoomToRoomDtoMapperImpl;
+import fr.phan.damapping.test.fullhardcoded.service.Floor;
+
 import javax.annotation.Nullable;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
-
-import fr.phan.damapping.annotation.Mapper;
-import fr.phan.damapping.test.fullhardcoded.service.Floor;
-import fr.phan.damapping.test.fullhardcoded.dto.FloorDto;
-
-import fr.phan.damapping.test.fullhardcoded.mapping.RoomToRoomDtoMapper;
-import fr.phan.damapping.test.fullhardcoded.mapping.RoomToRoomDtoMapperImpl;
-
-import fr.phan.damapping.test.fullhardcoded.service.Floor;
 
 /**
  * FloorToFloorDto -

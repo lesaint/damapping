@@ -15,9 +15,8 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import com.google.common.base.Predicate;
-
 import javax.annotation.Nullable;
+import com.google.common.base.Predicate;
 
 /**
  * DAInterfacePredicates -

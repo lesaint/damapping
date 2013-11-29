@@ -15,12 +15,11 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import java.util.List;
+import java.util.Set;
 import javax.annotation.Nullable;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
-import java.util.List;
-import java.util.Set;
 
 /**
 * DAMethod -

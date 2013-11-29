@@ -15,10 +15,10 @@
  */
 package fr.phan.damapping.test;
 
+import fr.phan.damapping.annotation.Mapper;
+
 import javax.annotation.Nullable;
 import com.google.common.base.Function;
-
-import fr.phan.damapping.annotation.Mapper;
 
 @Mapper
 public enum ReturnArray implements Function<Integer, String[]> {

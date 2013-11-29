@@ -17,8 +17,6 @@ package fr.phan.damapping.processor.impl;
 
 import com.google.common.base.Function;
 
-import java.util.List;
-
 /**
 * DAInterface -
 *

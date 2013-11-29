@@ -18,10 +18,8 @@ package fr.phan.damapping.processor.impl;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.lang.model.element.Modifier;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;

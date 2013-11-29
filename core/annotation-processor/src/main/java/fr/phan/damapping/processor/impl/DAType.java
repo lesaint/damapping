@@ -15,12 +15,10 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.lang.model.type.TypeKind;
-
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;

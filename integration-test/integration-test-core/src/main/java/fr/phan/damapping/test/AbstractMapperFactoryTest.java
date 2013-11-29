@@ -17,8 +17,6 @@ package fr.phan.damapping.test;
 
 import org.testng.annotations.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * AbstractMapperTest -
  *

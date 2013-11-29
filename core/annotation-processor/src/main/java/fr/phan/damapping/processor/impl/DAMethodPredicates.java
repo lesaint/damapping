@@ -15,13 +15,11 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import javax.annotation.Nullable;
+import javax.lang.model.element.Modifier;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
-
-import javax.annotation.Nullable;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Modifier;
 
 /**
  * DAMethodPredicates -

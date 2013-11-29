@@ -15,15 +15,11 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import fr.phan.damapping.processor.impl.DAInterfaceMethodWriter;
-import fr.phan.damapping.processor.impl.DATypeFactory;
-import fr.phan.damapping.processor.impl.DAWriter;
-
 import com.google.common.collect.ImmutableList;
+
 import org.testng.annotations.Test;
 
 import static fr.phan.damapping.processor.impl.AbstractDAWriter.INDENT;
-import static fr.phan.damapping.processor.impl.DAWriterTestUtil.LINE_SEPARATOR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

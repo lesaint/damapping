@@ -15,9 +15,6 @@
  */
 package fr.phan.damapping.test;
 
-import fr.phan.damapping.test.AbstractMapperTest;
-import fr.phan.damapping.test.ReturnArray;
-
 /**
  * ReturnArrayTest -
  *

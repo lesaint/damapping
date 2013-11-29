@@ -15,10 +15,9 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import com.google.common.base.Preconditions;
-
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
+import com.google.common.base.Preconditions;
 
 /**
  * DAName -

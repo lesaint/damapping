@@ -15,10 +15,6 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import fr.phan.damapping.processor.impl.AbstractDAWriter;
-import fr.phan.damapping.processor.impl.DAStatementWriter;
-import fr.phan.damapping.processor.impl.DAWriter;
-
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

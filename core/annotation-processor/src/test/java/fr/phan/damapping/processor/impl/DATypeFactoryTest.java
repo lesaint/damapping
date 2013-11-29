@@ -15,14 +15,11 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import fr.phan.damapping.processor.impl.DAType;
-import fr.phan.damapping.processor.impl.DATypeFactory;
-
-import com.google.common.collect.ImmutableList;
-import org.testng.annotations.Test;
-
-import javax.lang.model.type.TypeKind;
 import java.util.Collections;
+import javax.lang.model.type.TypeKind;
+import com.google.common.collect.ImmutableList;
+
+import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

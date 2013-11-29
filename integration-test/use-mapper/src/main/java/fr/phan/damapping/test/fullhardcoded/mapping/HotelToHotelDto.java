@@ -15,17 +15,15 @@
  */
 package fr.phan.damapping.test.fullhardcoded.mapping;
 
+import fr.phan.damapping.annotation.Mapper;
+import fr.phan.damapping.test.fullhardcoded.dto.HotelDto;
+import fr.phan.damapping.test.fullhardcoded.mapping.FloorToFloorDtoMapper;
+import fr.phan.damapping.test.fullhardcoded.mapping.FloorToFloorDtoMapperImpl;
+import fr.phan.damapping.test.fullhardcoded.service.Hotel;
+
 import javax.annotation.Nullable;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
-
-import fr.phan.damapping.annotation.Mapper;
-import fr.phan.damapping.test.fullhardcoded.dto.HotelDto;
-
-import fr.phan.damapping.test.fullhardcoded.mapping.FloorToFloorDtoMapper;
-import fr.phan.damapping.test.fullhardcoded.mapping.FloorToFloorDtoMapperImpl;
-
-import fr.phan.damapping.test.fullhardcoded.service.Hotel;
 
 /**
  * HotelToHotelDto -

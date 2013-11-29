@@ -15,16 +15,15 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-
-import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.lang.model.element.Modifier;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * DAClassWriter -

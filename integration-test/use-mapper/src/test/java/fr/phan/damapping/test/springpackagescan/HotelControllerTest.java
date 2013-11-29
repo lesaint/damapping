@@ -15,8 +15,8 @@
  */
 package fr.phan.damapping.test.springpackagescan;
 
-import fr.phan.damapping.test.springpackagescan.HotelController;
 import fr.phan.damapping.test.springpackagescan.dto.HotelDto;
+
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

@@ -15,11 +15,10 @@
  */
 package fr.phan.damapping.test;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import org.apache.commons.io.FileUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

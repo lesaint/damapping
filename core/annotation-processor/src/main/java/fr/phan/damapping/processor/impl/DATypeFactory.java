@@ -15,12 +15,11 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import com.google.common.base.Preconditions;
-
-import javax.annotation.Nonnull;
-import javax.lang.model.type.TypeKind;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
+import javax.lang.model.type.TypeKind;
+import com.google.common.base.Preconditions;
 
 /**
  * DATypeFactory -

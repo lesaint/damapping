@@ -15,12 +15,14 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.annotation.Mapper;
+import fr.phan.damapping.annotation.MapperFactoryMethod;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -45,15 +47,12 @@ import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
-
-import fr.phan.damapping.annotation.MapperFactoryMethod;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 
-import fr.phan.damapping.annotation.Mapper;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 

@@ -15,19 +15,13 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import fr.phan.damapping.processor.impl.DAClassWriter;
-import fr.phan.damapping.processor.impl.DATypeFactory;
-import fr.phan.damapping.processor.impl.DAWriter;
-
+import javax.lang.model.element.Modifier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+
 import org.testng.annotations.Test;
 
-import javax.lang.model.element.Modifier;
-
 import static fr.phan.damapping.processor.impl.AbstractDAWriter.INDENT;
-import static fr.phan.damapping.processor.impl.DAWriterTestUtil.LINE_SEPARATOR;
-import static fr.phan.damapping.processor.impl.DAWriterTestUtil.NULLABLE_ANNOTATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

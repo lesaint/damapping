@@ -15,13 +15,12 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import javax.annotation.Nullable;
-import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
-
+import javax.annotation.Nullable;
+import javax.lang.model.element.Modifier;
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;

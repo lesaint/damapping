@@ -15,10 +15,9 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import com.google.common.collect.ImmutableList;
-
-import javax.annotation.Nullable;
 import java.util.List;
+import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
 
 /**
 * DefaultImportVisitor -

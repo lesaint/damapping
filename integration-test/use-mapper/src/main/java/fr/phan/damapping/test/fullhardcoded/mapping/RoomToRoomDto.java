@@ -15,12 +15,12 @@
  */
 package fr.phan.damapping.test.fullhardcoded.mapping;
 
-import javax.annotation.Nullable;
-import com.google.common.base.Function;
-
 import fr.phan.damapping.annotation.Mapper;
 import fr.phan.damapping.test.fullhardcoded.dto.RoomDto;
 import fr.phan.damapping.test.fullhardcoded.service.Room;
+
+import javax.annotation.Nullable;
+import com.google.common.base.Function;
 
 /**
  * RoomToRoomDto -

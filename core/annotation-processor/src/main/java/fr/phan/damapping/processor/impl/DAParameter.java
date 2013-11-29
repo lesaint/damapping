@@ -15,8 +15,8 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import javax.lang.model.element.Modifier;
 import java.util.Set;
+import javax.lang.model.element.Modifier;
 
 /**
 * DAParameter -

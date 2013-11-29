@@ -15,14 +15,13 @@
  */
 package fr.phan.damapping.test.springpackagescan.mapping;
 
-import javax.annotation.Nullable;
-import com.google.common.base.Function;
-
 import fr.phan.damapping.annotation.Mapper;
 import fr.phan.damapping.test.springpackagescan.dto.RoomDto;
 import fr.phan.damapping.test.springpackagescan.service.Room;
-import fr.phan.damapping.test.springpackagescan.dto.RoomDto;
-import fr.phan.damapping.test.springpackagescan.service.Room;
+
+import javax.annotation.Nullable;
+import com.google.common.base.Function;
+
 import org.springframework.stereotype.Component;
 
 /**

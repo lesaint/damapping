@@ -15,12 +15,12 @@
  */
 package fr.phan.damapping.test;
 
+import fr.phan.damapping.annotation.Mapper;
+import fr.phan.damapping.test.subpackage.OutOfPackage;
+
 import javax.annotation.Nullable;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
-
-import fr.phan.damapping.annotation.Mapper;
-import fr.phan.damapping.test.subpackage.OutOfPackage;
 
 /**
  * WildcardGenerics -

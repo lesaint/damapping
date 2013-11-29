@@ -15,13 +15,12 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import javax.lang.model.element.Modifier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-
-import javax.lang.model.element.Modifier;
-import java.io.BufferedWriter;
-import java.io.IOException;
 
 import static com.google.common.collect.FluentIterable.from;
 

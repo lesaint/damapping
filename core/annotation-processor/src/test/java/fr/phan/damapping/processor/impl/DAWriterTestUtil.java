@@ -15,18 +15,11 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import fr.phan.damapping.processor.impl.DANameFactory;
-import fr.phan.damapping.processor.impl.DAParameter;
-import fr.phan.damapping.processor.impl.DAType;
-import fr.phan.damapping.processor.impl.DATypeFactory;
-
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
-
+import java.io.Serializable;
 import javax.annotation.Nullable;
 import javax.lang.model.type.TypeKind;
-
-import java.io.Serializable;
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 
 import static fr.phan.damapping.processor.impl.DATypeFactory.declared;
 

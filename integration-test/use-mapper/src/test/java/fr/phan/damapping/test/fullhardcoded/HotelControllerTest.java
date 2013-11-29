@@ -15,8 +15,8 @@
  */
 package fr.phan.damapping.test.fullhardcoded;
 
-import fr.phan.damapping.test.fullhardcoded.HotelController;
 import fr.phan.damapping.test.fullhardcoded.dto.HotelDto;
+
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
