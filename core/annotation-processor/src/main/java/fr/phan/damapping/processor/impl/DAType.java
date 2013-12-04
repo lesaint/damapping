@@ -18,33 +18,79 @@ package fr.phan.damapping.processor.impl;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import javax.lang.model.type.TypeKind;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * DAType - Représente class, array, enum, type primitif avec support des générics afin de générer du code source
  *
  * @author Sébastien Lesaint
  */
+@Immutable
 class DAType {
     @Nonnull
-    TypeKind kind;
-    /* QualifiedName du type, sauf dans le cas des tableaux où il s'agit du qualifedName type contenu dans le tableau.
-       De plus, si le type est primitif, qualifiedName est null
-    */
-    @Nullable
-    DAName qualifiedName;
-    /* Name du type, sauf dans le cas des tableaux où il s'agit du name type contenu dans le tableau */
+    private final TypeKind kind;
+    /**
+     * Name du type, sauf dans le cas des tableaux où il s'agit du name du type contenu dans le tableau
+     */
     @Nonnull
-    DAName simpleName;
+    private final DAName simpleName;
+    /**
+     * QualifiedName du type, sauf dans le cas des tableaux où il s'agit du qualifedName type contenu dans le tableau.
+     * De plus, si le type est primitif, qualifiedName est null
+     */
+    @Nullable
+    private final DAName qualifiedName;
     @Nonnull
-    List<DAType> typeArgs;
+    private final List<DAType> typeArgs;
     @Nullable
-    DAType superBound;
+    private final DAType superBound;
     @Nullable
-    DAType extendsBound;
+    private final DAType extendsBound;
+
+    private DAType(Builder builder) {
+        this.kind = builder.kind;
+        this.simpleName = builder.simpleName;
+        this.qualifiedName = builder.qualifiedName;
+        this.typeArgs = builder.typeArgs == null ? ImmutableList.<DAType>of() : ImmutableList.copyOf(builder.typeArgs);
+        this.superBound = builder.superBound;
+        this.extendsBound = builder.extendsBound;
+    }
+
+    @Nonnull
+    TypeKind getKind() {
+        return kind;
+    }
+
+    @Nonnull
+    DAName getSimpleName() {
+        return simpleName;
+    }
+
+    @Nullable
+    DAName getQualifiedName() {
+        return qualifiedName;
+    }
+
+    @Nonnull
+    List<DAType> getTypeArgs() {
+        return typeArgs;
+    }
+
+    @Nullable
+    DAType getSuperBound() {
+        return superBound;
+    }
+
+    @Nullable
+    DAType getExtendsBound() {
+        return extendsBound;
+    }
 
     public boolean isArray() {
         return kind == TypeKind.ARRAY;
@@ -72,5 +118,51 @@ class DAType {
 
     private static boolean hasNoName(TypeKind kind) {
         return kind.isPrimitive() || kind == TypeKind.WILDCARD;
+    }
+
+    public static Builder builder(@Nonnull TypeKind kind) {
+        return new Builder(kind);
+    }
+
+    protected static class Builder {
+        private final TypeKind kind;
+        private DAName simpleName;
+        DAName qualifiedName;
+        List<DAType> typeArgs;
+        DAType superBound;
+        DAType extendsBound;
+
+        public Builder(@Nonnull TypeKind kind) {
+            this.kind = checkNotNull(kind);
+        }
+
+        public Builder withQualifiedName(DAName qualifiedName) {
+            this.qualifiedName = qualifiedName;
+            return this;
+        }
+
+        public Builder withSimpleName(DAName simpleName) {
+            this.simpleName = simpleName;
+            return this;
+        }
+
+        public Builder withTypeArgs(List<DAType> typeArgs) {
+            this.typeArgs = typeArgs;
+            return this;
+        }
+
+        public Builder withSuperBound(DAType superBound) {
+            this.superBound = superBound;
+            return this;
+        }
+
+        public Builder withExtendsBound(DAType extendsBound) {
+            this.extendsBound = extendsBound;
+            return this;
+        }
+
+        public DAType build() {
+            return new DAType(this);
+        }
     }
 }

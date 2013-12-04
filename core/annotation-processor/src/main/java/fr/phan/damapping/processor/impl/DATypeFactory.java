@@ -85,12 +85,29 @@ public final class DATypeFactory {
         return instance(simpleName, qualifiedName, typeArgs);
     }
 
+    static DAType wildcardWithSuperBound(@Nonnull DAType superbound) {
+        return DAType.builder(TypeKind.WILDCARD)
+                .withSimpleName(DANameFactory.wildcard())
+                .withSuperBound(superbound)
+                .build();
+    }
+
+    static DAType wildcardWithExtendsBound(@Nonnull DAType extendsBound) {
+        return DAType.builder(TypeKind.WILDCARD)
+                .withSimpleName(DANameFactory.wildcard())
+                .withExtendsBound(extendsBound)
+                .build();
+    }
+
     private static DAType instance(String simpleName, String qualifiedName, List<DAType> typeArgs) {
-        DAType annotationDAType = new DAType();
-        annotationDAType.kind = TypeKind.DECLARED;
-        annotationDAType.simpleName = DANameFactory.from(simpleName);
-        annotationDAType.qualifiedName = DANameFactory.from(qualifiedName);
-        annotationDAType.typeArgs = Preconditions.checkNotNull(typeArgs);
-        return annotationDAType;
+        return instance(DANameFactory.from(simpleName), DANameFactory.from(qualifiedName), typeArgs);
+    }
+
+    private static DAType instance(DAName simpleName, DAName qualifiedName, List<DAType> typeArgs) {
+        return DAType.builder(TypeKind.DECLARED)
+                .withSimpleName(simpleName)
+                .withQualifiedName(qualifiedName)
+                .withTypeArgs(Preconditions.checkNotNull(typeArgs))
+                .build();
     }
 }

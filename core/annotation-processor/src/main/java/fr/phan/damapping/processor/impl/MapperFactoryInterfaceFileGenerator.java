@@ -30,7 +30,7 @@ import com.google.common.collect.Iterables;
 class MapperFactoryInterfaceFileGenerator extends AbstractFileGenerator {
     @Override
     public String fileName(FileGeneratorContext context) {
-        return context.getMapperFactoryInterfaceDAType().qualifiedName.getName();
+        return context.getMapperFactoryInterfaceDAType().getQualifiedName().getName();
     }
 
     @Override
@@ -41,11 +41,11 @@ class MapperFactoryInterfaceFileGenerator extends AbstractFileGenerator {
                 .appendImports(context.getMapperFactoryInterfaceImports())
                 .appendWarningComment();
 
-        DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter.newInterface(context.getMapperFactoryInterfaceDAType().simpleName.getName())
+        DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter.newInterface(context.getMapperFactoryInterfaceDAType().getSimpleName().getName())
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
                 .start();
 
-        DAType mapperClass = DATypeFactory.declared(sourceClass.type.qualifiedName + "Mapper");
+        DAType mapperClass = DATypeFactory.declared(sourceClass.type.getQualifiedName() + "Mapper");
         for (DAMethod method : Iterables.filter(sourceClass.methods, DAMethodPredicates.isMapperFactoryMethod())) {
             String name = method.isConstructor() ? "instanceByConstructor" : method.name.getName();
             interfaceWriter.newMethod(name, mapperClass)

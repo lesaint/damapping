@@ -55,9 +55,9 @@ public class DAFileWriterTest {
         new DAFileWriter(testWriters.bw)
                 .appendPackage(PACKAGE_NAME)
                 .appendImports(ImmutableSet.<DAName>of(
-                        DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE.qualifiedName,
-                        DAWriterTestUtil.BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS.qualifiedName,
-                        DAWriterTestUtil.OVERRIDE_ANNOTATION.qualifiedName
+                        DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE.getQualifiedName(),
+                        DAWriterTestUtil.BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS.getQualifiedName(),
+                        DAWriterTestUtil.OVERRIDE_ANNOTATION.getQualifiedName()
                 ));
 
         assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR

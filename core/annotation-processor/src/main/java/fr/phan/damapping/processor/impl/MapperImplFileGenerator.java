@@ -43,7 +43,7 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
 
     @Override
     public String fileName(FileGeneratorContext context) {
-        return context.getSourceClass().type.qualifiedName.getName() + "MapperImpl";
+        return context.getSourceClass().type.getQualifiedName().getName() + "MapperImpl";
     }
 
     @Override
@@ -70,7 +70,7 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
 
         // instance de la class annotée @Mapper injectée via @Resource le cas échéant
         if (sourceClass.instantiationType == InstantiationType.SPRING_COMPONENT) {
-            classWriter.newProperty("instance", DATypeFactory.declared(sourceClass.packageName.getName() + "." + sourceClass.type.simpleName))
+            classWriter.newProperty("instance", DATypeFactory.declared(sourceClass.packageName.getName() + "." + sourceClass.type.getSimpleName()))
                     .withAnnotations(ImmutableList.of(DATypeFactory.from(Resource.class)))
                     .withModifier(ImmutableSet.of(Modifier.PRIVATE))
                     .write();
@@ -110,13 +110,13 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
             instance = "instance";
         }
         else {
-            instance = context.getMapperFactoryClassDAType().simpleName + ".instance()";
+            instance = context.getMapperFactoryClassDAType().getSimpleName() + ".instance()";
         }
         return instance;
     }
 
     private List<DAType> computeImplemented(DASourceClass daSourceClass) {
-        DAType mapperInterface = DATypeFactory.declared(daSourceClass.packageName.getName() + "." + daSourceClass.type.simpleName + "Mapper");
+        DAType mapperInterface = DATypeFactory.declared(daSourceClass.packageName.getName() + "." + daSourceClass.type.getSimpleName() + "Mapper");
         return ImmutableList.of(mapperInterface);
     }
 

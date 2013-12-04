@@ -33,7 +33,7 @@ import static com.google.common.collect.FluentIterable.from;
 class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
     @Override
     public String fileName(FileGeneratorContext context) {
-        return context.getMapperFactoryImplDAType().qualifiedName.getName();
+        return context.getMapperFactoryImplDAType().getQualifiedName().getName();
     }
 
     @Override
@@ -71,14 +71,14 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
             DAStatementWriter<?> statementWriter = methodWriter.newStatement()
                     .start()
                     .append("return new ")
-                    .append(context.getMapperImplDAType().simpleName)
+                    .append(context.getMapperImplDAType().getSimpleName())
                     .append("(");
             if (method.isConstructor()) {
-                statementWriter.append("new ").append(sourceClass.type.simpleName)
+                statementWriter.append("new ").append(sourceClass.type.getSimpleName())
                         .appendParamValues(method.parameters);
             }
             else {
-                statementWriter.append(sourceClass.type.simpleName)
+                statementWriter.append(sourceClass.type.getSimpleName())
                         .append(".")
                         .append(method.name).appendParamValues(method.parameters);
             }
@@ -142,7 +142,7 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
     }
 
     private void appendPrivateMapperImpl(BufferedWriter bw, FileGeneratorContext context) throws IOException {
-        DAName simpleName = context.getSourceClass().type.simpleName;
+        DAName simpleName = context.getSourceClass().type.getSimpleName();
         bw.append(INDENT).append("private static class ").append(simpleName).append("MapperImpl").append(" implements ").append(simpleName).append("Mapper").append(" {");
         bw.newLine();
         bw.append(INDENT).append(INDENT).append("private final ").append(simpleName).append(" instance;");

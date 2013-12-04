@@ -42,11 +42,11 @@ class DASourceClass implements ImportVisitable {
 
     @Override
     public void visite(ImportVisitor visitor) {
-        visitor.addMapperImport(type.qualifiedName);
-        visitor.addMapperImplImport(type.qualifiedName);
-        visitor.addMapperFactoryClassImport(type.qualifiedName);
-        visitor.addMapperFactoryInterfaceImport(type.qualifiedName);
-        visitor.addMapperFactoryImplImport(type.qualifiedName);
+        visitor.addMapperImport(type.getQualifiedName());
+        visitor.addMapperImplImport(type.getQualifiedName());
+        visitor.addMapperFactoryClassImport(type.getQualifiedName());
+        visitor.addMapperFactoryInterfaceImport(type.getQualifiedName());
+        visitor.addMapperFactoryImplImport(type.getQualifiedName());
         for (DAInterface daInterface : interfaces) {
             daInterface.visite(visitor);
         }

@@ -33,7 +33,7 @@ import com.google.common.collect.FluentIterable;
 class MapperFileGenerator extends AbstractFileGenerator {
     @Override
     public String fileName(FileGeneratorContext context) {
-        return context.getSourceClass().type.qualifiedName.getName() + "Mapper";
+        return context.getSourceClass().type.getQualifiedName().getName() + "Mapper";
     }
 
     @Override
@@ -51,7 +51,7 @@ class MapperFileGenerator extends AbstractFileGenerator {
                 .appendImports(context.getMapperImports())
                 .appendWarningComment();
 
-        fileWriter.newInterface(sourceClass.type.simpleName + "Mapper")
+        fileWriter.newInterface(sourceClass.type.getSimpleName() + "Mapper")
                 .withModifiers(filterModifiers(sourceClass.modifiers))
                 .withExtended(toDAType(sourceClass.interfaces)).start().end();
 

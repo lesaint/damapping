@@ -51,7 +51,7 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
 
     DAClassWriter(DAType classType, BufferedWriter bw, T parent, int indent) {
         super(bw, parent, indent);
-        this.name = classType.simpleName.getName();
+        this.name = classType.getSimpleName().getName();
         this.classType = classType;
     }
 

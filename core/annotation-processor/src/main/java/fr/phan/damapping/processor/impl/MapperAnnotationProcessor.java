@@ -434,27 +434,24 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         if (type.getKind() == TypeKind.VOID) {
             return null;
         }
-        DAType res = new DAType();
-        res.kind = type.getKind();
-        res.simpleName = extractSimpleName(type, element);
-        res.qualifiedName = extractQualifiedName(type, element);
-        res.typeArgs = extractTypeArgs(type);
-        populateBounds(res, type);
-        return res;
+        if (type.getKind() == TypeKind.WILDCARD) {
+            return extractWildcardType((WildcardType) type);
+        }
+        DAType.Builder builder = DAType.builder(type.getKind())
+                .withSimpleName(extractSimpleName(type, element))
+                .withQualifiedName(extractQualifiedName(type, element))
+                .withTypeArgs(extractTypeArgs(type));
+        return builder.build();
     }
 
-    private void populateBounds(DAType res, TypeMirror type) {
-        if (type.getKind() != TypeKind.WILDCARD) {
-            return;
-        }
-
-        WildcardType wildcardType = (WildcardType) type;
+    private DAType extractWildcardType(WildcardType wildcardType) {
         if (wildcardType.getSuperBound() != null) {
-            res.superBound = extractType(wildcardType.getSuperBound());
+            return DATypeFactory.wildcardWithSuperBound(extractType(wildcardType.getSuperBound()));
         }
         if (wildcardType.getExtendsBound() != null) {
-            res.extendsBound = extractType(wildcardType.getExtendsBound());
+            return DATypeFactory.wildcardWithExtendsBound(extractType(wildcardType.getExtendsBound()));
         }
+        throw new IllegalArgumentException("Unsupported WildcardType has neither superbound nor extends bound");
     }
 
     private static DAName extractSimpleName(TypeMirror type, Element element) {

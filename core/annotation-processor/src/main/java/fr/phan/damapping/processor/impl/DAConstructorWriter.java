@@ -44,7 +44,7 @@ public class DAConstructorWriter<T extends DAWriter> extends AbstractDAWriter<T>
 
     public DAConstructorWriter(DAType constructedType, BufferedWriter bw, T parent, int indent) {
         super(bw, parent, indent);
-        this.name = constructedType.simpleName.getName();
+        this.name = constructedType.getSimpleName().getName();
     }
 
     public DAConstructorWriter<T> withModifiers(Set<Modifier> modifiers) {

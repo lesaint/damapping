@@ -27,6 +27,9 @@ import com.google.common.base.Preconditions;
  * @author Sébastien Lesaint
  */
 public final class DANameFactory {
+
+    private static final DAName WILCARD = from("?");
+
     private DANameFactory() {
         // prevents instantiation
     }
@@ -59,14 +62,40 @@ public final class DANameFactory {
      * Crée un objet DAName à partir d'un TypeKind représentant un type primitif
      *
      * @param kind un {@link TypeKind} primitif
-     * @return
+     *
+     * @return a {@link DAName}
      *
      * @throws IllegalArgumentException si {@code kink.isPrimitive()} retourne false
-     * TOIMPROVE :
+     *
+     * TOIMPROVE : DAName for each TypeKind with flag primitive = true can be cached into a Map and used as constants
      */
     @Nonnull
-    public static DAName fromPrimitiveKind(TypeKind kind) {
+    public static DAName fromPrimitiveKind(@Nonnull TypeKind kind) {
         Preconditions.checkArgument(kind.isPrimitive());
         return from(kind.name().toLowerCase(Locale.US));
+    }
+
+    /**
+     * Crée un objet DAName contenant un simpleName à partir du DAName spécifié.
+     * <br/>
+     * En pratique, cela consiste à parser le name de {@code daName} et extraire tout ce qui suit le dernier point
+     * (s'il y en a un).
+     *
+     * @param daName a {@link DAName}
+     *
+     * @return a {@link DAName}
+     */
+    @Nonnull
+    static DAName simpleFromQualified(@Nonnull DAName daName) {
+        String qualifiedName = daName.getName();
+        return from(qualifiedName.substring(qualifiedName.lastIndexOf(".") + 1));
+    }
+
+    /**
+     * Le DAName représentant le wildcard générique "?".
+     */
+    @Nonnull
+    static DAName wildcard() {
+        return WILCARD;
     }
 }

@@ -76,28 +76,24 @@ public class DATypeTest {
         DAType daType = daType("toto");
         assertThat(daType.getImports()).extracting("name").containsOnly("toto");
 
-        daType.typeArgs = ImmutableList.of(
-                daType("titi")
-        );
+        daType = daType("toto", ImmutableList.of(daType("titi")));
         assertThat(daType.getImports()).extracting("name").containsOnly("toto", "titi");
     }
 
     private static DAType daType(TypeKind kind) {
-        DAType res = new DAType();
-        res.kind = kind;
-        res.typeArgs = Collections.emptyList();
-        return res;
+        return DAType.builder(kind).withSimpleName(DANameFactory.from("simpleName")).build();
     }
 
-    private static DAType daType(String qualifiedName) {
-        return daType(qualifiedName, Collections.<DAType>emptyList());
+    private static DAType daType(String name) {
+        return daType(name, Collections.<DAType>emptyList());
     }
 
-    private static DAType daType(String qualifiedName, List<DAType> typeArgs) {
-        DAType res = new DAType();
-        res.kind = TypeKind.DECLARED;
-        res.qualifiedName = DANameFactory.from(qualifiedName);
-        res.typeArgs = typeArgs;
-        return res;
+    private static DAType daType(String name, List<DAType> typeArgs) {
+        DAName daName = DANameFactory.from(name);
+        return DAType.builder(TypeKind.DECLARED)
+                .withSimpleName(daName)
+                .withQualifiedName(daName)
+                .withTypeArgs(typeArgs)
+                .build();
     }
 }
