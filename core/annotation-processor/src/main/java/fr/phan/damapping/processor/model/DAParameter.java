@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
-
-import fr.phan.damapping.processor.model.DAName;
-import fr.phan.damapping.processor.model.DAType;
+package fr.phan.damapping.processor.model;
 
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -34,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 * @author Sébastien Lesaint
 */
 @Immutable
-class DAParameter {
+public class DAParameter {
     /*nom du paramètre*/
     @Nonnull
     private final DAName name;
@@ -55,17 +52,17 @@ class DAParameter {
     }
 
     @Nonnull
-    DAName getName() {
+    public DAName getName() {
         return name;
     }
 
     @Nonnull
-    DAType getType() {
+    public DAType getType() {
         return type;
     }
 
     @Nonnull
-    Set<Modifier> getModifiers() {
+    public Set<Modifier> getModifiers() {
         return modifiers;
     }
 

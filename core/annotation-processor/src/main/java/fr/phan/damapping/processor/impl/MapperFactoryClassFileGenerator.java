@@ -15,6 +15,8 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.processor.model.DAParameter;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
