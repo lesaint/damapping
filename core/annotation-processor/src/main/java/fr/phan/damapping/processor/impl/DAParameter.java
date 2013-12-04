@@ -19,16 +19,76 @@ import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAType;
 
 import java.util.Set;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import javax.lang.model.element.Modifier;
+import com.google.common.collect.ImmutableSet;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
-* DAParameter -
+* DAParameter - Représente un paramètre de méthode avec son nom, son type et ses éventuels
+* modifieurs ("final" en particulier).
 *
 * @author Sébastien Lesaint
 */
+@Immutable
 class DAParameter {
     /*nom du paramètre*/
-    DAName name;
-    DAType type;
-    Set<Modifier> modifiers;
+    @Nonnull
+    private final DAName name;
+    @Nonnull
+    private final DAType type;
+    @Nonnull
+    private final Set<Modifier> modifiers;
+
+    private DAParameter(Builder builder) {
+        name = builder.name;
+        type = builder.type;
+        modifiers = builder.modifiers == null ? ImmutableSet.<Modifier>of() : ImmutableSet.copyOf(builder.modifiers);
+    }
+
+    @Nonnull
+    public static Builder builder(@Nonnull DAName name, @Nonnull DAType type) {
+        return new Builder(name, type);
+    }
+
+    @Nonnull
+    DAName getName() {
+        return name;
+    }
+
+    @Nonnull
+    DAType getType() {
+        return type;
+    }
+
+    @Nonnull
+    Set<Modifier> getModifiers() {
+        return modifiers;
+    }
+
+    public static class Builder {
+        @Nonnull
+        private final DAName name;
+        @Nonnull
+        private final DAType type;
+        @Nullable
+        private Set<Modifier> modifiers;
+
+        public Builder(@Nonnull DAName name, @Nonnull DAType type) {
+            this.name = checkNotNull(name);
+            this.type = checkNotNull(type);
+        }
+
+        public Builder withModifiers(@Nullable Set<Modifier> modifiers) {
+            this.modifiers = modifiers;
+            return this;
+        }
+
+        public DAParameter build() {
+            return new DAParameter(this);
+        }
+    }
 }

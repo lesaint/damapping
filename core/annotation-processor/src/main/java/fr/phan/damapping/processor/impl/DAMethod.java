@@ -68,7 +68,7 @@ class DAMethod extends AbstractImportVisitable {
             return;
         }
         for (DAParameter parameter : parameters) {
-            visitor.addMapperImport(parameter.type.getImports());
+            visitor.addMapperImport(parameter.getType().getImports());
         }
         if (returnType != null) {
             visitor.addMapperImport(returnType.getImports());
@@ -82,7 +82,7 @@ class DAMethod extends AbstractImportVisitable {
             return;
         }
         for (DAParameter parameter : parameters) {
-            visitor.addMapperImplImport(parameter.type.getImports());
+            visitor.addMapperImplImport(parameter.getType().getImports());
         }
         if (returnType != null) {
             visitor.addMapperImplImport(returnType.getImports());
@@ -99,7 +99,7 @@ class DAMethod extends AbstractImportVisitable {
         // mapperFactoryMethod are exposed as methods of the MapperFactory
         if (mapperFactoryMethod) {
             for (DAParameter parameter : parameters) {
-                visitor.addMapperFactoryInterfaceImport(parameter.type.getImports());
+                visitor.addMapperFactoryInterfaceImport(parameter.getType().getImports());
             }
         }
     }
@@ -109,13 +109,13 @@ class DAMethod extends AbstractImportVisitable {
         // mapperFactoryMethod are exposed as methods of the MapperFactory
         if (isConstructor()&& mapperFactoryMethod) {
             for (DAParameter parameter : parameters) {
-                visitor.addMapperFactoryImplImport(parameter.type.getImports());
+                visitor.addMapperFactoryImplImport(parameter.getType().getImports());
             }
         }
 
         if (isGuavaFunction()) { // remplacer par isMapperMethod
             for (DAParameter parameter : parameters) {
-                visitor.addMapperFactoryImplImport(parameter.type.getImports());
+                visitor.addMapperFactoryImplImport(parameter.getType().getImports());
             }
         }
     }

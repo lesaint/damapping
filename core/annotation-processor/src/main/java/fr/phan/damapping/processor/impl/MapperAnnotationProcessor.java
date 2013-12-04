@@ -359,11 +359,9 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                     @Nullable
                     @Override
                     public DAParameter apply(@Nullable VariableElement o) {
-                        DAParameter res = new DAParameter();
-                        res.name = DANameFactory.from(o.getSimpleName());
-                        res.type = extractType(o.asType());
-                        res.modifiers = o.getModifiers();
-                        return res;
+                        return DAParameter.builder(DANameFactory.from(o.getSimpleName()), extractType(o.asType()))
+                                .withModifiers(o.getModifiers())
+                                .build();
                     }
                 })
                 .filter(Predicates.notNull())

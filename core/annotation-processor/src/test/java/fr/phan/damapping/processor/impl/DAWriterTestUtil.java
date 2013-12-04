@@ -53,18 +53,13 @@ final class DAWriterTestUtil {
     }
 
     static DAParameter daParameter(String typeQualifiedName, String name) {
-        DAParameter res = new DAParameter();
-        res.name = DANameFactory.from(name);
-        res.type = declared(typeQualifiedName);
-        return res;
+        return DAParameter.builder(DANameFactory.from(name), declared(typeQualifiedName)).build();
     }
 
     /**
      * Un paramètre de type tableau de Function<String, Integer>
      */
     private static DAParameter functionStringToIntegerArray(String name) {
-        DAParameter res = new DAParameter();
-        res.name = DANameFactory.from(name);
         DAName qualifiedName = DANameFactory.from("com.google.common.base.Function");
         DAType parameterType = DAType.builder(TypeKind.ARRAY)
                 .withSimpleName(DANameFactory.simpleFromQualified(qualifiedName))
@@ -72,7 +67,6 @@ final class DAWriterTestUtil {
                 .withTypeArgs(
                         ImmutableList.of(declared("java.lang.String"), declared("java.lang.Integer"))
                 ).build();
-        res.type = parameterType;
-        return res;
+        return DAParameter.builder(DANameFactory.from(name), parameterType).build();
     }
 }

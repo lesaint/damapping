@@ -106,9 +106,7 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
                 .write();
 
         // constructor with instance parameter
-        DAParameter parameter = new DAParameter();
-        parameter.name = DANameFactory.from("instance");
-        parameter.type = context.getSourceClass().type;
+        DAParameter parameter = DAParameter.builder(DANameFactory.from("instance"), context.getSourceClass().type).build();
 
         mapperClassWriter.newConstructor()
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
