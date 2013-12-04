@@ -17,6 +17,7 @@ package fr.phan.damapping.processor.impl;
 
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.InstantiationType;
 
 import java.util.List;
 import java.util.Set;

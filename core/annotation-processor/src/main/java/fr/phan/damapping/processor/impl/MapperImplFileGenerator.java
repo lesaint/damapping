@@ -17,6 +17,7 @@ package fr.phan.damapping.processor.impl;
 
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.InstantiationType;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

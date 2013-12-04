@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.model;
 
 /**
  * Différentes façon d'instancier la classe annotée @Mapper, pour lui déléguer l'implémentation

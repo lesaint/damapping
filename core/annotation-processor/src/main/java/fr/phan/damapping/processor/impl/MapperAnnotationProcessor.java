@@ -20,6 +20,7 @@ import fr.phan.damapping.annotation.MapperFactoryMethod;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.InstantiationType;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
