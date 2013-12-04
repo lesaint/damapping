@@ -20,7 +20,10 @@ import javax.annotation.concurrent.Immutable;
 import com.google.common.base.Preconditions;
 
 /**
- * DAName -
+ * DAName - Représent un nom de class, paramètre, package, ...
+ * <br />
+ * C'est essentiellement un wrapper autours d'une String qui permet d'avoir un meilleur typage des autres
+ * classes et méthode du framework.
  *
  * @author Sébastien Lesaint
  */
