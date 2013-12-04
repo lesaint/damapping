@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.model;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;

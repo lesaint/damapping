@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.model;
 
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -32,11 +32,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Sébastien Lesaint
  */
 @Immutable
-class DAType {
+public class DAType {
     @Nonnull
     private final TypeKind kind;
     /**
-     * Name du type, sauf dans le cas des tableaux où il s'agit du name du type contenu dans le tableau
+     * Name du type, sauf :
+     * <ul>
+     *     <li>dans le cas des tableaux où il s'agit du name du type contenu dans le tableau</li>
+     *     <li>dans le cas des types avec wildcard générique où il s'agit de la constante {@link fr.phan.damapping.processor.impl.DANameFactory.wildcard()}</li>
+     * </ul>
      */
     @Nonnull
     private final DAName simpleName;
@@ -63,32 +67,32 @@ class DAType {
     }
 
     @Nonnull
-    TypeKind getKind() {
+    public TypeKind getKind() {
         return kind;
     }
 
     @Nonnull
-    DAName getSimpleName() {
+    public DAName getSimpleName() {
         return simpleName;
     }
 
     @Nullable
-    DAName getQualifiedName() {
+    public DAName getQualifiedName() {
         return qualifiedName;
     }
 
     @Nonnull
-    List<DAType> getTypeArgs() {
+    public List<DAType> getTypeArgs() {
         return typeArgs;
     }
 
     @Nullable
-    DAType getSuperBound() {
+    public DAType getSuperBound() {
         return superBound;
     }
 
     @Nullable
-    DAType getExtendsBound() {
+    public DAType getExtendsBound() {
         return extendsBound;
     }
 
@@ -124,7 +128,7 @@ class DAType {
         return new Builder(kind);
     }
 
-    protected static class Builder {
+    public static class Builder {
         private final TypeKind kind;
         private DAName simpleName;
         DAName qualifiedName;

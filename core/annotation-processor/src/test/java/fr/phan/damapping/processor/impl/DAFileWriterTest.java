@@ -15,6 +15,8 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.processor.model.DAName;
+
 import java.io.IOException;
 import javax.lang.model.element.Modifier;
 import com.google.common.collect.ImmutableSet;

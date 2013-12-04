@@ -15,6 +15,8 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.processor.model.DAType;
+
 import java.util.Collections;
 import javax.lang.model.type.TypeKind;
 import com.google.common.collect.ImmutableList;

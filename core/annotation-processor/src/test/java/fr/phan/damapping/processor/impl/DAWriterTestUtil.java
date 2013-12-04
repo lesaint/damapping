@@ -15,6 +15,9 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.processor.model.DAName;
+import fr.phan.damapping.processor.model.DAType;
+
 import java.io.Serializable;
 import javax.annotation.Nullable;
 import javax.lang.model.type.TypeKind;

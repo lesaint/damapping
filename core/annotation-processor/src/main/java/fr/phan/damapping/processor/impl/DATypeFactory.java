@@ -15,6 +15,9 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.processor.model.DAName;
+import fr.phan.damapping.processor.model.DAType;
+
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -37,7 +40,7 @@ public final class DATypeFactory {
      * La liste <code>typeArgs</code> est vide.
      *
      * @param clazz une {@link Class}
-     * @return un objet {@link DAType}
+     * @return un objet {@link fr.phan.damapping.processor.model.DAType}
      */
     static DAType from(@Nonnull Class<?> clazz) {
         return instance(clazz.getSimpleName(), clazz.getCanonicalName(), Collections.<DAType>emptyList());

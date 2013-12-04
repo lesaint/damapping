@@ -15,6 +15,8 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.processor.model.DAName;
+
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.lang.model.element.Name;
@@ -86,7 +88,7 @@ public final class DANameFactory {
      * @return a {@link DAName}
      */
     @Nonnull
-    static DAName simpleFromQualified(@Nonnull DAName daName) {
+    public static DAName simpleFromQualified(@Nonnull DAName daName) {
         String qualifiedName = daName.getName();
         return from(qualifiedName.substring(qualifiedName.lastIndexOf(".") + 1));
     }
@@ -95,7 +97,7 @@ public final class DANameFactory {
      * Le DAName représentant le wildcard générique "?".
      */
     @Nonnull
-    static DAName wildcard() {
+    public static DAName wildcard() {
         return WILCARD;
     }
 }

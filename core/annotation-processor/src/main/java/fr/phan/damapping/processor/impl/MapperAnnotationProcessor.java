@@ -17,6 +17,8 @@ package fr.phan.damapping.processor.impl;
 
 import fr.phan.damapping.annotation.Mapper;
 import fr.phan.damapping.annotation.MapperFactoryMethod;
+import fr.phan.damapping.processor.model.DAName;
+import fr.phan.damapping.processor.model.DAType;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

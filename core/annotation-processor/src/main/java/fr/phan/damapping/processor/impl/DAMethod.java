@@ -15,6 +15,9 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.processor.model.DAName;
+import fr.phan.damapping.processor.model.DAType;
+
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
