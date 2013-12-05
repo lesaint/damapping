@@ -54,7 +54,7 @@ public class DAMethodPredicates {
 
         @Override
         public boolean apply(@Nullable DAMethod daMethod) {
-            return daMethod.modifiers.contains(Modifier.STATIC);
+            return daMethod.getModifiers().contains(Modifier.STATIC);
         }
     }
 
@@ -66,7 +66,7 @@ public class DAMethodPredicates {
         INSTANCE;
         @Override
         public boolean apply(@Nullable DAMethod daMethod) {
-            return !FluentIterable.from(daMethod.modifiers).firstMatch(Predicates.equalTo(Modifier.PRIVATE)).isPresent();
+            return !FluentIterable.from(daMethod.getModifiers()).firstMatch(Predicates.equalTo(Modifier.PRIVATE)).isPresent();
         }
 
     }
@@ -80,7 +80,7 @@ public class DAMethodPredicates {
 
         @Override
         public boolean apply(@Nullable DAMethod daMethod) {
-            return daMethod != null && daMethod.mapperFactoryMethod;
+            return daMethod != null && daMethod.isMapperFactoryMethod();
         }
 
     }

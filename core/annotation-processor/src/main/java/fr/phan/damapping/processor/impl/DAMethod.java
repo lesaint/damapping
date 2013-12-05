@@ -19,31 +19,109 @@ import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DAType;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
 * DAMethod -
 *
 * @author Sébastien Lesaint
 */
+@Immutable
 class DAMethod extends AbstractImportVisitable {
-    ElementKind kind;
-    /*nom de la méthode/function*/
-    DAName name;
-    /*modifiers de la méthode (private, final, ...)*/
-    Set<Modifier> modifiers;
-    /*le type de retour de la méthode. Null si la méthode est un constructeur*/
+    /**
+     * Le ElementKind de la méthode : soit {@link ElementKind.CONSTRUCTOR}, soit {@ŀink ElementKind.METHOD}
+     */
+    @Nonnull
+    private final ElementKind kind;
+    /**
+     * nom de la méthode
+     */
+    @Nonnull
+    private final DAName name;
+    /**
+     * modifiers de la méthode (private, final, static, abstract, ...)
+     */
+    @Nonnull
+    private final Set<Modifier> modifiers;
+    /**
+     * le type de retour de la méthode. Null si la méthode est un constructeur
+     */
     @Nullable
-    DAType returnType; // TOIMPROVE : attention au cas des primitifs si on ajoute @MapperMethod !
-    List<DAParameter> parameters;
-    /*non utilisé tant que pas de @MapperMethod*/
-    boolean mapperMethod;
-    /*indique si cette méthode était annotée avec @MapperFactoryMethod*/
-    boolean mapperFactoryMethod;
+    private final DAType returnType; // TOIMPROVE : attention au cas des primitifs si on ajoute @MapperMethod !
+    /**
+     * Paramètres de la méthode
+     */
+    @Nonnull
+    private final List<DAParameter> parameters;
+    /**
+     * non utilisé tant que pas de @MapperMethod, pour l'instant on utilise {@link #isGuavaFunction()}
+     */
+    private final boolean mapperMethod;
+    /**
+     * Indique si cette méthode était annotée avec @MapperFactoryMethod
+     */
+    private final boolean mapperFactoryMethod;
+
+    private DAMethod(Builder builder) {
+        this.kind = builder.kind;
+        this.name = builder.name;
+        this.modifiers = builder.modifiers == null ? Collections.<Modifier>emptySet() : ImmutableSet.copyOf(builder.modifiers);
+        this.returnType = builder.returnType;
+        this.parameters = builder.parameters == null ? Collections.<DAParameter>emptyList() : ImmutableList.copyOf(builder.parameters);
+        this.mapperMethod = builder.mapperMethod;
+        this.mapperFactoryMethod = builder.mapperFactoryMethod;
+    }
+
+    public static Builder builder(@Nonnull ElementKind kind) {
+        return new Builder(kind);
+    }
+
+    @Nonnull
+    ElementKind getKind() {
+        return kind;
+    }
+
+    @Nonnull
+    DAName getName() {
+        return name;
+    }
+
+    @Nonnull
+    Set<Modifier> getModifiers() {
+        return modifiers;
+    }
+
+    @Nullable
+    DAType getReturnType() {
+        return returnType;
+    }
+
+    @Nonnull
+    List<DAParameter> getParameters() {
+        return parameters;
+    }
+
+    boolean isMapperMethod() {
+        return mapperMethod;
+    }
+
+    boolean isMapperFactoryMethod() {
+        return mapperFactoryMethod;
+    }
 
     public boolean isDefaultConstructor() {
         return isConstructor() && parameters.isEmpty();
@@ -118,6 +196,62 @@ class DAMethod extends AbstractImportVisitable {
             for (DAParameter parameter : parameters) {
                 visitor.addMapperFactoryImplImport(parameter.getType().getImports());
             }
+        }
+    }
+
+    public static class Builder {
+        @Nonnull
+        private final ElementKind kind;
+        @Nonnull
+        private DAName name;
+        @Nullable
+        private Set<Modifier> modifiers;
+        @Nullable
+        private DAType returnType;
+        @Nullable
+        private List<DAParameter> parameters;
+        private boolean mapperMethod;
+        private boolean mapperFactoryMethod;
+
+        public Builder(@Nonnull ElementKind kind) {
+            checkArgument(kind == ElementKind.CONSTRUCTOR || kind == ElementKind.METHOD,
+                    "ElementKind of a DAMethod instance can only be either CONSTRUCTOR or METHOD"
+            );
+            this.kind = kind;
+        }
+
+        public Builder withName(@Nonnull DAName name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder withModifiers(@Nullable Set<Modifier> modifiers) {
+            this.modifiers = modifiers;
+            return this;
+        }
+
+        public Builder withReturnType(@Nullable DAType returnType) {
+            this.returnType = returnType;
+            return this;
+        }
+
+        public Builder withParameters(@Nullable List<DAParameter> parameters) {
+            this.parameters = parameters;
+            return this;
+        }
+
+        public Builder withMapperMethod(boolean mapperMethod) {
+            this.mapperMethod = mapperMethod;
+            return this;
+        }
+
+        public Builder withMapperFactoryMethod(boolean mapperFactoryMethod) {
+            this.mapperFactoryMethod = mapperFactoryMethod;
+            return this;
+        }
+
+        public DAMethod build() {
+            return new DAMethod(this);
         }
     }
 }

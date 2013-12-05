@@ -49,9 +49,9 @@ class MapperFactoryInterfaceFileGenerator extends AbstractFileGenerator {
 
         DAType mapperClass = DATypeFactory.declared(sourceClass.type.getQualifiedName() + "Mapper");
         for (DAMethod method : Iterables.filter(sourceClass.methods, DAMethodPredicates.isMapperFactoryMethod())) {
-            String name = method.isConstructor() ? "instanceByConstructor" : method.name.getName();
+            String name = method.isConstructor() ? "instanceByConstructor" : method.getName().getName();
             interfaceWriter.newMethod(name, mapperClass)
-                    .withParams(method.parameters).write();
+                    .withParams(method.getParameters()).write();
         }
 
         interfaceWriter.end();

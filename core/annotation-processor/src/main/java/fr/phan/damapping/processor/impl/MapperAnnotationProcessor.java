@@ -308,22 +308,21 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                             return null;
                         }
 
-                        DAMethod res = new DAMethod();
                         ExecutableElement methodElement = (ExecutableElement) o;
-                        res.kind = o.getKind();
+                        DAMethod.Builder res = DAMethod.builder(o.getKind())
+                                .withModifiers(extractModifiers(methodElement))
+                                .withParameters(extractParameters(methodElement))
+                                .withMapperMethod(isMapperMethod(methodElement))
+                                .withMapperFactoryMethod(isMapperFactoryMethod(methodElement));
                         if (o.getKind() == ElementKind.CONSTRUCTOR) {
-                            res.name = DANameFactory.from(StringUtils.uncapitalize(classElement.getSimpleName().toString()));
-                            res.returnType = extractType(classElement.asType());
+                            res.withName(DANameFactory.from(StringUtils.uncapitalize(classElement.getSimpleName().toString())));
+                            res.withReturnType(extractType(classElement.asType()));
                         }
                         else {
-                            res.name = DANameFactory.from(o.getSimpleName());
-                            res.returnType = extractReturnType(methodElement);
+                            res.withName(DANameFactory.from(o.getSimpleName()));
+                            res.withReturnType(extractReturnType(methodElement));
                         }
-                        res.modifiers = extractModifiers(methodElement);
-                        res.parameters = extractParameters(methodElement);
-                        res.mapperMethod = isMapperMethod(methodElement);
-                        res.mapperFactoryMethod = isMapperFactoryMethod(methodElement);
-                        return res;
+                        return res.build();
                     }
                 })
                 .filter(Predicates.notNull())

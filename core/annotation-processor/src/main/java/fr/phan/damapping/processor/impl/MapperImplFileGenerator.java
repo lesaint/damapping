@@ -82,10 +82,10 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
 
         // implémentation de la méthode de mapping (Function.apply tant qu'on ne supporte pas @MapperMethod)
         DAMethod guavaMethod = from(sourceClass.methods).firstMatch(DAMethodPredicates.isGuavaFunction()).get();
-        DAClassMethodWriter<?> methodWriter = classWriter.newMethod(guavaMethod.name.getName(), guavaMethod.returnType)
+        DAClassMethodWriter<?> methodWriter = classWriter.newMethod(guavaMethod.getName().getName(), guavaMethod.getReturnType())
                 .withAnnotations(ImmutableList.<DAType>of(DATypeFactory.from(Override.class)))
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
-                .withParams(guavaMethod.parameters)
+                .withParams(guavaMethod.getParameters())
                 .start();
 
         // retourne le résultat de la méhode apply de l'instance de la classe @Mapper
@@ -94,8 +94,8 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
                 .append("return ")
                 .append(computeInstanceObject(context))
                 .append(".")
-                .append(guavaMethod.name)
-                .appendParamValues(guavaMethod.parameters)
+                .append(guavaMethod.getName())
+                .appendParamValues(guavaMethod.getParameters())
                 .end();
 
         // clos la méthode
