@@ -16,6 +16,7 @@
 package fr.phan.damapping.processor.impl;
 
 import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.ImportVisitor;
 
 import com.google.common.base.Function;
 

@@ -18,6 +18,7 @@ package fr.phan.damapping.processor.impl;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.ImportVisitor;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +29,6 @@ import javax.annotation.concurrent.Immutable;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 

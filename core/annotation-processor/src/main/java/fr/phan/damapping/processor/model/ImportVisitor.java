@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
-
-import fr.phan.damapping.processor.model.DAName;
+package fr.phan.damapping.processor.model;
 
 import javax.annotation.Nullable;
 
@@ -24,7 +22,7 @@ import javax.annotation.Nullable;
 *
 * @author Sébastien Lesaint
 */
-interface ImportVisitor {
+public interface ImportVisitor {
     void addMapperImport(@Nullable DAName qualifiedName);
     void addMapperImport(@Nullable Iterable<DAName> qualifiedNames);
     void addMapperImplImport(@Nullable DAName qualifiedName);

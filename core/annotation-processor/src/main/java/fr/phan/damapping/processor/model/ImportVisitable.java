@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.model;
 
 /**
 * ImportVisitable -
 *
 * @author Sébastien Lesaint
 */
-interface ImportVisitable {
+public interface ImportVisitable {
     void visite(ImportVisitor visitor);
 }

@@ -15,6 +15,9 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.processor.model.ImportVisitable;
+import fr.phan.damapping.processor.model.ImportVisitor;
+
 /**
 * AbstractImportVisitable -
 *
