@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
-
-import fr.phan.damapping.processor.model.ImportVisitable;
-import fr.phan.damapping.processor.model.ImportVisitor;
+package fr.phan.damapping.processor.model;
 
 /**
-* AbstractImportVisitable -
+* AbstractImportVisitable - Abstract implementation of ImportVisitable which provides methods to be implemented for
+* each generated class in DA Mapping Framework.
 *
 * @author Sébastien Lesaint
 */
-abstract class AbstractImportVisitable implements ImportVisitable {
+public abstract class AbstractImportVisitable implements ImportVisitable {
 
     @Override
     public void visite(ImportVisitor visitor) {
