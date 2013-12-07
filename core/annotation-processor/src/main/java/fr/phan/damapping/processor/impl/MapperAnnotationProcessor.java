@@ -388,10 +388,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                     return null;
                 }
 
-                DeclaredType interfaceType = (DeclaredType) o;
-                DAInterface daInterface = new DAInterface();
-                daInterface.type = extractType(interfaceType);
-                return daInterface;
+                return new DAInterface(extractType(o));
             }
         }).filter(Predicates.notNull()).toList();
     }

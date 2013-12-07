@@ -70,7 +70,7 @@ class MapperFileGenerator extends AbstractFileGenerator {
                         if (daInterface == null) {
                             return null;
                         }
-                        return daInterface.type;
+                        return daInterface.getType();
                     }
                 }).filter(Predicates.notNull())
                 .toList();

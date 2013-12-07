@@ -19,6 +19,8 @@ import fr.phan.damapping.processor.model.AbstractImportVisitable;
 import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.ImportVisitor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
 import com.google.common.base.Function;
 
 /**
@@ -26,8 +28,19 @@ import com.google.common.base.Function;
 *
 * @author Sébastien Lesaint
 */
+@Immutable
 class DAInterface extends AbstractImportVisitable {
-    DAType type;
+    @Nonnull
+    private final DAType type;
+
+    DAInterface(DAType type) {
+        this.type = type;
+    }
+
+    @Nonnull
+    DAType getType() {
+        return type;
+    }
 
     public boolean isGuavaFunction() {
         return type.getQualifiedName() != null && Function.class.getCanonicalName().equals(type.getQualifiedName().getName());
