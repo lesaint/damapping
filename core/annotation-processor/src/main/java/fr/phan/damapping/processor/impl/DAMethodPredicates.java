@@ -15,6 +15,8 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.processor.model.DAMethod;
+
 import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
 import com.google.common.base.Predicate;

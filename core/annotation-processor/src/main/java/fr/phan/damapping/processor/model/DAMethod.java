@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
-
-import fr.phan.damapping.processor.model.AbstractImportVisitable;
-import fr.phan.damapping.processor.model.DAName;
-import fr.phan.damapping.processor.model.DAParameter;
-import fr.phan.damapping.processor.model.DAType;
-import fr.phan.damapping.processor.model.ImportVisitor;
+package fr.phan.damapping.processor.model;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +36,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 * @author Sébastien Lesaint
 */
 @Immutable
-class DAMethod extends AbstractImportVisitable {
+public class DAMethod extends AbstractImportVisitable {
     /**
      * Le ElementKind de la méthode : soit {@link ElementKind.CONSTRUCTOR}, soit {@ŀink ElementKind.METHOD}
      */
@@ -92,35 +86,35 @@ class DAMethod extends AbstractImportVisitable {
     }
 
     @Nonnull
-    ElementKind getKind() {
+    public ElementKind getKind() {
         return kind;
     }
 
     @Nonnull
-    DAName getName() {
+    public DAName getName() {
         return name;
     }
 
     @Nonnull
-    Set<Modifier> getModifiers() {
+    public Set<Modifier> getModifiers() {
         return modifiers;
     }
 
     @Nullable
-    DAType getReturnType() {
+    public DAType getReturnType() {
         return returnType;
     }
 
     @Nonnull
-    List<DAParameter> getParameters() {
+    public List<DAParameter> getParameters() {
         return parameters;
     }
 
-    boolean isMapperMethod() {
+    public boolean isMapperMethod() {
         return mapperMethod;
     }
 
-    boolean isMapperFactoryMethod() {
+    public boolean isMapperFactoryMethod() {
         return mapperFactoryMethod;
     }
 
