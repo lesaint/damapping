@@ -15,6 +15,8 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.processor.model.factory.DATypeFactory;
+
 import com.google.common.collect.ImmutableList;
 
 import org.testng.annotations.Test;

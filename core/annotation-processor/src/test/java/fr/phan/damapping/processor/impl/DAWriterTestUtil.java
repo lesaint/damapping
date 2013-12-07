@@ -15,6 +15,7 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAParameter;
@@ -26,7 +27,7 @@ import javax.lang.model.type.TypeKind;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 
-import static fr.phan.damapping.processor.impl.DATypeFactory.declared;
+import static fr.phan.damapping.processor.model.factory.DATypeFactory.declared;
 
 /**
  * DAWriterTestUtil -

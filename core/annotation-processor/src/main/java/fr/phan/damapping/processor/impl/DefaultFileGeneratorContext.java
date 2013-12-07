@@ -15,6 +15,7 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.DAType;

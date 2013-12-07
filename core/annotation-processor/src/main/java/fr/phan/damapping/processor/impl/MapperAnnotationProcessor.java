@@ -18,6 +18,7 @@ package fr.phan.damapping.processor.impl;
 import fr.phan.damapping.annotation.Mapper;
 import fr.phan.damapping.annotation.MapperFactoryMethod;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
+import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import fr.phan.damapping.processor.model.DAInterface;
 import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DAName;

@@ -15,6 +15,8 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.processor.model.factory.DATypeFactory;
+
 import javax.lang.model.element.Modifier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;

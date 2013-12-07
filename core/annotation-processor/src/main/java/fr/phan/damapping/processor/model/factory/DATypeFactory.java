@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.model.factory;
 
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.DAName;
@@ -26,7 +26,7 @@ import javax.lang.model.type.TypeKind;
 import com.google.common.base.Preconditions;
 
 /**
- * DATypeFactory -
+ * DATypeFactory - final class exposing static Factory methods for DAType class
  *
  * @author Sébastien Lesaint
  */
@@ -43,7 +43,7 @@ public final class DATypeFactory {
      * @param clazz une {@link Class}
      * @return un objet {@link fr.phan.damapping.processor.model.DAType}
      */
-    static DAType from(@Nonnull Class<?> clazz) {
+    public static DAType from(@Nonnull Class<?> clazz) {
         return instance(clazz.getSimpleName(), clazz.getCanonicalName(), Collections.<DAType>emptyList());
     }
 
@@ -53,7 +53,7 @@ public final class DATypeFactory {
      * @param clazz une {@link Class}
      * @return un objet {@link DAType}
      */
-    static DAType from(@Nonnull Class<?> clazz, @Nonnull List<DAType> typeArgs) {
+    public static DAType from(@Nonnull Class<?> clazz, @Nonnull List<DAType> typeArgs) {
         return instance(clazz.getSimpleName(), clazz.getCanonicalName(), typeArgs);
     }
 
@@ -68,7 +68,7 @@ public final class DATypeFactory {
      * @param qualifiedName un {@link String}
      * @return un objet {@link DAType}
      */
-    static DAType declared(@Nonnull String qualifiedName) {
+    public static DAType declared(@Nonnull String qualifiedName) {
         return declared(qualifiedName, Collections.<DAType>emptyList());
     }
 
@@ -84,19 +84,19 @@ public final class DATypeFactory {
      *
      * @return un objet {@link DAType}
      */
-    static DAType declared(@Nonnull String qualifiedName, @Nonnull List<DAType> typeArgs) {
+    public static DAType declared(@Nonnull String qualifiedName, @Nonnull List<DAType> typeArgs) {
         String simpleName = qualifiedName.substring(qualifiedName.lastIndexOf(".") + 1);
         return instance(simpleName, qualifiedName, typeArgs);
     }
 
-    static DAType wildcardWithSuperBound(@Nonnull DAType superbound) {
+    public static DAType wildcardWithSuperBound(@Nonnull DAType superbound) {
         return DAType.builder(TypeKind.WILDCARD)
                 .withSimpleName(DANameFactory.wildcard())
                 .withSuperBound(superbound)
                 .build();
     }
 
-    static DAType wildcardWithExtendsBound(@Nonnull DAType extendsBound) {
+    public static DAType wildcardWithExtendsBound(@Nonnull DAType extendsBound) {
         return DAType.builder(TypeKind.WILDCARD)
                 .withSimpleName(DANameFactory.wildcard())
                 .withExtendsBound(extendsBound)
