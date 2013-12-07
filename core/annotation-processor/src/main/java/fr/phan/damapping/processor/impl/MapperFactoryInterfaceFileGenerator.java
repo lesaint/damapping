@@ -19,6 +19,7 @@ import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

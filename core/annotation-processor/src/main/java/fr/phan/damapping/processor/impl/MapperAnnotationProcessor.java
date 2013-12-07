@@ -27,6 +27,7 @@ import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.InstantiationType;
 import fr.phan.damapping.processor.model.predicate.DAInterfacePredicates;
+import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

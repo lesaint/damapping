@@ -15,7 +15,7 @@
  */
 package fr.phan.damapping.processor.model;
 
-import fr.phan.damapping.processor.impl.DAMethodPredicates;
+import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 
 import java.util.Collections;
 import java.util.List;
