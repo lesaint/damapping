@@ -42,7 +42,7 @@ class MapperFactoryClassFileGenerator extends AbstractFileGenerator {
         DASourceClass sourceClass = context.getSourceClass();
 
         DAFileWriter fileWriter = new DAFileWriter(bw)
-                .appendPackage(sourceClass.packageName)
+                .appendPackage(sourceClass.getPackageName())
                 .appendImports(context.getMapperFactoryClassImports())
                 .appendWarningComment();
 
@@ -52,28 +52,28 @@ class MapperFactoryClassFileGenerator extends AbstractFileGenerator {
         //     -> type d'instantiation (si enum, le nom de la valeur d'enum à utiliser)
         DAClassWriter<DAFileWriter> classWriter = fileWriter.newClass(context.getMapperFactoryClassDAType())
                 .start();
-        if (sourceClass.instantiationType == InstantiationType.SPRING_COMPONENT) {
-            classWriter.newProperty("instance", DATypeFactory.declared(sourceClass.type.getQualifiedName().getName()))
+        if (sourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT) {
+            classWriter.newProperty("instance", DATypeFactory.declared(sourceClass.getType().getQualifiedName().getName()))
                     .withModifier(ImmutableSet.of(Modifier.PRIVATE))
                     .withAnnotations(ImmutableList.of(DATypeFactory.from(Resource.class)))
                     .write();
         }
 
-        DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter.newMethod("instance", DATypeFactory.declared(sourceClass.type.getQualifiedName().getName()))
+        DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter.newMethod("instance", DATypeFactory.declared(sourceClass.getType().getQualifiedName().getName()))
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC, Modifier.STATIC))
                 .start();
-        switch (sourceClass.instantiationType) {
+        switch (sourceClass.getInstantiationType()) {
             case SINGLETON_ENUM:
                 // TOIMPROVE générer le code de la factory dans le cas enum avec un nom d'enum dynamique
                 methodWriter.newStatement()
                         .start()
-                        .append("return ").append(sourceClass.type.getSimpleName()).append(".INSTANCE")
+                        .append("return ").append(sourceClass.getType().getSimpleName()).append(".INSTANCE")
                         .end();
                 break;
             case CONSTRUCTOR:
                 methodWriter.newStatement()
                         .start()
-                        .append("return ").append("new ").append(sourceClass.type.getSimpleName()).appendParamValues(Collections.<DAParameter>emptyList())
+                        .append("return ").append("new ").append(sourceClass.getType().getSimpleName()).appendParamValues(Collections.<DAParameter>emptyList())
                         .end();
                 break;
             case SPRING_COMPONENT:

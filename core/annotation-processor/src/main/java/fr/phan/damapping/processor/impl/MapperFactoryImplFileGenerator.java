@@ -45,7 +45,7 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
     public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
         DASourceClass sourceClass = context.getSourceClass();
         DAFileWriter fileWriter = new DAFileWriter(bw)
-                .appendPackage(sourceClass.packageName)
+                .appendPackage(sourceClass.getPackageName())
                 .appendImports(context.getMapperFactoryImplImports())
                 .appendWarningComment();
 
@@ -65,7 +65,7 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
 
     private void appendFactoryMethods(FileGeneratorContext context, DAClassWriter<DAFileWriter> classWriter) throws IOException {
         DASourceClass sourceClass = context.getSourceClass();
-        for (DAMethod method : Iterables.filter(sourceClass.methods, DAMethodPredicates.isMapperFactoryMethod())) {
+        for (DAMethod method : Iterables.filter(sourceClass.getMethods(), DAMethodPredicates.isMapperFactoryMethod())) {
             String name = method.isConstructor() ? "instanceByConstructor" : method.getName().getName();
             DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter
                     .newMethod(name, context.getMapperDAType())
@@ -79,11 +79,11 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
                     .append(context.getMapperImplDAType().getSimpleName())
                     .append("(");
             if (method.isConstructor()) {
-                statementWriter.append("new ").append(sourceClass.type.getSimpleName())
+                statementWriter.append("new ").append(sourceClass.getType().getSimpleName())
                         .appendParamValues(method.getParameters());
             }
             else {
-                statementWriter.append(sourceClass.type.getSimpleName())
+                statementWriter.append(sourceClass.getType().getSimpleName())
                         .append(".")
                         .append(method.getName()).appendParamValues(method.getParameters());
             }
@@ -103,12 +103,12 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
                 .start();
 
         // private final [SourceClassType] instance;
-        mapperClassWriter.newProperty("instance", context.getSourceClass().type)
+        mapperClassWriter.newProperty("instance", context.getSourceClass().getType())
                 .withModifier(ImmutableSet.of(Modifier.PRIVATE, Modifier.FINAL))
                 .write();
 
         // constructor with instance parameter
-        DAParameter parameter = DAParameter.builder(DANameFactory.from("instance"), context.getSourceClass().type).build();
+        DAParameter parameter = DAParameter.builder(DANameFactory.from("instance"), context.getSourceClass().getType()).build();
 
         mapperClassWriter.newConstructor()
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
@@ -122,7 +122,7 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
 
         // mapper method(s)
         // implémentation de la méthode de mapping (Function.apply tant qu'on ne supporte pas @MapperMethod)
-        DAMethod guavaMethod = from(context.getSourceClass().methods).firstMatch(DAMethodPredicates.isGuavaFunction()).get();
+        DAMethod guavaMethod = from(context.getSourceClass().getMethods()).firstMatch(DAMethodPredicates.isGuavaFunction()).get();
         DAClassMethodWriter<?> methodWriter = mapperClassWriter.newMethod(guavaMethod.getName().getName(), guavaMethod.getReturnType())
                 .withAnnotations(ImmutableList.<DAType>of(DATypeFactory.from(Override.class)))
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
@@ -145,7 +145,7 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
     }
 
     private void appendPrivateMapperImpl(BufferedWriter bw, FileGeneratorContext context) throws IOException {
-        DAName simpleName = context.getSourceClass().type.getSimpleName();
+        DAName simpleName = context.getSourceClass().getType().getSimpleName();
         bw.append(INDENT).append("private static class ").append(simpleName).append("MapperImpl").append(" implements ").append(simpleName).append("Mapper").append(" {");
         bw.newLine();
         bw.append(INDENT).append(INDENT).append("private final ").append(simpleName).append(" instance;");

@@ -48,7 +48,7 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
 
     @Override
     public String fileName(FileGeneratorContext context) {
-        return context.getSourceClass().type.getQualifiedName().getName() + "MapperImpl";
+        return context.getSourceClass().getType().getQualifiedName().getName() + "MapperImpl";
     }
 
     @Override
@@ -62,7 +62,7 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
 
         // package + imports + comment
         DAFileWriter fileWriter = new DAFileWriter(bw)
-                .appendPackage(sourceClass.packageName)
+                .appendPackage(sourceClass.getPackageName())
                 .appendImports(computeMapperImplImports(context, sourceClass))
                 .appendWarningComment();
 
@@ -74,15 +74,15 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
                 .start();
 
         // instance de la class annotée @Mapper injectée via @Resource le cas échéant
-        if (sourceClass.instantiationType == InstantiationType.SPRING_COMPONENT) {
-            classWriter.newProperty("instance", DATypeFactory.declared(sourceClass.packageName.getName() + "." + sourceClass.type.getSimpleName()))
+        if (sourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT) {
+            classWriter.newProperty("instance", DATypeFactory.declared(sourceClass.getPackageName().getName() + "." + sourceClass.getType().getSimpleName()))
                     .withAnnotations(ImmutableList.of(DATypeFactory.from(Resource.class)))
                     .withModifier(ImmutableSet.of(Modifier.PRIVATE))
                     .write();
         }
 
         // implémentation de la méthode de mapping (Function.apply tant qu'on ne supporte pas @MapperMethod)
-        DAMethod guavaMethod = from(sourceClass.methods).firstMatch(DAMethodPredicates.isGuavaFunction()).get();
+        DAMethod guavaMethod = from(sourceClass.getMethods()).firstMatch(DAMethodPredicates.isGuavaFunction()).get();
         DAClassMethodWriter<?> methodWriter = classWriter.newMethod(guavaMethod.getName().getName(), guavaMethod.getReturnType())
                 .withAnnotations(ImmutableList.<DAType>of(DATypeFactory.from(Override.class)))
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
@@ -111,7 +111,7 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
 
     private String computeInstanceObject(FileGeneratorContext context) {
         String instance;
-        if (context.getSourceClass().instantiationType == InstantiationType.SPRING_COMPONENT) {
+        if (context.getSourceClass().getInstantiationType() == InstantiationType.SPRING_COMPONENT) {
             instance = "instance";
         }
         else {
@@ -121,16 +121,16 @@ class MapperImplFileGenerator extends AbstractFileGenerator {
     }
 
     private List<DAType> computeImplemented(DASourceClass daSourceClass) {
-        DAType mapperInterface = DATypeFactory.declared(daSourceClass.packageName.getName() + "." + daSourceClass.type.getSimpleName() + "Mapper");
+        DAType mapperInterface = DATypeFactory.declared(daSourceClass.getPackageName().getName() + "." + daSourceClass.getType().getSimpleName() + "Mapper");
         return ImmutableList.of(mapperInterface);
     }
 
     private ImmutableList<DAType> computeAnnotations(DASourceClass daSourceClass) {
-        return daSourceClass.instantiationType == InstantiationType.SPRING_COMPONENT ? ImmutableList.<DAType>of(SPRING_COMPONENT_DATYPE) : null;
+        return daSourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT ? ImmutableList.<DAType>of(SPRING_COMPONENT_DATYPE) : null;
     }
 
     private List<DAName> computeMapperImplImports(FileGeneratorContext context, DASourceClass daSourceClass) {
-        return daSourceClass.instantiationType == InstantiationType.SPRING_COMPONENT ? ImmutableList.copyOf(Iterables.concat(context.getMapperImplImports(), SPRING_COMPONENT_IMPORTS)) : context.getMapperImplImports();
+        return daSourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT ? ImmutableList.copyOf(Iterables.concat(context.getMapperImplImports(), SPRING_COMPONENT_IMPORTS)) : context.getMapperImplImports();
     }
 
 }

@@ -37,11 +37,11 @@ class DefaultFileGeneratorContext implements FileGeneratorContext {
     DefaultFileGeneratorContext(DASourceClass sourceClass, DefaultImportVisitor importVisitor) {
         this.sourceClass = sourceClass;
         this.importVisitor = importVisitor;
-        this.mapperDAType = DATypeFactory.declared(sourceClass.type.getQualifiedName() + "Mapper");
-        this.mapperImplDAType = DATypeFactory.declared(sourceClass.type.getQualifiedName() + "MapperImpl");
-        this.mapperFactoryClassDAType = DATypeFactory.declared(sourceClass.type.getQualifiedName() + "MapperFactory");
-        this.mapperFactoryInterfaceDAType = DATypeFactory.declared(sourceClass.type.getQualifiedName() + "MapperFactory");
-        this.mapperFactoryImplDAType = DATypeFactory.declared(sourceClass.type.getQualifiedName() + "MapperFactoryImpl");
+        this.mapperDAType = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "Mapper");
+        this.mapperImplDAType = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "MapperImpl");
+        this.mapperFactoryClassDAType = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "MapperFactory");
+        this.mapperFactoryInterfaceDAType = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "MapperFactory");
+        this.mapperFactoryImplDAType = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "MapperFactoryImpl");
     }
 
     @Override

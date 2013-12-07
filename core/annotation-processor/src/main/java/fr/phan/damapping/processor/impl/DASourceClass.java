@@ -23,29 +23,90 @@ import fr.phan.damapping.processor.model.ImportVisitable;
 import fr.phan.damapping.processor.model.ImportVisitor;
 import fr.phan.damapping.processor.model.InstantiationType;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
 * DASourceClass - Représente la class annotée avec @Mapper
 *
 * @author Sébastien Lesaint
 */
+@Immutable
 class DASourceClass implements ImportVisitable {
-    final TypeElement classElement;
-    DAName packageName;
-    DAType type;
-    Set<Modifier> modifiers;
-    List<DAInterface> interfaces;
-    List<DAMethod> methods;
+    @Nonnull
+    private final TypeElement classElement;
+    @Nonnull
+    private final DAType type;
+    @Nullable
+    private final DAName packageName;
+    @Nonnull
+    private final Set<Modifier> modifiers;
+    @Nonnull
+    private final List<DAInterface> interfaces;
+    @Nonnull
+    private final List<DAMethod> methods;
+    @Nonnull
     // specific to the class annoted with @Mapper
-    InstantiationType instantiationType;
+    private final InstantiationType instantiationType;
 
-    DASourceClass(TypeElement classElement) {
-        this.classElement = classElement;
+    private DASourceClass(Builder builder) {
+        this.classElement = builder.classElement;
+        this.type = builder.type;
+        this.packageName = builder.packageName;
+        this.modifiers = builder.modifiers == null ? Collections.<Modifier>emptySet() : ImmutableSet.copyOf(builder.modifiers);
+        this.interfaces = builder.interfaces == null ? Collections.<DAInterface>emptyList() : ImmutableList.copyOf(builder.interfaces);
+        this.methods = builder.methods == null ? Collections.<DAMethod>emptyList() : ImmutableList.copyOf(builder.methods);
+        this.instantiationType = builder.instantiationType;
+    }
+
+    public static Builder builder(@Nonnull TypeElement classElement, @Nonnull DAType type) {
+        return new Builder(classElement, type);
+    }
+
+    @Nonnull
+    TypeElement getClassElement() {
+        return classElement;
+    }
+
+    @Nonnull
+    DAType getType() {
+        return type;
+    }
+
+    @Nullable
+    DAName getPackageName() {
+        return packageName;
+    }
+
+    @Nonnull
+    Set<Modifier> getModifiers() {
+        return modifiers;
+    }
+
+    @Nonnull
+    List<DAInterface> getInterfaces() {
+        return interfaces;
+    }
+
+    @Nonnull
+    List<DAMethod> getMethods() {
+        return methods;
+    }
+
+    @Nonnull
+    InstantiationType getInstantiationType() {
+        return instantiationType;
     }
 
     @Override
@@ -60,6 +121,52 @@ class DASourceClass implements ImportVisitable {
         }
         for (DAMethod daMethod : Iterables.filter(methods, DAMethodPredicates.isGuavaFunction())) {
             daMethod.visite(visitor);
+        }
+    }
+
+    public static class Builder {
+        private final TypeElement classElement;
+        private final DAType type;
+        private DAName packageName;
+        private Set<Modifier> modifiers;
+        private List<DAInterface> interfaces;
+        private List<DAMethod> methods;
+        // specific to the class annoted with @Mapper
+        private InstantiationType instantiationType;
+
+        public Builder(@Nonnull TypeElement classElement, @Nonnull DAType type) {
+            this.classElement = checkNotNull(classElement);
+            this.type = checkNotNull(type);
+        }
+
+        public Builder withPackageName(DAName packageName) {
+            this.packageName = packageName;
+            return this;
+        }
+
+        public Builder withModifiers(Set<Modifier> modifiers) {
+            this.modifiers = modifiers;
+            return this;
+        }
+
+        public Builder withInterfaces(List<DAInterface> interfaces) {
+            this.interfaces = interfaces;
+            return this;
+        }
+
+        public Builder withMethods(List<DAMethod> methods) {
+            this.methods = methods;
+            return this;
+        }
+
+        public Builder withInstantiationType(InstantiationType instantiationType) {
+            this.instantiationType = instantiationType;
+            return this;
+        }
+
+        public DASourceClass build() {
+            checkNotNull(this.instantiationType, "IntantiationType is mandatory");
+            return new DASourceClass(this);
         }
     }
 

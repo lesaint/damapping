@@ -40,7 +40,7 @@ class MapperFactoryInterfaceFileGenerator extends AbstractFileGenerator {
     public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
         DASourceClass sourceClass = context.getSourceClass();
         DAFileWriter fileWriter = new DAFileWriter(bw)
-                .appendPackage(sourceClass.packageName)
+                .appendPackage(sourceClass.getPackageName())
                 .appendImports(context.getMapperFactoryInterfaceImports())
                 .appendWarningComment();
 
@@ -48,8 +48,8 @@ class MapperFactoryInterfaceFileGenerator extends AbstractFileGenerator {
                 .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
                 .start();
 
-        DAType mapperClass = DATypeFactory.declared(sourceClass.type.getQualifiedName() + "Mapper");
-        for (DAMethod method : Iterables.filter(sourceClass.methods, DAMethodPredicates.isMapperFactoryMethod())) {
+        DAType mapperClass = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "Mapper");
+        for (DAMethod method : Iterables.filter(sourceClass.getMethods(), DAMethodPredicates.isMapperFactoryMethod())) {
             String name = method.isConstructor() ? "instanceByConstructor" : method.getName().getName();
             interfaceWriter.newMethod(name, mapperClass)
                     .withParams(method.getParameters()).write();
