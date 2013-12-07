@@ -13,15 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.model;
 
-import fr.phan.damapping.processor.model.DAInterface;
-import fr.phan.damapping.processor.model.DAMethod;
-import fr.phan.damapping.processor.model.DAName;
-import fr.phan.damapping.processor.model.DAType;
-import fr.phan.damapping.processor.model.ImportVisitable;
-import fr.phan.damapping.processor.model.ImportVisitor;
-import fr.phan.damapping.processor.model.InstantiationType;
+import fr.phan.damapping.processor.impl.DAMethodPredicates;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,12 +32,12 @@ import com.google.common.collect.Iterables;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
-* DASourceClass - Représente la class annotée avec @Mapper
+* DASourceClass - Représente la classe annotée avec @Mapper
 *
 * @author Sébastien Lesaint
 */
 @Immutable
-class DASourceClass implements ImportVisitable {
+public class DASourceClass implements ImportVisitable {
     @Nonnull
     private final TypeElement classElement;
     @Nonnull
@@ -57,7 +51,6 @@ class DASourceClass implements ImportVisitable {
     @Nonnull
     private final List<DAMethod> methods;
     @Nonnull
-    // specific to the class annoted with @Mapper
     private final InstantiationType instantiationType;
 
     private DASourceClass(Builder builder) {
@@ -75,37 +68,37 @@ class DASourceClass implements ImportVisitable {
     }
 
     @Nonnull
-    TypeElement getClassElement() {
+    public TypeElement getClassElement() {
         return classElement;
     }
 
     @Nonnull
-    DAType getType() {
+    public DAType getType() {
         return type;
     }
 
     @Nullable
-    DAName getPackageName() {
+    public DAName getPackageName() {
         return packageName;
     }
 
     @Nonnull
-    Set<Modifier> getModifiers() {
+    public Set<Modifier> getModifiers() {
         return modifiers;
     }
 
     @Nonnull
-    List<DAInterface> getInterfaces() {
+    public List<DAInterface> getInterfaces() {
         return interfaces;
     }
 
     @Nonnull
-    List<DAMethod> getMethods() {
+    public List<DAMethod> getMethods() {
         return methods;
     }
 
     @Nonnull
-    InstantiationType getInstantiationType() {
+    public InstantiationType getInstantiationType() {
         return instantiationType;
     }
 
