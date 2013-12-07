@@ -13,32 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
-
-import fr.phan.damapping.processor.model.AbstractImportVisitable;
-import fr.phan.damapping.processor.model.DAType;
-import fr.phan.damapping.processor.model.ImportVisitor;
+package fr.phan.damapping.processor.model;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import com.google.common.base.Function;
 
 /**
-* DAInterface -
+* DAInterface - Représente un type Interface implémenté par une classe ou étendue par une autre interface.
 *
 * @author Sébastien Lesaint
 */
 @Immutable
-class DAInterface extends AbstractImportVisitable {
+public class DAInterface extends AbstractImportVisitable {
     @Nonnull
     private final DAType type;
 
-    DAInterface(DAType type) {
+    public DAInterface(DAType type) {
         this.type = type;
     }
 
     @Nonnull
-    DAType getType() {
+    public DAType getType() {
         return type;
     }
 
