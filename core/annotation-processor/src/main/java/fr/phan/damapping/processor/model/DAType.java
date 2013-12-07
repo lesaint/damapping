@@ -39,7 +39,7 @@ public class DAType {
      * Name du type, sauf :
      * <ul>
      *     <li>dans le cas des tableaux où il s'agit du name du type contenu dans le tableau</li>
-     *     <li>dans le cas des types avec wildcard générique où il s'agit de la constante {@link fr.phan.damapping.processor.impl.DANameFactory.wildcard()}</li>
+     *     <li>dans le cas des types avec wildcard générique où il s'agit de la constante {@link fr.phan.damapping.processor.model.factory.DANameFactory.wildcard()}</li>
      * </ul>
      */
     @Nonnull

@@ -15,9 +15,7 @@
  */
 package fr.phan.damapping.processor.model;
 
-import fr.phan.damapping.processor.impl.DANameFactory;
-import fr.phan.damapping.processor.model.DAName;
-import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.factory.DANameFactory;
 
 import java.util.Collections;
 import java.util.List;

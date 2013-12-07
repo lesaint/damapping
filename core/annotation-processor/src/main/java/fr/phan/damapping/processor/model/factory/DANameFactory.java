@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.model.factory;
 
 import fr.phan.damapping.processor.model.DAName;
 
@@ -24,7 +24,7 @@ import javax.lang.model.type.TypeKind;
 import com.google.common.base.Preconditions;
 
 /**
- * DANameFactory -
+ * DANameFactory - final class exposing static factory methods for DAName class
  *
  * @author Sébastien Lesaint
  */

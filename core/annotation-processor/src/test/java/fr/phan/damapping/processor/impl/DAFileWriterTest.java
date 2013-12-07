@@ -15,6 +15,7 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.DAName;
 
 import java.io.IOException;
