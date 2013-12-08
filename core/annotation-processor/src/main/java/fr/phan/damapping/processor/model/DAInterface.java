@@ -15,6 +15,9 @@
  */
 package fr.phan.damapping.processor.model;
 
+import fr.phan.damapping.processor.model.visitor.DAModelVisitable;
+import fr.phan.damapping.processor.model.visitor.DAModelVisitor;
+
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import com.google.common.base.Function;
@@ -25,7 +28,7 @@ import com.google.common.base.Function;
 * @author Sébastien Lesaint
 */
 @Immutable
-public class DAInterface extends AbstractImportVisitable {
+public class DAInterface implements DAModelVisitable {
     @Nonnull
     private final DAType type;
 
@@ -43,31 +46,8 @@ public class DAInterface extends AbstractImportVisitable {
     }
 
     @Override
-    protected void visiteForMapper(ImportVisitor visitor) {
-        visitor.addMapperImport(type.getImports());
-        for (DAType typeArg : type.getTypeArgs()) {
-            visitor.addMapperImport(typeArg.getImports());
-        }
+    public void accept(DAModelVisitor visitor) {
+        visitor.visit(this);
     }
 
-    @Override
-    protected void visiteForMapperImpl(ImportVisitor visitor) {
-        // interface are declared directly only in Mapper
-        // in MapperImpl there is no need to import them again since they are inherited from Mapper
-    }
-
-    @Override
-    protected void visiteForMapperFactoryClass(ImportVisitor visitor) {
-        // interfaces are not used in the Factory
-    }
-
-    @Override
-    protected void visiteForMapperFactoryInterface(ImportVisitor visitor) {
-        // interfaces are not used in MapperFactory interface
-    }
-
-    @Override
-    protected void visiteForMapperFactoryImpl(ImportVisitor visitor) {
-        // interfaces are not used in MapperFactory impl
-    }
 }

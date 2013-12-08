@@ -15,6 +15,9 @@
  */
 package fr.phan.damapping.processor.model;
 
+import fr.phan.damapping.processor.model.visitor.DAModelVisitable;
+import fr.phan.damapping.processor.model.visitor.DAModelVisitor;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +39,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 * @author Sébastien Lesaint
 */
 @Immutable
-public class DAMethod extends AbstractImportVisitable {
+public class DAMethod implements DAModelVisitable {
     /**
      * Le ElementKind de la méthode : soit {@link ElementKind.CONSTRUCTOR}, soit {@ŀink ElementKind.METHOD}
      */
@@ -132,66 +135,8 @@ public class DAMethod extends AbstractImportVisitable {
     }
 
     @Override
-    protected void visiteForMapper(ImportVisitor visitor) {
-        if (isGuavaFunction()) {
-            // guava function is not generated in Mapper interface because it is declared by implemented Function interface
-            return;
-        }
-        if (isDefaultConstructor()) {
-            // constructor is not generated in Mapper interface
-            return;
-        }
-        for (DAParameter parameter : parameters) {
-            visitor.addMapperImport(parameter.getType().getImports());
-        }
-        if (returnType != null) {
-            visitor.addMapperImport(returnType.getImports());
-        }
-    }
-
-    @Override
-    protected void visiteForMapperImpl(ImportVisitor visitor) {
-        if (isDefaultConstructor()) {
-            // constructor is not generated in MapperImpl class
-            return;
-        }
-        for (DAParameter parameter : parameters) {
-            visitor.addMapperImplImport(parameter.getType().getImports());
-        }
-        if (returnType != null) {
-            visitor.addMapperImplImport(returnType.getImports());
-        }
-    }
-
-    @Override
-    protected void visiteForMapperFactoryClass(ImportVisitor visitor) {
-        // none
-    }
-
-    @Override
-    protected void visiteForMapperFactoryInterface(ImportVisitor visitor) {
-        // mapperFactoryMethod are exposed as methods of the MapperFactory
-        if (mapperFactoryMethod) {
-            for (DAParameter parameter : parameters) {
-                visitor.addMapperFactoryInterfaceImport(parameter.getType().getImports());
-            }
-        }
-    }
-
-    @Override
-    protected void visiteForMapperFactoryImpl(ImportVisitor visitor) {
-        // mapperFactoryMethod are exposed as methods of the MapperFactory
-        if (isConstructor()&& mapperFactoryMethod) {
-            for (DAParameter parameter : parameters) {
-                visitor.addMapperFactoryImplImport(parameter.getType().getImports());
-            }
-        }
-
-        if (isGuavaFunction()) { // remplacer par isMapperMethod
-            for (DAParameter parameter : parameters) {
-                visitor.addMapperFactoryImplImport(parameter.getType().getImports());
-            }
-        }
+    public void accept(DAModelVisitor visitor) {
+        visitor.visit(this);
     }
 
     public static class Builder {

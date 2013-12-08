@@ -13,29 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.model;
+package fr.phan.damapping.processor.model.visitor;
 
-import fr.phan.damapping.processor.model.factory.DANameFactory;
-
-import javax.lang.model.type.TypeKind;
-
-import org.testng.annotations.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import fr.phan.damapping.processor.model.DAInterface;
+import fr.phan.damapping.processor.model.DAMethod;
+import fr.phan.damapping.processor.model.DASourceClass;
 
 /**
- * DATypeTest -
+ * DAModelVisitor -
  *
  * @author Sébastien Lesaint
  */
-public class DATypeTest {
-    @Test
-    public void isArray() throws Exception {
-        assertThat(daType(TypeKind.ARRAY).isArray()).isTrue();
-        assertThat(daType(TypeKind.DECLARED).isArray()).isFalse();
-    }
-
-    private static DAType daType(TypeKind kind) {
-        return DAType.builder(kind).withSimpleName(DANameFactory.from("simpleName")).build();
-    }
+public interface DAModelVisitor {
+    void visit(DASourceClass daSourceClass);
+    void visit(DAInterface daInterface);
+    void visit(DAMethod daMethod);
 }

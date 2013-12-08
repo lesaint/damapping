@@ -15,16 +15,24 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.DAType;
+
+import java.util.List;
 
 /**
 * FileGeneratorContext -
 *
 * @author Sébastien Lesaint
 */
-interface FileGeneratorContext extends DAImports {
+interface FileGeneratorContext {
     DASourceClass getSourceClass();
+    List<DAName> getMapperImports();
+    List<DAName> getMapperImplImports();
+    List<DAName> getMapperFactoryInterfaceImports();
+    List<DAName> getMapperFactoryClassImports();
+    List<DAName> getMapperFactoryImplImports();
     DAType getMapperDAType();
     DAType getMapperImplDAType();
     DAType getMapperFactoryClassDAType();

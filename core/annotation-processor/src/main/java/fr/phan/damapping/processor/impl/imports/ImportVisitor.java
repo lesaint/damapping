@@ -13,26 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.impl.imports;
 
 import fr.phan.damapping.processor.model.DAName;
 
-import java.util.List;
+import javax.annotation.Nullable;
 
 /**
- * DAImports -
- *
- * @author Sébastien Lesaint
- */
-public interface DAImports {
-
-    List<DAName> getMapperImports();
-
-    List<DAName> getMapperImplImports();
-
-    List<DAName> getMapperFactoryClassImports();
-
-    List<DAName> getMapperFactoryInterfaceImports();
-
-    List<DAName> getMapperFactoryImplImports();
+* ImportVisitor -
+*
+* @author Sébastien Lesaint
+*/
+public interface ImportVisitor {
+    void addMapperFactoryImplImport(@Nullable DAName qualifiedName);
+    void addMapperFactoryImplImport(@Nullable Iterable<DAName> qualifiedNames);
 }

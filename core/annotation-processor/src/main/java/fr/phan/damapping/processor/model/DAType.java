@@ -100,30 +100,6 @@ public class DAType {
         return kind == TypeKind.ARRAY;
     }
 
-    // TODO : cache the list of imports for a specific DAType
-    public Iterable<DAName> getImports() {
-        ImmutableList<DAName> qualifiedName = hasNoName(kind) ? ImmutableList.<DAName>of() : ImmutableList.of(this.qualifiedName);
-        Iterable<Iterable<DAName>> typesImports = Iterables.transform(
-                typeArgs,
-                new Function<DAType, Iterable<DAName>>() {
-                    @Override
-                    public Iterable<DAName> apply(DAType daType) {
-                        return daType.getImports();
-                    }
-                }
-        );
-        return Iterables.concat(
-                qualifiedName,
-                Iterables.concat(typesImports),
-                superBound == null ? ImmutableList.<DAName>of() : ImmutableList.copyOf(superBound.getImports()),
-                extendsBound == null ? ImmutableList.<DAName>of() : ImmutableList.copyOf(extendsBound.getImports())
-        );
-    }
-
-    private static boolean hasNoName(TypeKind kind) {
-        return kind.isPrimitive() || kind == TypeKind.WILDCARD;
-    }
-
     public static Builder builder(@Nonnull TypeKind kind) {
         return new Builder(kind);
     }

@@ -15,7 +15,8 @@
  */
 package fr.phan.damapping.processor.model;
 
-import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
+import fr.phan.damapping.processor.model.visitor.DAModelVisitable;
+import fr.phan.damapping.processor.model.visitor.DAModelVisitor;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +28,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -37,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 * @author Sébastien Lesaint
 */
 @Immutable
-public class DASourceClass implements ImportVisitable {
+public class DASourceClass implements DAModelVisitable {
     @Nonnull
     private final TypeElement classElement;
     @Nonnull
@@ -103,17 +103,13 @@ public class DASourceClass implements ImportVisitable {
     }
 
     @Override
-    public void visite(ImportVisitor visitor) {
-        visitor.addMapperImport(type.getQualifiedName());
-        visitor.addMapperImplImport(type.getQualifiedName());
-        visitor.addMapperFactoryClassImport(type.getQualifiedName());
-        visitor.addMapperFactoryInterfaceImport(type.getQualifiedName());
-        visitor.addMapperFactoryImplImport(type.getQualifiedName());
+    public void accept(DAModelVisitor visitor) {
+        visitor.visit(this);
         for (DAInterface daInterface : interfaces) {
-            daInterface.visite(visitor);
+            daInterface.accept(visitor);
         }
-        for (DAMethod daMethod : Iterables.filter(methods, DAMethodPredicates.isGuavaFunction())) {
-            daMethod.visite(visitor);
+        for (DAMethod method : methods) {
+            method.accept(visitor);
         }
     }
 

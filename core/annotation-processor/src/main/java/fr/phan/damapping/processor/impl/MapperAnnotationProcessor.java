@@ -170,11 +170,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
             return;
         }
 
-        // construction des listes d'imports
-        DefaultImportVisitor visitor = new DefaultImportVisitor();
-        daSourceClass.visite(visitor);
-
-        DefaultFileGeneratorContext context = new DefaultFileGeneratorContext(daSourceClass, visitor);
+        DefaultFileGeneratorContext context = new DefaultFileGeneratorContext(daSourceClass);
 
         // 1 - générer l'interface du Mapper
         generateMapper(context);

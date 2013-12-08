@@ -15,10 +15,15 @@
  */
 package fr.phan.damapping.processor.impl;
 
-import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.impl.imports.MapperFactoryClassImportsModelVisitor;
+import fr.phan.damapping.processor.impl.imports.MapperFactoryImplImportsModelVisitor;
+import fr.phan.damapping.processor.impl.imports.MapperFactoryInterfaceImportsModelVisitor;
+import fr.phan.damapping.processor.impl.imports.MapperImplImportsModelVisitor;
+import fr.phan.damapping.processor.impl.imports.MapperImportsModelVisitor;
+import fr.phan.damapping.processor.model.factory.DATypeFactory;
 
 import java.util.List;
 
@@ -29,16 +34,14 @@ import java.util.List;
 */
 class DefaultFileGeneratorContext implements FileGeneratorContext {
     private final DASourceClass sourceClass;
-    private final DefaultImportVisitor importVisitor;
     private final DAType mapperDAType;
     private final DAType mapperImplDAType;
     private final DAType mapperFactoryClassDAType;
     private final DAType mapperFactoryInterfaceDAType;
     private final DAType mapperFactoryImplDAType;
 
-    DefaultFileGeneratorContext(DASourceClass sourceClass, DefaultImportVisitor importVisitor) {
+    DefaultFileGeneratorContext(DASourceClass sourceClass) {
         this.sourceClass = sourceClass;
-        this.importVisitor = importVisitor;
         this.mapperDAType = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "Mapper");
         this.mapperImplDAType = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "MapperImpl");
         this.mapperFactoryClassDAType = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "MapperFactory");
@@ -53,27 +56,37 @@ class DefaultFileGeneratorContext implements FileGeneratorContext {
 
     @Override
     public List<DAName> getMapperImports() {
-        return importVisitor.getMapperImports();
+        MapperImportsModelVisitor visitor = new MapperImportsModelVisitor();
+        sourceClass.accept(visitor);
+        return visitor.getImports();
     }
 
     @Override
     public List<DAName> getMapperImplImports() {
-        return importVisitor.getMapperImplImports();
-    }
-
-    @Override
-    public List<DAName> getMapperFactoryClassImports() {
-        return importVisitor.getMapperFactoryClassImports();
+        MapperImplImportsModelVisitor visitor = new MapperImplImportsModelVisitor();
+        sourceClass.accept(visitor);
+        return visitor.getImports();
     }
 
     @Override
     public List<DAName> getMapperFactoryInterfaceImports() {
-        return importVisitor.getMapperFactoryInterfaceImports();
+        MapperFactoryInterfaceImportsModelVisitor visitor = new MapperFactoryInterfaceImportsModelVisitor();
+        sourceClass.accept(visitor);
+        return visitor.getImports();
+    }
+
+    @Override
+    public List<DAName> getMapperFactoryClassImports() {
+        MapperFactoryClassImportsModelVisitor visitor = new MapperFactoryClassImportsModelVisitor();
+        sourceClass.accept(visitor);
+        return visitor.getImports();
     }
 
     @Override
     public List<DAName> getMapperFactoryImplImports() {
-        return importVisitor.getMapperFactoryImplImports();
+        MapperFactoryImplImportsModelVisitor visitor = new MapperFactoryImplImportsModelVisitor();
+        sourceClass.accept(visitor);
+        return visitor.getImports();
     }
 
     @Override
