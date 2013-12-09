@@ -19,13 +19,12 @@ import fr.phan.damapping.processor.impl.writer.DAClassMethodWriter;
 import fr.phan.damapping.processor.impl.writer.DAClassWriter;
 import fr.phan.damapping.processor.impl.writer.DAFileWriter;
 import fr.phan.damapping.processor.impl.writer.DAStatementWriter;
-import fr.phan.damapping.processor.model.factory.DATypeFactory;
-import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.DAMethod;
-import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.factory.DANameFactory;
+import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 
 import java.io.BufferedWriter;
@@ -152,21 +151,4 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
         mapperClassWriter.end();
     }
 
-    private void appendPrivateMapperImpl(BufferedWriter bw, FileGeneratorContext context) throws IOException {
-        DAName simpleName = context.getSourceClass().getType().getSimpleName();
-        bw.append(INDENT).append("private static class ").append(simpleName).append("MapperImpl").append(" implements ").append(simpleName).append("Mapper").append(" {");
-        bw.newLine();
-        bw.append(INDENT).append(INDENT).append("private final ").append(simpleName).append(" instance;");
-        bw.newLine();
-        bw.newLine();
-        bw.append(INDENT).append(INDENT).append("public ").append(simpleName).append("MapperImpl").append("(").append(simpleName).append(" instance").append(") {");
-        bw.newLine();
-        bw.append(INDENT).append(INDENT).append(INDENT).append("this.instance = instance;");
-        bw.newLine();
-        bw.append(INDENT).append(INDENT).append("}");
-        bw.newLine();
-        bw.newLine();
-//        bw.append(INDENT).append(INDENT).append("public ")
-        bw.append(INDENT).append("}");
-    }
 }
