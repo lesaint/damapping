@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.impl.writer;
 
 import fr.phan.damapping.processor.model.DAType;
 
@@ -57,27 +57,27 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         this.classType = classType;
     }
 
-    DAClassWriter<T> withModifiers(Set<Modifier> modifiers) {
+    public DAClassWriter<T> withModifiers(Set<Modifier> modifiers) {
         this.modifiers = modifiers == null ? Collections.<Modifier>emptySet() : ImmutableSet.copyOf(modifiers);
         return this;
     }
 
-    DAClassWriter<T> withAnnotations(List<DAType> annotations) {
+    public DAClassWriter<T> withAnnotations(List<DAType> annotations) {
         this.annotations = annotations == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(annotations);
         return this;
     }
 
-    DAClassWriter<T> withImplemented(List<DAType> implemented) {
+    public DAClassWriter<T> withImplemented(List<DAType> implemented) {
         this.implemented = implemented == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(implemented);
         return this;
     }
 
-    DAClassWriter<T> withExtended(DAType extended) {
+    public DAClassWriter<T> withExtended(DAType extended) {
         this.extended = extended;
         return this;
     }
 
-    DAClassWriter<T> start() throws IOException {
+    public DAClassWriter<T> start() throws IOException {
         appendAnnotations(annotations);
         appendIndent();
         appendModifiers(bw, modifiers);
@@ -90,26 +90,26 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         return this;
     }
 
-    DAPropertyWriter<DAClassWriter<T>> newProperty(String name, DAType type) {
+    public DAPropertyWriter<DAClassWriter<T>> newProperty(String name, DAType type) {
         return new DAPropertyWriter<DAClassWriter<T>>(name, type, bw, this, indent + 1);
     }
 
-    DAConstructorWriter<DAClassWriter<T>> newConstructor() {
+    public DAConstructorWriter<DAClassWriter<T>> newConstructor() {
         return new DAConstructorWriter<DAClassWriter<T>>(classType, bw, this, indent + 1);
     }
 
-    DAClassMethodWriter<DAClassWriter<T>> newMethod(String name, DAType returnType) {
+    public DAClassMethodWriter<DAClassWriter<T>> newMethod(String name, DAType returnType) {
         return new DAClassMethodWriter<DAClassWriter<T>>(name, returnType, bw, indent + 1, this);
     }
 
-    T end() throws IOException {
+    public T end() throws IOException {
         appendIndent();
         bw.append("}");
         bw.newLine();
         return parent;
     }
 
-    DAClassWriter<DAClassWriter<T>> newClass(DAType classType) {
+    public DAClassWriter<DAClassWriter<T>> newClass(DAType classType) {
         return new DAClassWriter<DAClassWriter<T>>(classType, bw, this, indent + 1);
     }
 

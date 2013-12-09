@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.impl.writer;
 
 import fr.phan.damapping.processor.model.DAType;
 
@@ -42,17 +42,17 @@ public class DAPropertyWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         this.type = type;
     }
 
-    DAPropertyWriter<T> withAnnotations(List<DAType> annotations) {
+    public DAPropertyWriter<T> withAnnotations(List<DAType> annotations) {
         this.annotations = annotations == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(annotations);
         return this;
     }
 
-    DAPropertyWriter<T> withModifier(Set<Modifier> modifiers) {
+    public DAPropertyWriter<T> withModifier(Set<Modifier> modifiers) {
         this.modifiers = modifiers;
         return this;
     }
 
-    T write() throws IOException {
+    public T write() throws IOException {
         appendAnnotations(annotations);
         appendIndent();
         appendModifiers(bw, modifiers);

@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.impl.writer;
 
+import fr.phan.damapping.processor.impl.writer.DAConstructorWriter;
+import fr.phan.damapping.processor.impl.writer.DAWriter;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 
 import javax.lang.model.element.Modifier;
@@ -23,7 +25,7 @@ import com.google.common.collect.ImmutableSet;
 
 import org.testng.annotations.Test;
 
-import static fr.phan.damapping.processor.impl.AbstractDAWriter.INDENT;
+import static fr.phan.damapping.processor.impl.writer.AbstractDAWriter.INDENT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

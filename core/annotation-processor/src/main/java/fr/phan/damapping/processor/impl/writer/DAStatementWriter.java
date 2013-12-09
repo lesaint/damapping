@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.impl.writer;
 
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DAType;
@@ -34,32 +34,32 @@ public class DAStatementWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         super(bw, parent, indent);
     }
 
-    DAStatementWriter<T> start() throws IOException {
+    public DAStatementWriter<T> start() throws IOException {
         appendIndent();
         return this;
     }
 
-    DAStatementWriter<T> append(CharSequence s) throws IOException {
+    public DAStatementWriter<T> append(CharSequence s) throws IOException {
         bw.append(s);
         return this;
     }
 
-    DAStatementWriter<T> append(char c) throws IOException {
+    public DAStatementWriter<T> append(char c) throws IOException {
         bw.append(c);
         return this;
     }
 
-    DAStatementWriter<T> appendType(DAType type) throws IOException {
+    public DAStatementWriter<T> appendType(DAType type) throws IOException {
         appendType(bw, type);
         return this;
     }
 
-    DAStatementWriter<T> appendTypeArgs(List<DAType> typeArgs) throws IOException {
+    public DAStatementWriter<T> appendTypeArgs(List<DAType> typeArgs) throws IOException {
         appendTypeArgs(bw, typeArgs);
         return this;
     }
 
-    DAStatementWriter<T> appendParamValues(List<DAParameter> params) throws IOException {
+    public DAStatementWriter<T> appendParamValues(List<DAParameter> params) throws IOException {
         if (params.isEmpty()) {
             bw.append("()");
             return this;
@@ -78,7 +78,7 @@ public class DAStatementWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         return this;
     }
 
-    T end() throws IOException {
+    public T end() throws IOException {
         bw.append(";");
         bw.newLine();
         return parent;

@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.impl.writer;
+
+import fr.phan.damapping.processor.impl.writer.DAPropertyWriter;
+import fr.phan.damapping.processor.impl.writer.DAWriter;
 
 import javax.lang.model.element.Modifier;
 import com.google.common.collect.ImmutableList;
@@ -21,8 +24,8 @@ import com.google.common.collect.ImmutableSet;
 
 import org.testng.annotations.Test;
 
-import static fr.phan.damapping.processor.impl.AbstractDAWriter.INDENT;
-import static fr.phan.damapping.processor.impl.DAWriterTestUtil.LINE_SEPARATOR;
+import static fr.phan.damapping.processor.impl.writer.AbstractDAWriter.INDENT;
+import static fr.phan.damapping.processor.impl.writer.DAWriterTestUtil.LINE_SEPARATOR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -37,8 +40,8 @@ public class DAPropertyWriterTest {
         TestWriters testWriters = new TestWriters();
         daPropertyWriter(testWriters).write();
 
-        assertThat(testWriters.getRes()).isEqualTo(INDENT + "Function<Integer, String> name;" + LINE_SEPARATOR
-                + LINE_SEPARATOR);
+        assertThat(testWriters.getRes()).isEqualTo(INDENT + "Function<Integer, String> name;" + DAWriterTestUtil.LINE_SEPARATOR
+                + DAWriterTestUtil.LINE_SEPARATOR);
     }
 
     @Test
@@ -48,8 +51,8 @@ public class DAPropertyWriterTest {
                 .withModifier(ImmutableSet.of(Modifier.PRIVATE))
                 .write();
 
-        assertThat(testWriters.getRes()).isEqualTo(INDENT + "private Function<Integer, String> name;" + LINE_SEPARATOR
-                + LINE_SEPARATOR);
+        assertThat(testWriters.getRes()).isEqualTo(INDENT + "private Function<Integer, String> name;" + DAWriterTestUtil.LINE_SEPARATOR
+                + DAWriterTestUtil.LINE_SEPARATOR);
     }
 
     @Test
@@ -59,9 +62,9 @@ public class DAPropertyWriterTest {
                 .withAnnotations(ImmutableList.of(DAWriterTestUtil.NULLABLE_ANNOTATION))
                 .write();
 
-        assertThat(testWriters.getRes()).isEqualTo(INDENT + "@Nullable" + LINE_SEPARATOR
-                + INDENT + "Function<Integer, String> name;" + LINE_SEPARATOR
-                + LINE_SEPARATOR);
+        assertThat(testWriters.getRes()).isEqualTo(INDENT + "@Nullable" + DAWriterTestUtil.LINE_SEPARATOR
+                + INDENT + "Function<Integer, String> name;" + DAWriterTestUtil.LINE_SEPARATOR
+                + DAWriterTestUtil.LINE_SEPARATOR);
     }
 
     private static DAPropertyWriter<DAWriter> daPropertyWriter(TestWriters testWriters) {

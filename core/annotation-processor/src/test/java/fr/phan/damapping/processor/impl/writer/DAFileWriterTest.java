@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.impl.writer;
 
+import fr.phan.damapping.processor.impl.writer.DAFileWriter;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.DAName;
 
@@ -24,7 +25,7 @@ import com.google.common.collect.ImmutableSet;
 
 import org.testng.annotations.Test;
 
-import static fr.phan.damapping.processor.impl.DAWriterTestUtil.LINE_SEPARATOR;
+import static fr.phan.damapping.processor.impl.writer.DAWriterTestUtil.LINE_SEPARATOR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -49,7 +50,7 @@ public class DAFileWriterTest {
         TestWriters testWriters = new TestWriters();
         new DAFileWriter(testWriters.bw).appendPackage(PACKAGE_NAME);
 
-        assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR + LINE_SEPARATOR);
+        assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + DAWriterTestUtil.LINE_SEPARATOR + DAWriterTestUtil.LINE_SEPARATOR);
     }
 
     @Test
@@ -63,11 +64,11 @@ public class DAFileWriterTest {
                         DAWriterTestUtil.OVERRIDE_ANNOTATION.getQualifiedName()
                 ));
 
-        assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
-                + LINE_SEPARATOR
-                + "import com.acme.Bidon;" + LINE_SEPARATOR
-                + "import com.google.common.base.Function;" + LINE_SEPARATOR
-                + LINE_SEPARATOR);
+        assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + DAWriterTestUtil.LINE_SEPARATOR
+                + DAWriterTestUtil.LINE_SEPARATOR
+                + "import com.acme.Bidon;" + DAWriterTestUtil.LINE_SEPARATOR
+                + "import com.google.common.base.Function;" + DAWriterTestUtil.LINE_SEPARATOR
+                + DAWriterTestUtil.LINE_SEPARATOR);
     }
 
     @Test
@@ -80,11 +81,11 @@ public class DAFileWriterTest {
                 .start()
                 .end();
 
-        assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
-                + LINE_SEPARATOR
-                + "public class Name {" + LINE_SEPARATOR
-                + LINE_SEPARATOR
-                + "}" + LINE_SEPARATOR
+        assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + DAWriterTestUtil.LINE_SEPARATOR
+                + DAWriterTestUtil.LINE_SEPARATOR
+                + "public class Name {" + DAWriterTestUtil.LINE_SEPARATOR
+                + DAWriterTestUtil.LINE_SEPARATOR
+                + "}" + DAWriterTestUtil.LINE_SEPARATOR
         );
     }
 
@@ -97,11 +98,11 @@ public class DAFileWriterTest {
                 .start()
                 .end();
 
-        assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
-                + LINE_SEPARATOR
-                + "interface name {" + LINE_SEPARATOR
-                + LINE_SEPARATOR
-                + "}" + LINE_SEPARATOR
+        assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + DAWriterTestUtil.LINE_SEPARATOR
+                + DAWriterTestUtil.LINE_SEPARATOR
+                + "interface name {" + DAWriterTestUtil.LINE_SEPARATOR
+                + DAWriterTestUtil.LINE_SEPARATOR
+                + "}" + DAWriterTestUtil.LINE_SEPARATOR
         );
     }
 

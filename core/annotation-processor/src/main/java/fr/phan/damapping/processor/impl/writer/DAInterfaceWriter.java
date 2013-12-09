@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.impl.writer;
 
 import fr.phan.damapping.processor.model.DAType;
 
@@ -43,22 +43,22 @@ public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         this.name = name;
     }
 
-    DAInterfaceWriter<T> withAnnotations(List<DAType> annotations) {
+    public DAInterfaceWriter<T> withAnnotations(List<DAType> annotations) {
         this.annotations = annotations == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(annotations);
         return this;
     }
 
-    DAInterfaceWriter<T> withModifiers(Set<Modifier> modifiers) {
+    public DAInterfaceWriter<T> withModifiers(Set<Modifier> modifiers) {
         this.modifiers = modifiers == null ? Collections.<Modifier>emptySet() : ImmutableSet.copyOf(modifiers);
         return this;
     }
 
-    DAInterfaceWriter<T> withExtended(List<DAType> extended) {
+    public DAInterfaceWriter<T> withExtended(List<DAType> extended) {
         this.extended = extended == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(extended);
         return this;
     }
 
-    DAInterfaceWriter<T> start() throws IOException {
+    public DAInterfaceWriter<T> start() throws IOException {
         appendAnnotations(annotations);
         appendIndent();
         appendModifiers(bw, modifiers);
@@ -86,11 +86,11 @@ public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         }
     }
 
-    DAInterfaceMethodWriter<DAInterfaceWriter<T>> newMethod(String name, DAType returnType) {
+    public DAInterfaceMethodWriter<DAInterfaceWriter<T>> newMethod(String name, DAType returnType) {
         return new DAInterfaceMethodWriter<DAInterfaceWriter<T>>(name, returnType, bw, indent + 1, this);
     }
 
-    T end() throws IOException {
+    public T end() throws IOException {
         appendIndent();
         bw.append("}");
         bw.newLine();

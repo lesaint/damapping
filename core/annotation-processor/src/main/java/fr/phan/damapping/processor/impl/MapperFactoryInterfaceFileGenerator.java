@@ -15,6 +15,8 @@
  */
 package fr.phan.damapping.processor.impl;
 
+import fr.phan.damapping.processor.impl.writer.DAFileWriter;
+import fr.phan.damapping.processor.impl.writer.DAInterfaceWriter;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DASourceClass;
