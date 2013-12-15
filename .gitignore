@@ -1,6 +1,3 @@
 target
-*.iml
-*.iws
-*.ipr
 .idea
 test-output
