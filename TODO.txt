@@ -20,6 +20,11 @@ ROADMAP
  * écriture d'un cas d'intégration avec un Spring contexte
  * auto discovery de l'annotation processor
  * séparation en modules spécifiques des annotations et du processor
+ * toute exception doit indiquer la classe @Mapper pour laquelle ça a pété
+ - mettre en place un système d'exception internes pour ne pas faire des getMessager().[...] un peu partout, afficher
+   ces exceptions avec un getMessager() mais ne pas remonter à javac
+ - disposer d'une liste de String pour y coller les simples warnings pour ne pas faire de getMessager() un peu partout,
+   afficher ces warnings avant de traiter l'exception interne
  - tester MapperFactory avec des Objets non java.lang, des génériques, ...
  - vérifier l'instanciation de la classe @Mapper si annotation @Inject, @SpringBean, etc...
  - test U pour les méthodes appendType, appendParams, ... de DAStatementWriter ?
