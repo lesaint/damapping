@@ -1,1 +1,203 @@
-DAMapping home page
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Damapping by lesaint</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Damapping</h1>
+        <h2>DA Mapping Framework</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/lesaint/damapping/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/lesaint/damapping/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/lesaint/damapping" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a name="da-mapping-framework" class="anchor" href="#da-mapping-framework"><span class="octicon octicon-link"></span></a>DA Mapping Framework</h1>
+
+<h2>
+<a name="a-little-history-and-context" class="anchor" href="#a-little-history-and-context"><span class="octicon octicon-link"></span></a>A little history and context</h2>
+
+<p>DA Mapping Framework is yet another bean mapping framework but it is entitled to handle some issues encountered with
+quite a bunch of mapping frameworks I had the opportunity to either use or study.</p>
+
+<p>Most mapping framework focus on the ease of writing the mapping code, most of the time by somehow generating automagically
+the mapping for you. In this process, they often miss a key element of the life cycle of programming : <strong>maintenance</strong>.</p>
+
+<p>As such, Dozer is by far the "best" example of this. Mapping beans or even hierarchy of beans by just calling the mapper
+can just magically work! As your application live, developers come by and go and you end up asking just too many
+times: where does this value come from? Is it ever set? Where/when is it set? Could it be set more than once?</p>
+
+<p>This mapping framework got the first word of its name from this hell : <strong>D</strong>ozer <strong>A</strong>nnihilation (and as some kind of tribute to
+the famous RTS game).</p>
+
+<h2>
+<a name="the-spirit" class="anchor" href="#the-spirit"><span class="octicon octicon-link"></span></a>The spirit</h2>
+
+<p>DA Mapping framework makes the following choices :</p>
+
+<ol>
+<li>the implementation of the mapping is the only thing the developer really cares about
+
+<ul>
+<li>the rest is just boilerplate and we want to deal with it as little as possible</li>
+</ul>
+</li>
+<li>the developer must have the control on the implementation of the mapping
+
+<ul>
+<li>we don't want reflection, XML configuration, interfaces to implement to "extend" the framework, etc.</li>
+<li>also, plain java mapping code means you can just ask your IDE "where is this value set" and get a definitive answer in no time</li>
+<li>plan java code also means anyone can maintain it without the need to know some mapping magic</li>
+</ul>
+</li>
+<li>mapping must be strongly typed
+
+<ul>
+<li>think of all the work the guys have put into the compiler, that's just a shame not to use it!</li>
+</ul>
+</li>
+<li>code must be unit testable
+
+<ul>
+<li>we want to test the mapping not the mapping framework =&gt; we want to test the implementation</li>
+<li>testable code can be mocked, composed, ... you name it!</li>
+</ul>
+</li>
+<li>usually such testable code will be wired by a DI framework
+
+<ul>
+<li>obviously, we need to support the most popular DI frameworks</li>
+</ul>
+</li>
+<li>writing obvious mapping code can be tedious? Then get help to generate that tedious code
+
+<ul>
+<li>no need to hide it in the bytecode or do the mapping at runtime</li>
+<li>just have the IDE write it in your source code, so that later on, anyone can understand what's going on and where it is happening</li>
+</ul>
+</li>
+<li>"mapping occurs only from one object to another, not from any number of objects to one"
+
+<ul>
+<li>obviously, many use cases make it clear that such a statement isn't totally true</li>
+<li>but we can still handle them with a single "source" object, other objects are just considered as part of a context</li>
+</ul>
+</li>
+</ol><h2>
+<a name="current-implementation" class="anchor" href="#current-implementation"><span class="octicon octicon-link"></span></a>Current implementation</h2>
+
+<p>This framework is pretty young and this first implementation is most likely still buggy, misses some features and has
+some limitations:</p>
+
+<ol>
+<li>every mapper (what a mapper is is explained below) must implement Guava's Function interface
+
+<ul>
+<li>Guava's <code>Function</code> interface has been chosen for a very specific reason : so that mappers can be very easily used
+when handling collections (and Java 8 adoption is well... you know...)</li>
+</ul>
+</li>
+<li>only Spring DI framework is currently supported, with limited scope at the moment</li>
+<li>IDE support for DA Mapping framework is not developed yet</li>
+<li>no code generation plugin has been developed yet</li>
+<li>this is beta stage, so lost of bugs are most likely hiding and implementation of the framework needs refactoring</li>
+</ol><h2>
+<a name="how-does-it-work" class="anchor" href="#how-does-it-work"><span class="octicon octicon-link"></span></a>How does it work</h2>
+
+<p>To use DA Mapping Framework, write Foo class exposing a method creating an instance of class A from an instance of class B,
+add a <code>@Mapper</code> annotation on that class and then just use the FooMapper interface in your code.</p>
+
+<p>Creating a Mapper</p>
+
+<div class="highlight highlight-java"><pre><span class="nd">@Mapper</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">implements</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">Bar</span><span class="o">,</span> <span class="n">Bundy</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">Bundy</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Bar</span> <span class="n">bar</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// some code return a Bundy instance</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+<p>Handcrafted (no DI) use of a Mapper</p>
+
+<div class="highlight highlight-java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SomeService</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">FooMapper</span> <span class="n">fooMapper</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">SomeService</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">(</span><span class="k">new</span> <span class="n">FooMapperImpl</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nf">SomeService</span><span class="o">(</span><span class="n">FooMapper</span> <span class="n">fooMapper</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">fooMapper</span> <span class="o">=</span> <span class="n">fooMapper</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">someMethod</span><span class="o">(</span><span class="n">Bar</span> <span class="n">bar</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Bundy</span> <span class="n">bundy</span> <span class="o">=</span> <span class="n">fooMapper</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="n">bar</span><span class="o">);</span>
+        <span class="c1">// ...</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+<p>What just happened ?
+In the previous example, notice the following :</p>
+
+<ol>
+<li>class <code>Foo</code> has a <code>@Mapper</code> annotation and implements Guava's <code>Function</code> interface</li>
+<li>class <code>SomeService</code> has a property <code>fooMapper</code> of type <code>FooMapper</code> (which we didn't code!!)</li>
+<li>class <code>SomeService</code> instantiates a <code>FooMapperImpl</code> object in its default constructor</li>
+</ol><p>DA Mapping framework uses annotation processing to generate the boilerplaty interface <code>FooMapper</code> and its implementation class <code>FooMapperImpl</code>.</p>
+
+<p>By doing this, DA Mapping framework makes your code :</p>
+
+<ul>
+<li>instantly unit testable
+
+<ul>
+<li>write the unit test for <code>Foo</code> and you get 100% coverage</li>
+<li>you can easily mock <code>FooMapper</code> while testing <code>SomeService</code>
+</li>
+</ul>
+</li>
+<li>instantly usable with any DI framework
+
+<ul>
+<li>just add the injection annotation of your choice, instantiate the <code>FooMapperImpl</code> in your DI context</li>
+<li>DA Mapping framework can also handle this part for even more convenience</li>
+</ul>
+</li>
+<li>perfectly maintainable
+
+<ul>
+<li>plan java code I said!</li>
+</ul>
+</li>
+<li>and most likely more performant
+
+<ul>
+<li>this mapping code is generated at compile-time! No runtime performance impact!</li>
+</ul>
+</li>
+</ul><p>All you have to do for all of this is to write the implementation of the mapping and only that. Just the stuff you actually are about!</p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
