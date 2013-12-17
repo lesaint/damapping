@@ -1,42 +1,42 @@
 <idea-plugin version="2">
-  <id>com.yourcompany.unique.plugin.id</id>
-  <name>Plugin display name here</name>
-  <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <id>fr.phan.damapping.intellij.plugin.integration</id>
+    <name>DAMapping integration plugin</name>
+    <version>1.0</version>
+    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">DAMapping</vendor>
 
-  <description><![CDATA[
+    <description><![CDATA[
       Enter short description for your plugin here.<br>
       <small>most HTML tags may be used</small>
       ]]></description>
+    <category>Tools Integration</category>
+    <idea-version since-build="123.72"/>
 
-  <change-notes><![CDATA[
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+
+    <!--<project-components>-->
+    <!--&lt;!&ndash; Add your project components here &ndash;&gt;-->
+    <!--</project-components>-->
+
+    <application-components>
+        <component>
+            <implementation-class>fr.phan.damapping.intellij.plugin.integration.DAMappingIntegrationLoader
+            </implementation-class>
+        </component>
+    </application-components>
+
+    <!-- Add your actions here -->
+    <!--<actions>-->
+    <!--</actions>-->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <inspectionToolProvider implementation="fr.phan.damapping.intellij.plugin.integration.provider.DAMappingInspectionProvider"/>
+    </extensions>
+
+    <change-notes><![CDATA[
       Add change notes here.<br>
       <small>most HTML tags may be used</small>
       ]]>
-  </change-notes>
-
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="107.105"/>
-
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
-
-  <application-components>
-    <!-- Add your application components here -->
-  </application-components>
-
-  <project-components>
-    <!-- Add your project components here -->
-  </project-components>
-
-  <actions>
-    <!-- Add your actions here -->
-  </actions>
-
-  <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
-  </extensions>
+    </change-notes>
 </idea-plugin>
