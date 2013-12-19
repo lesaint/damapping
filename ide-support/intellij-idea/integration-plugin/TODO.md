@@ -5,6 +5,11 @@ Must Have features (in order)
 -----------------------------
 - [ ] improve fluency of using DA Mapping in case of a tree of mappers by making generated Mapper
       classes accessible without building the whole project
+    - according to http://devnet.jetbrains.com/message/5464449#5464449, to make IDEA 'see' the generated Mapper interface
+      for usage in the code, we must use the PsiAugmentProvider to which we will give a virtual Mapper interface to add
+      to it's 'classPath' => see Lombok plugin
+    - since we will also need the MapperImpl class for usage in the Spring contexts
+    - Question : how will IDEA behave during build ? does it need Annotation processing to be enabled ?
 
 Good to Have features (no order)
 --------------------------------
