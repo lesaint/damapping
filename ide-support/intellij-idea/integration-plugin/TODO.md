@@ -23,6 +23,7 @@ Good to Have features (no order)
                 - See CompletionService in IDEA's Open API for the à-la incentive
             - [ ] suggest add @MapperFactoryMethod and display list of eligible existing methods (and only if there is at lease one eligible method)
         * [ ] missing public constructor or @Component annotation or method with @MapperFactoryMethod annotation
+        * [ ] inner class can not be annoted with @Mapper
         * [ ] enum must have only one value
             - [ ] suggest to remove extra value(s) by displaying a dialog where use selects the value to keep
 * incentive on @MapperFactoryMethod which will
