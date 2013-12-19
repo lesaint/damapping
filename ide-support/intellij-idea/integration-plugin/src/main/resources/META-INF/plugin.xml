@@ -31,6 +31,7 @@
     <!--</actions>-->
 
     <extensions defaultExtensionNs="com.intellij">
+        <lang.psiAugmentProvider implementation="fr.phan.damapping.intellij.plugin.integration.provider.DAMappingAugmentProvider"/>
         <inspectionToolProvider implementation="fr.phan.damapping.intellij.plugin.integration.provider.DAMappingInspectionProvider"/>
     </extensions>
 
