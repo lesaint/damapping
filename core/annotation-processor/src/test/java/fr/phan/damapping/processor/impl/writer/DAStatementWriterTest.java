@@ -15,10 +15,6 @@
  */
 package fr.phan.damapping.processor.impl.writer;
 
-import fr.phan.damapping.processor.impl.writer.AbstractDAWriter;
-import fr.phan.damapping.processor.impl.writer.DAStatementWriter;
-import fr.phan.damapping.processor.impl.writer.DAWriter;
-
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,7 +36,11 @@ public class DAStatementWriterTest {
     @Test
     public void some_statement() throws Exception {
         TestWriters testWriters = new TestWriters();
-        methodWriter(testWriters).start().append("return this").end();
+        methodWriter(testWriters)
+                .start()
+                .append("return thi")
+                .append('s')
+                .end();
 
         assertThat(testWriters.getRes()).isEqualTo(AbstractDAWriter.INDENT + "return this;" + DAWriterTestUtil.LINE_SEPARATOR);
     }
