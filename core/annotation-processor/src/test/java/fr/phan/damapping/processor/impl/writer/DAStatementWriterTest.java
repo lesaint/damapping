@@ -15,9 +15,25 @@
  */
 package fr.phan.damapping.processor.impl.writer;
 
+import fr.phan.damapping.processor.model.DAParameter;
+import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.factory.DANameFactory;
+import fr.phan.damapping.processor.model.factory.DATypeFactory;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
+
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 /**
  * DAStatementWriterTest -
@@ -25,24 +41,65 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Sébastien Lesaint
  */
 public class DAStatementWriterTest {
-    @Test
-    public void empty_statement() throws Exception {
-        TestWriters testWriters = new TestWriters();
-        methodWriter(testWriters).start().end();
+    @Mock
+    private CommonMethods commonMethods;
 
-        assertThat(testWriters.getRes()).isEqualTo(CommonMethodsImpl.INDENT + ";" + DAWriterTestUtil.LINE_SEPARATOR);
+    @BeforeMethod
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    public void some_statement() throws Exception {
+    public void start_delegates_to_CommonMethods() throws Exception {
         TestWriters testWriters = new TestWriters();
-        methodWriter(testWriters)
-                .start()
-                .append("return thi")
-                .append('s')
-                .end();
+        methodWriterWithMock(testWriters).start();
 
-        assertThat(testWriters.getRes()).isEqualTo(CommonMethodsImpl.INDENT + "return this;" + DAWriterTestUtil.LINE_SEPARATOR);
+        verify(commonMethods).appendIndent();
+        verifyNoInteraction(testWriters);
+    }
+
+    @Test
+    public void append_CharSequence_delegates_to_CommonMethods() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        String s = "ss";
+
+        methodWriterWithMock(testWriters).append(s);
+
+        verify(commonMethods).append(s);
+        verifyNoInteraction(testWriters);
+    }
+
+    @Test
+    public void append_Char_delegates_to_CommonMethods() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        char s = 's';
+
+        methodWriterWithMock(testWriters).append(s);
+
+        verify(commonMethods).append(s);
+        verifyNoInteraction(testWriters);
+    }
+
+    @Test
+    public void appendType_delegates_to_CommonMethods() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        DAType daType = DATypeFactory.from(String.class);
+
+        methodWriterWithMock(testWriters).appendType(daType);
+
+        verify(commonMethods).appendType(daType);
+        verifyNoInteraction(testWriters);
+    }
+
+    @Test
+    public void appendTypeArgs_delegates_to_CommonMethods() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        List<DAType> daTypes = ImmutableList.of(DATypeFactory.from(String.class));
+
+        methodWriterWithMock(testWriters).appendTypeArgs(daTypes);
+
+        verify(commonMethods).appendTypeArgs(daTypes);
+        verifyNoInteraction(testWriters);
     }
 
     @Test
@@ -54,6 +111,65 @@ public class DAStatementWriterTest {
         DAStatementWriter<DAWriter> classWriter = new DAStatementWriter<DAWriter>(testWriters.bw, parent, 1);
 
         assertThat(classWriter.end()).isSameAs(parent);
+    }
+
+    @Test
+    public void end_adds_semicolon_and_newline() throws Exception {
+        TestWriters testWriters = new TestWriters();
+
+        methodWriterWithMock(testWriters).end();
+
+        verify(commonMethods).append(";");
+        verify(commonMethods).newLine();
+        verifyNoInteraction(testWriters);
+    }
+
+    @Test
+    public void appendParamValues_add_empty_brackets_if_empty() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        methodWriter(testWriters).appendParamValues(Collections.<DAParameter>emptyList());
+
+        assertThat(testWriters.getRes()).isEqualTo("()");
+    }
+
+    @Test
+    public void appendParamValues_with_only_one_parameter() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        methodWriter(testWriters).appendParamValues(
+                Collections.singletonList(
+                        DAParameter.builder(DANameFactory.from("param"), DATypeFactory.from(String.class))
+                                .build()
+                )
+        );
+
+        assertThat(testWriters.getRes()).isEqualTo("(param)");
+    }
+
+    @Test
+    public void appendParamValues_with_multiple_parameters() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        methodWriter(testWriters).appendParamValues(
+                ImmutableList.of(
+                        DAParameter.builder(DANameFactory.from("param1"), DATypeFactory.from(String.class))
+                                .build(),
+                        DAParameter.builder(DANameFactory.from("param2"), DATypeFactory.from(String.class))
+                                .build()
+                        )
+        );
+
+        assertThat(testWriters.getRes()).isEqualTo("(param1, param2)");
+    }
+
+    private void verifyNoInteraction(TestWriters testWriters) throws IOException {
+        verifyNoMoreInteractions(commonMethods);
+        assertThat(testWriters.getRes()).isEmpty();
+    }
+
+    private DAStatementWriter<DAWriter> methodWriterWithMock(TestWriters testWriters) {
+        DAWriter parent = new DAWriter() {
+
+        };
+        return new DAStatementWriter<DAWriter>(commonMethods, parent);
     }
 
     private static DAStatementWriter<DAWriter> methodWriter(TestWriters testWriters) {

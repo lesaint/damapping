@@ -34,6 +34,10 @@ public class DAStatementWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         super(bw, parent, indentOffset);
     }
 
+    DAStatementWriter(CommonMethods commonMethods, T parent) {
+        super(commonMethods, parent);
+    }
+
     public DAStatementWriter<T> start() throws IOException {
         commons.appendIndent();
         return this;
