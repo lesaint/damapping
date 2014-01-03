@@ -53,13 +53,13 @@ public class DAPropertyWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     }
 
     public T write() throws IOException {
-        appendAnnotations(annotations);
-        appendIndent();
-        appendModifiers(bw, modifiers);
-        appendType(bw, type);
-        bw.append(" ").append(name).append(";");
-        bw.newLine();
-        bw.newLine();
+        commons.appendAnnotations(annotations);
+        commons.appendIndent();
+        commons.appendModifiers(modifiers);
+        commons.appendType(type);
+        commons.append(" ").append(name).append(";");
+        commons.newLine();
+        commons.newLine();
         return parent;
     }
 }

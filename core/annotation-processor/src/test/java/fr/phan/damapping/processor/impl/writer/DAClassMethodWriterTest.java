@@ -15,8 +15,6 @@
  */
 package fr.phan.damapping.processor.impl.writer;
 
-import fr.phan.damapping.processor.impl.writer.DAClassMethodWriter;
-import fr.phan.damapping.processor.impl.writer.DAWriter;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 
 import javax.lang.model.element.Modifier;
@@ -25,7 +23,7 @@ import com.google.common.collect.ImmutableSet;
 
 import org.testng.annotations.Test;
 
-import static fr.phan.damapping.processor.impl.writer.AbstractDAWriter.INDENT;
+import static fr.phan.damapping.processor.impl.writer.CommonMethodsImpl.INDENT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

@@ -30,7 +30,7 @@ public class DAStatementWriterTest {
         TestWriters testWriters = new TestWriters();
         methodWriter(testWriters).start().end();
 
-        assertThat(testWriters.getRes()).isEqualTo(AbstractDAWriter.INDENT + ";" + DAWriterTestUtil.LINE_SEPARATOR);
+        assertThat(testWriters.getRes()).isEqualTo(CommonMethodsImpl.INDENT + ";" + DAWriterTestUtil.LINE_SEPARATOR);
     }
 
     @Test
@@ -42,7 +42,7 @@ public class DAStatementWriterTest {
                 .append('s')
                 .end();
 
-        assertThat(testWriters.getRes()).isEqualTo(AbstractDAWriter.INDENT + "return this;" + DAWriterTestUtil.LINE_SEPARATOR);
+        assertThat(testWriters.getRes()).isEqualTo(CommonMethodsImpl.INDENT + "return this;" + DAWriterTestUtil.LINE_SEPARATOR);
     }
 
     @Test

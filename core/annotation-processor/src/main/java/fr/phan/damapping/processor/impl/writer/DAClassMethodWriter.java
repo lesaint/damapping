@@ -62,54 +62,54 @@ public class DAClassMethodWriter<T extends DAWriter> extends AbstractDAWriter<T>
     }
 
     public DAClassMethodWriter<T> start() throws IOException {
-        appendAnnotations(annotations);
-        appendIndent();
-        appendModifiers(bw, modifiers);
+        commons.appendAnnotations(annotations);
+        commons.appendIndent();
+        commons.appendModifiers(modifiers);
         appendReturnType();
-        bw.append(name);
-        appendParams(bw, params);
-        bw.append(" {");
-        bw.newLine();
+        commons.append(name);
+        appendParams(commons, params);
+        commons.append(" {");
+        commons.newLine();
         return this;
     }
 
     private void appendReturnType() throws IOException {
-        appendType(bw, returnType);
-        bw.append(" ");
+        commons.appendType(returnType);
+        commons.append(" ");
     }
 
     /**
      * Ajoute les parenthèses et les paramètres d'une méthode, les paramètres étant représentés, dans l'ordre
      * par la liste de DAType en argument.
      */
-    private void appendParams(BufferedWriter bw, List<DAParameter> params) throws IOException {
+    private void appendParams(CommonMethods commons, List<DAParameter> params) throws IOException {
         if (params.isEmpty()) {
-            bw.append("()");
+            commons.append("()");
             return;
         }
 
-        bw.append("(");
+        commons.append("(");
         Iterator<DAParameter> it = params.iterator();
         while (it.hasNext()) {
             DAParameter parameter = it.next();
-            appendType(bw, parameter.getType());
-            bw.append(" ").append(parameter.getName());
+            this.commons.appendType(parameter.getType());
+            commons.append(" ").append(parameter.getName());
             if (it.hasNext()) {
-                bw.append(", ");
+                commons.append(", ");
             }
         }
-        bw.append(")");
+        commons.append(")");
     }
 
     public DAStatementWriter<DAClassMethodWriter<T>> newStatement() {
-        return new DAStatementWriter<DAClassMethodWriter<T>>(bw, this, indent + 1);
+        return new DAStatementWriter<DAClassMethodWriter<T>>(commons.getBufferedWriter(), this, commons.getIndent() + 1);
     }
 
     public T end() throws IOException {
-        appendIndent();
-        bw.append("}");
-        bw.newLine();
-        bw.newLine();
+        commons.appendIndent();
+        commons.append("}");
+        commons.newLine();
+        commons.newLine();
         return parent;
     }
 }

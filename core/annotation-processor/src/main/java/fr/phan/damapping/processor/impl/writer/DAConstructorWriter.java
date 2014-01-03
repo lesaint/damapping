@@ -61,12 +61,12 @@ public class DAConstructorWriter<T extends DAWriter> extends AbstractDAWriter<T>
     }
 
     public DAConstructorWriter<T> start() throws IOException {
-        appendIndent();
-        appendModifiers(bw, modifiers);
-        bw.append(name);
-        appendParams(bw, params);
-        bw.append(" {");
-        bw.newLine();
+        commons.appendIndent();
+        commons.appendModifiers(modifiers);
+        commons.append(name);
+        appendParams(params);
+        commons.append(" {");
+        commons.newLine();
         return this;
     }
 
@@ -74,34 +74,34 @@ public class DAConstructorWriter<T extends DAWriter> extends AbstractDAWriter<T>
      * Ajoute les parenthèses et les paramètres du constructeur, les paramètres étant représentés, dans l'ordre
      * par la liste de DAType en argument.
      */
-    private void appendParams(BufferedWriter bw, List<DAParameter> params) throws IOException {
+    private void appendParams(List<DAParameter> params) throws IOException {
         if (params.isEmpty()) {
-            bw.append("()");
+            commons.append("()");
             return;
         }
 
-        bw.append("(");
+        commons.append("(");
         Iterator<DAParameter> it = params.iterator();
         while (it.hasNext()) {
             DAParameter parameter = it.next();
-            appendType(bw, parameter.getType());
-            bw.append(" ").append(parameter.getName());
+            commons.appendType(parameter.getType());
+            commons.append(" ").append(parameter.getName());
             if (it.hasNext()) {
-                bw.append(", ");
+                commons.append(", ");
             }
         }
-        bw.append(")");
+        commons.append(")");
     }
 
     public DAStatementWriter<DAConstructorWriter<T>> newStatement() {
-        return new DAStatementWriter<DAConstructorWriter<T>>(bw, this, indent + 1);
+        return new DAStatementWriter<DAConstructorWriter<T>>(commons.getBufferedWriter(), this, commons.getIndent() + 1);
     }
 
     public T end() throws IOException {
-        appendIndent();
-        bw.append("}");
-        bw.newLine();
-        bw.newLine();
+        commons.appendIndent();
+        commons.append("}");
+        commons.newLine();
+        commons.newLine();
         return parent;
     }
 }

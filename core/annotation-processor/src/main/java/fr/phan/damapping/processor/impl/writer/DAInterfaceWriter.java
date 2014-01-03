@@ -59,14 +59,14 @@ public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     }
 
     public DAInterfaceWriter<T> start() throws IOException {
-        appendAnnotations(annotations);
-        appendIndent();
-        appendModifiers(bw, modifiers);
-        bw.append("interface ").append(name).append(" ");
+        commons.appendAnnotations(annotations);
+        commons.appendIndent();
+        commons.appendModifiers(modifiers);
+        commons.append("interface ").append(name).append(" ");
         appendExtended();
-        bw.append("{");
-        bw.newLine();
-        bw.newLine();
+        commons.append("{");
+        commons.newLine();
+        commons.newLine();
         return this;
     }
 
@@ -75,25 +75,25 @@ public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
             return;
         }
 
-        bw.append("extends ");
+        commons.append("extends ");
         Iterator<DAType> it = extended.iterator();
         while (it.hasNext()) {
-            appendType(bw, it.next());
+            commons.appendType(it.next());
             if (it.hasNext()) {
-                bw.append(",");
+                commons.append(",");
             }
-            bw.append(" ");
+            commons.append(" ");
         }
     }
 
     public DAInterfaceMethodWriter<DAInterfaceWriter<T>> newMethod(String name, DAType returnType) {
-        return new DAInterfaceMethodWriter<DAInterfaceWriter<T>>(name, returnType, bw, indent + 1, this);
+        return new DAInterfaceMethodWriter<DAInterfaceWriter<T>>(name, returnType, commons.getBufferedWriter(), commons.getIndent() + 1, this);
     }
 
     public T end() throws IOException {
-        appendIndent();
-        bw.append("}");
-        bw.newLine();
+        commons.appendIndent();
+        commons.append("}");
+        commons.newLine();
         return parent;
     }
 }

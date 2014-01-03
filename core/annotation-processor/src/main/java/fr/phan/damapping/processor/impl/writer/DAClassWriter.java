@@ -78,39 +78,39 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     }
 
     public DAClassWriter<T> start() throws IOException {
-        appendAnnotations(annotations);
-        appendIndent();
-        appendModifiers(bw, modifiers);
-        bw.append("class ").append(name).append(" ");
+        commons.appendAnnotations(annotations);
+        commons.appendIndent();
+        commons.appendModifiers(modifiers);
+        commons.append("class ").append(name).append(" ");
         appendExtended();
         appendImplemented();
-        bw.append("{");
-        bw.newLine();
-        bw.newLine();
+        commons.append("{");
+        commons.newLine();
+        commons.newLine();
         return this;
     }
 
     public DAPropertyWriter<DAClassWriter<T>> newProperty(String name, DAType type) {
-        return new DAPropertyWriter<DAClassWriter<T>>(name, type, bw, this, indent + 1);
+        return new DAPropertyWriter<DAClassWriter<T>>(name, type, commons.getBufferedWriter(), this, commons.getIndent() + 1);
     }
 
     public DAConstructorWriter<DAClassWriter<T>> newConstructor() {
-        return new DAConstructorWriter<DAClassWriter<T>>(classType, bw, this, indent + 1);
+        return new DAConstructorWriter<DAClassWriter<T>>(classType, commons.getBufferedWriter(), this, commons.getIndent() + 1);
     }
 
     public DAClassMethodWriter<DAClassWriter<T>> newMethod(String name, DAType returnType) {
-        return new DAClassMethodWriter<DAClassWriter<T>>(name, returnType, bw, indent + 1, this);
+        return new DAClassMethodWriter<DAClassWriter<T>>(name, returnType, commons.getBufferedWriter(), commons.getIndent() + 1, this);
     }
 
     public T end() throws IOException {
-        appendIndent();
-        bw.append("}");
-        bw.newLine();
+        commons.appendIndent();
+        commons.append("}");
+        commons.newLine();
         return parent;
     }
 
     public DAClassWriter<DAClassWriter<T>> newClass(DAType classType) {
-        return new DAClassWriter<DAClassWriter<T>>(classType, bw, this, indent + 1);
+        return new DAClassWriter<DAClassWriter<T>>(classType, commons.getBufferedWriter(), this, commons.getIndent() + 1);
     }
 
     private void appendExtended() throws IOException {
@@ -118,9 +118,9 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
             return;
         }
 
-        bw.append("extends ");
-        appendType(bw, extended);
-        bw.append(" ");
+        commons.append("extends ");
+        commons.appendType(extended);
+        commons.append(" ");
     }
 
     private void appendImplemented() throws IOException {
@@ -128,14 +128,14 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
             return;
         }
 
-        bw.append("implements ");
+        commons.append("implements ");
         Iterator<DAType> it = implemented.iterator();
         while (it.hasNext()) {
-            appendType(bw, it.next());
+            commons.appendType(it.next());
             if (it.hasNext()) {
-                bw.append(",");
+                commons.append(",");
             }
-            bw.append(" ");
+            commons.append(" ");
         }
     }
 }

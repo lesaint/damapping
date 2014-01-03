@@ -53,43 +53,43 @@ public class DAInterfaceMethodWriter<T extends DAWriter> extends AbstractDAWrite
     }
 
     public T write() throws IOException {
-        appendAnnotations(annotations);
-        appendIndent();
+        commons.appendAnnotations(annotations);
+        commons.appendIndent();
         appendReturnType();
-        bw.append(name);
-        appendParams(bw, params);
-        bw.append(";");
-        bw.newLine();
-        bw.newLine();
+        commons.append(name);
+        appendParams(params);
+        commons.append(";");
+        commons.newLine();
+        commons.newLine();
         return parent;
     }
 
     private void appendReturnType() throws IOException {
-        appendType(bw, returnType);
-        bw.append(" ");
+        commons.appendType(returnType);
+        commons.append(" ");
     }
 
     /**
      * Ajoute les parenthèses et les paramètres d'une méthode, les paramètres étant représentés, dans l'ordre
      * par la liste de DAType en argument.
      */
-    private void appendParams(BufferedWriter bw, List<DAParameter> params) throws IOException {
+    private void appendParams(List<DAParameter> params) throws IOException {
         if (params.isEmpty()) {
-            bw.append("()");
+            commons.append("()");
             return;
         }
 
-        bw.append("(");
+        commons.append("(");
         Iterator<DAParameter> it = params.iterator();
         while (it.hasNext()) {
             DAParameter parameter = it.next();
-            appendType(bw, parameter.getType());
-            bw.append(" ").append(parameter.getName());
+            commons.appendType(parameter.getType());
+            commons.append(" ").append(parameter.getName());
             if (it.hasNext()) {
-                bw.append(", ");
+                commons.append(", ");
             }
         }
-        bw.append(")");
+        commons.append(")");
     }
 
 }
