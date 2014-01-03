@@ -74,10 +74,17 @@ public class DAFileWriter implements DAWriter {
     private List<DAName> filterAndSortImports(Collection<DAName> mapperImports, @Nullable DAName packageName) {
         Predicate<DAName> notDisplayed;
         if (packageName == null) {
-            notDisplayed = JavaLangDANamePredicate.INSTANCE;
+            notDisplayed = Predicates.or(
+                    // defense against null values, of null/empty DAName.name
+                    InvalidDAName.INSTANCE,
+                    // imports from java itself
+                    JavaLangDANamePredicate.INSTANCE
+            );
         }
         else {
             notDisplayed = Predicates.or(
+                    // defense against null values, of null/empty DAName.name
+                    InvalidDAName.INSTANCE,
                     // imports in the same package as the generated class (ie. the package of the Mapper class)
                     new PackagePredicate(packageName),
                     // imports from java itself
@@ -116,6 +123,15 @@ public class DAFileWriter implements DAWriter {
         bw.close();
     }
 
+    private static enum InvalidDAName implements Predicate<DAName> {
+        INSTANCE;
+
+        @Override
+        public boolean apply(@Nullable DAName daName) {
+            return daName == null || daName.getName() == null || daName.getName().isEmpty();
+        }
+    }
+
     private static enum JavaLangDANamePredicate implements Predicate<DAName> {
         INSTANCE;
 
@@ -134,16 +150,13 @@ public class DAFileWriter implements DAWriter {
         }
 
         @Override
-        public boolean apply(@Nullable DAName qualifiedName) {
-            if (qualifiedName == null) {
-                return true;
-            }
+        public boolean apply(DAName qualifiedName) {
             String name = qualifiedName.toString();
             int dotIndex = name.lastIndexOf(".");
             if (dotIndex > -1) {
                 return name.substring(0, dotIndex).equals(packageName.toString());
             }
-            return packageName.getName().isEmpty();
+            return false;
         }
     }
 }

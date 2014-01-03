@@ -15,12 +15,13 @@
  */
 package fr.phan.damapping.processor.impl.writer;
 
-import fr.phan.damapping.processor.impl.writer.DAFileWriter;
-import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.DAName;
+import fr.phan.damapping.processor.model.factory.DANameFactory;
 
 import java.io.IOException;
+import java.util.Collections;
 import javax.lang.model.element.Modifier;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import org.testng.annotations.Test;
@@ -50,7 +51,7 @@ public class DAFileWriterTest {
         TestWriters testWriters = new TestWriters();
         new DAFileWriter(testWriters.bw).appendPackage(PACKAGE_NAME);
 
-        assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + DAWriterTestUtil.LINE_SEPARATOR + DAWriterTestUtil.LINE_SEPARATOR);
+        assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR + LINE_SEPARATOR);
     }
 
     @Test
@@ -64,11 +65,11 @@ public class DAFileWriterTest {
                         DAWriterTestUtil.OVERRIDE_ANNOTATION.getQualifiedName()
                 ));
 
-        assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + DAWriterTestUtil.LINE_SEPARATOR
-                + DAWriterTestUtil.LINE_SEPARATOR
-                + "import com.acme.Bidon;" + DAWriterTestUtil.LINE_SEPARATOR
-                + "import com.google.common.base.Function;" + DAWriterTestUtil.LINE_SEPARATOR
-                + DAWriterTestUtil.LINE_SEPARATOR);
+        assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
+                + LINE_SEPARATOR
+                + "import com.acme.Bidon;" + LINE_SEPARATOR
+                + "import com.google.common.base.Function;" + LINE_SEPARATOR
+                + LINE_SEPARATOR);
     }
 
     @Test
@@ -81,11 +82,11 @@ public class DAFileWriterTest {
                 .start()
                 .end();
 
-        assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + DAWriterTestUtil.LINE_SEPARATOR
-                + DAWriterTestUtil.LINE_SEPARATOR
-                + "public class Name {" + DAWriterTestUtil.LINE_SEPARATOR
-                + DAWriterTestUtil.LINE_SEPARATOR
-                + "}" + DAWriterTestUtil.LINE_SEPARATOR
+        assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
+                + LINE_SEPARATOR
+                + "public class Name {" + LINE_SEPARATOR
+                + LINE_SEPARATOR
+                + "}" + LINE_SEPARATOR
         );
     }
 
@@ -98,11 +99,11 @@ public class DAFileWriterTest {
                 .start()
                 .end();
 
-        assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + DAWriterTestUtil.LINE_SEPARATOR
-                + DAWriterTestUtil.LINE_SEPARATOR
-                + "interface name {" + DAWriterTestUtil.LINE_SEPARATOR
-                + DAWriterTestUtil.LINE_SEPARATOR
-                + "}" + DAWriterTestUtil.LINE_SEPARATOR
+        assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
+                + LINE_SEPARATOR
+                + "interface name {" + LINE_SEPARATOR
+                + LINE_SEPARATOR
+                + "}" + LINE_SEPARATOR
         );
     }
 
@@ -112,5 +113,61 @@ public class DAFileWriterTest {
         new DAFileWriter(testWriters.bw).end();
 
         testWriters.bw.append("toto"); // raises IOException
+    }
+
+    @Test
+    public void appendImports_emptyCollection_prints_nothing() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        new DAFileWriter(testWriters.bw).appendImports(Collections.<DAName>emptyList());
+
+        assertThat(testWriters.getRes()).isEqualTo("");
+    }
+
+    @Test
+    public void appendImports_emptyCollection_after_filtering_prints_nothing() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        new DAFileWriter(testWriters.bw).appendImports(ImmutableList.of(DANameFactory.from(String.class.getName())));
+
+        assertThat(testWriters.getRes()).isEqualTo("");
+    }
+
+    @Test
+    public void appendImports_filters_out_null_DAName_when_no_package_is_specified() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        new DAFileWriter(testWriters.bw)
+                .appendImports(Collections.singletonList((DAName) null));
+
+        assertThat(testWriters.getRes()).isEqualTo("");
+    }
+
+    @Test
+    public void appendImports_filters_out_null_DAName_when_package_is_specified() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        new DAFileWriter(testWriters.bw)
+                .appendPackage(DANameFactory.from("com.acme"))
+                .appendImports(Collections.singletonList((DAName) null));
+
+        assertThat(testWriters.getRes()).isEqualTo("package com.acme;" + LINE_SEPARATOR + LINE_SEPARATOR);
+    }
+
+    @Test
+    public void appendImports_filters_out_same_package_DAName_when_package_is_specified() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        new DAFileWriter(testWriters.bw)
+                .appendPackage(DANameFactory.from("com.acme"))
+                .appendImports(ImmutableList.of(DANameFactory.from("com.acme.Some"), DANameFactory.from("Simon")));
+
+        assertThat(testWriters.getRes()).isEqualTo("package com.acme;" + LINE_SEPARATOR
+                + LINE_SEPARATOR
+                + "import Simon;" + LINE_SEPARATOR
+                + LINE_SEPARATOR);
+    }
+
+    @Test
+    public void appendWarningComment_adds_text_and_newLine() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        new DAFileWriter(testWriters.bw).appendWarningComment();
+
+        assertThat(testWriters.getRes()).isEqualTo("// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE" + LINE_SEPARATOR);
     }
 }
