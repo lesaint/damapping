@@ -33,12 +33,12 @@ ROADMAP
  - ajouter un test U pour DAType.superBound
  - ajout support de génériques avec bounds multiples : <T extends B1 & B2 & B3>
  - test U pour DAClassWriter.newClass
- - reduire duplication dans le calcul des imports (ImportVisitable implemenations)
+ * reduire duplication dans le calcul des imports (ImportVisitable implemenations)
  - déplacer DAFileWriter#PackagePredicate dans une classe DAName predicate et ajouter des tests U
    (en particulier pour le package par défaut, ie. pas de package)
  - factoriser la génération des méthodes @MapperMethod (pour l'instant juste apply de Guava.Function) entre
    MapperImplFileGenerator et MapperFactoryImplFileGenerator ?
- - ajouter les @Override manquant dans les classes générées Mapper*Impl
+ * ajouter les @Override manquant dans les classes générées Mapper*Impl
  - traiter les TODO et FIXME qui trainent dans les sources
  - supprimer les propriétés publiques dans les beans utilisés dans la genération de fichiers sources
  - ajouter test U pour les méthodes de DAMethod
