@@ -26,8 +26,8 @@ public class AbstractDAWriter<T extends DAWriter> implements DAWriter {
     protected final CommonMethods commons;
     protected final T parent;
 
-    AbstractDAWriter(BufferedWriter bw, T parent, int indent) {
-        this(new CommonMethodsImpl(bw, indent), parent);
+    AbstractDAWriter(BufferedWriter bw, T parent, int indentOffset) {
+        this(new CommonMethodsImpl(bw, indentOffset), parent);
     }
 
     AbstractDAWriter(CommonMethods commonMethods, T parent) {

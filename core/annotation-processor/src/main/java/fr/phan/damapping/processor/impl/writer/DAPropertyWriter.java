@@ -36,8 +36,8 @@ public class DAPropertyWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     private List<DAType> annotations = Collections.<DAType>emptyList();
     private Set<Modifier> modifiers = Collections.<Modifier>emptySet();
 
-    DAPropertyWriter(String name, DAType type, BufferedWriter bw, T parent, int indent) {
-        super(bw, parent, indent);
+    DAPropertyWriter(String name, DAType type, BufferedWriter bw, T parent, int indentOffset) {
+        super(bw, parent, indentOffset);
         this.name = name;
         this.type = type;
     }

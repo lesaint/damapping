@@ -20,11 +20,11 @@ class CommonMethodsImpl implements CommonMethods {
     protected static final String INDENT = "    ";
 
     private final BufferedWriter bw;
-    private final int indent;
+    private final int indentOffset;
 
-    public CommonMethodsImpl(BufferedWriter bw, int indent) {
+    public CommonMethodsImpl(BufferedWriter bw, int indentOffset) {
         this.bw = bw;
-        this.indent = indent;
+        this.indentOffset = indentOffset;
     }
 
     @Override
@@ -33,13 +33,13 @@ class CommonMethodsImpl implements CommonMethods {
     }
 
     @Override
-    public int getIndent() {
-        return indent;
+    public int getIndentOffset() {
+        return indentOffset;
     }
 
     @Override
     public void appendIndent() throws IOException {
-        for (int i = 0; i < indent; i++) {
+        for (int i = 0; i < indentOffset; i++) {
             bw.append(INDENT);
         }
     }

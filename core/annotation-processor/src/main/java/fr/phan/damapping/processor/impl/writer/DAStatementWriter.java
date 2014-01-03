@@ -30,8 +30,8 @@ import java.util.List;
  */
 public class DAStatementWriter<T extends DAWriter> extends AbstractDAWriter<T> {
 
-    DAStatementWriter(BufferedWriter bw, T parent, int indent) {
-        super(bw, parent, indent);
+    DAStatementWriter(BufferedWriter bw, T parent, int indentOffset) {
+        super(bw, parent, indentOffset);
     }
 
     public DAStatementWriter<T> start() throws IOException {

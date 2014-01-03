@@ -40,8 +40,8 @@ public class DAClassMethodWriter<T extends DAWriter> extends AbstractDAWriter<T>
     private List<DAType> annotations = Collections.emptyList();
     private List<DAParameter> params = Collections.<DAParameter>emptyList();
 
-    public DAClassMethodWriter(String name, DAType returnType, BufferedWriter bw, int indent, T parent) {
-        super(bw, parent, indent);
+    public DAClassMethodWriter(String name, DAType returnType, BufferedWriter bw, int indentOffset, T parent) {
+        super(bw, parent, indentOffset);
         this.name = name;
         this.returnType = returnType;
     }
@@ -102,7 +102,7 @@ public class DAClassMethodWriter<T extends DAWriter> extends AbstractDAWriter<T>
     }
 
     public DAStatementWriter<DAClassMethodWriter<T>> newStatement() {
-        return new DAStatementWriter<DAClassMethodWriter<T>>(commons.getBufferedWriter(), this, commons.getIndent() + 1);
+        return new DAStatementWriter<DAClassMethodWriter<T>>(commons.getBufferedWriter(), this, commons.getIndentOffset() + 1);
     }
 
     public T end() throws IOException {

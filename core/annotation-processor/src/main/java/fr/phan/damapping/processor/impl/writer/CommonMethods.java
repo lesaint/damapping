@@ -19,7 +19,12 @@ import javax.lang.model.element.Modifier;
 interface CommonMethods extends Appendable, Closeable, Flushable {
     BufferedWriter getBufferedWriter();
 
-    int getIndent();
+    /**
+     * The indent offset.
+     * Starts with 0.
+     * @return a int
+     */
+    int getIndentOffset();
 
     void appendIndent() throws IOException;
 

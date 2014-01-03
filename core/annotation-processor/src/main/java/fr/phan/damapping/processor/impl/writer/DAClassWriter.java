@@ -51,8 +51,8 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     private List<DAType> implemented = Collections.emptyList();
     private DAType extended;
 
-    DAClassWriter(DAType classType, BufferedWriter bw, T parent, int indent) {
-        super(bw, parent, indent);
+    DAClassWriter(DAType classType, BufferedWriter bw, T parent, int indentOffset) {
+        super(bw, parent, indentOffset);
         this.name = classType.getSimpleName().getName();
         this.classType = classType;
     }
@@ -91,15 +91,15 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     }
 
     public DAPropertyWriter<DAClassWriter<T>> newProperty(String name, DAType type) {
-        return new DAPropertyWriter<DAClassWriter<T>>(name, type, commons.getBufferedWriter(), this, commons.getIndent() + 1);
+        return new DAPropertyWriter<DAClassWriter<T>>(name, type, commons.getBufferedWriter(), this, commons.getIndentOffset() + 1);
     }
 
     public DAConstructorWriter<DAClassWriter<T>> newConstructor() {
-        return new DAConstructorWriter<DAClassWriter<T>>(classType, commons.getBufferedWriter(), this, commons.getIndent() + 1);
+        return new DAConstructorWriter<DAClassWriter<T>>(classType, commons.getBufferedWriter(), this, commons.getIndentOffset() + 1);
     }
 
     public DAClassMethodWriter<DAClassWriter<T>> newMethod(String name, DAType returnType) {
-        return new DAClassMethodWriter<DAClassWriter<T>>(name, returnType, commons.getBufferedWriter(), commons.getIndent() + 1, this);
+        return new DAClassMethodWriter<DAClassWriter<T>>(name, returnType, commons.getBufferedWriter(), commons.getIndentOffset() + 1, this);
     }
 
     public T end() throws IOException {
@@ -110,7 +110,7 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     }
 
     public DAClassWriter<DAClassWriter<T>> newClass(DAType classType) {
-        return new DAClassWriter<DAClassWriter<T>>(classType, commons.getBufferedWriter(), this, commons.getIndent() + 1);
+        return new DAClassWriter<DAClassWriter<T>>(classType, commons.getBufferedWriter(), this, commons.getIndentOffset() + 1);
     }
 
     private void appendExtended() throws IOException {

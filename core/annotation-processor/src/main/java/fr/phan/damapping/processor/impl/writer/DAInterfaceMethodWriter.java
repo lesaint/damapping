@@ -36,8 +36,8 @@ public class DAInterfaceMethodWriter<T extends DAWriter> extends AbstractDAWrite
     private List<DAType> annotations = Collections.emptyList();
     private List<DAParameter> params = Collections.<DAParameter>emptyList();
 
-    public DAInterfaceMethodWriter(String name, DAType returnType, BufferedWriter bw, int indent, T parent) {
-        super(bw, parent, indent);
+    public DAInterfaceMethodWriter(String name, DAType returnType, BufferedWriter bw, int indentOffset, T parent) {
+        super(bw, parent, indentOffset);
         this.name = name;
         this.returnType = returnType;
     }
