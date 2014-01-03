@@ -15,8 +15,6 @@
  */
 package fr.phan.damapping.processor.impl.writer;
 
-import fr.phan.damapping.processor.impl.writer.DAConstructorWriter;
-import fr.phan.damapping.processor.impl.writer.DAWriter;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 
 import javax.lang.model.element.Modifier;
@@ -26,6 +24,7 @@ import com.google.common.collect.ImmutableSet;
 import org.testng.annotations.Test;
 
 import static fr.phan.damapping.processor.impl.writer.CommonMethodsImpl.INDENT;
+import static fr.phan.damapping.processor.impl.writer.DAWriterTestUtil.LINE_SEPARATOR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -41,8 +40,8 @@ public class DAConstructorWriterTest {
         constructorWriter("com.acme.TotoClass", testWriters).start().end();
 
         assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "TotoClass() {" + DAWriterTestUtil.LINE_SEPARATOR + INDENT + "}" + DAWriterTestUtil.LINE_SEPARATOR
-                        + DAWriterTestUtil.LINE_SEPARATOR
+                .isEqualTo(INDENT + "TotoClass() {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
                 );
     }
 
@@ -55,8 +54,8 @@ public class DAConstructorWriterTest {
                 .end();
 
         assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "public TotoClass() {" + DAWriterTestUtil.LINE_SEPARATOR + INDENT + "}" + DAWriterTestUtil.LINE_SEPARATOR
-                        + DAWriterTestUtil.LINE_SEPARATOR
+                .isEqualTo(INDENT + "public TotoClass() {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
                 );
     }
 
@@ -74,13 +73,24 @@ public class DAConstructorWriterTest {
                 .end();
 
         assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "private TotoClass(String titi) {" + DAWriterTestUtil.LINE_SEPARATOR
-                        + INDENT + INDENT + "Preconditions.checkNotNull(titi);" + DAWriterTestUtil.LINE_SEPARATOR
-                        + INDENT + "}" + DAWriterTestUtil.LINE_SEPARATOR
-                        + DAWriterTestUtil.LINE_SEPARATOR
+                .isEqualTo(INDENT + "private TotoClass(String titi) {" + LINE_SEPARATOR
+                        + INDENT + INDENT + "Preconditions.checkNotNull(titi);" + LINE_SEPARATOR
+                        + INDENT + "}" + LINE_SEPARATOR
+                        + LINE_SEPARATOR
                 );
     }
 
+    @Test
+    public void constructor_with_multiple_params() throws Exception {
+        TestWriters testWriters = new TestWriters();
+        constructorWriter("com.acme.TotoClass", testWriters)
+                .withParams(ImmutableList.of(DAWriterTestUtil.STRING_TITI_PARAMETER, DAWriterTestUtil.STRING_TOTO_PARAMETER))
+                .start();
+
+
+        assertThat(testWriters.getRes())
+                .isEqualTo(INDENT + "TotoClass(String titi, String toto) {" + LINE_SEPARATOR);
+    }
 
     private static DAConstructorWriter<DAWriter> constructorWriter(String returnType, TestWriters testWriters) {
         DAWriter parent = new DAWriter() {
