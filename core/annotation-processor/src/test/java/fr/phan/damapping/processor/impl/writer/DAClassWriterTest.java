@@ -15,8 +15,7 @@
  */
 package fr.phan.damapping.processor.impl.writer;
 
-import fr.phan.damapping.processor.impl.writer.DAClassWriter;
-import fr.phan.damapping.processor.impl.writer.DAWriter;
+import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 
 import javax.lang.model.element.Modifier;
@@ -262,6 +261,21 @@ public class DAClassWriterTest {
                         + DAWriterTestUtil.LINE_SEPARATOR
                         + INDENT + "}" + DAWriterTestUtil.LINE_SEPARATOR
                 );
+    }
+
+    @Test
+    public void newClass_create_new_DAClassWriter() throws Exception {
+        TestWriters testWriters = new TestWriters();
+
+        DAClassWriter<DAWriter> classWriter = daClassWriter(testWriters);
+        DAType classType = DATypeFactory.from(String.class);
+
+        DAClassWriter<DAClassWriter<DAWriter>> newClassWriter = classWriter.newClass(classType);
+
+        assertThat(newClassWriter.classType).isSameAs(classType);
+        assertThat(newClassWriter.parent).isSameAs(classWriter);
+        assertThat(newClassWriter.commons.getIndentOffset()).isEqualTo(2);
+        assertThat(newClassWriter.commons.getBufferedWriter()).isSameAs(testWriters.bw);
     }
 
     private DAClassWriter<DAWriter> daClassWriter(TestWriters testWriters) {

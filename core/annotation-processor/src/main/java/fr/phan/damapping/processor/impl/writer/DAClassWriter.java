@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import javax.lang.model.element.Modifier;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -44,8 +45,9 @@ import com.google.common.collect.ImmutableSet;
  * @author Sébastien Lesaint
  */
 public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
+    @VisibleForTesting
+    protected final DAType classType;
     private final String name;
-    private final DAType classType;
     private Set<Modifier> modifiers = Collections.emptySet();
     private List<DAType> annotations = Collections.emptyList();
     private List<DAType> implemented = Collections.emptyList();
