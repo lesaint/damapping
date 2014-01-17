@@ -64,8 +64,7 @@ final class DAWriterTestUtil {
      */
     private static DAParameter functionStringToIntegerArray(String name) {
         DAName qualifiedName = DANameFactory.from("com.google.common.base.Function");
-        DAType parameterType = DAType.builder(TypeKind.ARRAY)
-                .withSimpleName(DANameFactory.simpleFromQualified(qualifiedName))
+        DAType parameterType = DAType.builder(TypeKind.ARRAY, DANameFactory.simpleFromQualified(qualifiedName))
                 .withQualifiedName(qualifiedName)
                 .withTypeArgs(
                         ImmutableList.of(declared("java.lang.String"), declared("java.lang.Integer"))

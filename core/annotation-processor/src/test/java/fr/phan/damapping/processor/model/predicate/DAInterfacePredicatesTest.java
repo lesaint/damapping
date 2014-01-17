@@ -3,6 +3,7 @@ package fr.phan.damapping.processor.model.predicate;
 import com.google.common.base.Function;
 import fr.phan.damapping.processor.model.DAInterface;
 import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import org.testng.annotations.Test;
 
@@ -23,7 +24,7 @@ public class DAInterfacePredicatesTest {
 
     @Test
     public void guavaFunction_fails_if_DAType_has_no_declared_name() throws Exception {
-        DAInterface noDeclaredName = new DAInterface(DAType.builder(TypeKind.CHAR).build());
+        DAInterface noDeclaredName = new DAInterface(DAType.builder(TypeKind.CHAR, DANameFactory.from("char")).build());
         assertThat(DAInterfacePredicates.isGuavaFunction().apply(noDeclaredName)).isFalse();
     }
 

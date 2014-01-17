@@ -20,9 +20,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import javax.lang.model.type.TypeKind;
-import com.google.common.base.Function;
+
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -59,7 +59,7 @@ public class DAType {
 
     private DAType(Builder builder) {
         this.kind = builder.kind;
-        this.simpleName = builder.simpleName;
+        this.simpleName = Preconditions.checkNotNull(builder.simpleName);
         this.qualifiedName = builder.qualifiedName;
         this.typeArgs = builder.typeArgs == null ? ImmutableList.<DAType>of() : ImmutableList.copyOf(builder.typeArgs);
         this.superBound = builder.superBound;
@@ -100,29 +100,25 @@ public class DAType {
         return kind == TypeKind.ARRAY;
     }
 
-    public static Builder builder(@Nonnull TypeKind kind) {
-        return new Builder(kind);
+    public static Builder builder(@Nonnull TypeKind kind, @Nonnull DAName simpleName) {
+        return new Builder(kind, simpleName);
     }
 
     public static class Builder {
         private final TypeKind kind;
-        private DAName simpleName;
+        private final DAName simpleName;
         DAName qualifiedName;
         List<DAType> typeArgs;
         DAType superBound;
         DAType extendsBound;
 
-        public Builder(@Nonnull TypeKind kind) {
+        public Builder(@Nonnull TypeKind kind, @Nonnull DAName simpleName) {
             this.kind = checkNotNull(kind);
+            this.simpleName = checkNotNull(simpleName);
         }
 
         public Builder withQualifiedName(DAName qualifiedName) {
             this.qualifiedName = qualifiedName;
-            return this;
-        }
-
-        public Builder withSimpleName(DAName simpleName) {
-            this.simpleName = simpleName;
             return this;
         }
 

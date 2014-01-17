@@ -36,6 +36,6 @@ public class DATypeTest {
     }
 
     private static DAType daType(TypeKind kind) {
-        return DAType.builder(kind).withSimpleName(DANameFactory.from("simpleName")).build();
+        return DAType.builder(kind, DANameFactory.from("simpleName")).build();
     }
 }

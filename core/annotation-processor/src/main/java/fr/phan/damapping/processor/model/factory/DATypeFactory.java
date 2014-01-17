@@ -15,7 +15,6 @@
  */
 package fr.phan.damapping.processor.model.factory;
 
-import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAType;
 
@@ -31,8 +30,15 @@ import com.google.common.base.Preconditions;
  * @author Sébastien Lesaint
  */
 public final class DATypeFactory {
+    private static final DAType VOID_DATYPE = DAType.builder(TypeKind.VOID, DANameFactory.from("void")).build();
+
     private DATypeFactory() {
         // prevents instantiation
+    }
+
+    @Nonnull
+    public static DAType voidDaType() {
+        return VOID_DATYPE;
     }
 
     /**
@@ -43,6 +49,7 @@ public final class DATypeFactory {
      * @param clazz une {@link Class}
      * @return un objet {@link fr.phan.damapping.processor.model.DAType}
      */
+    @Nonnull
     public static DAType from(@Nonnull Class<?> clazz) {
         return instance(clazz.getSimpleName(), clazz.getCanonicalName(), Collections.<DAType>emptyList());
     }
@@ -53,6 +60,7 @@ public final class DATypeFactory {
      * @param clazz une {@link Class}
      * @return un objet {@link DAType}
      */
+    @Nonnull
     public static DAType from(@Nonnull Class<?> clazz, @Nonnull List<DAType> typeArgs) {
         return instance(clazz.getSimpleName(), clazz.getCanonicalName(), typeArgs);
     }
@@ -68,6 +76,7 @@ public final class DATypeFactory {
      * @param qualifiedName un {@link String}
      * @return un objet {@link DAType}
      */
+    @Nonnull
     public static DAType declared(@Nonnull String qualifiedName) {
         return declared(qualifiedName, Collections.<DAType>emptyList());
     }
@@ -84,32 +93,34 @@ public final class DATypeFactory {
      *
      * @return un objet {@link DAType}
      */
+    @Nonnull
     public static DAType declared(@Nonnull String qualifiedName, @Nonnull List<DAType> typeArgs) {
         String simpleName = qualifiedName.substring(qualifiedName.lastIndexOf(".") + 1);
         return instance(simpleName, qualifiedName, typeArgs);
     }
 
+    @Nonnull
     public static DAType wildcardWithSuperBound(@Nonnull DAType superbound) {
-        return DAType.builder(TypeKind.WILDCARD)
-                .withSimpleName(DANameFactory.wildcard())
+        return DAType.builder(TypeKind.WILDCARD, DANameFactory.wildcard())
                 .withSuperBound(superbound)
                 .build();
     }
 
+    @Nonnull
     public static DAType wildcardWithExtendsBound(@Nonnull DAType extendsBound) {
-        return DAType.builder(TypeKind.WILDCARD)
-                .withSimpleName(DANameFactory.wildcard())
+        return DAType.builder(TypeKind.WILDCARD, DANameFactory.wildcard())
                 .withExtendsBound(extendsBound)
                 .build();
     }
 
+    @Nonnull
     private static DAType instance(String simpleName, String qualifiedName, List<DAType> typeArgs) {
         return instance(DANameFactory.from(simpleName), DANameFactory.from(qualifiedName), typeArgs);
     }
 
+    @Nonnull
     private static DAType instance(DAName simpleName, DAName qualifiedName, List<DAType> typeArgs) {
-        return DAType.builder(TypeKind.DECLARED)
-                .withSimpleName(simpleName)
+        return DAType.builder(TypeKind.DECLARED, simpleName)
                 .withQualifiedName(qualifiedName)
                 .withTypeArgs(Preconditions.checkNotNull(typeArgs))
                 .build();
