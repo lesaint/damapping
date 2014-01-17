@@ -296,6 +296,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         return MAPPER_FACTORY_INTERFACE_INTANTIATIONTYPES.contains(context.getSourceClass().getInstantiationType());
     }
 
+    @Nonnull
     private List<DAMethod> retrieveMethods(final TypeElement classElement) {
         if (classElement.getEnclosedElements() == null) {
             return Collections.emptyList();
@@ -334,13 +335,15 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                 .toList();
     }
 
-    private @Nonnull Set<Modifier> extractModifiers(ExecutableElement methodElement) {
+    @Nonnull
+    private Set<Modifier> extractModifiers(ExecutableElement methodElement) {
         if (methodElement.getModifiers() == null) {
             return Collections.emptySet();
         }
         return methodElement.getModifiers();
     }
 
+    @Nonnull
     private DAType extractReturnType(ExecutableElement methodElement) {
         return extractType(methodElement.getReturnType());
     }
@@ -423,6 +426,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                 .toList();
     }
 
+    @Nonnull
     private DAType extractType(TypeMirror type) {
         Types typeUtils = processingEnv.getTypeUtils();
         Element element = typeUtils.asElement(type);
@@ -433,15 +437,15 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         return extractType(type, element);
     }
 
+    @Nonnull
     private DAType extractType(TypeMirror type, Element element) {
         if (type.getKind() == TypeKind.VOID) {
-            return null;
+            return DATypeFactory.voidDaType();
         }
         if (type.getKind() == TypeKind.WILDCARD) {
             return extractWildcardType((WildcardType) type);
         }
-        DAType.Builder builder = DAType.builder(type.getKind())
-                .withSimpleName(extractSimpleName(type, element))
+        DAType.Builder builder = DAType.builder(type.getKind(), extractSimpleName(type, element))
                 .withQualifiedName(extractQualifiedName(type, element))
                 .withTypeArgs(extractTypeArgs(type));
         return builder.build();
