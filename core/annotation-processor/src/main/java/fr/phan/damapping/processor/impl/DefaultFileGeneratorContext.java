@@ -25,6 +25,7 @@ import fr.phan.damapping.processor.impl.imports.MapperImplImportsModelVisitor;
 import fr.phan.damapping.processor.impl.imports.MapperImportsModelVisitor;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -33,11 +34,17 @@ import java.util.List;
 * @author Sébastien Lesaint
 */
 class DefaultFileGeneratorContext implements FileGeneratorContext {
+    @Nonnull
     private final DASourceClass sourceClass;
+    @Nonnull
     private final DAType mapperDAType;
+    @Nonnull
     private final DAType mapperImplDAType;
+    @Nonnull
     private final DAType mapperFactoryClassDAType;
+    @Nonnull
     private final DAType mapperFactoryInterfaceDAType;
+    @Nonnull
     private final DAType mapperFactoryImplDAType;
 
     DefaultFileGeneratorContext(DASourceClass sourceClass) {
@@ -50,11 +57,13 @@ class DefaultFileGeneratorContext implements FileGeneratorContext {
     }
 
     @Override
+    @Nonnull
     public DASourceClass getSourceClass() {
         return sourceClass;
     }
 
     @Override
+    @Nonnull
     public List<DAName> getMapperImports() {
         MapperImportsModelVisitor visitor = new MapperImportsModelVisitor();
         sourceClass.accept(visitor);
@@ -62,6 +71,7 @@ class DefaultFileGeneratorContext implements FileGeneratorContext {
     }
 
     @Override
+    @Nonnull
     public List<DAName> getMapperImplImports() {
         MapperImplImportsModelVisitor visitor = new MapperImplImportsModelVisitor();
         sourceClass.accept(visitor);
@@ -69,6 +79,7 @@ class DefaultFileGeneratorContext implements FileGeneratorContext {
     }
 
     @Override
+    @Nonnull
     public List<DAName> getMapperFactoryInterfaceImports() {
         MapperFactoryInterfaceImportsModelVisitor visitor = new MapperFactoryInterfaceImportsModelVisitor();
         sourceClass.accept(visitor);
@@ -76,6 +87,7 @@ class DefaultFileGeneratorContext implements FileGeneratorContext {
     }
 
     @Override
+    @Nonnull
     public List<DAName> getMapperFactoryClassImports() {
         MapperFactoryClassImportsModelVisitor visitor = new MapperFactoryClassImportsModelVisitor();
         sourceClass.accept(visitor);
@@ -83,6 +95,7 @@ class DefaultFileGeneratorContext implements FileGeneratorContext {
     }
 
     @Override
+    @Nonnull
     public List<DAName> getMapperFactoryImplImports() {
         MapperFactoryImplImportsModelVisitor visitor = new MapperFactoryImplImportsModelVisitor();
         sourceClass.accept(visitor);
@@ -90,26 +103,31 @@ class DefaultFileGeneratorContext implements FileGeneratorContext {
     }
 
     @Override
+    @Nonnull
     public DAType getMapperDAType() {
         return mapperDAType;
     }
 
     @Override
+    @Nonnull
     public DAType getMapperImplDAType() {
         return mapperImplDAType;
     }
 
     @Override
+    @Nonnull
     public DAType getMapperFactoryClassDAType() {
         return mapperFactoryClassDAType;
     }
 
     @Override
+    @Nonnull
     public DAType getMapperFactoryInterfaceDAType() {
         return mapperFactoryInterfaceDAType;
     }
 
     @Override
+    @Nonnull
     public DAType getMapperFactoryImplDAType() {
         return mapperFactoryImplDAType;
     }

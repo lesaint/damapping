@@ -19,6 +19,8 @@ import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.DAType;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -27,15 +29,26 @@ import java.util.List;
 * @author Sébastien Lesaint
 */
 interface FileGeneratorContext {
+    @Nullable
     DASourceClass getSourceClass();
+    @Nonnull
     List<DAName> getMapperImports();
+    @Nonnull
     List<DAName> getMapperImplImports();
+    @Nonnull
     List<DAName> getMapperFactoryInterfaceImports();
+    @Nonnull
     List<DAName> getMapperFactoryClassImports();
+    @Nonnull
     List<DAName> getMapperFactoryImplImports();
+    @Nonnull
     DAType getMapperDAType();
+    @Nonnull
     DAType getMapperImplDAType();
+    @Nonnull
     DAType getMapperFactoryClassDAType();
+    @Nonnull
     DAType getMapperFactoryInterfaceDAType();
+    @Nonnull
     DAType getMapperFactoryImplDAType();
 }
