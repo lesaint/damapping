@@ -19,6 +19,7 @@ import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAType;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
@@ -44,6 +45,7 @@ public class ImportListBuilder {
         }
     }
 
+    @Nonnull
     public List<DAName> getImports() {
         return imports.build();
     }
