@@ -29,6 +29,8 @@ import javax.lang.model.element.Modifier;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
+import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
+
 /**
 * MapperFactoryInterfaceFileGenerator - Générateur du fichier source de l'interface MapperFactory générée dans le cas
 * où il existe au moins une méthode annotée avec @MapperFactoryMethod dans la class annotée avec @Mapper.
@@ -55,7 +57,7 @@ class MapperFactoryInterfaceFileGenerator extends AbstractFileGenerator {
 
         DAType mapperClass = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "Mapper");
         for (DAMethod method : Iterables.filter(sourceClass.getMethods(), DAMethodPredicates.isMapperFactoryMethod())) {
-            String name = method.isConstructor() ? "instanceByConstructor" : method.getName().getName();
+            String name = isConstructor().apply(method) ? "instanceByConstructor" : method.getName().getName();
             interfaceWriter.newMethod(name, mapperClass)
                     .withParams(method.getParameters()).write();
         }

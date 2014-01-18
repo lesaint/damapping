@@ -35,6 +35,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
 import static com.google.common.collect.FluentIterable.from;
+import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
 
 /**
  * MapperFactoryImplFileGenerator - Générateur du fichier source de la classe MapperFactoryImpl générée dans le cas
@@ -73,7 +74,7 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
     private void appendFactoryMethods(FileGeneratorContext context, DAClassWriter<DAFileWriter> classWriter) throws IOException {
         DASourceClass sourceClass = context.getSourceClass();
         for (DAMethod method : Iterables.filter(sourceClass.getMethods(), DAMethodPredicates.isMapperFactoryMethod())) {
-            String name = method.isConstructor() ? "instanceByConstructor" : method.getName().getName();
+            String name = isConstructor().apply(method) ? "instanceByConstructor" : method.getName().getName();
             DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter
                     .newMethod(name, context.getMapperDAType())
                     .withAnnotations(ImmutableList.of(DATypeFactory.from(Override.class)))
@@ -85,7 +86,7 @@ class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
                     .append("return new ")
                     .append(context.getMapperImplDAType().getSimpleName())
                     .append("(");
-            if (method.isConstructor()) {
+            if (isConstructor().apply(method)) {
                 statementWriter.append("new ").append(sourceClass.getType().getSimpleName())
                         .appendParamValues(method.getParameters());
             }

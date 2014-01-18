@@ -17,7 +17,9 @@ package fr.phan.damapping.processor.model.predicate;
 
 import fr.phan.damapping.processor.model.DAMethod;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -42,8 +44,8 @@ public class DAMethodPredicates {
         INSTANCE;
 
         @Override
-        public boolean apply(@Nullable DAMethod daMethod) {
-            return daMethod.isConstructor();
+        public boolean apply(@Nonnull DAMethod daMethod) {
+            return daMethod.getKind() == ElementKind.CONSTRUCTOR;
         }
     }
 
@@ -55,7 +57,7 @@ public class DAMethodPredicates {
         INSTANCE;
 
         @Override
-        public boolean apply(@Nullable DAMethod daMethod) {
+        public boolean apply(@Nonnull DAMethod daMethod) {
             return daMethod.getModifiers().contains(Modifier.STATIC);
         }
     }
@@ -67,7 +69,7 @@ public class DAMethodPredicates {
     private static enum NotPrivatePredicate implements Predicate<DAMethod> {
         INSTANCE;
         @Override
-        public boolean apply(@Nullable DAMethod daMethod) {
+        public boolean apply(@Nonnull DAMethod daMethod) {
             return !FluentIterable.from(daMethod.getModifiers()).firstMatch(Predicates.equalTo(Modifier.PRIVATE)).isPresent();
         }
 
@@ -81,8 +83,8 @@ public class DAMethodPredicates {
         INSTANCE;
 
         @Override
-        public boolean apply(@Nullable DAMethod daMethod) {
-            return daMethod != null && daMethod.isMapperFactoryMethod();
+        public boolean apply(@Nonnull DAMethod daMethod) {
+            return daMethod.isMapperFactoryMethod();
         }
 
     }
@@ -95,8 +97,20 @@ public class DAMethodPredicates {
         INSTANCE;
 
         @Override
-        public boolean apply(@Nullable DAMethod daMethod) {
-            return daMethod != null && daMethod.isGuavaFunction();
+        public boolean apply(@Nonnull DAMethod daMethod) {
+            // TOIMPROVE, check more specific info in the model, can we know if method override from an interface ? we should check the parameter type and the return type
+            return daMethod.getKind() == ElementKind.METHOD
+                    && daMethod.getName() != null && "apply".equals(daMethod.getName().getName());
         }
     }
+
+    public static Predicate<DAMethod> isDefaultConstructor() {
+        return new Predicate<DAMethod>() {
+            @Override
+            public boolean apply(@Nullable DAMethod daMethod) {
+                return isConstructor().apply(daMethod) && daMethod.getParameters().isEmpty();
+            }
+        };
+    }
+
 }

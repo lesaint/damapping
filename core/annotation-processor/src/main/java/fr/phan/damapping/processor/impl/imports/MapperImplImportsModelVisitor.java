@@ -19,7 +19,10 @@ import fr.phan.damapping.processor.model.DAInterface;
 import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DASourceClass;
+import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.phan.damapping.processor.model.visitor.DAModelVisitor;
+
+import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isDefaultConstructor;
 
 /**
  * MapperImplImportsModelVisitor - Visitor building the list of imports for the MapperImpl class.
@@ -41,11 +44,11 @@ public class MapperImplImportsModelVisitor extends ImportListBuilder implements 
 
     @Override
     public void visit(DAMethod daMethod) {
-        if (daMethod.isDefaultConstructor()) {
+        if (isDefaultConstructor().apply(daMethod)) {
             // constructor is not generated in MapperImpl class
             return;
         }
-        if (!daMethod.isGuavaFunction()) {
+        if (!DAMethodPredicates.isGuavaFunction().apply(daMethod)) {
             // mapper interface does not define any method of it own, only the one
             // inherited from Guava's Function interface which imports are added via the DAInterface
             // TOIMPROVE : when supporting @MapperMethod, we will need to add imports from this method

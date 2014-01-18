@@ -19,7 +19,11 @@ import fr.phan.damapping.processor.model.DAInterface;
 import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DASourceClass;
+import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.phan.damapping.processor.model.visitor.DAModelVisitor;
+
+import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
+import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunction;
 
 /**
  * MapperFactoryImplImportsModelVisitor - Visitor building the list of imports for the MapperFactoryImpl class
@@ -40,13 +44,13 @@ public class MapperFactoryImplImportsModelVisitor extends ImportListBuilder impl
     @Override
     public void visit(DAMethod daMethod) {
         // mapperFactoryMethod are exposed as methods of the MapperFactory
-        if (daMethod.isConstructor() && daMethod.isMapperFactoryMethod()) {
+        if (isConstructor().apply(daMethod) && isGuavaFunction().apply(daMethod)) {
             for (DAParameter parameter : daMethod.getParameters()) {
                 addImports(parameter.getType());
             }
         }
 
-        if (daMethod.isGuavaFunction()) { // remplacer par isMapperMethod
+        if (isGuavaFunction().apply(daMethod)) { // remplacer par isMapperMethod
             for (DAParameter parameter : daMethod.getParameters()) {
                 addImports(parameter.getType());
             }
