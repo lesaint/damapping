@@ -30,7 +30,7 @@ import com.google.common.base.Preconditions;
  * @author Sébastien Lesaint
  */
 public final class DATypeFactory {
-    private static final DAType VOID_DATYPE = DAType.builder(TypeKind.VOID, DANameFactory.from("void")).build();
+    private static final DAType VOID_DATYPE = DAType.builder(TypeKind.VOID, DANameFactory.voidDAName()).build();
 
     private DATypeFactory() {
         // prevents instantiation

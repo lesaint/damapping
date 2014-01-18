@@ -31,6 +31,7 @@ import com.google.common.base.Preconditions;
 public final class DANameFactory {
 
     private static final DAName WILCARD = from("?");
+    private static final DAName VOID = from("void");
 
     private DANameFactory() {
         // prevents instantiation
@@ -99,5 +100,13 @@ public final class DANameFactory {
     @Nonnull
     public static DAName wildcard() {
         return WILCARD;
+    }
+
+    /**
+     * Le DAName représentant le wildcard void "void".
+     */
+    @Nonnull
+    public static DAName voidDAName() {
+        return VOID;
     }
 }

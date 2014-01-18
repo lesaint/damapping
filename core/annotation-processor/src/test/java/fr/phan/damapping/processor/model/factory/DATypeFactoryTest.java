@@ -33,6 +33,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class DATypeFactoryTest {
 
+    @Test
+    public void voidDaType() throws Exception {
+        DAType daType = DATypeFactory.voidDaType();
+        assertThat(daType.getKind()).isEqualTo(TypeKind.VOID);
+        assertThat(daType.getSimpleName()).isEqualTo(DANameFactory.voidDAName());
+    }
+
     @Test(expectedExceptions = NullPointerException.class)
     public void declared_null_qualifiedname_raises_NPE() throws Exception {
         DATypeFactory.declared(null);
@@ -108,5 +115,23 @@ public class DATypeFactoryTest {
         assertThat(daType.getSimpleName().getName()).isEqualTo(getClass().getSimpleName());
         assertThat(daType.getQualifiedName().getName()).isEqualTo(getClass().getCanonicalName());
         assertThat(daType.getTypeArgs()).isSameAs(typeArgs);
+    }
+
+    @Test
+    public void wildcardWithSuperBound() throws Exception {
+        DAType superBound = DATypeFactory.from(getClass());
+        DAType daType = DATypeFactory.wildcardWithSuperBound(superBound);
+        assertThat(daType.getKind()).isEqualTo(TypeKind.WILDCARD);
+        assertThat(daType.getSimpleName()).isEqualTo(DANameFactory.wildcard());
+        assertThat(daType.getSuperBound()).isSameAs(superBound);
+    }
+
+    @Test
+    public void wildcardWithExtendsBound() throws Exception {
+        DAType extendsBound = DATypeFactory.from(getClass());
+        DAType daType = DATypeFactory.wildcardWithExtendsBound(extendsBound);
+        assertThat(daType.getKind()).isEqualTo(TypeKind.WILDCARD);
+        assertThat(daType.getSimpleName()).isEqualTo(DANameFactory.wildcard());
+        assertThat(daType.getExtendsBound()).isSameAs(extendsBound);
     }
 }
