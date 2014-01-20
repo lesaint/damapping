@@ -27,7 +27,6 @@ import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.InstantiationType;
-import fr.phan.damapping.processor.model.predicate.DAInterfacePredicates;
 import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 
 import java.io.BufferedWriter;
@@ -62,7 +61,6 @@ import javax.tools.JavaFileObject;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicates;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 
 import org.springframework.stereotype.Component;
@@ -111,63 +109,35 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         // retrieve name of the package of the class with @Mapper
         daSourceClassBuilder.withPackageName(retrievePackageName(classElement));
 
-        // retrieve qualifiers of the class with @Mapper + make check : must be public or protected sinon erreur de compilation
-        if (classElement.getModifiers().contains(Modifier.PRIVATE)) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Class annoted with @Mapper can not be private", classElement);
-            return;
-        }
         daSourceClassBuilder.withModifiers(classElement.getModifiers());
 
         // retrieve interfaces implemented (directly and if any) by the class with @Mapper (+ their generics)
         // chercher si l'une d'elles est Function (Guava)
         List<DAInterface> interfaces = retrieveInterfaces(classElement);
+        daSourceClassBuilder.withInterfaces(interfaces);
 
         // pour le moment, on ne traite pas les classes abstraites implémentées par la class @Mapper ni les interfaces
         // implémentées indirectement
 
-        // rechercher si la classe Mapper implémente Function
-        List<DAInterface> guavaFunctionInterfaces = from(interfaces)
-                .filter(DAInterfacePredicates.isGuavaFunction())
-                .toList();
-
-        if (guavaFunctionInterfaces.size() > 1) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Mapper implementing more than one Function interface is not supported", classElement);
-            return;
-        }
-        if (guavaFunctionInterfaces.isEmpty()) { // TOIMPROVE cette vérification ne sera plus obligatoire si on introduit @MapperMethod
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Mapper not implementing Function interface is not supported", classElement);
-            return;
-        }
-        daSourceClassBuilder.withInterfaces(interfaces);
-
-        // rechercher une ou plusieurs méthodes annotées avec @MapperFunction
-        // si classe @Mapper implémente Function, la rechercher en commençant par les méthodes annotées avec @MapperFunction
-        // si aucune méthode trouvée => erreur  de compilation
         List<DAMethod> methods = retrieveMethods(classElement);
-        if (methods.isEmpty()) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Class annoted with @Mapper must have at least one methode", classElement);
-            return;
-        }
-        List<DAMethod> guavaFunctionMethods = from(methods).filter(DAMethodPredicates.isGuavaFunction()).toList();
-        if (guavaFunctionMethods.size() > 1) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Mapper having more than one apply method is not supported", classElement);
-            return;
-        }
-        if (guavaFunctionMethods.isEmpty()) { // TOIMPROVE cette vérification ne sera plus obligatoire si on introduit @MapperMethod
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Mapper not having a apply method is not supported", classElement);
-            return;
-        }
         daSourceClassBuilder.withMethods(methods);
-        // TOIMPROVE : la récupération et les contrôles sur la méthode apply sont faibles
-
-
-        // retrieve instantiation type from @Mapper annotation
-        //  - CONSTRUCTOR : check public/protected default constructor exists sinon erreur de compilation
-        //  - SINGLETON_ENUM : check @Mapper class is an enum + check there is only one value sinon erreur de compilation
-        //  - SPRING_COMPONENT : TOFINISH quelles vérifications sur la class si le InstantiationType est SPRING_COMPONENT ?
         daSourceClassBuilder.withInstantiationType(computeInstantiationType(classElement, methods));
         DASourceClass daSourceClass = daSourceClassBuilder.build();
-        if (!checkInstantiationTypeRequirements(daSourceClass)) {
+
+        try {
+            DASourceClassChecker checker = new DASourceClassCheckerImpl();
+            checker.checkModifiers(daSourceClass.getModifiers());
+            checker.checkInterfaces(daSourceClass.getInterfaces());
+            checker.checkMethods(daSourceClass.getMethods());
+
+            // retrieve instantiation type from @Mapper annotation
+            //  - CONSTRUCTOR : check public/protected default constructor exists sinon erreur de compilation
+            //  - SINGLETON_ENUM : check @Mapper class is an enum + check there is only one value sinon erreur de compilation
+            //  - SPRING_COMPONENT : TOFINISH quelles vérifications sur la class si le InstantiationType est SPRING_COMPONENT ?
+            checker.checkInstantiationTypeRequirements(daSourceClass);
+        }
+        catch (CheckError e) {
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.getMessage(), classElement);
             return;
         }
 
@@ -185,68 +155,6 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
 
         // 3 - générer l'implémentation du Mapper
         generateMapperImpl(context);
-    }
-
-    private boolean checkInstantiationTypeRequirements(DASourceClass daSourceClass) {
-        // TODO vérifier qu'il n'y a pas d'usage illegal de @MapperFactoryMethod (ie. sur méthode non statique)
-        switch (daSourceClass.getInstantiationType()) {
-            case SPRING_COMPONENT:
-                return true; // requirements are enforced by Spring
-            case CONSTRUCTOR:
-                return hasAccessibleConstructor(daSourceClass.getClassElement(), daSourceClass.getMethods());
-            case SINGLETON_ENUM:
-                return hasOnlyOneEnumValue(daSourceClass.getClassElement());
-            case CONSTRUCTOR_FACTORY:
-                // TODO ajouter checks pour InstantiationType.CONSTRUCTOR_FACTORY (vérifier que pas d'autre méthode annotée avec @MapperFactoryMethod)
-                return true;
-            case STATIC_FACTORY:
-                // TODO ajouter checks pour InstantiationType.STATIC_FACTORY (vérifier que pas de constructeur à paramètre)
-                return true;
-            default:
-                throw new IllegalArgumentException("Unsupported instantiationType " + daSourceClass.getInstantiationType());
-        }
-    }
-
-    private boolean hasAccessibleConstructor(TypeElement classElement, List<DAMethod> methods) {
-        Optional<DAMethod> accessibleConstructor = FluentIterable.from(methods)
-                .filter(DAMethodPredicates.isConstructor())
-                .filter(DAMethodPredicates.notPrivate())
-                .first();
-
-        if (!accessibleConstructor.isPresent()) {
-            processingEnv.getMessager().printMessage(
-                    Diagnostic.Kind.ERROR,
-                    "Classe does not exposed an accessible default constructor",
-                    classElement
-            );
-        }
-
-        return accessibleConstructor.isPresent();
-    }
-
-    private boolean hasOnlyOneEnumValue(TypeElement classElement) {
-        if (classElement.getEnclosedElements() == null) {
-            // this case can not occurs because it is enforced by the java compiler
-            processingEnv.getMessager().printMessage(
-                    Diagnostic.Kind.ERROR,
-                    "Enum annoted wih @Mapper must have one value",
-                    classElement
-            );
-            return false;
-        }
-
-        int res = from(classElement.getEnclosedElements())
-                // enum values are VariableElement
-                .filter(Predicates.instanceOf(VariableElement.class))
-                .size();
-        if (res != 1) {
-            processingEnv.getMessager().printMessage(
-                    Diagnostic.Kind.ERROR,
-                    "Enum annoted with @Mapper must have just one value",
-                    classElement
-            );
-        }
-        return res == 1;
     }
 
     private void generateFile(FileGenerator fileGenerator,
