@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.impl.filegenerator;
 
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DASourceClass;
@@ -33,7 +33,7 @@ import java.util.List;
 *
 * @author Sébastien Lesaint
 */
-class DefaultFileGeneratorContext implements FileGeneratorContext {
+public class DefaultFileGeneratorContext implements FileGeneratorContext {
     @Nonnull
     private final DASourceClass sourceClass;
     @Nonnull
@@ -47,7 +47,7 @@ class DefaultFileGeneratorContext implements FileGeneratorContext {
     @Nonnull
     private final DAType mapperFactoryImplDAType;
 
-    DefaultFileGeneratorContext(DASourceClass sourceClass) {
+    public DefaultFileGeneratorContext(DASourceClass sourceClass) {
         this.sourceClass = sourceClass;
         this.mapperDAType = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "Mapper");
         this.mapperImplDAType = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "MapperImpl");

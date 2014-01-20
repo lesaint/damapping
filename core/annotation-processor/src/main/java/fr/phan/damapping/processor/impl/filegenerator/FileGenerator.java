@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.impl.filegenerator;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
 
 /**
-* AbstractFileGenerator -
+* FileGenerator -
 *
 * @author Sébastien Lesaint
 */
-abstract class AbstractFileGenerator implements FileGenerator {
-
-    protected static final String INDENT = "    ";
-
+public interface FileGenerator {
+    String fileName(FileGeneratorContext context);
+    void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException;
 }

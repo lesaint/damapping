@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.impl.filegenerator;
 
 import fr.phan.damapping.processor.impl.writer.DAClassMethodWriter;
 import fr.phan.damapping.processor.impl.writer.DAClassWriter;
@@ -43,7 +43,7 @@ import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isC
  *
  * @author Sébastien Lesaint
  */
-class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
+public class MapperFactoryImplFileGenerator extends AbstractFileGenerator {
     @Override
     public String fileName(FileGeneratorContext context) {
         return context.getMapperFactoryImplDAType().getQualifiedName().getName();

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl;
+package fr.phan.damapping.processor.impl.filegenerator;
 
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DASourceClass;
@@ -28,7 +28,7 @@ import java.util.List;
 *
 * @author Sébastien Lesaint
 */
-interface FileGeneratorContext {
+public interface FileGeneratorContext {
     @Nullable
     DASourceClass getSourceClass();
     @Nonnull
