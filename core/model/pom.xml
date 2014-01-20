@@ -10,6 +10,7 @@
 
     <artifactId>model</artifactId>
     <name>Core - Model</name>
+    <description>DAMapping internal model of a Java class</description>
 
     <dependencies>
         <dependency>
