@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
-import org.assertj.core.api.Assertions;
 import org.mockito.Mockito;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

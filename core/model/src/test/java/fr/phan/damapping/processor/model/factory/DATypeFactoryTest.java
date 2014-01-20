@@ -15,7 +15,6 @@
  */
 package fr.phan.damapping.processor.model.factory;
 
-import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import fr.phan.damapping.processor.model.DAType;
 
 import java.util.Collections;

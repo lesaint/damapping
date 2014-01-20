@@ -19,7 +19,6 @@ import fr.phan.damapping.processor.model.DAInterface;
 import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DASourceClass;
-import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.phan.damapping.processor.model.visitor.DAModelVisitor;
 
 import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
