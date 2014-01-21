@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.phan.damapping</groupId>
     <artifactId>parent</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>POM Parent</name>
     <description>DA Mapping Framework</description>
 
     <modules>
-        <module>core</module>
+        <module>core-parent</module>
         <module>integration-test</module>
     </modules>
 
