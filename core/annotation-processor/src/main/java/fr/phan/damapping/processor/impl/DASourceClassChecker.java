@@ -14,6 +14,8 @@ import java.util.Set;
  * @author: Sébastien Lesaint
  */
 public interface DASourceClassChecker {
+    void check(DASourceClass sourceClass) throws CheckError;
+
     void checkModifiers(Set<Modifier> modifiers) throws CheckError;
 
     // TODO make interface check for Guava Function optional when supported @MapperFunction

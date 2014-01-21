@@ -24,6 +24,19 @@ import static com.google.common.collect.FluentIterable.from;
  */
 public class DASourceClassCheckerImpl implements DASourceClassChecker {
     @Override
+    public void check(DASourceClass sourceClass) throws CheckError {
+        checkModifiers(sourceClass.getModifiers());
+        checkInterfaces(sourceClass.getInterfaces());
+        checkMethods(sourceClass.getMethods());
+
+        // retrieve instantiation type from @Mapper annotation
+        //  - CONSTRUCTOR : check public/protected default constructor exists sinon erreur de compilation
+        //  - SINGLETON_ENUM : check @Mapper class is an enum + check there is only one value sinon erreur de compilation
+        //  - SPRING_COMPONENT : TOFINISH quelles vérifications sur la class si le InstantiationType est SPRING_COMPONENT ?
+        checkInstantiationTypeRequirements(sourceClass);
+    }
+
+    @Override
     public void checkModifiers(Set<Modifier> modifiers) throws CheckError {
         // retrieve qualifiers of the class with @Mapper + make check : must be public or protected sinon erreur de compilation
         if (modifiers.contains(Modifier.PRIVATE)) {

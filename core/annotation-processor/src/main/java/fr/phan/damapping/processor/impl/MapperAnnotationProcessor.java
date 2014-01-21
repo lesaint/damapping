@@ -126,15 +126,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
 
         try {
             DASourceClassChecker checker = new DASourceClassCheckerImpl();
-            checker.checkModifiers(daSourceClass.getModifiers());
-            checker.checkInterfaces(daSourceClass.getInterfaces());
-            checker.checkMethods(daSourceClass.getMethods());
-
-            // retrieve instantiation type from @Mapper annotation
-            //  - CONSTRUCTOR : check public/protected default constructor exists sinon erreur de compilation
-            //  - SINGLETON_ENUM : check @Mapper class is an enum + check there is only one value sinon erreur de compilation
-            //  - SPRING_COMPONENT : TOFINISH quelles vérifications sur la class si le InstantiationType est SPRING_COMPONENT ?
-            checker.checkInstantiationTypeRequirements(daSourceClass);
+            checker.check(daSourceClass);
         }
         catch (CheckError e) {
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.getMessage(), classElement);
