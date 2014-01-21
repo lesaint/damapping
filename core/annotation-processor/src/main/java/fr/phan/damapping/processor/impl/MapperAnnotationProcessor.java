@@ -32,7 +32,6 @@ import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.InstantiationType;
 import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
@@ -60,7 +59,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
-import javax.tools.JavaFileObject;
+
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicates;
@@ -81,10 +80,6 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     private static final Set<ElementKind> SUPPORTED_ELEMENTKINDS = ImmutableSet.of(
             ElementKind.CLASS, ElementKind.ENUM
     );
-    private static final Set<InstantiationType> MAPPER_FACTORY_CLASS_INTANTIATIONTYPES =
-            ImmutableSet.of(InstantiationType.CONSTRUCTOR, InstantiationType.SINGLETON_ENUM);
-    private static final Set<InstantiationType> MAPPER_FACTORY_INTERFACE_INTANTIATIONTYPES =
-            ImmutableSet.of(InstantiationType.CONSTRUCTOR_FACTORY, InstantiationType.STATIC_FACTORY);
 
     public MapperAnnotationProcessor(ProcessingEnvironment processingEnv) {
         super(processingEnv, Mapper.class);
@@ -94,10 +89,10 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     protected void process(Element element, RoundEnvironment roundEnv) throws IOException {
         if (!SUPPORTED_ELEMENTKINDS.contains(element.getKind())) {
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                   String.format(
-                           "Type %s annoted with @Mapper annotation is not a class nor an enum (kind found = %s)",
-                           element, element.getKind()
-                   )
+                    String.format(
+                            "Type %s annoted with @Mapper annotation is not a class nor an enum (kind found = %s)",
+                            element, element.getKind()
+                    )
             );
             return;
         }
@@ -130,74 +125,14 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         try {
             DASourceClassValidator checker = new DASourceClassValidatorImpl();
             checker.validate(daSourceClass);
-        }
-        catch (ValidationError e) {
+        } catch (ValidationError e) {
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.getMessage(), classElement);
             return;
         }
 
-        DefaultFileGeneratorContext context = new DefaultFileGeneratorContext(daSourceClass);
-
-        // 1 - générer l'interface du Mapper
-        generateMapper(context);
-
-        // 2 - générer la factory interface (si @MapperFactoryMethod)
-        generateMapperFactoryInterface(context);
-        generateMapperFactoryImpl(context);
-
-        // 3 - generer la factory class (si pas de @MapperFactoryMethod)
-        generateMapperFactoryClass(context);
-
-        // 3 - générer l'implémentation du Mapper
-        generateMapperImpl(context);
-    }
-
-    private void generateFile(FileGenerator fileGenerator,
-                              FileGeneratorContext context) throws IOException {
-
-        JavaFileObject jfo = processingEnv.getFiler().createSourceFile(
-                fileGenerator.fileName(context),
-                context.getSourceClass().getClassElement()
-        );
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "generating " + jfo.toUri());
-
-        fileGenerator.writeFile(new BufferedWriter(jfo.openWriter()), context);
-    }
-
-    private void generateMapper(FileGeneratorContext context) throws IOException {
-        generateFile(new MapperFileGenerator(), context);
-    }
-
-    private void generateMapperFactoryClass(FileGeneratorContext context) throws IOException {
-        if (shouldGenerateMapperFactoryClass(context)) {
-            generateFile(new MapperFactoryClassFileGenerator(), context);
-        }
-    }
-
-    private boolean shouldGenerateMapperFactoryClass(FileGeneratorContext context) {
-        return MAPPER_FACTORY_CLASS_INTANTIATIONTYPES.contains(context.getSourceClass().getInstantiationType());
-    }
-
-    private void generateMapperFactoryInterface(FileGeneratorContext context) throws IOException {
-        if (shouldGenerateMapperFactoryInterface(context)) {
-            generateFile(new MapperFactoryInterfaceFileGenerator(), context);
-        }
-    }
-
-    private void generateMapperFactoryImpl(FileGeneratorContext context) throws IOException {
-        if (shouldGenerateMapperFactoryInterface(context)) {
-            generateFile(new MapperFactoryImplFileGenerator(), context);
-        }
-    }
-
-    private void generateMapperImpl(FileGeneratorContext context) throws IOException {
-        if (!shouldGenerateMapperFactoryInterface(context)) {
-            generateFile(new MapperImplFileGenerator(), context);
-        }
-    }
-
-    private boolean shouldGenerateMapperFactoryInterface(FileGeneratorContext context) {
-        return MAPPER_FACTORY_INTERFACE_INTANTIATIONTYPES.contains(context.getSourceClass().getInstantiationType());
+        SourceWriterDelegate sourceWriterDelegate = new JavaxSourceWriterDelegate(processingEnv);
+        SourceGenerationService sourceGenerationService = new SourceGenerationServiceImpl(sourceWriterDelegate);
+        sourceGenerationService.generateSourceFiles(new DefaultFileGeneratorContext(daSourceClass));
     }
 
     @Nonnull
@@ -209,7 +144,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         return from(classElement.getEnclosedElements())
                 // methods are ExecutableElement
                 .filter(Predicates.instanceOf(ExecutableElement.class))
-                // transform
+                        // transform
                 .transform(new Function<Element, DAMethod>() {
                     @Nullable
                     @Override
@@ -227,8 +162,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
                         if (o.getKind() == ElementKind.CONSTRUCTOR) {
                             res.withName(DANameFactory.from(StringUtils.uncapitalize(classElement.getSimpleName().toString())));
                             res.withReturnType(extractType(classElement.asType()));
-                        }
-                        else {
+                        } else {
                             res.withName(DANameFactory.from(o.getSimpleName()));
                             res.withReturnType(extractReturnType(methodElement));
                         }
