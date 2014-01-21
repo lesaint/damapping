@@ -15,10 +15,13 @@
  */
 package fr.phan.damapping.processor.impl.sourcegenerator;
 
-import fr.phan.damapping.processor.impl.writer.DAClassMethodWriter;
-import fr.phan.damapping.processor.impl.writer.DAClassWriter;
-import fr.phan.damapping.processor.impl.writer.DAFileWriter;
-import fr.phan.damapping.processor.impl.writer.DAStatementWriter;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import fr.phan.damapping.processor.impl.sourcegenerator.writer.DAClassMethodWriter;
+import fr.phan.damapping.processor.impl.sourcegenerator.writer.DAClassWriter;
+import fr.phan.damapping.processor.impl.sourcegenerator.writer.DAFileWriter;
+import fr.phan.damapping.processor.impl.sourcegenerator.writer.DAStatementWriter;
 import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DASourceClass;
@@ -27,12 +30,9 @@ import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 
+import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import javax.lang.model.element.Modifier;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 
 import static com.google.common.collect.FluentIterable.from;
 import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;

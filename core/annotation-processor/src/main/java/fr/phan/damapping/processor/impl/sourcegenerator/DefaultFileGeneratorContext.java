@@ -15,14 +15,10 @@
  */
 package fr.phan.damapping.processor.impl.sourcegenerator;
 
+import fr.phan.damapping.processor.impl.sourcegenerator.imports.*;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.DAType;
-import fr.phan.damapping.processor.impl.imports.MapperFactoryClassImportsModelVisitor;
-import fr.phan.damapping.processor.impl.imports.MapperFactoryImplImportsModelVisitor;
-import fr.phan.damapping.processor.impl.imports.MapperFactoryInterfaceImportsModelVisitor;
-import fr.phan.damapping.processor.impl.imports.MapperImplImportsModelVisitor;
-import fr.phan.damapping.processor.impl.imports.MapperImportsModelVisitor;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 
 import javax.annotation.Nonnull;
