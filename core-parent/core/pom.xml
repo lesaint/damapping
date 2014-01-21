@@ -3,27 +3,26 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>parent</artifactId>
         <groupId>fr.phan.damapping</groupId>
+        <artifactId>core-parent</artifactId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>core-parent</artifactId>
-    <name>Core - POM Parent</name>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>annotations</module>
-        <module>model</module>
-        <module>core</module>
-        <module>annotation-processor</module>
-    </modules>
+    <artifactId>core</artifactId>
+    <name>Core - Core</name>
+    <description>DAMapping core module</description>
 
     <dependencies>
-        <!--<dependency>-->
-            <!--<groupId>com.squareup.dagger</groupId>-->
-            <!--<artifactId>dagger</artifactId>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>fr.phan.damapping</groupId>
+            <artifactId>annotations</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fr.phan.damapping</groupId>
+            <artifactId>model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -32,12 +31,7 @@
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-
-        <!--test dependencies-->
+        <!-- test dependencies -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
@@ -45,6 +39,10 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
         </dependency>
     </dependencies>
 
