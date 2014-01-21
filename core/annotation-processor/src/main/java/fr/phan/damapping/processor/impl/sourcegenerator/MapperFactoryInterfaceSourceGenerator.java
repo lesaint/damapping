@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl.filegenerator;
+package fr.phan.damapping.processor.impl.sourcegenerator;
 
 import fr.phan.damapping.processor.impl.writer.DAFileWriter;
 import fr.phan.damapping.processor.impl.writer.DAInterfaceWriter;
@@ -32,12 +32,12 @@ import com.google.common.collect.Iterables;
 import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
 
 /**
-* MapperFactoryInterfaceFileGenerator - Générateur du fichier source de l'interface MapperFactory générée dans le cas
+* MapperFactoryInterfaceSourceGenerator - Générateur du fichier source de l'interface MapperFactory générée dans le cas
 * où il existe au moins une méthode annotée avec @MapperFactoryMethod dans la class annotée avec @Mapper.
 *
 * @author Sébastien Lesaint
 */
-public class MapperFactoryInterfaceFileGenerator extends AbstractFileGenerator {
+public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerator {
     @Override
     public String fileName(FileGeneratorContext context) {
         return context.getMapperFactoryInterfaceDAType().getQualifiedName().getName();

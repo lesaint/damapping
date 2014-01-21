@@ -1,4 +1,4 @@
-package fr.phan.damapping.processor.impl.filegenerator;
+package fr.phan.damapping.processor.impl.sourcegenerator;
 
 import com.google.common.collect.ImmutableSet;
 import fr.phan.damapping.processor.model.InstantiationType;
@@ -40,13 +40,13 @@ public class SourceGenerationServiceImpl implements SourceGenerationService {
 
     @Override
     public void generateMapper(FileGeneratorContext context) throws IOException {
-        delegate.generateFile(new MapperFileGenerator(), context);
+        delegate.generateFile(new MapperSourceGenerator(), context);
     }
 
     @Override
     public void generateMapperFactoryClass(FileGeneratorContext context) throws IOException {
         if (shouldGenerateMapperFactoryClass(context)) {
-            delegate.generateFile(new MapperFactoryClassFileGenerator(), context);
+            delegate.generateFile(new MapperFactoryClassSourceGenerator(), context);
         }
     }
 
@@ -57,21 +57,21 @@ public class SourceGenerationServiceImpl implements SourceGenerationService {
     @Override
     public void generateMapperFactoryInterface(FileGeneratorContext context) throws IOException {
         if (shouldGenerateMapperFactoryInterface(context)) {
-            delegate.generateFile(new MapperFactoryInterfaceFileGenerator(), context);
+            delegate.generateFile(new MapperFactoryInterfaceSourceGenerator(), context);
         }
     }
 
     @Override
     public void generateMapperFactoryImpl(FileGeneratorContext context) throws IOException {
         if (shouldGenerateMapperFactoryInterface(context)) {
-            delegate.generateFile(new MapperFactoryImplFileGenerator(), context);
+            delegate.generateFile(new MapperFactoryImplSourceGenerator(), context);
         }
     }
 
     @Override
     public void generateMapperImpl(FileGeneratorContext context) throws IOException {
         if (!shouldGenerateMapperFactoryInterface(context)) {
-            delegate.generateFile(new MapperImplFileGenerator(), context);
+            delegate.generateFile(new MapperImplSourceGenerator(), context);
         }
     }
 

@@ -1,4 +1,4 @@
-package fr.phan.damapping.processor.impl.filegenerator;
+package fr.phan.damapping.processor.impl.sourcegenerator;
 
 import java.io.IOException;
 

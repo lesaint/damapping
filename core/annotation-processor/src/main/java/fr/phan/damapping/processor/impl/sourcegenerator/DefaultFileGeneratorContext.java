@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl.filegenerator;
+package fr.phan.damapping.processor.impl.sourcegenerator;
 
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DASourceClass;

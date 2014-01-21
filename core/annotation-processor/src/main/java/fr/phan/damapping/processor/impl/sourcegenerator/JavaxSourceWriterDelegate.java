@@ -1,4 +1,4 @@
-package fr.phan.damapping.processor.impl.filegenerator;
+package fr.phan.damapping.processor.impl.sourcegenerator;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.Diagnostic;
@@ -19,13 +19,13 @@ public class JavaxSourceWriterDelegate implements SourceWriterDelegate {
     }
 
     @Override
-    public void generateFile(FileGenerator fileGenerator, FileGeneratorContext context) throws IOException {
+    public void generateFile(SourceGenerator sourceGenerator, FileGeneratorContext context) throws IOException {
         JavaFileObject jfo = processingEnv.getFiler().createSourceFile(
-                fileGenerator.fileName(context),
+                sourceGenerator.fileName(context),
                 context.getSourceClass().getClassElement()
         );
         processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "generating " + jfo.toUri());
 
-        fileGenerator.writeFile(new BufferedWriter(jfo.openWriter()), context);
+        sourceGenerator.writeFile(new BufferedWriter(jfo.openWriter()), context);
     }
 }

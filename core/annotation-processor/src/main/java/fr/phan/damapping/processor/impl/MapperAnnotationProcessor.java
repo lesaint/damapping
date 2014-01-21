@@ -16,25 +16,21 @@
 package fr.phan.damapping.processor.impl;
 
 import fr.phan.damapping.annotation.Mapper;
-import fr.phan.damapping.processor.impl.filegenerator.*;
+import fr.phan.damapping.processor.impl.sourcegenerator.*;
 import fr.phan.damapping.processor.impl.javaxparsing.JavaxParsingService;
 import fr.phan.damapping.processor.impl.javaxparsing.JavaxParsingServiceImpl;
 import fr.phan.damapping.processor.impl.validator.DASourceClassValidator;
 import fr.phan.damapping.processor.impl.validator.DASourceClassValidatorImpl;
 import fr.phan.damapping.processor.impl.validator.ValidationError;
-import fr.phan.damapping.processor.model.DAInterface;
-import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DASourceClass;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
 import javax.tools.Diagnostic;
 
 import com.google.common.collect.ImmutableSet;

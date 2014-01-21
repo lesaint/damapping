@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl.filegenerator;
+package fr.phan.damapping.processor.impl.sourcegenerator;
 
 import fr.phan.damapping.processor.impl.writer.DAClassMethodWriter;
 import fr.phan.damapping.processor.impl.writer.DAClassWriter;
@@ -41,11 +41,11 @@ import org.springframework.stereotype.Component;
 import static com.google.common.collect.FluentIterable.from;
 
 /**
-* MapperImplFileGenerator -
+* MapperImplSourceGenerator -
 *
 * @author Sébastien Lesaint
 */
-public class MapperImplFileGenerator extends AbstractFileGenerator {
+public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     private static final List<DAName> SPRING_COMPONENT_IMPORTS = ImmutableList.of(
             DANameFactory.from(Resource.class.getCanonicalName()),
             DANameFactory.from(Component.class.getCanonicalName())

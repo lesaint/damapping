@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.phan.damapping.processor.impl.filegenerator;
+package fr.phan.damapping.processor.impl.sourcegenerator;
 
 import fr.phan.damapping.processor.impl.writer.DAClassMethodWriter;
 import fr.phan.damapping.processor.impl.writer.DAClassWriter;
@@ -32,11 +32,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 /**
-* MapperFactoryClassFileGenerator -
+* MapperFactoryClassSourceGenerator -
 *
 * @author Sébastien Lesaint
 */
-public class MapperFactoryClassFileGenerator extends AbstractFileGenerator {
+public class MapperFactoryClassSourceGenerator extends AbstractSourceGenerator {
     @Override
     public String fileName(FileGeneratorContext context) {
         return context.getMapperFactoryClassDAType().getQualifiedName().getName();
