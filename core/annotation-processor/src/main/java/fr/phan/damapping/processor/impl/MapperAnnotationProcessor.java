@@ -18,6 +18,9 @@ package fr.phan.damapping.processor.impl;
 import fr.phan.damapping.annotation.Mapper;
 import fr.phan.damapping.annotation.MapperFactoryMethod;
 import fr.phan.damapping.processor.impl.filegenerator.*;
+import fr.phan.damapping.processor.impl.validator.DASourceClassValidator;
+import fr.phan.damapping.processor.impl.validator.DASourceClassValidatorImpl;
+import fr.phan.damapping.processor.impl.validator.ValidationError;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import fr.phan.damapping.processor.model.DAInterface;
@@ -125,10 +128,10 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         DASourceClass daSourceClass = daSourceClassBuilder.build();
 
         try {
-            DASourceClassChecker checker = new DASourceClassCheckerImpl();
-            checker.check(daSourceClass);
+            DASourceClassValidator checker = new DASourceClassValidatorImpl();
+            checker.validate(daSourceClass);
         }
-        catch (CheckError e) {
+        catch (ValidationError e) {
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.getMessage(), classElement);
             return;
         }
