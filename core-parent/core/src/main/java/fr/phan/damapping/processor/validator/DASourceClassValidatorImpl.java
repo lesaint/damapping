@@ -69,7 +69,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
                 // requirements are enforced by Spring
                 break;
             case CONSTRUCTOR:
-                hasAccessibleConstructor(daSourceClass.getClassElement(), daSourceClass.getMethods());
+                hasAccessibleConstructor(daSourceClass.getMethods());
                 break;
             case SINGLETON_ENUM:
                 hasOnlyOneEnumValue(daSourceClass.getClassElement());
@@ -85,7 +85,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
         }
     }
 
-    private void hasAccessibleConstructor(TypeElement classElement, List<DAMethod> methods) throws ValidationError {
+    private void hasAccessibleConstructor(List<DAMethod> methods) throws ValidationError {
         Optional<DAMethod> accessibleConstructor = FluentIterable.from(methods)
                 .filter(DAMethodPredicates.isConstructor())
                 .filter(DAMethodPredicates.notPrivate())
