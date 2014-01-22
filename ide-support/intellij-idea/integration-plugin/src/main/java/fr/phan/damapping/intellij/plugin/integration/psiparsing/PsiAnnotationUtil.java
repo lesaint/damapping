@@ -1,4 +1,4 @@
-package fr.phan.damapping.intellij.plugin.integration.util;
+package fr.phan.damapping.intellij.plugin.integration.psiparsing;
 
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.*;

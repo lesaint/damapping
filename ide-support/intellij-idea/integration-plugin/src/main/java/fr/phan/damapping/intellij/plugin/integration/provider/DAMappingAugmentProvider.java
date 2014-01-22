@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.augment.PsiAugmentProvider;
 import fr.phan.damapping.annotation.Mapper;
-import fr.phan.damapping.intellij.plugin.integration.util.PsiAnnotationUtil;
+import fr.phan.damapping.intellij.plugin.integration.psiparsing.PsiAnnotationUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
