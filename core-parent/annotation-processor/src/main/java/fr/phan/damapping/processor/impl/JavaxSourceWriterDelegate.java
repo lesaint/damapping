@@ -12,27 +12,27 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
 /**
-* JavaxSourceWriterDelegate -
-*
-* @author: Sébastien Lesaint
-*/
+ * JavaxSourceWriterDelegate -
+ *
+ * @author: Sébastien Lesaint
+ */
 public class JavaxSourceWriterDelegate implements SourceWriterDelegate {
-    private final ProcessingEnvironment processingEnv;
-    private final TypeElement contextElement;
+  private final ProcessingEnvironment processingEnv;
+  private final TypeElement contextElement;
 
-    public JavaxSourceWriterDelegate(ProcessingEnvironment processingEnv, TypeElement contextElement) {
-        this.processingEnv = processingEnv;
-        this.contextElement = contextElement;
-    }
+  public JavaxSourceWriterDelegate(ProcessingEnvironment processingEnv, TypeElement contextElement) {
+    this.processingEnv = processingEnv;
+    this.contextElement = contextElement;
+  }
 
-    @Override
-    public void generateFile(SourceGenerator sourceGenerator, FileGeneratorContext context) throws IOException {
-        JavaFileObject jfo = processingEnv.getFiler().createSourceFile(
-                sourceGenerator.fileName(context),
-                contextElement
-        );
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "generating " + jfo.toUri());
+  @Override
+  public void generateFile(SourceGenerator sourceGenerator, FileGeneratorContext context) throws IOException {
+    JavaFileObject jfo = processingEnv.getFiler().createSourceFile(
+        sourceGenerator.fileName(context),
+        contextElement
+    );
+    processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "generating " + jfo.toUri());
 
-        sourceGenerator.writeFile(new BufferedWriter(jfo.openWriter()), context);
-    }
+    sourceGenerator.writeFile(new BufferedWriter(jfo.openWriter()), context);
+  }
 }

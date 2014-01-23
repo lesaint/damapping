@@ -29,19 +29,19 @@ import javax.lang.model.element.Name;
  * @author: Sébastien Lesaint
  */
 public final class JavaxDANameFactory {
-    private JavaxDANameFactory() {
-        // prevents instanciation
-    }
+  private JavaxDANameFactory() {
+    // prevents instanciation
+  }
 
-    /**
-     * Crée un objet DAName à partir d'un objet Name non {@code null}
-     *
-     * @param name un {@link javax.lang.model.element.Name}
-     *
-     * @return un {@link fr.phan.damapping.processor.model.DAName}
-     */
-    @Nonnull
-    public static DAName from(@Nonnull Name name) {
-        return new DAName(name.toString());
-    }
+  /**
+   * Crée un objet DAName à partir d'un objet Name non {@code null}
+   *
+   * @param name un {@link javax.lang.model.element.Name}
+   *
+   * @return un {@link fr.phan.damapping.processor.model.DAName}
+   */
+  @Nonnull
+  public static DAName from(@Nonnull Name name) {
+    return new DAName(name.toString());
+  }
 }

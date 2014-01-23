@@ -16,14 +16,14 @@ import javax.lang.model.element.TypeElement;
  * @author: Sébastien Lesaint
  */
 public interface JavaxParsingService {
-    DASourceClass parse(TypeElement classElement);
+  DASourceClass parse(TypeElement classElement);
 
-    @Nonnull
-    List<DAMethod> retrieveMethods(TypeElement classElement);
+  @Nonnull
+  List<DAMethod> retrieveMethods(TypeElement classElement);
 
-    List<DAInterface> retrieveInterfaces(TypeElement classElement);
+  List<DAInterface> retrieveInterfaces(TypeElement classElement);
 
-    DAName retrievePackageName(TypeElement classElement);
+  DAName retrievePackageName(TypeElement classElement);
 
-    InstantiationType computeInstantiationType(TypeElement classElement, List<DAMethod> methods);
+  InstantiationType computeInstantiationType(TypeElement classElement, List<DAMethod> methods);
 }

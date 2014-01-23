@@ -13,10 +13,10 @@ import com.google.common.base.Optional;
  * @author: Sébastien Lesaint
  */
 public interface JavaxUtil {
-    @Nonnull
-    Optional<AnnotationMirror> getAnnotationMirror(Element classElement,
-                                                   Class<? extends Annotation> annotationClass);
+  @Nonnull
+  Optional<AnnotationMirror> getAnnotationMirror(Element classElement,
+                                                 Class<? extends Annotation> annotationClass);
 
-    @Nullable
-    String getEnumNameElementValue(AnnotationMirror annotationMirror, String elementName);
+  @Nullable
+  String getEnumNameElementValue(AnnotationMirror annotationMirror, String elementName);
 }

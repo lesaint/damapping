@@ -44,44 +44,44 @@ import com.google.common.collect.ImmutableSet;
  */
 public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mapper> {
 
-    private static final Set<ElementKind> SUPPORTED_ELEMENTKINDS = ImmutableSet.of(
-            ElementKind.CLASS, ElementKind.ENUM
-    );
+  private static final Set<ElementKind> SUPPORTED_ELEMENTKINDS = ImmutableSet.of(
+      ElementKind.CLASS, ElementKind.ENUM
+  );
 
-    public MapperAnnotationProcessor(ProcessingEnvironment processingEnv) {
-        super(processingEnv, Mapper.class);
+  public MapperAnnotationProcessor(ProcessingEnvironment processingEnv) {
+    super(processingEnv, Mapper.class);
+  }
+
+  @Override
+  protected void process(Element element, RoundEnvironment roundEnv) throws IOException {
+    if (!SUPPORTED_ELEMENTKINDS.contains(element.getKind())) {
+      processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+          String.format(
+              "Type %s annoted with @Mapper annotation is not a class nor an enum (kind found = %s)",
+              element, element.getKind()
+          )
+      );
+      return;
     }
 
-    @Override
-    protected void process(Element element, RoundEnvironment roundEnv) throws IOException {
-        if (!SUPPORTED_ELEMENTKINDS.contains(element.getKind())) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                    String.format(
-                            "Type %s annoted with @Mapper annotation is not a class nor an enum (kind found = %s)",
-                            element, element.getKind()
-                    )
-            );
-            return;
-        }
-
-        TypeElement classElement = (TypeElement) element;
+    TypeElement classElement = (TypeElement) element;
 
 //        System.out.println("Processing " + classElement.getQualifiedName() + " in " + getClass().getCanonicalName());
 
-        JavaxParsingService javaxParsingService = new JavaxParsingServiceImpl(processingEnv);
-        DASourceClass daSourceClass = javaxParsingService.parse(classElement);
+    JavaxParsingService javaxParsingService = new JavaxParsingServiceImpl(processingEnv);
+    DASourceClass daSourceClass = javaxParsingService.parse(classElement);
 
-        try {
-            DASourceClassValidator checker = new DASourceClassValidatorImpl();
-            checker.validate(daSourceClass);
-        } catch (ValidationError e) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.getMessage(), classElement);
-            return;
-        }
-
-        SourceWriterDelegate sourceWriterDelegate = new JavaxSourceWriterDelegate(processingEnv, classElement);
-        SourceGenerationService sourceGenerationService = new SourceGenerationServiceImpl(sourceWriterDelegate);
-        sourceGenerationService.generateSourceFiles(new DefaultFileGeneratorContext(daSourceClass));
+    try {
+      DASourceClassValidator checker = new DASourceClassValidatorImpl();
+      checker.validate(daSourceClass);
+    } catch (ValidationError e) {
+      processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.getMessage(), classElement);
+      return;
     }
+
+    SourceWriterDelegate sourceWriterDelegate = new JavaxSourceWriterDelegate(processingEnv, classElement);
+    SourceGenerationService sourceGenerationService = new SourceGenerationServiceImpl(sourceWriterDelegate);
+    sourceGenerationService.generateSourceFiles(new DefaultFileGeneratorContext(daSourceClass));
+  }
 
 }

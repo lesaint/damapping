@@ -33,12 +33,12 @@ import static org.mockito.Mockito.when;
  */
 public class JavaxDANameFactoryTest {
 
-    private static final String TOTO = "toto";
+  private static final String TOTO = "toto";
 
-    @Test
-    public void from_Name() throws Exception {
-        Name mock = Mockito.mock(Name.class);
-        when(mock.toString()).thenReturn(TOTO);
-        assertThat(JavaxDANameFactory.from(mock).getName()).isEqualTo(TOTO);
-    }
+  @Test
+  public void from_Name() throws Exception {
+    Name mock = Mockito.mock(Name.class);
+    when(mock.toString()).thenReturn(TOTO);
+    assertThat(JavaxDANameFactory.from(mock).getName()).isEqualTo(TOTO);
+  }
 }

@@ -25,39 +25,39 @@ import com.google.common.base.Function;
  * @author: Sébastien Lesaint
  */
 public interface JavaxExtractor {
-    @Nonnull
-    DAType extractType(TypeMirror type);
+  @Nonnull
+  DAType extractType(TypeMirror type);
 
-    @Nonnull
-    DAType extractType(TypeMirror type, Element element);
+  @Nonnull
+  DAType extractType(TypeMirror type, Element element);
 
-    @Nonnull
-    DAType extractWildcardType(WildcardType wildcardType);
+  @Nonnull
+  DAType extractWildcardType(WildcardType wildcardType);
 
-    @Nonnull
-    DAType extractReturnType(ExecutableElement methodElement);
+  @Nonnull
+  DAType extractReturnType(ExecutableElement methodElement);
 
-    @Nonnull
-    List<DAType> extractTypeArgs(TypeMirror typeMirror);
+  @Nonnull
+  List<DAType> extractTypeArgs(TypeMirror typeMirror);
 
-    @Nonnull
-    Set<DAModifier> extractModifiers(ExecutableElement methodElement);
+  @Nonnull
+  Set<DAModifier> extractModifiers(ExecutableElement methodElement);
 
-    @Nonnull
-    Function<Modifier, DAModifier> toDAModifier();
+  @Nonnull
+  Function<Modifier, DAModifier> toDAModifier();
 
-    @Nullable
-    List<DAParameter> extractParameters(ExecutableElement methodElement);
+  @Nullable
+  List<DAParameter> extractParameters(ExecutableElement methodElement);
 
-    @Nullable
-    DAName extractSimpleName(TypeMirror type, Element element);
+  @Nullable
+  DAName extractSimpleName(TypeMirror type, Element element);
 
-    @Nullable
-    DAName extractQualifiedName(TypeMirror type, Element element);
+  @Nullable
+  DAName extractQualifiedName(TypeMirror type, Element element);
 
-    @Nullable
-    DAName extractQualifiedName(DeclaredType o);
+  @Nullable
+  DAName extractQualifiedName(DeclaredType o);
 
-    @Nullable
-    List<DAEnumValue> extractEnumValues(@Nonnull TypeElement classElement);
+  @Nullable
+  List<DAEnumValue> extractEnumValues(@Nonnull TypeElement classElement);
 }
