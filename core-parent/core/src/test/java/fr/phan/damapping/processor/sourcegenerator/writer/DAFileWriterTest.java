@@ -17,11 +17,11 @@ package fr.phan.damapping.processor.sourcegenerator.writer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 import org.testng.annotations.Test;
 
-import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.util.Collections;
 
@@ -76,7 +76,7 @@ public class DAFileWriterTest {
         new DAFileWriter(testWriters.bw)
                 .appendPackage(PACKAGE_NAME)
                 .newClass(DAWriterTestUtil.NAME_DATYPE)
-                .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
+                .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
                 .start()
                 .end();
 

@@ -1,8 +1,8 @@
 package fr.phan.damapping.processor.sourcegenerator.writer;
 
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAType;
 
-import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.Flushable;
@@ -28,7 +28,7 @@ interface CommonMethods extends Appendable, Closeable, Flushable {
 
     void appendIndent() throws IOException;
 
-    void appendModifiers(Set<Modifier> modifiers) throws IOException;
+    void appendModifiers(Set<DAModifier> modifiers) throws IOException;
 
     void appendAnnotations(Collection<DAType> annotations) throws IOException;
 

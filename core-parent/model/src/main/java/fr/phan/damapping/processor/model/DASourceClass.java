@@ -15,19 +15,18 @@
  */
 package fr.phan.damapping.processor.model;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import fr.phan.damapping.processor.model.visitor.DAModelVisitable;
 import fr.phan.damapping.processor.model.visitor.DAModelVisitor;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -45,7 +44,7 @@ public class DASourceClass implements DAModelVisitable {
     @Nullable
     private final DAName packageName;
     @Nonnull
-    private final Set<Modifier> modifiers;
+    private final Set<DAModifier> modifiers;
     @Nonnull
     private final List<DAInterface> interfaces;
     @Nonnull
@@ -57,7 +56,7 @@ public class DASourceClass implements DAModelVisitable {
         this.classElement = builder.classElement;
         this.type = builder.type;
         this.packageName = builder.packageName;
-        this.modifiers = builder.modifiers == null ? Collections.<Modifier>emptySet() : ImmutableSet.copyOf(builder.modifiers);
+        this.modifiers = builder.modifiers == null ? Collections.<DAModifier>emptySet() : ImmutableSet.copyOf(builder.modifiers);
         this.interfaces = builder.interfaces == null ? Collections.<DAInterface>emptyList() : ImmutableList.copyOf(builder.interfaces);
         this.methods = builder.methods == null ? Collections.<DAMethod>emptyList() : ImmutableList.copyOf(builder.methods);
         this.instantiationType = builder.instantiationType;
@@ -83,7 +82,7 @@ public class DASourceClass implements DAModelVisitable {
     }
 
     @Nonnull
-    public Set<Modifier> getModifiers() {
+    public Set<DAModifier> getModifiers() {
         return modifiers;
     }
 
@@ -117,7 +116,7 @@ public class DASourceClass implements DAModelVisitable {
         private final TypeElement classElement;
         private final DAType type;
         private DAName packageName;
-        private Set<Modifier> modifiers;
+        private Set<DAModifier> modifiers;
         private List<DAInterface> interfaces;
         private List<DAMethod> methods;
         // specific to the class annoted with @Mapper
@@ -133,7 +132,7 @@ public class DASourceClass implements DAModelVisitable {
             return this;
         }
 
-        public Builder withModifiers(Set<Modifier> modifiers) {
+        public Builder withModifiers(Set<DAModifier> modifiers) {
             this.modifiers = modifiers;
             return this;
         }

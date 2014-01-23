@@ -18,13 +18,13 @@ package fr.phan.damapping.processor.sourcegenerator;
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
-import fr.phan.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.phan.damapping.processor.model.DAInterface;
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.sourcegenerator.writer.DAFileWriter;
 
 import javax.annotation.Nullable;
-import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
@@ -79,12 +79,12 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
                 .toList();
     }
 
-    private static Set<Modifier> filterModifiers(Set<Modifier> modifiers) {
+    private static Set<DAModifier> filterModifiers(Set<DAModifier> modifiers) {
         return FluentIterable.from(modifiers)
                 .filter(
                         Predicates.not(
                                 // an interface can not be final, will not compile
-                                Predicates.equalTo(Modifier.FINAL)
+                                Predicates.equalTo(DAModifier.FINAL)
                         )
                 )
                 .toSet();

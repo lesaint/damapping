@@ -20,10 +20,10 @@ import fr.phan.damapping.processor.model.DAMethod;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Modifier;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
+import fr.phan.damapping.processor.model.DAModifier;
 
 /**
  * DAMethodPredicates -
@@ -58,7 +58,7 @@ public class DAMethodPredicates {
 
         @Override
         public boolean apply(@Nonnull DAMethod daMethod) {
-            return daMethod.getModifiers().contains(Modifier.STATIC);
+            return daMethod.getModifiers().contains(DAModifier.STATIC);
         }
     }
 
@@ -70,7 +70,7 @@ public class DAMethodPredicates {
         INSTANCE;
         @Override
         public boolean apply(@Nonnull DAMethod daMethod) {
-            return !FluentIterable.from(daMethod.getModifiers()).firstMatch(Predicates.equalTo(Modifier.PRIVATE)).isPresent();
+            return !FluentIterable.from(daMethod.getModifiers()).firstMatch(Predicates.equalTo(DAModifier.PRIVATE)).isPresent();
         }
 
     }

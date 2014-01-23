@@ -24,7 +24,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Modifier;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -52,7 +51,7 @@ public class DAMethod implements DAModelVisitable {
      * modifiers de la méthode (private, final, static, abstract, ...)
      */
     @Nonnull
-    private final Set<Modifier> modifiers;
+    private final Set<DAModifier> modifiers;
     /**
      * le type de retour de la méthode. Null si la méthode est un constructeur
      */
@@ -76,7 +75,7 @@ public class DAMethod implements DAModelVisitable {
     private DAMethod(Builder builder) {
         this.kind = builder.kind;
         this.name = builder.name;
-        this.modifiers = builder.modifiers == null ? Collections.<Modifier>emptySet() : ImmutableSet.copyOf(builder.modifiers);
+        this.modifiers = builder.modifiers == null ? Collections.<DAModifier>emptySet() : ImmutableSet.copyOf(builder.modifiers);
         this.returnType = builder.returnType;
         this.parameters = builder.parameters == null ? Collections.<DAParameter>emptyList() : ImmutableList.copyOf(builder.parameters);
         this.mapperMethod = builder.mapperMethod;
@@ -98,7 +97,7 @@ public class DAMethod implements DAModelVisitable {
     }
 
     @Nonnull
-    public Set<Modifier> getModifiers() {
+    public Set<DAModifier> getModifiers() {
         return modifiers;
     }
 
@@ -131,7 +130,7 @@ public class DAMethod implements DAModelVisitable {
         @Nonnull
         private DAName name;
         @Nullable
-        private Set<Modifier> modifiers;
+        private Set<DAModifier> modifiers;
         @Nullable
         private DAType returnType;
         @Nullable
@@ -151,7 +150,7 @@ public class DAMethod implements DAModelVisitable {
             return this;
         }
 
-        public Builder withModifiers(@Nullable Set<Modifier> modifiers) {
+        public Builder withModifiers(@Nullable Set<DAModifier> modifiers) {
             this.modifiers = modifiers;
             return this;
         }

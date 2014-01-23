@@ -2,6 +2,7 @@ package fr.phan.damapping.processor.model.predicate;
 
 import com.google.common.collect.ImmutableSet;
 import fr.phan.damapping.processor.model.DAMethod;
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 import org.mockito.Mockito;
@@ -9,15 +10,11 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Modifier;
-
 import java.util.Collections;
 
 import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * DAMethodPredicatesTest -
@@ -80,11 +77,11 @@ public class DAMethodPredicatesTest {
     public void isStatic_returns_true_for_modifier_set_contains_STATIC() throws Exception {
         DAMethod.Builder builder = DAMethod.builder(ElementKind.METHOD);
         assertThat(isStatic().apply(
-                builder.withModifiers(ImmutableSet.of(Modifier.STATIC)).build())
+                builder.withModifiers(ImmutableSet.of(DAModifier.STATIC)).build())
         ).isTrue();
 
         assertThat(isStatic().apply(
-                builder.withModifiers(ImmutableSet.of(Modifier.FINAL, Modifier.STATIC, Modifier.PUBLIC)).build())
+                builder.withModifiers(ImmutableSet.of(DAModifier.FINAL, DAModifier.STATIC, DAModifier.PUBLIC)).build())
 
         ).isTrue();
     }
@@ -104,11 +101,11 @@ public class DAMethodPredicatesTest {
     public void notPrivate_returns_false_for_modifier_set_contains_STATIC() throws Exception {
         DAMethod.Builder builder = DAMethod.builder(ElementKind.METHOD);
         assertThat(isStatic().apply(
-                builder.withModifiers(ImmutableSet.of(Modifier.PRIVATE)).build())
+                builder.withModifiers(ImmutableSet.of(DAModifier.PRIVATE)).build())
         ).isFalse();
 
         assertThat(isStatic().apply(
-                builder.withModifiers(ImmutableSet.of(Modifier.FINAL, Modifier.STATIC, Modifier.PRIVATE)).build())
+                builder.withModifiers(ImmutableSet.of(DAModifier.FINAL, DAModifier.STATIC, DAModifier.PRIVATE)).build())
 
         ).isTrue();
     }

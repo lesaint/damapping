@@ -17,10 +17,9 @@ package fr.phan.damapping.processor.sourcegenerator.writer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import org.testng.annotations.Test;
-
-import javax.lang.model.element.Modifier;
 
 import static fr.phan.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,7 +46,7 @@ public class DAConstructorWriterTest {
     public void public_empty_constructor() throws Exception {
         TestWriters testWriters = new TestWriters();
         constructorWriter("com.acme.TotoClass", testWriters)
-                .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
+                .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
                 .start()
                 .end();
 
@@ -61,7 +60,7 @@ public class DAConstructorWriterTest {
     public void private_constructor_with_params() throws Exception {
         TestWriters testWriters = new TestWriters();
         constructorWriter("com.acme.TotoClass", testWriters)
-                .withModifiers(ImmutableSet.of(Modifier.PRIVATE))
+                .withModifiers(ImmutableSet.of(DAModifier.PRIVATE))
                 .withParams(ImmutableList.of(DAWriterTestUtil.STRING_TITI_PARAMETER))
                 .start()
                     .newStatement()

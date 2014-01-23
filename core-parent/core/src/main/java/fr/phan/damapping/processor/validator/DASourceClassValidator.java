@@ -2,9 +2,9 @@ package fr.phan.damapping.processor.validator;
 
 import fr.phan.damapping.processor.model.DAInterface;
 import fr.phan.damapping.processor.model.DAMethod;
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DASourceClass;
 
-import javax.lang.model.element.Modifier;
 import java.util.List;
 import java.util.Set;
 
@@ -17,7 +17,7 @@ import java.util.Set;
 public interface DASourceClassValidator {
     void validate(DASourceClass sourceClass) throws ValidationError;
 
-    void validateModifiers(Set<Modifier> modifiers) throws ValidationError;
+    void validateModifiers(Set<DAModifier> modifiers) throws ValidationError;
 
     // TODO make interface validate for Guava Function optional when supported @MapperFunction
     void validateInterfaces(List<DAInterface> interfaces) throws ValidationError;

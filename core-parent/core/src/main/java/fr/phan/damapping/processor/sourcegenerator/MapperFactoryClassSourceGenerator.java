@@ -17,16 +17,16 @@ package fr.phan.damapping.processor.sourcegenerator;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import fr.phan.damapping.processor.sourcegenerator.writer.DAClassMethodWriter;
-import fr.phan.damapping.processor.sourcegenerator.writer.DAClassWriter;
-import fr.phan.damapping.processor.sourcegenerator.writer.DAFileWriter;
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.InstantiationType;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
+import fr.phan.damapping.processor.sourcegenerator.writer.DAClassMethodWriter;
+import fr.phan.damapping.processor.sourcegenerator.writer.DAClassWriter;
+import fr.phan.damapping.processor.sourcegenerator.writer.DAFileWriter;
 
 import javax.annotation.Resource;
-import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
@@ -59,13 +59,13 @@ public class MapperFactoryClassSourceGenerator extends AbstractSourceGenerator {
                 .start();
         if (sourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT) {
             classWriter.newProperty("instance", DATypeFactory.declared(sourceClass.getType().getQualifiedName().getName()))
-                    .withModifier(ImmutableSet.of(Modifier.PRIVATE))
+                    .withModifier(ImmutableSet.of(DAModifier.PRIVATE))
                     .withAnnotations(ImmutableList.of(DATypeFactory.from(Resource.class)))
                     .write();
         }
 
         DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter.newMethod("instance", DATypeFactory.declared(sourceClass.getType().getQualifiedName().getName()))
-                .withModifiers(ImmutableSet.of(Modifier.PUBLIC, Modifier.STATIC))
+                .withModifiers(ImmutableSet.of(DAModifier.PUBLIC, DAModifier.STATIC))
                 .start();
         switch (sourceClass.getInstantiationType()) {
             case SINGLETON_ENUM:

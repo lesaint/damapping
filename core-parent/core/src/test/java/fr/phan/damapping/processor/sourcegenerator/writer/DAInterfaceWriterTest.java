@@ -17,9 +17,8 @@ package fr.phan.damapping.processor.sourcegenerator.writer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import fr.phan.damapping.processor.model.DAModifier;
 import org.testng.annotations.Test;
-
-import javax.lang.model.element.Modifier;
 
 import static fr.phan.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,7 +42,7 @@ public class DAInterfaceWriterTest {
     public void public_empty_interface() throws Exception {
         TestWriters testWriters = new TestWriters();
         daInterfaceWriter(testWriters, "name")
-                .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
+                .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
                 .start().end();
 
         assertThat(testWriters.getRes()).isEqualTo(INDENT + "public interface name {" + DAWriterTestUtil.LINE_SEPARATOR + DAWriterTestUtil.LINE_SEPARATOR

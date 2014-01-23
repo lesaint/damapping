@@ -17,11 +17,10 @@ package fr.phan.damapping.processor.sourcegenerator.writer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import org.assertj.core.api.Assertions;
 import org.testng.annotations.Test;
-
-import javax.lang.model.element.Modifier;
 
 import static fr.phan.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,7 +52,7 @@ public class DAClassMethodWriterTest {
     public void public_static_empty_method() throws Exception {
         TestWriters testWriters = new TestWriters();
         methodWriter("name", "java.lang.String", testWriters)
-                .withModifiers(ImmutableSet.of(Modifier.PUBLIC, Modifier.STATIC))
+                .withModifiers(ImmutableSet.of(DAModifier.PUBLIC, DAModifier.STATIC))
                 .start()
                 .end();
 
@@ -93,7 +92,7 @@ public class DAClassMethodWriterTest {
     public void public_static_empty_method_with_parameter() throws Exception {
         TestWriters testWriters = new TestWriters();
         methodWriter("name", "java.lang.String", testWriters)
-                .withModifiers(ImmutableSet.of(Modifier.PUBLIC, Modifier.STATIC))
+                .withModifiers(ImmutableSet.of(DAModifier.PUBLIC, DAModifier.STATIC))
                 .withParams(ImmutableList.of(DAWriterTestUtil.FUNCTION_STRING_INTEGER_ARRAY_PARAMETER))
                 .start()
                 .end();

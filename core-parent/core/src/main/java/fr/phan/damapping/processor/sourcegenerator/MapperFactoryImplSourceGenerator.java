@@ -18,19 +18,15 @@ package fr.phan.damapping.processor.sourcegenerator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+import fr.phan.damapping.processor.model.*;
 import fr.phan.damapping.processor.sourcegenerator.writer.DAClassMethodWriter;
 import fr.phan.damapping.processor.sourcegenerator.writer.DAClassWriter;
 import fr.phan.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.phan.damapping.processor.sourcegenerator.writer.DAStatementWriter;
-import fr.phan.damapping.processor.model.DAMethod;
-import fr.phan.damapping.processor.model.DAParameter;
-import fr.phan.damapping.processor.model.DASourceClass;
-import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 
-import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
@@ -59,7 +55,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
 
         DAClassWriter<DAFileWriter> classWriter = fileWriter.newClass(context.getMapperFactoryImplDAType())
                 .withImplemented(ImmutableList.of(context.getMapperFactoryInterfaceDAType()))
-                .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
+                .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
                 .start();
 
         appendFactoryMethods(context, classWriter);
@@ -78,7 +74,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
             DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter
                     .newMethod(name, context.getMapperDAType())
                     .withAnnotations(ImmutableList.of(DATypeFactory.from(Override.class)))
-                    .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
+                    .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
                     .withParams(method.getParameters())
                     .start();
             DAStatementWriter<?> statementWriter = methodWriter.newStatement()
@@ -106,20 +102,20 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
     private void appendInnerClass(FileGeneratorContext context, DAClassWriter<DAFileWriter> factortClassWriter) throws IOException {
         DAClassWriter<DAClassWriter<DAFileWriter>> mapperClassWriter = factortClassWriter
                 .newClass(context.getMapperImplDAType())
-                .withModifiers(ImmutableSet.of(Modifier.PRIVATE, Modifier.STATIC))
+                .withModifiers(ImmutableSet.of(DAModifier.PRIVATE, DAModifier.STATIC))
                 .withImplemented(ImmutableList.of(context.getMapperDAType()))
                 .start();
 
         // private final [SourceClassType] instance;
         mapperClassWriter.newProperty("instance", context.getSourceClass().getType())
-                .withModifier(ImmutableSet.of(Modifier.PRIVATE, Modifier.FINAL))
+                .withModifier(ImmutableSet.of(DAModifier.PRIVATE, DAModifier.FINAL))
                 .write();
 
         // constructor with instance parameter
         DAParameter parameter = DAParameter.builder(DANameFactory.from("instance"), context.getSourceClass().getType()).build();
 
         mapperClassWriter.newConstructor()
-                .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
+                .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
                 .withParams(ImmutableList.of(parameter))
                 .start()
                     .newStatement()
@@ -133,7 +129,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
         DAMethod guavaMethod = from(context.getSourceClass().getMethods()).firstMatch(DAMethodPredicates.isGuavaFunction()).get();
         DAClassMethodWriter<?> methodWriter = mapperClassWriter.newMethod(guavaMethod.getName().getName(), guavaMethod.getReturnType())
                 .withAnnotations(ImmutableList.<DAType>of(DATypeFactory.from(Override.class)))
-                .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
+                .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
                 .withParams(guavaMethod.getParameters())
                 .start();
 

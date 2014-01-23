@@ -15,12 +15,12 @@
  */
 package fr.phan.damapping.processor.model;
 
-import java.util.Set;
+import com.google.common.collect.ImmutableSet;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import javax.lang.model.element.Modifier;
-import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -38,12 +38,12 @@ public class DAParameter {
     @Nonnull
     private final DAType type;
     @Nonnull
-    private final Set<Modifier> modifiers;
+    private final Set<DAModifier> modifiers;
 
     private DAParameter(Builder builder) {
         name = builder.name;
         type = builder.type;
-        modifiers = builder.modifiers == null ? ImmutableSet.<Modifier>of() : ImmutableSet.copyOf(builder.modifiers);
+        modifiers = builder.modifiers == null ? ImmutableSet.<DAModifier>of() : ImmutableSet.copyOf(builder.modifiers);
     }
 
     @Nonnull
@@ -62,7 +62,7 @@ public class DAParameter {
     }
 
     @Nonnull
-    public Set<Modifier> getModifiers() {
+    public Set<DAModifier> getModifiers() {
         return modifiers;
     }
 
@@ -72,14 +72,14 @@ public class DAParameter {
         @Nonnull
         private final DAType type;
         @Nullable
-        private Set<Modifier> modifiers;
+        private Set<DAModifier> modifiers;
 
         public Builder(@Nonnull DAName name, @Nonnull DAType type) {
             this.name = checkNotNull(name);
             this.type = checkNotNull(type);
         }
 
-        public Builder withModifiers(@Nullable Set<Modifier> modifiers) {
+        public Builder withModifiers(@Nullable Set<DAModifier> modifiers) {
             this.modifiers = modifiers;
             return this;
         }

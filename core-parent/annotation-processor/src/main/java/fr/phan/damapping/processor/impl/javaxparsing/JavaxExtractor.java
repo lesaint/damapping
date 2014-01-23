@@ -1,19 +1,19 @@
 package fr.phan.damapping.processor.impl.javaxparsing;
 
-import com.google.common.base.Optional;
+import com.google.common.base.Function;
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DAType;
-import fr.phan.damapping.processor.model.factory.DANameFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.lang.model.element.*;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.WildcardType;
-import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Set;
 
@@ -39,7 +39,10 @@ public interface JavaxExtractor {
     List<DAType> extractTypeArgs(TypeMirror typeMirror);
 
     @Nonnull
-    Set<Modifier> extractModifiers(ExecutableElement methodElement);
+    Set<DAModifier> extractModifiers(ExecutableElement methodElement);
+
+    @Nonnull
+    Function<Modifier, DAModifier> toDAModifier();
 
     @Nullable
     List<DAParameter> extractParameters(ExecutableElement methodElement);

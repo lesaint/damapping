@@ -17,12 +17,11 @@ package fr.phan.damapping.processor.sourcegenerator.writer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import org.assertj.core.api.Assertions;
 import org.testng.annotations.Test;
-
-import javax.lang.model.element.Modifier;
 
 import static fr.phan.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,7 +53,7 @@ public class DAClassWriterTest {
     @Test
     public void empty_public_class() throws Exception {
         TestWriters testWriters = new TestWriters();
-        daClassWriter(testWriters).withModifiers(ImmutableSet.of(Modifier.PUBLIC)).start().end();
+        daClassWriter(testWriters).withModifiers(ImmutableSet.of(DAModifier.PUBLIC)).start().end();
 
         assertThat(testWriters.getRes())
                 .isEqualTo(INDENT + "public class Name {" + DAWriterTestUtil.LINE_SEPARATOR
@@ -66,7 +65,7 @@ public class DAClassWriterTest {
     @Test
     public void empty_public_final_class() throws Exception {
         TestWriters testWriters = new TestWriters();
-        daClassWriter(testWriters).withModifiers(ImmutableSet.of(Modifier.PUBLIC, Modifier.FINAL)).start().end();
+        daClassWriter(testWriters).withModifiers(ImmutableSet.of(DAModifier.PUBLIC, DAModifier.FINAL)).start().end();
 
         assertThat(testWriters.getRes())
                 .isEqualTo(INDENT + "public final class Name {" + DAWriterTestUtil.LINE_SEPARATOR
@@ -156,7 +155,7 @@ public class DAClassWriterTest {
     public void empty_public_final_class_annoted_with_extends_and_implements() throws Exception {
         TestWriters testWriters = new TestWriters();
         daClassWriter(testWriters)
-                .withModifiers(ImmutableSet.of(Modifier.PUBLIC, Modifier.FINAL))
+                .withModifiers(ImmutableSet.of(DAModifier.PUBLIC, DAModifier.FINAL))
                 .withAnnotations(ImmutableList.of(DAWriterTestUtil.OVERRIDE_ANNOTATION))
                 .withImplemented(ImmutableList.of(DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE))
                 .withExtended(DAWriterTestUtil.BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS)

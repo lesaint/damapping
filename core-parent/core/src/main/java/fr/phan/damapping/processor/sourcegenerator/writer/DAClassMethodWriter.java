@@ -17,10 +17,10 @@ package fr.phan.damapping.processor.sourcegenerator.writer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DAType;
 
-import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
@@ -36,7 +36,7 @@ import java.util.Set;
 public class DAClassMethodWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     private final String name;
     private final DAType returnType;
-    private Set<Modifier> modifiers = Collections.<Modifier>emptySet();
+    private Set<DAModifier> modifiers = Collections.<DAModifier>emptySet();
     private List<DAType> annotations = Collections.emptyList();
     private List<DAParameter> params = Collections.<DAParameter>emptyList();
 
@@ -46,8 +46,8 @@ public class DAClassMethodWriter<T extends DAWriter> extends AbstractDAWriter<T>
         this.returnType = returnType;
     }
 
-    public DAClassMethodWriter<T> withModifiers(Set<Modifier> modifiers) {
-        this.modifiers = modifiers == null ? Collections.<Modifier>emptySet() : ImmutableSet.copyOf(modifiers);
+    public DAClassMethodWriter<T> withModifiers(Set<DAModifier> modifiers) {
+        this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : ImmutableSet.copyOf(modifiers);
         return this;
     }
 

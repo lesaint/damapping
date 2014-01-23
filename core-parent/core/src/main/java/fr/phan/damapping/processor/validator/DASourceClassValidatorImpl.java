@@ -5,11 +5,11 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
 import fr.phan.damapping.processor.model.DAInterface;
 import fr.phan.damapping.processor.model.DAMethod;
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.predicate.DAInterfacePredicates;
 import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import java.util.List;
@@ -39,9 +39,9 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     }
 
     @Override
-    public void validateModifiers(Set<Modifier> modifiers) throws ValidationError {
+    public void validateModifiers(Set<DAModifier> modifiers) throws ValidationError {
         // retrieve qualifiers of the class with @Mapper + make validate : must be public or protected sinon erreur de compilation
-        if (modifiers.contains(Modifier.PRIVATE)) {
+        if (modifiers.contains(DAModifier.PRIVATE)) {
             throw new ValidationError("Class annoted with @Mapper can not be private");
         }
     }

@@ -57,7 +57,9 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
         // retrieve name of the package of the class with @Mapper
         daSourceClassBuilder.withPackageName(retrievePackageName(classElement));
 
-        daSourceClassBuilder.withModifiers(classElement.getModifiers());
+        daSourceClassBuilder.withModifiers(
+                from(classElement.getModifiers()).transform(javaxExtractor.toDAModifier()).toSet()
+        );
 
         // retrieve interfaces implemented (directly and if any) by the class with @Mapper (+ their generics)
         // chercher si l'une d'elles est Function (Guava)

@@ -1,8 +1,8 @@
 package fr.phan.damapping.processor.sourcegenerator.writer;
 
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAType;
 
-import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -45,12 +45,12 @@ class CommonMethodsImpl implements CommonMethods {
     }
 
     @Override
-    public void appendModifiers(Set<Modifier> modifiers) throws IOException {
+    public void appendModifiers(Set<DAModifier> modifiers) throws IOException {
         // TODO add sorting of Modifiers according to best practice
         if (modifiers.isEmpty()) {
             return;
         }
-        Iterator<Modifier> it = modifiers.iterator();
+        Iterator<DAModifier> it = modifiers.iterator();
         while (it.hasNext()) {
             bw.append(it.next().toString()).append(" ");
         }

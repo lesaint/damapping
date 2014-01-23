@@ -17,9 +17,8 @@ package fr.phan.damapping.processor.sourcegenerator.writer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import fr.phan.damapping.processor.model.DAModifier;
 import org.testng.annotations.Test;
-
-import javax.lang.model.element.Modifier;
 
 import static fr.phan.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,7 +43,7 @@ public class DAPropertyWriterTest {
     public void private_property() throws Exception {
         TestWriters testWriters = new TestWriters();
         daPropertyWriter(testWriters)
-                .withModifier(ImmutableSet.of(Modifier.PRIVATE))
+                .withModifier(ImmutableSet.of(DAModifier.PRIVATE))
                 .write();
 
         assertThat(testWriters.getRes()).isEqualTo(INDENT + "private Function<Integer, String> name;" + DAWriterTestUtil.LINE_SEPARATOR

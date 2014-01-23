@@ -17,6 +17,7 @@ package fr.phan.damapping.processor.sourcegenerator;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.phan.damapping.processor.sourcegenerator.writer.DAInterfaceWriter;
 import fr.phan.damapping.processor.model.DAMethod;
@@ -25,7 +26,6 @@ import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 
-import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
@@ -52,7 +52,7 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
                 .appendWarningComment();
 
         DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter.newInterface(context.getMapperFactoryInterfaceDAType().getSimpleName().getName())
-                .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
+                .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
                 .start();
 
         DAType mapperClass = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "Mapper");

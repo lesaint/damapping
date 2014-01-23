@@ -16,9 +16,9 @@
 package fr.phan.damapping.processor.sourcegenerator.writer;
 
 import com.google.common.collect.ImmutableList;
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAType;
 
-import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
@@ -34,7 +34,7 @@ public class DAPropertyWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     private final String name;
     private final DAType type;
     private List<DAType> annotations = Collections.<DAType>emptyList();
-    private Set<Modifier> modifiers = Collections.<Modifier>emptySet();
+    private Set<DAModifier> modifiers = Collections.<DAModifier>emptySet();
 
     DAPropertyWriter(String name, DAType type, BufferedWriter bw, T parent, int indentOffset) {
         super(bw, parent, indentOffset);
@@ -47,7 +47,7 @@ public class DAPropertyWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         return this;
     }
 
-    public DAPropertyWriter<T> withModifier(Set<Modifier> modifiers) {
+    public DAPropertyWriter<T> withModifier(Set<DAModifier> modifiers) {
         this.modifiers = modifiers;
         return this;
     }

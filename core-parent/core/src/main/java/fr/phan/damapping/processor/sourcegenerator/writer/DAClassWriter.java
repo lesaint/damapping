@@ -18,9 +18,9 @@ package fr.phan.damapping.processor.sourcegenerator.writer;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAType;
 
-import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
@@ -48,7 +48,7 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     @VisibleForTesting
     protected final DAType classType;
     private final String name;
-    private Set<Modifier> modifiers = Collections.emptySet();
+    private Set<DAModifier> modifiers = Collections.emptySet();
     private List<DAType> annotations = Collections.emptyList();
     private List<DAType> implemented = Collections.emptyList();
     private DAType extended;
@@ -59,8 +59,8 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
         this.classType = classType;
     }
 
-    public DAClassWriter<T> withModifiers(Set<Modifier> modifiers) {
-        this.modifiers = modifiers == null ? Collections.<Modifier>emptySet() : ImmutableSet.copyOf(modifiers);
+    public DAClassWriter<T> withModifiers(Set<DAModifier> modifiers) {
+        this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : ImmutableSet.copyOf(modifiers);
         return this;
     }
 

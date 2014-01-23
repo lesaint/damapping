@@ -28,7 +28,6 @@ import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.lang.model.element.Modifier;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
@@ -72,14 +71,14 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
         DAClassWriter<DAFileWriter> classWriter = fileWriter.newClass(context.getMapperImplDAType())
                 .withAnnotations(computeAnnotations(sourceClass))
                 .withImplemented(computeImplemented(sourceClass))
-                .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
+                .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
                 .start();
 
         // instance de la class annotée @Mapper injectée via @Resource le cas échéant
         if (sourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT) {
             classWriter.newProperty("instance", DATypeFactory.declared(sourceClass.getPackageName().getName() + "." + sourceClass.getType().getSimpleName()))
                     .withAnnotations(ImmutableList.of(DATypeFactory.from(Resource.class)))
-                    .withModifier(ImmutableSet.of(Modifier.PRIVATE))
+                    .withModifier(ImmutableSet.of(DAModifier.PRIVATE))
                     .write();
         }
 
@@ -87,7 +86,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
         DAMethod guavaMethod = from(sourceClass.getMethods()).firstMatch(DAMethodPredicates.isGuavaFunction()).get();
         DAClassMethodWriter<?> methodWriter = classWriter.newMethod(guavaMethod.getName().getName(), guavaMethod.getReturnType())
                 .withAnnotations(ImmutableList.<DAType>of(DATypeFactory.from(Override.class)))
-                .withModifiers(ImmutableSet.of(Modifier.PUBLIC))
+                .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
                 .withParams(guavaMethod.getParameters())
                 .start();
 

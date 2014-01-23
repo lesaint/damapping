@@ -2,6 +2,7 @@ package fr.phan.damapping.processor.impl.javaxparsing;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DAType;
@@ -105,12 +106,19 @@ public class JavaxExtractorImpl implements JavaxExtractor {
 
     @Override
     @Nonnull
-    public Set<Modifier> extractModifiers(ExecutableElement methodElement) {
+    public Set<DAModifier> extractModifiers(ExecutableElement methodElement) {
         if (methodElement.getModifiers() == null) {
             return Collections.emptySet();
         }
-        return methodElement.getModifiers();
+        return from(methodElement.getModifiers()).transform(toDAModifier()).toSet();
     }
+
+    @Override
+    @Nonnull
+    public Function<Modifier, DAModifier> toDAModifier() {
+        return ModifierToDAMoifier.INSTANCE;
+    }
+
 
     @Override
     @Nullable
@@ -125,12 +133,22 @@ public class JavaxExtractorImpl implements JavaxExtractor {
                     @Override
                     public DAParameter apply(@Nullable VariableElement o) {
                         return DAParameter.builder(DANameFactory.from(o.getSimpleName()), extractType(o.asType()))
-                                .withModifiers(o.getModifiers())
+                                .withModifiers(from(o.getModifiers()).transform(toDAModifier()).toSet())
                                 .build();
                     }
                 })
                 .filter(Predicates.notNull())
                 .toList();
+    }
+
+    private static enum ModifierToDAMoifier implements Function<Modifier, DAModifier> {
+        INSTANCE;
+
+        @Nonnull
+        @Override
+        public DAModifier apply(@Nonnull Modifier modifier) {
+            return DAModifier.valueOf(modifier.name());
+        }
     }
 
     @Override
