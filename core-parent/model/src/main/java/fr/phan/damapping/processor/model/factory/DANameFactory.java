@@ -29,71 +29,72 @@ import com.google.common.base.Preconditions;
  */
 public final class DANameFactory {
 
-    private static final DAName WILCARD = from("?");
-    private static final DAName VOID = from("void");
+  private static final DAName WILCARD = from("?");
+  private static final DAName VOID = from("void");
 
-    private DANameFactory() {
-        // prevents instantiation
-    }
+  private DANameFactory() {
+    // prevents instantiation
+  }
 
-    /**
-     * Crée un objet DAName à partir d'une String non {@code null}
-     *
-     * @param string un {@link String}
-     *
-     * @return un {@link DAName}
-     */
-    @Nonnull
-    public static DAName from(@Nonnull String string) {
-        return new DAName(string);
-    }
+  /**
+   * Crée un objet DAName à partir d'une String non {@code null}
+   *
+   * @param string un {@link String}
+   *
+   * @return un {@link DAName}
+   */
+  @Nonnull
+  public static DAName from(@Nonnull String string) {
+    return new DAName(string);
+  }
 
-    /**
-     * Crée un objet DAName à partir d'un DATypeKind représentant un type primitif
-     *
-     * @param kind un {@link DATypeKind} primitif
-     *
-     * @return a {@link DAName}
-     *
-     * @throws IllegalArgumentException si {@code kink.isPrimitive()} retourne false
-     *
-     * TOIMPROVE : DAName for each DATypeKind with flag primitive = true can be cached into a Map and used as constants
-     */
-    @Nonnull
-    public static DAName fromPrimitiveKind(@Nonnull DATypeKind kind) {
-        Preconditions.checkArgument(kind.isPrimitive());
-        return from(kind.name().toLowerCase(Locale.US));
-    }
+  /**
+   * Crée un objet DAName à partir d'un DATypeKind représentant un type primitif
+   * <p/>
+   * TOIMPROVE : DAName for each DATypeKind with flag primitive = true can be
+   * cached into a Map and used as constants
+   *
+   * @param kind un {@link DATypeKind} primitif
+   *
+   * @return a {@link DAName}
+   *
+   * @throws IllegalArgumentException si {@code kink.isPrimitive()} retourne false
+   */
+  @Nonnull
+  public static DAName fromPrimitiveKind(@Nonnull DATypeKind kind) {
+    Preconditions.checkArgument(kind.isPrimitive());
+    return from(kind.name().toLowerCase(Locale.US));
+  }
 
-    /**
-     * Crée un objet DAName contenant un simpleName à partir du DAName spécifié.
-     * <br/>
-     * En pratique, cela consiste à parser le name de {@code daName} et extraire tout ce qui suit le dernier point
-     * (s'il y en a un).
-     *
-     * @param daName a {@link DAName}
-     *
-     * @return a {@link DAName}
-     */
-    @Nonnull
-    public static DAName simpleFromQualified(@Nonnull DAName daName) {
-        String qualifiedName = daName.getName();
-        return from(qualifiedName.substring(qualifiedName.lastIndexOf(".") + 1));
-    }
+  /**
+   * Crée un objet DAName contenant un simpleName à partir du DAName spécifié.
+   * <br/>
+   * En pratique, cela consiste à parser le name de {@code daName} et extraire tout ce qui suit le dernier point
+   * (s'il y en a un).
+   *
+   * @param daName a {@link DAName}
+   *
+   * @return a {@link DAName}
+   */
+  @Nonnull
+  public static DAName simpleFromQualified(@Nonnull DAName daName) {
+    String qualifiedName = daName.getName();
+    return from(qualifiedName.substring(qualifiedName.lastIndexOf(".") + 1));
+  }
 
-    /**
-     * Le DAName représentant le wildcard générique "?".
-     */
-    @Nonnull
-    public static DAName wildcard() {
-        return WILCARD;
-    }
+  /**
+   * Le DAName représentant le wildcard générique "?".
+   */
+  @Nonnull
+  public static DAName wildcard() {
+    return WILCARD;
+  }
 
-    /**
-     * Le DAName représentant le wildcard void "void".
-     */
-    @Nonnull
-    public static DAName voidDAName() {
-        return VOID;
-    }
+  /**
+   * Le DAName représentant le wildcard void "void".
+   */
+  @Nonnull
+  public static DAName voidDAName() {
+    return VOID;
+  }
 }

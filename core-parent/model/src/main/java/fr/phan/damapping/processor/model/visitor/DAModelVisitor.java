@@ -25,7 +25,9 @@ import fr.phan.damapping.processor.model.DASourceClass;
  * @author Sébastien Lesaint
  */
 public interface DAModelVisitor {
-    void visit(DASourceClass daSourceClass);
-    void visit(DAInterface daInterface);
-    void visit(DAMethod daMethod);
+  void visit(DASourceClass daSourceClass);
+
+  void visit(DAInterface daInterface);
+
+  void visit(DAMethod daMethod);
 }

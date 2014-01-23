@@ -31,85 +31,89 @@ import com.google.common.collect.FluentIterable;
  */
 public class DAMethodPredicates {
 
-    private DAMethodPredicates() {
-        // prevents instantiation
+  private DAMethodPredicates() {
+    // prevents instantiation
+  }
+
+  public static Predicate<DAMethod> isConstructor() {
+    return ConstructorPredicate.INSTANCE;
+  }
+
+  private static enum ConstructorPredicate implements Predicate<DAMethod> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nonnull DAMethod daMethod) {
+      return daMethod.isConstructor();
+    }
+  }
+
+  public static Predicate<DAMethod> isStatic() {
+    return StaticPredicate.INSTANCE;
+  }
+
+  private static enum StaticPredicate implements Predicate<DAMethod> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nonnull DAMethod daMethod) {
+      return daMethod.getModifiers().contains(DAModifier.STATIC);
+    }
+  }
+
+  public static Predicate<DAMethod> notPrivate() {
+    return NotPrivatePredicate.INSTANCE;
+  }
+
+  private static enum NotPrivatePredicate implements Predicate<DAMethod> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nonnull DAMethod daMethod) {
+      return !FluentIterable.from(daMethod.getModifiers())
+                            .firstMatch(Predicates.equalTo(DAModifier.PRIVATE))
+                            .isPresent();
     }
 
-    public static Predicate<DAMethod> isConstructor() {
-        return ConstructorPredicate.INSTANCE;
+  }
+
+  public static Predicate<DAMethod> isMapperFactoryMethod() {
+    return MapperFactoryMethodPredicate.INSTANCE;
+  }
+
+  private static enum MapperFactoryMethodPredicate implements Predicate<DAMethod> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nonnull DAMethod daMethod) {
+      return daMethod.isMapperFactoryMethod();
     }
 
-    private static enum ConstructorPredicate implements Predicate<DAMethod> {
-        INSTANCE;
+  }
 
-        @Override
-        public boolean apply(@Nonnull DAMethod daMethod) {
-            return daMethod.isConstructor();
-        }
+  public static Predicate<DAMethod> isGuavaFunction() {
+    return GuavaFunction.INSTANCE;
+  }
+
+  private static enum GuavaFunction implements Predicate<DAMethod> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nonnull DAMethod daMethod) {
+      // TOIMPROVE, check more specific info in the model, can we know if method override from an interface ? we
+      // should check the parameter type and the return type
+      return !daMethod.isConstructor()
+          && daMethod.getName() != null && "apply".equals(daMethod.getName().getName());
     }
+  }
 
-    public static Predicate<DAMethod> isStatic() {
-        return StaticPredicate.INSTANCE;
-    }
-
-    private static enum  StaticPredicate implements Predicate<DAMethod> {
-        INSTANCE;
-
-        @Override
-        public boolean apply(@Nonnull DAMethod daMethod) {
-            return daMethod.getModifiers().contains(DAModifier.STATIC);
-        }
-    }
-
-    public static Predicate<DAMethod> notPrivate() {
-        return NotPrivatePredicate.INSTANCE;
-    }
-
-    private static enum NotPrivatePredicate implements Predicate<DAMethod> {
-        INSTANCE;
-        @Override
-        public boolean apply(@Nonnull DAMethod daMethod) {
-            return !FluentIterable.from(daMethod.getModifiers()).firstMatch(Predicates.equalTo(DAModifier.PRIVATE)).isPresent();
-        }
-
-    }
-
-    public static Predicate<DAMethod> isMapperFactoryMethod() {
-        return MapperFactoryMethodPredicate.INSTANCE;
-    }
-
-    private static enum MapperFactoryMethodPredicate implements Predicate<DAMethod> {
-        INSTANCE;
-
-        @Override
-        public boolean apply(@Nonnull DAMethod daMethod) {
-            return daMethod.isMapperFactoryMethod();
-        }
-
-    }
-
-    public static Predicate<DAMethod> isGuavaFunction() {
-        return GuavaFunction.INSTANCE;
-    }
-
-    private static enum GuavaFunction implements Predicate<DAMethod> {
-        INSTANCE;
-
-        @Override
-        public boolean apply(@Nonnull DAMethod daMethod) {
-            // TOIMPROVE, check more specific info in the model, can we know if method override from an interface ? we should check the parameter type and the return type
-            return !daMethod.isConstructor()
-                    && daMethod.getName() != null && "apply".equals(daMethod.getName().getName());
-        }
-    }
-
-    public static Predicate<DAMethod> isDefaultConstructor() {
-        return new Predicate<DAMethod>() {
-            @Override
-            public boolean apply(@Nullable DAMethod daMethod) {
-                return isConstructor().apply(daMethod) && daMethod.getParameters().isEmpty();
-            }
-        };
-    }
+  public static Predicate<DAMethod> isDefaultConstructor() {
+    return new Predicate<DAMethod>() {
+      @Override
+      public boolean apply(@Nullable DAMethod daMethod) {
+        return isConstructor().apply(daMethod) && daMethod.getParameters().isEmpty();
+      }
+    };
+  }
 
 }

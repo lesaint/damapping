@@ -21,7 +21,7 @@ package fr.phan.damapping.processor.model;
 
 /**
  * Fork of {@link javax.lang.model.type.TypeKind} - The kind of a type mirror.
- *
+ * <p/>
  * <p>Note that it is possible additional type kinds will be added to
  * accommodate new, currently unknown, language structures added to
  * future versions of the Java&trade; programming language.
@@ -33,132 +33,136 @@ package fr.phan.damapping.processor.model;
  * @since 1.6
  */
 public enum DATypeKind {
-    /**
-     * The primitive type {@code boolean}.
-     */
-    BOOLEAN,
+  /**
+   * The primitive type {@code boolean}.
+   */
+  BOOLEAN,
 
-    /**
-     * The primitive type {@code byte}.
-     */
-    BYTE,
+  /**
+   * The primitive type {@code byte}.
+   */
+  BYTE,
 
-    /**
-     * The primitive type {@code short}.
-     */
-    SHORT,
+  /**
+   * The primitive type {@code short}.
+   */
+  SHORT,
 
-    /**
-     * The primitive type {@code int}.
-     */
-    INT,
+  /**
+   * The primitive type {@code int}.
+   */
+  INT,
 
-    /**
-     * The primitive type {@code long}.
-     */
-    LONG,
+  /**
+   * The primitive type {@code long}.
+   */
+  LONG,
 
-    /**
-     * The primitive type {@code char}.
-     */
-    CHAR,
+  /**
+   * The primitive type {@code char}.
+   */
+  CHAR,
 
-    /**
-     * The primitive type {@code float}.
-     */
-    FLOAT,
+  /**
+   * The primitive type {@code float}.
+   */
+  FLOAT,
 
-    /**
-     * The primitive type {@code double}.
-     */
-    DOUBLE,
+  /**
+   * The primitive type {@code double}.
+   */
+  DOUBLE,
 
-    /**
-     * The pseudo-type corresponding to the keyword {@code void}.
-     * @see javax.lang.model.type.NoType
-     */
-    VOID,
+  /**
+   * The pseudo-type corresponding to the keyword {@code void}.
+   *
+   * @see javax.lang.model.type.NoType
+   */
+  VOID,
 
-    /**
-     * A pseudo-type used where no actual type is appropriate.
-     * @see javax.lang.model.type.NoType
-     */
-    NONE,
+  /**
+   * A pseudo-type used where no actual type is appropriate.
+   *
+   * @see javax.lang.model.type.NoType
+   */
+  NONE,
 
-    /**
-     * The null type.
-     */
-    NULL,
+  /**
+   * The null type.
+   */
+  NULL,
 
-    /**
-     * An array type.
-     */
-    ARRAY,
+  /**
+   * An array type.
+   */
+  ARRAY,
 
-    /**
-     * A class or interface type.
-     */
-    DECLARED,
+  /**
+   * A class or interface type.
+   */
+  DECLARED,
 
-    /**
-     * A class or interface type that could not be resolved.
-     */
-    ERROR,
+  /**
+   * A class or interface type that could not be resolved.
+   */
+  ERROR,
 
-    /**
-     * A type variable.
-     */
-    TYPEVAR,
+  /**
+   * A type variable.
+   */
+  TYPEVAR,
 
-    /**
-     * A wildcard type argument.
-     */
-    WILDCARD,
+  /**
+   * A wildcard type argument.
+   */
+  WILDCARD,
 
-    /**
-     * A pseudo-type corresponding to a package element.
-     * @see javax.lang.model.type.NoType
-     */
-    PACKAGE,
+  /**
+   * A pseudo-type corresponding to a package element.
+   *
+   * @see javax.lang.model.type.NoType
+   */
+  PACKAGE,
 
-    /**
-     * A method, constructor, or initializer.
-     */
-    EXECUTABLE,
+  /**
+   * A method, constructor, or initializer.
+   */
+  EXECUTABLE,
 
-    /**
-     * An implementation-reserved type.
-     * This is not the type you are looking for.
-     */
-    OTHER,
+  /**
+   * An implementation-reserved type.
+   * This is not the type you are looking for.
+   */
+  OTHER,
 
-    /**
-     * A union type.
-     *
-     * @since 1.7
-     */
-    UNION;
+  /**
+   * A union type.
+   *
+   * @since 1.7
+   */
+  UNION;
 
-    /**
-     * Returns {@code true} if this kind corresponds to a primitive
-     * type and {@code false} otherwise.
-     * @return {@code true} if this kind corresponds to a primitive type
-     */
-    public boolean isPrimitive() {
-        switch(this) {
-            case BOOLEAN:
-            case BYTE:
-            case SHORT:
-            case INT:
-            case LONG:
-            case CHAR:
-            case FLOAT:
-            case DOUBLE:
-                return true;
+  /**
+   * Returns {@code true} if this kind corresponds to a primitive
+   * type and {@code false} otherwise.
+   *
+   * @return {@code true} if this kind corresponds to a primitive type
+   */
+  public boolean isPrimitive() {
+    switch (this) {
+      case BOOLEAN:
+      case BYTE:
+      case SHORT:
+      case INT:
+      case LONG:
+      case CHAR:
+      case FLOAT:
+      case DOUBLE:
+        return true;
 
-            default:
-                return false;
-        }
+      default:
+        return false;
     }
+  }
 }
 

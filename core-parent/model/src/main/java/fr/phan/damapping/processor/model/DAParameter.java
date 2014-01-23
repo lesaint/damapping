@@ -24,67 +24,67 @@ import com.google.common.collect.ImmutableSet;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
-* DAParameter - Représente un paramètre de méthode avec son nom, son type et ses éventuels
-* modifieurs ("final" en particulier).
-*
-* @author Sébastien Lesaint
-*/
+ * DAParameter - Représente un paramètre de méthode avec son nom, son type et ses éventuels
+ * modifieurs ("final" en particulier).
+ *
+ * @author Sébastien Lesaint
+ */
 @Immutable
 public class DAParameter {
-    /*nom du paramètre*/
+  /*nom du paramètre*/
+  @Nonnull
+  private final DAName name;
+  @Nonnull
+  private final DAType type;
+  @Nonnull
+  private final Set<DAModifier> modifiers;
+
+  private DAParameter(Builder builder) {
+    name = builder.name;
+    type = builder.type;
+    modifiers = builder.modifiers == null ? ImmutableSet.<DAModifier>of() : ImmutableSet.copyOf(builder.modifiers);
+  }
+
+  @Nonnull
+  public static Builder builder(@Nonnull DAName name, @Nonnull DAType type) {
+    return new Builder(name, type);
+  }
+
+  @Nonnull
+  public DAName getName() {
+    return name;
+  }
+
+  @Nonnull
+  public DAType getType() {
+    return type;
+  }
+
+  @Nonnull
+  public Set<DAModifier> getModifiers() {
+    return modifiers;
+  }
+
+  public static class Builder {
     @Nonnull
     private final DAName name;
     @Nonnull
     private final DAType type;
-    @Nonnull
-    private final Set<DAModifier> modifiers;
+    @Nullable
+    private Set<DAModifier> modifiers;
 
-    private DAParameter(Builder builder) {
-        name = builder.name;
-        type = builder.type;
-        modifiers = builder.modifiers == null ? ImmutableSet.<DAModifier>of() : ImmutableSet.copyOf(builder.modifiers);
+    public Builder(@Nonnull DAName name, @Nonnull DAType type) {
+      this.name = checkNotNull(name);
+      this.type = checkNotNull(type);
     }
 
-    @Nonnull
-    public static Builder builder(@Nonnull DAName name, @Nonnull DAType type) {
-        return new Builder(name, type);
+    public Builder withModifiers(@Nullable Set<DAModifier> modifiers) {
+      this.modifiers = modifiers;
+      return this;
     }
 
-    @Nonnull
-    public DAName getName() {
-        return name;
+    public DAParameter build() {
+      return new DAParameter(this);
     }
-
-    @Nonnull
-    public DAType getType() {
-        return type;
-    }
-
-    @Nonnull
-    public Set<DAModifier> getModifiers() {
-        return modifiers;
-    }
-
-    public static class Builder {
-        @Nonnull
-        private final DAName name;
-        @Nonnull
-        private final DAType type;
-        @Nullable
-        private Set<DAModifier> modifiers;
-
-        public Builder(@Nonnull DAName name, @Nonnull DAType type) {
-            this.name = checkNotNull(name);
-            this.type = checkNotNull(type);
-        }
-
-        public Builder withModifiers(@Nullable Set<DAModifier> modifiers) {
-            this.modifiers = modifiers;
-            return this;
-        }
-
-        public DAParameter build() {
-            return new DAParameter(this);
-        }
-    }
+  }
 }

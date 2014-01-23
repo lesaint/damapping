@@ -23,31 +23,32 @@ import javax.annotation.concurrent.Immutable;
 import com.google.common.base.Function;
 
 /**
-* DAInterface - Représente un type Interface implémenté par une classe ou étendue par une autre interface.
-*
-* @author Sébastien Lesaint
-*/
+ * DAInterface - Représente un type Interface implémenté par une classe ou étendue par une autre interface.
+ *
+ * @author Sébastien Lesaint
+ */
 @Immutable
 public class DAInterface implements DAModelVisitable {
-    @Nonnull
-    private final DAType type;
+  @Nonnull
+  private final DAType type;
 
-    public DAInterface(DAType type) {
-        this.type = type;
-    }
+  public DAInterface(DAType type) {
+    this.type = type;
+  }
 
-    @Nonnull
-    public DAType getType() {
-        return type;
-    }
+  @Nonnull
+  public DAType getType() {
+    return type;
+  }
 
-    public boolean isGuavaFunction() {
-        return type.getQualifiedName() != null && Function.class.getCanonicalName().equals(type.getQualifiedName().getName());
-    }
+  public boolean isGuavaFunction() {
+    return type.getQualifiedName() != null
+        && Function.class.getCanonicalName().equals(type.getQualifiedName().getName());
+  }
 
-    @Override
-    public void accept(DAModelVisitor visitor) {
-        visitor.visit(this);
-    }
+  @Override
+  public void accept(DAModelVisitor visitor) {
+    visitor.visit(this);
+  }
 
 }

@@ -21,5 +21,5 @@ package fr.phan.damapping.processor.model.visitor;
  * @author Sébastien Lesaint
  */
 public interface DAModelVisitable {
-    void accept(DAModelVisitor visitor);
+  void accept(DAModelVisitor visitor);
 }

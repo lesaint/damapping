@@ -15,29 +15,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * DAInterfacePredicatesTest -
  *
- * @author:  Sébastien Lesaint
+ * @author: Sébastien Lesaint
  */
 public class DAInterfacePredicatesTest {
-    @Test
-    public void guavaFunction_supports_null() throws Exception {
-        assertThat(DAInterfacePredicates.isGuavaFunction().apply(null)).isFalse();
-    }
+  @Test
+  public void guavaFunction_supports_null() throws Exception {
+    assertThat(DAInterfacePredicates.isGuavaFunction().apply(null)).isFalse();
+  }
 
-    @Test
-    public void guavaFunction_fails_if_DAType_has_no_declared_name() throws Exception {
-        DAInterface noDeclaredName = new DAInterface(DAType.builder(DATypeKind.CHAR, DANameFactory.from("char")).build());
-        assertThat(DAInterfacePredicates.isGuavaFunction().apply(noDeclaredName)).isFalse();
-    }
+  @Test
+  public void guavaFunction_fails_if_DAType_has_no_declared_name() throws Exception {
+    DAInterface noDeclaredName = new DAInterface(DAType.builder(DATypeKind.CHAR, DANameFactory.from("char")).build());
+    assertThat(DAInterfacePredicates.isGuavaFunction().apply(noDeclaredName)).isFalse();
+  }
 
-    @Test
-    public void guavaFunction_success_only_if_declaredname_is_guava_function() throws Exception {
-        DAInterface daInterface = new DAInterface(DATypeFactory.from(String.class));
-        assertThat(DAInterfacePredicates.isGuavaFunction().apply(daInterface)).isFalse();
+  @Test
+  public void guavaFunction_success_only_if_declaredname_is_guava_function() throws Exception {
+    DAInterface daInterface = new DAInterface(DATypeFactory.from(String.class));
+    assertThat(DAInterfacePredicates.isGuavaFunction().apply(daInterface)).isFalse();
 
-        DAInterface guavaFunction = new DAInterface(DATypeFactory.declared("com.google.common.base.Function"));
-        assertThat(DAInterfacePredicates.isGuavaFunction().apply(guavaFunction)).isTrue();
+    DAInterface guavaFunction = new DAInterface(DATypeFactory.declared("com.google.common.base.Function"));
+    assertThat(DAInterfacePredicates.isGuavaFunction().apply(guavaFunction)).isTrue();
 
-        DAInterface guavaFunctionFromClass = new DAInterface(DATypeFactory.from(Function.class));
-        assertThat(DAInterfacePredicates.isGuavaFunction().apply(guavaFunctionFromClass)).isTrue();
-    }
+    DAInterface guavaFunctionFromClass = new DAInterface(DATypeFactory.from(Function.class));
+    assertThat(DAInterfacePredicates.isGuavaFunction().apply(guavaFunctionFromClass)).isTrue();
+  }
 }

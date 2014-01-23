@@ -27,54 +27,54 @@ import com.google.common.base.Preconditions;
  * @author: Sébastien Lesaint
  */
 public class DAEnumValue implements CharSequence {
-    @Nonnull
-    private final String name;
+  @Nonnull
+  private final String name;
 
-    public DAEnumValue(@Nonnull String name) {
-        this.name = Preconditions.checkNotNull(name);
+  public DAEnumValue(@Nonnull String name) {
+    this.name = Preconditions.checkNotNull(name);
+  }
+
+  @Nonnull
+  public String getName() {
+    return name;
+  }
+
+  @Override
+  public int length() {
+    return name.length();
+  }
+
+  @Override
+  public char charAt(int index) {
+    return name.charAt(index);
+  }
+
+  @Override
+  public CharSequence subSequence(int beginIndex, int endIndex) {
+    return name.subSequence(beginIndex, endIndex);
+  }
+
+  @Override
+  public String toString() {
+    return name.toString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
 
-    @Nonnull
-    public String getName() {
-        return name;
-    }
+    DAEnumValue that = (DAEnumValue) o;
 
-    @Override
-    public int length() {
-        return name.length();
-    }
+    return name.equals(that.name);
+  }
 
-    @Override
-    public char charAt(int index) {
-        return name.charAt(index);
-    }
-
-    @Override
-    public CharSequence subSequence(int beginIndex, int endIndex) {
-        return name.subSequence(beginIndex, endIndex);
-    }
-
-    @Override
-    public String toString() {
-        return name.toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        DAEnumValue that = (DAEnumValue) o;
-
-        return name.equals(that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
+  @Override
+  public int hashCode() {
+    return name.hashCode();
+  }
 }

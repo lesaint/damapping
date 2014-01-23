@@ -27,13 +27,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Sébastien Lesaint
  */
 public class DATypeTest {
-    @Test
-    public void isArray() throws Exception {
-        assertThat(daType(DATypeKind.ARRAY).isArray()).isTrue();
-        assertThat(daType(DATypeKind.DECLARED).isArray()).isFalse();
-    }
+  @Test
+  public void isArray() throws Exception {
+    assertThat(daType(DATypeKind.ARRAY).isArray()).isTrue();
+    assertThat(daType(DATypeKind.DECLARED).isArray()).isFalse();
+  }
 
-    private static DAType daType(DATypeKind kind) {
-        return DAType.builder(kind, DANameFactory.from("simpleName")).build();
-    }
+  private static DAType daType(DATypeKind kind) {
+    return DAType.builder(kind, DANameFactory.from("simpleName")).build();
+  }
 }
