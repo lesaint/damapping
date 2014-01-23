@@ -17,9 +17,9 @@ package fr.phan.damapping.processor.model.factory;
 
 import com.google.common.base.Preconditions;
 import fr.phan.damapping.processor.model.DAName;
+import fr.phan.damapping.processor.model.DATypeKind;
 
 import javax.annotation.Nonnull;
-import javax.lang.model.type.TypeKind;
 import java.util.Locale;
 
 /**
@@ -49,18 +49,18 @@ public final class DANameFactory {
     }
 
     /**
-     * Crée un objet DAName à partir d'un TypeKind représentant un type primitif
+     * Crée un objet DAName à partir d'un DATypeKind représentant un type primitif
      *
-     * @param kind un {@link TypeKind} primitif
+     * @param kind un {@link DATypeKind} primitif
      *
      * @return a {@link DAName}
      *
      * @throws IllegalArgumentException si {@code kink.isPrimitive()} retourne false
      *
-     * TOIMPROVE : DAName for each TypeKind with flag primitive = true can be cached into a Map and used as constants
+     * TOIMPROVE : DAName for each DATypeKind with flag primitive = true can be cached into a Map and used as constants
      */
     @Nonnull
-    public static DAName fromPrimitiveKind(@Nonnull TypeKind kind) {
+    public static DAName fromPrimitiveKind(@Nonnull DATypeKind kind) {
         Preconditions.checkArgument(kind.isPrimitive());
         return from(kind.name().toLowerCase(Locale.US));
     }

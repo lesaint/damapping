@@ -18,15 +18,13 @@ package fr.phan.damapping.processor.sourcegenerator.imports;
 import com.google.common.collect.ImmutableList;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.DATypeKind;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 import org.assertj.core.api.Assertions;
 import org.testng.annotations.Test;
 
-import javax.lang.model.type.TypeKind;
 import java.util.Collections;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * DATypeImportComputerTest -
@@ -85,7 +83,7 @@ public class DATypeImportComputerTest {
 
     private static DAType daType(String name, List<DAType> typeArgs) {
         DAName daName = DANameFactory.from(name);
-        return DAType.builder(TypeKind.DECLARED, daName)
+        return DAType.builder(DATypeKind.DECLARED, daName)
                 .withQualifiedName(daName)
                 .withTypeArgs(typeArgs)
                 .build();

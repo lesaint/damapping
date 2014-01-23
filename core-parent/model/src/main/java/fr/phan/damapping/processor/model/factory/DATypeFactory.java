@@ -15,14 +15,14 @@
  */
 package fr.phan.damapping.processor.model.factory;
 
+import com.google.common.base.Preconditions;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.DATypeKind;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.lang.model.type.TypeKind;
-import com.google.common.base.Preconditions;
 
 /**
  * DATypeFactory - final class exposing static Factory methods for DAType class
@@ -30,7 +30,7 @@ import com.google.common.base.Preconditions;
  * @author Sébastien Lesaint
  */
 public final class DATypeFactory {
-    private static final DAType VOID_DATYPE = DAType.builder(TypeKind.VOID, DANameFactory.voidDAName()).build();
+    private static final DAType VOID_DATYPE = DAType.builder(DATypeKind.VOID, DANameFactory.voidDAName()).build();
 
     private DATypeFactory() {
         // prevents instantiation
@@ -101,14 +101,14 @@ public final class DATypeFactory {
 
     @Nonnull
     public static DAType wildcardWithSuperBound(@Nonnull DAType superbound) {
-        return DAType.builder(TypeKind.WILDCARD, DANameFactory.wildcard())
+        return DAType.builder(DATypeKind.WILDCARD, DANameFactory.wildcard())
                 .withSuperBound(superbound)
                 .build();
     }
 
     @Nonnull
     public static DAType wildcardWithExtendsBound(@Nonnull DAType extendsBound) {
-        return DAType.builder(TypeKind.WILDCARD, DANameFactory.wildcard())
+        return DAType.builder(DATypeKind.WILDCARD, DANameFactory.wildcard())
                 .withExtendsBound(extendsBound)
                 .build();
     }
@@ -120,7 +120,7 @@ public final class DATypeFactory {
 
     @Nonnull
     private static DAType instance(DAName simpleName, DAName qualifiedName, List<DAType> typeArgs) {
-        return DAType.builder(TypeKind.DECLARED, simpleName)
+        return DAType.builder(DATypeKind.DECLARED, simpleName)
                 .withQualifiedName(qualifiedName)
                 .withTypeArgs(Preconditions.checkNotNull(typeArgs))
                 .build();

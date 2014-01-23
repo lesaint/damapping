@@ -1,9 +1,9 @@
 package fr.phan.damapping.processor.model.factory;
 
 import fr.phan.damapping.processor.model.DAName;
+import fr.phan.damapping.processor.model.DATypeKind;
 import org.testng.annotations.Test;
 
-import javax.lang.model.type.TypeKind;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +24,7 @@ public class DANameFactoryTest {
 
     @Test
     public void fromPrimitiveKind() throws Exception {
-        for (TypeKind typeKind : TypeKind.values()) {
+        for (DATypeKind typeKind : DATypeKind.values()) {
             if (typeKind.isPrimitive()) {
                 DAName daName = DANameFactory.fromPrimitiveKind(typeKind);
                 assertThat(daName.getName()).isEqualTo(typeKind.name().toLowerCase(Locale.US));

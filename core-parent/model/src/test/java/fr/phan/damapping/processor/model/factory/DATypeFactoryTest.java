@@ -15,13 +15,12 @@
  */
 package fr.phan.damapping.processor.model.factory;
 
+import com.google.common.collect.ImmutableList;
 import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.DATypeKind;
+import org.testng.annotations.Test;
 
 import java.util.Collections;
-import javax.lang.model.type.TypeKind;
-import com.google.common.collect.ImmutableList;
-
-import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,7 +34,7 @@ public class DATypeFactoryTest {
     @Test
     public void voidDaType() throws Exception {
         DAType daType = DATypeFactory.voidDaType();
-        assertThat(daType.getKind()).isEqualTo(TypeKind.VOID);
+        assertThat(daType.getKind()).isEqualTo(DATypeKind.VOID);
         assertThat(daType.getSimpleName()).isEqualTo(DANameFactory.voidDAName());
     }
 
@@ -57,7 +56,7 @@ public class DATypeFactoryTest {
     @Test
     public void declared_noPoint_in_qualifiedName() throws Exception {
         DAType daType = DATypeFactory.declared("Toto");
-        assertThat(daType.getKind()).isEqualTo(TypeKind.DECLARED);
+        assertThat(daType.getKind()).isEqualTo(DATypeKind.DECLARED);
         assertThat(daType.getSimpleName().getName()).isEqualTo("Toto");
         assertThat(daType.getQualifiedName().getName()).isEqualTo("Toto");
         assertThat(daType.getTypeArgs()).isEmpty();
@@ -66,7 +65,7 @@ public class DATypeFactoryTest {
     @Test
     public void declared() throws Exception {
         DAType daType = DATypeFactory.declared("com.acme.Toto");
-        assertThat(daType.getKind()).isEqualTo(TypeKind.DECLARED);
+        assertThat(daType.getKind()).isEqualTo(DATypeKind.DECLARED);
         assertThat(daType.getSimpleName().getName()).isEqualTo("Toto");
         assertThat(daType.getQualifiedName().getName()).isEqualTo("com.acme.Toto");
         assertThat(daType.getTypeArgs()).isEmpty();
@@ -76,7 +75,7 @@ public class DATypeFactoryTest {
     public void declaredWithTypes() throws Exception {
         ImmutableList<DAType> typeArgs = ImmutableList.of(DATypeFactory.declared("java.lang.String"));
         DAType daType = DATypeFactory.declared("com.acme.Toto", typeArgs);
-        assertThat(daType.getKind()).isEqualTo(TypeKind.DECLARED);
+        assertThat(daType.getKind()).isEqualTo(DATypeKind.DECLARED);
         assertThat(daType.getSimpleName().getName()).isEqualTo("Toto");
         assertThat(daType.getQualifiedName().getName()).isEqualTo("com.acme.Toto");
         assertThat(daType.getTypeArgs()).isSameAs(typeArgs);
@@ -100,7 +99,7 @@ public class DATypeFactoryTest {
     @Test
     public void from() throws Exception {
         DAType daType = DATypeFactory.from(getClass());
-        assertThat(daType.getKind()).isEqualTo(TypeKind.DECLARED);
+        assertThat(daType.getKind()).isEqualTo(DATypeKind.DECLARED);
         assertThat(daType.getSimpleName().getName()).isEqualTo(getClass().getSimpleName());
         assertThat(daType.getQualifiedName().getName()).isEqualTo(getClass().getCanonicalName());
         assertThat(daType.getTypeArgs()).isEmpty();
@@ -110,7 +109,7 @@ public class DATypeFactoryTest {
     public void fromWithTypes() throws Exception {
         ImmutableList<DAType> typeArgs = ImmutableList.of(DATypeFactory.declared("java.lang.String"));
         DAType daType = DATypeFactory.from(getClass(), typeArgs);
-        assertThat(daType.getKind()).isEqualTo(TypeKind.DECLARED);
+        assertThat(daType.getKind()).isEqualTo(DATypeKind.DECLARED);
         assertThat(daType.getSimpleName().getName()).isEqualTo(getClass().getSimpleName());
         assertThat(daType.getQualifiedName().getName()).isEqualTo(getClass().getCanonicalName());
         assertThat(daType.getTypeArgs()).isSameAs(typeArgs);
@@ -120,7 +119,7 @@ public class DATypeFactoryTest {
     public void wildcardWithSuperBound() throws Exception {
         DAType superBound = DATypeFactory.from(getClass());
         DAType daType = DATypeFactory.wildcardWithSuperBound(superBound);
-        assertThat(daType.getKind()).isEqualTo(TypeKind.WILDCARD);
+        assertThat(daType.getKind()).isEqualTo(DATypeKind.WILDCARD);
         assertThat(daType.getSimpleName()).isEqualTo(DANameFactory.wildcard());
         assertThat(daType.getSuperBound()).isSameAs(superBound);
     }
@@ -129,7 +128,7 @@ public class DATypeFactoryTest {
     public void wildcardWithExtendsBound() throws Exception {
         DAType extendsBound = DATypeFactory.from(getClass());
         DAType daType = DATypeFactory.wildcardWithExtendsBound(extendsBound);
-        assertThat(daType.getKind()).isEqualTo(TypeKind.WILDCARD);
+        assertThat(daType.getKind()).isEqualTo(DATypeKind.WILDCARD);
         assertThat(daType.getSimpleName()).isEqualTo(DANameFactory.wildcard());
         assertThat(daType.getExtendsBound()).isSameAs(extendsBound);
     }

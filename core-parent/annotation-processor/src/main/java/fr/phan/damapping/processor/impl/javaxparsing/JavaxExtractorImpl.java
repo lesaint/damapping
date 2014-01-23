@@ -49,10 +49,24 @@ public class JavaxExtractorImpl implements JavaxExtractor {
         if (type.getKind() == TypeKind.WILDCARD) {
             return extractWildcardType((WildcardType) type);
         }
-        DAType.Builder builder = DAType.builder(type.getKind(), extractSimpleName(type, element))
+        DAType.Builder builder = DAType
+                .builder(
+                        TypeKindToDATypeKind.INSTANCE.apply(type.getKind()),
+                        extractSimpleName(type, element)
+                )
                 .withQualifiedName(extractQualifiedName(type, element))
                 .withTypeArgs(extractTypeArgs(type));
         return builder.build();
+    }
+
+    private static enum TypeKindToDATypeKind implements Function<TypeKind, DATypeKind> {
+        INSTANCE;
+
+        @Nonnull
+        @Override
+        public DATypeKind apply(@Nonnull TypeKind typeKind) {
+            return DATypeKind.valueOf(typeKind.name());
+        }
     }
 
     @Override
@@ -152,7 +166,7 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     @Nullable
     public DAName extractSimpleName(TypeMirror type, Element element) {
         if (type.getKind().isPrimitive()) {
-            return DANameFactory.fromPrimitiveKind(type.getKind());
+            return DANameFactory.fromPrimitiveKind(TypeKindToDATypeKind.INSTANCE.apply(type.getKind()));
         }
         if (type.getKind() == TypeKind.WILDCARD) {
             // wildward types do not have a name nor qualified name

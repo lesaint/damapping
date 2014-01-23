@@ -20,11 +20,11 @@ import com.google.common.collect.ImmutableList;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.DATypeKind;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 
 import javax.annotation.Nullable;
-import javax.lang.model.type.TypeKind;
 import java.io.Serializable;
 
 import static fr.phan.damapping.processor.model.factory.DATypeFactory.declared;
@@ -64,7 +64,7 @@ final class DAWriterTestUtil {
      */
     private static DAParameter functionStringToIntegerArray(String name) {
         DAName qualifiedName = DANameFactory.from("com.google.common.base.Function");
-        DAType parameterType = DAType.builder(TypeKind.ARRAY, DANameFactory.simpleFromQualified(qualifiedName))
+        DAType parameterType = DAType.builder(DATypeKind.ARRAY, DANameFactory.simpleFromQualified(qualifiedName))
                 .withQualifiedName(qualifiedName)
                 .withTypeArgs(
                         ImmutableList.of(declared("java.lang.String"), declared("java.lang.Integer"))

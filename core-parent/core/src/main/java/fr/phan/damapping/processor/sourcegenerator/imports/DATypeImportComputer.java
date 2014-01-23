@@ -20,8 +20,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAType;
-
-import javax.lang.model.type.TypeKind;
+import fr.phan.damapping.processor.model.DATypeKind;
 
 /**
  * DATypeImportComputer -
@@ -50,7 +49,7 @@ public class DATypeImportComputer {
         );
     }
 
-    private static boolean hasNoName(TypeKind kind) {
-        return kind.isPrimitive() || kind == TypeKind.WILDCARD;
+    private static boolean hasNoName(DATypeKind kind) {
+        return kind.isPrimitive() || kind == DATypeKind.WILDCARD;
     }
 }

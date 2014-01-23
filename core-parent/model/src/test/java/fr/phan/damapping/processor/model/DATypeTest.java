@@ -17,8 +17,6 @@ package fr.phan.damapping.processor.model;
 
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 
-import javax.lang.model.type.TypeKind;
-
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,11 +29,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DATypeTest {
     @Test
     public void isArray() throws Exception {
-        assertThat(daType(TypeKind.ARRAY).isArray()).isTrue();
-        assertThat(daType(TypeKind.DECLARED).isArray()).isFalse();
+        assertThat(daType(DATypeKind.ARRAY).isArray()).isTrue();
+        assertThat(daType(DATypeKind.DECLARED).isArray()).isFalse();
     }
 
-    private static DAType daType(TypeKind kind) {
+    private static DAType daType(DATypeKind kind) {
         return DAType.builder(kind, DANameFactory.from("simpleName")).build();
     }
 }

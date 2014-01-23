@@ -19,7 +19,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import javax.lang.model.type.TypeKind;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -34,12 +33,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Immutable
 public class DAType {
     @Nonnull
-    private final TypeKind kind;
+    private final DATypeKind kind;
     /**
      * Name du type, sauf :
      * <ul>
      *     <li>dans le cas des tableaux où il s'agit du name du type contenu dans le tableau</li>
-     *     <li>dans le cas des types avec wildcard générique où il s'agit de la constante {@link fr.phan.damapping.processor.model.factory.DANameFactory.wildcard()}</li>
+     *     <li>dans le cas des types avec wildcard générique où il s'agit de la constante {@link fr.phan.damapping.processor.model.factory.DANameFactory#wildcard()}</li>
      * </ul>
      */
     @Nonnull
@@ -67,7 +66,7 @@ public class DAType {
     }
 
     @Nonnull
-    public TypeKind getKind() {
+    public DATypeKind getKind() {
         return kind;
     }
 
@@ -97,22 +96,22 @@ public class DAType {
     }
 
     public boolean isArray() {
-        return kind == TypeKind.ARRAY;
+        return kind == DATypeKind.ARRAY;
     }
 
-    public static Builder builder(@Nonnull TypeKind kind, @Nonnull DAName simpleName) {
+    public static Builder builder(@Nonnull DATypeKind kind, @Nonnull DAName simpleName) {
         return new Builder(kind, simpleName);
     }
 
     public static class Builder {
-        private final TypeKind kind;
+        private final DATypeKind kind;
         private final DAName simpleName;
         DAName qualifiedName;
         List<DAType> typeArgs;
         DAType superBound;
         DAType extendsBound;
 
-        public Builder(@Nonnull TypeKind kind, @Nonnull DAName simpleName) {
+        public Builder(@Nonnull DATypeKind kind, @Nonnull DAName simpleName) {
             this.kind = checkNotNull(kind);
             this.simpleName = checkNotNull(simpleName);
         }
