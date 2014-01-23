@@ -15,13 +15,12 @@
  */
 package fr.phan.damapping.processor.model.factory;
 
+import com.google.common.base.Preconditions;
 import fr.phan.damapping.processor.model.DAName;
 
-import java.util.Locale;
 import javax.annotation.Nonnull;
-import javax.lang.model.element.Name;
 import javax.lang.model.type.TypeKind;
-import com.google.common.base.Preconditions;
+import java.util.Locale;
 
 /**
  * DANameFactory - final class exposing static factory methods for DAName class
@@ -35,18 +34,6 @@ public final class DANameFactory {
 
     private DANameFactory() {
         // prevents instantiation
-    }
-
-    /**
-     * Crée un objet DAName à partir d'un objet Name non {@code null}
-     *
-     * @param name un {@link Name}
-     *
-     * @return un {@link DAName}
-     */
-    @Nonnull
-    public static DAName from(@Nonnull Name name) {
-        return new DAName(name.toString());
     }
 
     /**

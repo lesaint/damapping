@@ -1,16 +1,12 @@
 package fr.phan.damapping.processor.model.factory;
 
 import fr.phan.damapping.processor.model.DAName;
-import org.mockito.Mockito;
 import org.testng.annotations.Test;
 
-import javax.lang.model.element.Name;
 import javax.lang.model.type.TypeKind;
-
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 /**
  * DANameFactoryTest -
@@ -19,18 +15,11 @@ import static org.mockito.Mockito.when;
  */
 public class DANameFactoryTest {
 
-    public static final String TOTO = "toto";
+    private static final String TOTO = "toto";
 
     @Test
     public void from_string() throws Exception {
         assertThat(DANameFactory.from(TOTO).getName()).isEqualTo(TOTO);
-    }
-
-    @Test
-    public void from_Name() throws Exception {
-        Name mock = Mockito.mock(Name.class);
-        when(mock.toString()).thenReturn(TOTO);
-        assertThat(DANameFactory.from(mock).getName()).isEqualTo(TOTO);
     }
 
     @Test

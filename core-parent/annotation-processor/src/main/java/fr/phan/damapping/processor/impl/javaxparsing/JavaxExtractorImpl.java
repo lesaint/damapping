@@ -2,10 +2,7 @@ package fr.phan.damapping.processor.impl.javaxparsing;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
-import fr.phan.damapping.processor.model.DAModifier;
-import fr.phan.damapping.processor.model.DAName;
-import fr.phan.damapping.processor.model.DAParameter;
-import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.*;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 
@@ -132,7 +129,7 @@ public class JavaxExtractorImpl implements JavaxExtractor {
                     @Nullable
                     @Override
                     public DAParameter apply(@Nullable VariableElement o) {
-                        return DAParameter.builder(DANameFactory.from(o.getSimpleName()), extractType(o.asType()))
+                        return DAParameter.builder(JavaxDANameFactory.from(o.getSimpleName()), extractType(o.asType()))
                                 .withModifiers(from(o.getModifiers()).transform(toDAModifier()).toSet())
                                 .build();
                     }
@@ -161,7 +158,7 @@ public class JavaxExtractorImpl implements JavaxExtractor {
             // wildward types do not have a name nor qualified name
             return null;
         }
-        return DANameFactory.from(element.getSimpleName());
+        return JavaxDANameFactory.from(element.getSimpleName());
     }
 
     @Override
@@ -172,7 +169,7 @@ public class JavaxExtractorImpl implements JavaxExtractor {
             return null;
         }
         if (element instanceof QualifiedNameable) {
-            return DANameFactory.from(((QualifiedNameable) element).getQualifiedName());
+            return JavaxDANameFactory.from(((QualifiedNameable) element).getQualifiedName());
         }
         return null;
     }
@@ -181,8 +178,40 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     @Nullable
     public DAName extractQualifiedName(DeclaredType o) {
         if (o.asElement() instanceof QualifiedNameable) {
-            return DANameFactory.from(((QualifiedNameable) o.asElement()).getQualifiedName());
+            return JavaxDANameFactory.from(((QualifiedNameable) o.asElement()).getQualifiedName());
         }
         return null;
+    }
+
+    @Nullable
+    @Override
+    public List<DAEnumValue> extractEnumValues(@Nonnull TypeElement classElement) {
+        if (classElement.getKind() != ElementKind.ENUM) {
+            return null;
+        }
+
+        return from(classElement.getEnclosedElements())
+                // enum values are VariableElement with kind=Kind.ENUM_CONSTANT
+                .filter(
+                        Predicates.compose(
+                                Predicates.equalTo(ElementKind.ENUM_CONSTANT),
+                                new Function<Element, ElementKind>() {
+                                    @Nonnull
+                                    @Override
+                                    public ElementKind apply(@Nonnull Element o) {
+                                        return o.getKind();
+                                    }
+                                }
+                        )
+                )
+                .filter(VariableElement.class)
+                .transform(new Function<VariableElement, DAEnumValue>() {
+                    @Nonnull
+                    @Override
+                    public DAEnumValue apply(@Nonnull VariableElement o) {
+                        return new DAEnumValue(o.getSimpleName().toString());
+                    }
+                })
+                .toList();
     }
 }

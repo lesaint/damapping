@@ -1,7 +1,6 @@
 package fr.phan.damapping.processor.validator;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
 import fr.phan.damapping.processor.model.DAInterface;
 import fr.phan.damapping.processor.model.DAMethod;
@@ -10,8 +9,6 @@ import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.predicate.DAInterfacePredicates;
 import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import java.util.List;
 import java.util.Set;
 
@@ -72,7 +69,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
                 hasAccessibleConstructor(daSourceClass.getMethods());
                 break;
             case SINGLETON_ENUM:
-                hasOnlyOneEnumValue(daSourceClass.getClassElement());
+                hasOnlyOneEnumValue(daSourceClass);
                 break;
             case CONSTRUCTOR_FACTORY:
                 // TODO ajouter checks pour InstantiationType.CONSTRUCTOR_FACTORY (vérifier que pas d'autre méthode annotée avec @MapperFactoryMethod)
@@ -96,18 +93,9 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
         }
     }
 
-    private void hasOnlyOneEnumValue(TypeElement classElement) throws ValidationError {
-        if (classElement.getEnclosedElements() == null) {
-            // this case can not occurs because it is enforced by the java compiler
+    private void hasOnlyOneEnumValue(DASourceClass daSourceClass) throws ValidationError {
+        if (daSourceClass.getEnumValues().size() != 1) {
             throw new ValidationError("Enum annoted wih @Mapper must have one value");
-        }
-
-        int res = from(classElement.getEnclosedElements())
-                // enum values are VariableElement
-                .filter(Predicates.instanceOf(VariableElement.class))
-                .size();
-        if (res != 1) {
-            throw new ValidationError("Enum annoted with @Mapper must have just one value");
         }
     }
 

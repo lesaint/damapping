@@ -79,7 +79,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
             return;
         }
 
-        SourceWriterDelegate sourceWriterDelegate = new JavaxSourceWriterDelegate(processingEnv);
+        SourceWriterDelegate sourceWriterDelegate = new JavaxSourceWriterDelegate(processingEnv, classElement);
         SourceGenerationService sourceGenerationService = new SourceGenerationServiceImpl(sourceWriterDelegate);
         sourceGenerationService.generateSourceFiles(new DefaultFileGeneratorContext(daSourceClass));
     }

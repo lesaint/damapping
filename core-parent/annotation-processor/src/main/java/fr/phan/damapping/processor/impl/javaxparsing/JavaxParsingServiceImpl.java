@@ -6,7 +6,6 @@ import com.google.common.base.Predicates;
 import fr.phan.damapping.annotation.MapperFactoryMethod;
 import fr.phan.damapping.processor.model.*;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
-import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -16,13 +15,9 @@ import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.*;
 import javax.lang.model.type.*;
-import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
-import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static com.google.common.collect.FluentIterable.from;
 
@@ -50,29 +45,38 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
 
     @Nonnull
     public DASourceClass parse(TypeElement classElement) {
-        // retrieve names of the class with @Mapper
-        DASourceClass.Builder daSourceClassBuilder = DASourceClass.builder(classElement,
-                javaxExtractor.extractType((DeclaredType) classElement.asType()));
+        DAType type = javaxExtractor.extractType((DeclaredType) classElement.asType());
+
+        DASourceClass.Builder builder;
+        if (classElement.getKind() == ElementKind.ENUM) {
+            builder = DASourceClass.enumBuilder(type, javaxExtractor.extractEnumValues(classElement));
+        }
+        else if (classElement.getKind() == ElementKind.CLASS) {
+            builder = DASourceClass.classbuilder(type);
+        }
+        else {
+            throw new IllegalArgumentException("Unsupported Kind of TypeElement, must be either CLASS or ENUM");
+        }
 
         // retrieve name of the package of the class with @Mapper
-        daSourceClassBuilder.withPackageName(retrievePackageName(classElement));
+        builder.withPackageName(retrievePackageName(classElement));
 
-        daSourceClassBuilder.withModifiers(
+        builder.withModifiers(
                 from(classElement.getModifiers()).transform(javaxExtractor.toDAModifier()).toSet()
         );
 
         // retrieve interfaces implemented (directly and if any) by the class with @Mapper (+ their generics)
         // chercher si l'une d'elles est Function (Guava)
         List<DAInterface> interfaces = retrieveInterfaces(classElement);
-        daSourceClassBuilder.withInterfaces(interfaces);
+        builder.withInterfaces(interfaces);
 
         // pour le moment, on ne traite pas les classes abstraites implémentées par la class @Mapper ni les interfaces
         // implémentées indirectement
 
         List<DAMethod> methods = retrieveMethods(classElement);
-        daSourceClassBuilder.withMethods(methods);
-        daSourceClassBuilder.withInstantiationType(computeInstantiationType(classElement, methods));
-        return daSourceClassBuilder.build();
+        builder.withMethods(methods);
+        builder.withInstantiationType(computeInstantiationType(classElement, methods));
+        return builder.build();
     }
 
     @Override
@@ -104,7 +108,7 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
                             res.withName(DANameFactory.from(StringUtils.uncapitalize(classElement.getSimpleName().toString())));
                             res.withReturnType(javaxExtractor.extractType(classElement.asType()));
                         } else {
-                            res.withName(DANameFactory.from(o.getSimpleName()));
+                            res.withName(JavaxDANameFactory.from(o.getSimpleName()));
                             res.withReturnType(javaxExtractor.extractReturnType(methodElement));
                         }
                         return res.build();
@@ -151,7 +155,7 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
     @Override
     public DAName retrievePackageName(TypeElement classElement) {
         PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();
-        return DANameFactory.from(packageElement.getQualifiedName());
+        return JavaxDANameFactory.from(packageElement.getQualifiedName());
     }
 
     @Override
