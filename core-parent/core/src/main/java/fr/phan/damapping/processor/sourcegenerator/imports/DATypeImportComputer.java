@@ -23,6 +23,9 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
+import static com.google.common.collect.ImmutableList.copyOf;
+import static com.google.common.collect.ImmutableList.of;
+
 /**
  * DATypeImportComputer -
  *
@@ -30,27 +33,28 @@ import com.google.common.collect.Iterables;
  */
 public class DATypeImportComputer {
 
-    // TODO : cache the list of imports for a specific DAType
-    public static Iterable<DAName> computeImports(DAType daType) {
-        ImmutableList<DAName> qualifiedName = hasNoName(daType.getKind()) ? ImmutableList.<DAName>of() : ImmutableList.of(daType.getQualifiedName());
-        Iterable<Iterable<DAName>> typesImports = Iterables.transform(
-                daType.getTypeArgs(),
-                new Function<DAType, Iterable<DAName>>() {
-                    @Override
-                    public Iterable<DAName> apply(DAType daType) {
-                        return computeImports(daType);
-                    }
-                }
-        );
-        return Iterables.concat(
-                qualifiedName,
-                Iterables.concat(typesImports),
-                daType.getSuperBound() == null ? ImmutableList.<DAName>of() : ImmutableList.copyOf(computeImports(daType.getSuperBound())),
-                daType.getExtendsBound() == null ? ImmutableList.<DAName>of() : ImmutableList.copyOf(computeImports(daType.getExtendsBound()))
-        );
-    }
+  // TODO : cache the list of imports for a specific DAType
+  public static Iterable<DAName> computeImports(DAType daType) {
+    ImmutableList<DAName> empty = ImmutableList.<DAName>of();
+    ImmutableList<DAName> qualifiedName = hasNoName(daType.getKind()) ? empty : of(daType.getQualifiedName());
+    Iterable<Iterable<DAName>> typesImports = Iterables.transform(
+        daType.getTypeArgs(),
+        new Function<DAType, Iterable<DAName>>() {
+          @Override
+          public Iterable<DAName> apply(DAType daType) {
+            return computeImports(daType);
+          }
+        }
+    );
+    return Iterables.concat(
+        qualifiedName,
+        Iterables.concat(typesImports),
+        daType.getSuperBound() == null ? empty : copyOf(computeImports(daType.getSuperBound())),
+        daType.getExtendsBound() == null ? empty : copyOf(computeImports(daType.getExtendsBound()))
+    );
+  }
 
-    private static boolean hasNoName(DATypeKind kind) {
-        return kind.isPrimitive() || kind == DATypeKind.WILDCARD;
-    }
+  private static boolean hasNoName(DATypeKind kind) {
+    return kind.isPrimitive() || kind == DATypeKind.WILDCARD;
+  }
 }

@@ -31,65 +31,65 @@ import com.google.common.collect.ImmutableList;
  * @author Sébastien Lesaint
  */
 public class DAInterfaceMethodWriter<T extends DAWriter> extends AbstractDAWriter<T> {
-    private final String name;
-    private final DAType returnType;
-    private List<DAType> annotations = Collections.emptyList();
-    private List<DAParameter> params = Collections.<DAParameter>emptyList();
+  private final String name;
+  private final DAType returnType;
+  private List<DAType> annotations = Collections.emptyList();
+  private List<DAParameter> params = Collections.<DAParameter>emptyList();
 
-    public DAInterfaceMethodWriter(String name, DAType returnType, BufferedWriter bw, int indentOffset, T parent) {
-        super(bw, parent, indentOffset);
-        this.name = name;
-        this.returnType = returnType;
+  public DAInterfaceMethodWriter(String name, DAType returnType, BufferedWriter bw, int indentOffset, T parent) {
+    super(bw, parent, indentOffset);
+    this.name = name;
+    this.returnType = returnType;
+  }
+
+  public DAInterfaceMethodWriter<T> withAnnotations(List<DAType> annotations) {
+    this.annotations = annotations == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(annotations);
+    return this;
+  }
+
+  public DAInterfaceMethodWriter<T> withParams(List<DAParameter> params) {
+    this.params = params == null ? Collections.<DAParameter>emptyList() : ImmutableList.copyOf(params);
+    return this;
+  }
+
+  public T write() throws IOException {
+    commons.appendAnnotations(annotations);
+    commons.appendIndent();
+    appendReturnType();
+    commons.append(name);
+    appendParams(params);
+    commons.append(";");
+    commons.newLine();
+    commons.newLine();
+    return parent;
+  }
+
+  private void appendReturnType() throws IOException {
+    commons.appendType(returnType);
+    commons.append(" ");
+  }
+
+  /**
+   * Ajoute les parenthèses et les paramètres d'une méthode, les paramètres étant représentés, dans l'ordre
+   * par la liste de DAType en argument.
+   */
+  private void appendParams(List<DAParameter> params) throws IOException {
+    if (params.isEmpty()) {
+      commons.append("()");
+      return;
     }
 
-    public DAInterfaceMethodWriter<T> withAnnotations(List<DAType> annotations) {
-        this.annotations = annotations == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(annotations);
-        return this;
+    commons.append("(");
+    Iterator<DAParameter> it = params.iterator();
+    while (it.hasNext()) {
+      DAParameter parameter = it.next();
+      commons.appendType(parameter.getType());
+      commons.append(" ").append(parameter.getName());
+      if (it.hasNext()) {
+        commons.append(", ");
+      }
     }
-
-    public DAInterfaceMethodWriter<T> withParams(List<DAParameter> params) {
-        this.params = params == null ? Collections.<DAParameter>emptyList() : ImmutableList.copyOf(params);
-        return this;
-    }
-
-    public T write() throws IOException {
-        commons.appendAnnotations(annotations);
-        commons.appendIndent();
-        appendReturnType();
-        commons.append(name);
-        appendParams(params);
-        commons.append(";");
-        commons.newLine();
-        commons.newLine();
-        return parent;
-    }
-
-    private void appendReturnType() throws IOException {
-        commons.appendType(returnType);
-        commons.append(" ");
-    }
-
-    /**
-     * Ajoute les parenthèses et les paramètres d'une méthode, les paramètres étant représentés, dans l'ordre
-     * par la liste de DAType en argument.
-     */
-    private void appendParams(List<DAParameter> params) throws IOException {
-        if (params.isEmpty()) {
-            commons.append("()");
-            return;
-        }
-
-        commons.append("(");
-        Iterator<DAParameter> it = params.iterator();
-        while (it.hasNext()) {
-            DAParameter parameter = it.next();
-            commons.appendType(parameter.getType());
-            commons.append(" ").append(parameter.getName());
-            if (it.hasNext()) {
-                commons.append(", ");
-            }
-        }
-        commons.append(")");
-    }
+    commons.append(")");
+  }
 
 }

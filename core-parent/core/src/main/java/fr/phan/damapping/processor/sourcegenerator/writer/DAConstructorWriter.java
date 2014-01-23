@@ -30,78 +30,80 @@ import com.google.common.collect.ImmutableSet;
 
 /**
  * DAConstructorWriter - Writer pour les constructeurs d'une classe
- *
+ * <p/>
  * TODO améliorations de DAConstructorWriter
  * <ul>
- *     <li>contrôle sur les modifiers : seulement public, private ou protected</li>
- *     <li>ajouter convenience method pour les invocations de super</li>
- *     <li>ajout de vérification d'état, pas possible d'appeller super si un statement a été créé</li>
+ * <li>contrôle sur les modifiers : seulement public, private ou protected</li>
+ * <li>ajouter convenience method pour les invocations de super</li>
+ * <li>ajout de vérification d'état, pas possible d'appeller super si un statement a été créé</li>
  * </ul>
  *
  * @author Sébastien Lesaint
  */
 public class DAConstructorWriter<T extends DAWriter> extends AbstractDAWriter<T> {
-    private final String name;
-    private Set<DAModifier> modifiers = Collections.<DAModifier>emptySet();
-    private List<DAParameter> params = Collections.<DAParameter>emptyList();
+  private final String name;
+  private Set<DAModifier> modifiers = Collections.<DAModifier>emptySet();
+  private List<DAParameter> params = Collections.<DAParameter>emptyList();
 
-    public DAConstructorWriter(DAType constructedType, BufferedWriter bw, T parent, int indentOffset) {
-        super(bw, parent, indentOffset);
-        this.name = constructedType.getSimpleName().getName();
+  public DAConstructorWriter(DAType constructedType, BufferedWriter bw, T parent, int indentOffset) {
+    super(bw, parent, indentOffset);
+    this.name = constructedType.getSimpleName().getName();
+  }
+
+  public DAConstructorWriter<T> withModifiers(Set<DAModifier> modifiers) {
+    this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : ImmutableSet.copyOf(modifiers);
+    return this;
+  }
+
+  public DAConstructorWriter<T> withParams(List<DAParameter> params) {
+    this.params = params == null ? Collections.<DAParameter>emptyList() : ImmutableList.copyOf(params);
+    return this;
+  }
+
+  public DAConstructorWriter<T> start() throws IOException {
+    commons.appendIndent();
+    commons.appendModifiers(modifiers);
+    commons.append(name);
+    appendParams(params);
+    commons.append(" {");
+    commons.newLine();
+    return this;
+  }
+
+  /**
+   * Ajoute les parenthèses et les paramètres du constructeur, les paramètres étant représentés, dans l'ordre
+   * par la liste de DAType en argument.
+   */
+  private void appendParams(List<DAParameter> params) throws IOException {
+    if (params.isEmpty()) {
+      commons.append("()");
+      return;
     }
 
-    public DAConstructorWriter<T> withModifiers(Set<DAModifier> modifiers) {
-        this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : ImmutableSet.copyOf(modifiers);
-        return this;
+    commons.append("(");
+    Iterator<DAParameter> it = params.iterator();
+    while (it.hasNext()) {
+      DAParameter parameter = it.next();
+      commons.appendType(parameter.getType());
+      commons.append(" ").append(parameter.getName());
+      if (it.hasNext()) {
+        commons.append(", ");
+      }
     }
+    commons.append(")");
+  }
 
-    public DAConstructorWriter<T> withParams(List<DAParameter> params) {
-        this.params = params == null ? Collections.<DAParameter>emptyList() : ImmutableList.copyOf(params);
-        return this;
-    }
+  public DAStatementWriter<DAConstructorWriter<T>> newStatement() {
+    return new DAStatementWriter<DAConstructorWriter<T>>(commons.getBufferedWriter(), this,
+        commons.getIndentOffset() + 1
+    );
+  }
 
-    public DAConstructorWriter<T> start() throws IOException {
-        commons.appendIndent();
-        commons.appendModifiers(modifiers);
-        commons.append(name);
-        appendParams(params);
-        commons.append(" {");
-        commons.newLine();
-        return this;
-    }
-
-    /**
-     * Ajoute les parenthèses et les paramètres du constructeur, les paramètres étant représentés, dans l'ordre
-     * par la liste de DAType en argument.
-     */
-    private void appendParams(List<DAParameter> params) throws IOException {
-        if (params.isEmpty()) {
-            commons.append("()");
-            return;
-        }
-
-        commons.append("(");
-        Iterator<DAParameter> it = params.iterator();
-        while (it.hasNext()) {
-            DAParameter parameter = it.next();
-            commons.appendType(parameter.getType());
-            commons.append(" ").append(parameter.getName());
-            if (it.hasNext()) {
-                commons.append(", ");
-            }
-        }
-        commons.append(")");
-    }
-
-    public DAStatementWriter<DAConstructorWriter<T>> newStatement() {
-        return new DAStatementWriter<DAConstructorWriter<T>>(commons.getBufferedWriter(), this, commons.getIndentOffset() + 1);
-    }
-
-    public T end() throws IOException {
-        commons.appendIndent();
-        commons.append("}");
-        commons.newLine();
-        commons.newLine();
-        return parent;
-    }
+  public T end() throws IOException {
+    commons.appendIndent();
+    commons.append("}");
+    commons.newLine();
+    commons.newLine();
+    return parent;
+  }
 }

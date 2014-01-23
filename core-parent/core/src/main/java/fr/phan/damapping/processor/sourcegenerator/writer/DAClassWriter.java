@@ -30,114 +30,123 @@ import com.google.common.collect.ImmutableSet;
 
 /**
  * DAClassWriter -
- *
+ * <p/>
  * améliorations à réaliser de DAClassWriter
  * <ul>
- *     <li>ajouter un contrôle sur les modifiers autorisés pour une classe</li>
- *     <li>ajouter un paramètre "boolean classOfJavaSource" pour refuser le modifier PUBLIC si ce paramètre est false</li>
- *     <li>ajouter une vérification d'état, si start() a été appelé, withModifiers, withAnnotations, withImplemented, withExtented échouent</li>
- *     <li>ajouter le tri automatique des modifiers</li>
- *     <li>ajouter vérification d'état : end() must be called after start()</li>
- *     <li>ajouter vérification d'état : plus de call sur aucune méthode si end() a été appelé</li>
- *     <li>ajouter vérification des paramètres de withModifiers, withAnnotations, withImplemented, withExtented</li>
+ * <li>ajouter un contrôle sur les modifiers autorisés pour une classe</li>
+ * <li>ajouter un paramètre "boolean classOfJavaSource" pour refuser le modifier PUBLIC si ce paramètre est false</li>
+ * <li>ajouter une vérification d'état, si start() a été appelé, withModifiers, withAnnotations, withImplemented,
+ * withExtented échouent</li>
+ * <li>ajouter le tri automatique des modifiers</li>
+ * <li>ajouter vérification d'état : end() must be called after start()</li>
+ * <li>ajouter vérification d'état : plus de call sur aucune méthode si end() a été appelé</li>
+ * <li>ajouter vérification des paramètres de withModifiers, withAnnotations, withImplemented, withExtented</li>
  * </ul>
  *
  * @author Sébastien Lesaint
  */
 public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
-    @VisibleForTesting
-    protected final DAType classType;
-    private final String name;
-    private Set<DAModifier> modifiers = Collections.emptySet();
-    private List<DAType> annotations = Collections.emptyList();
-    private List<DAType> implemented = Collections.emptyList();
-    private DAType extended;
+  @VisibleForTesting
+  protected final DAType classType;
+  private final String name;
+  private Set<DAModifier> modifiers = Collections.emptySet();
+  private List<DAType> annotations = Collections.emptyList();
+  private List<DAType> implemented = Collections.emptyList();
+  private DAType extended;
 
-    DAClassWriter(DAType classType, BufferedWriter bw, T parent, int indentOffset) {
-        super(bw, parent, indentOffset);
-        this.name = classType.getSimpleName().getName();
-        this.classType = classType;
+  DAClassWriter(DAType classType, BufferedWriter bw, T parent, int indentOffset) {
+    super(bw, parent, indentOffset);
+    this.name = classType.getSimpleName().getName();
+    this.classType = classType;
+  }
+
+  public DAClassWriter<T> withModifiers(Set<DAModifier> modifiers) {
+    this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : ImmutableSet.copyOf(modifiers);
+    return this;
+  }
+
+  public DAClassWriter<T> withAnnotations(List<DAType> annotations) {
+    this.annotations = annotations == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(annotations);
+    return this;
+  }
+
+  public DAClassWriter<T> withImplemented(List<DAType> implemented) {
+    this.implemented = implemented == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(implemented);
+    return this;
+  }
+
+  public DAClassWriter<T> withExtended(DAType extended) {
+    this.extended = extended;
+    return this;
+  }
+
+  public DAClassWriter<T> start() throws IOException {
+    commons.appendAnnotations(annotations);
+    commons.appendIndent();
+    commons.appendModifiers(modifiers);
+    commons.append("class ").append(name).append(" ");
+    appendExtended();
+    appendImplemented();
+    commons.append("{");
+    commons.newLine();
+    commons.newLine();
+    return this;
+  }
+
+  public DAPropertyWriter<DAClassWriter<T>> newProperty(String name, DAType type) {
+    return new DAPropertyWriter<DAClassWriter<T>>(name, type, commons.getBufferedWriter(), this,
+        commons.getIndentOffset() + 1
+    );
+  }
+
+  public DAConstructorWriter<DAClassWriter<T>> newConstructor() {
+    return new DAConstructorWriter<DAClassWriter<T>>(classType, commons.getBufferedWriter(), this,
+        commons.getIndentOffset() + 1
+    );
+  }
+
+  public DAClassMethodWriter<DAClassWriter<T>> newMethod(String name, DAType returnType) {
+    return new DAClassMethodWriter<DAClassWriter<T>>(name, returnType, commons.getBufferedWriter(),
+        commons.getIndentOffset() + 1, this
+    );
+  }
+
+  public T end() throws IOException {
+    commons.appendIndent();
+    commons.append("}");
+    commons.newLine();
+    return parent;
+  }
+
+  public DAClassWriter<DAClassWriter<T>> newClass(DAType classType) {
+    return new DAClassWriter<DAClassWriter<T>>(classType, commons.getBufferedWriter(), this,
+        commons.getIndentOffset() + 1
+    );
+  }
+
+  private void appendExtended() throws IOException {
+    if (extended == null) {
+      return;
     }
 
-    public DAClassWriter<T> withModifiers(Set<DAModifier> modifiers) {
-        this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : ImmutableSet.copyOf(modifiers);
-        return this;
+    commons.append("extends ");
+    commons.appendType(extended);
+    commons.append(" ");
+  }
+
+  private void appendImplemented() throws IOException {
+    if (implemented.isEmpty()) {
+      return;
     }
 
-    public DAClassWriter<T> withAnnotations(List<DAType> annotations) {
-        this.annotations = annotations == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(annotations);
-        return this;
+    commons.append("implements ");
+    Iterator<DAType> it = implemented.iterator();
+    while (it.hasNext()) {
+      commons.appendType(it.next());
+      if (it.hasNext()) {
+        commons.append(",");
+      }
+      commons.append(" ");
     }
-
-    public DAClassWriter<T> withImplemented(List<DAType> implemented) {
-        this.implemented = implemented == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(implemented);
-        return this;
-    }
-
-    public DAClassWriter<T> withExtended(DAType extended) {
-        this.extended = extended;
-        return this;
-    }
-
-    public DAClassWriter<T> start() throws IOException {
-        commons.appendAnnotations(annotations);
-        commons.appendIndent();
-        commons.appendModifiers(modifiers);
-        commons.append("class ").append(name).append(" ");
-        appendExtended();
-        appendImplemented();
-        commons.append("{");
-        commons.newLine();
-        commons.newLine();
-        return this;
-    }
-
-    public DAPropertyWriter<DAClassWriter<T>> newProperty(String name, DAType type) {
-        return new DAPropertyWriter<DAClassWriter<T>>(name, type, commons.getBufferedWriter(), this, commons.getIndentOffset() + 1);
-    }
-
-    public DAConstructorWriter<DAClassWriter<T>> newConstructor() {
-        return new DAConstructorWriter<DAClassWriter<T>>(classType, commons.getBufferedWriter(), this, commons.getIndentOffset() + 1);
-    }
-
-    public DAClassMethodWriter<DAClassWriter<T>> newMethod(String name, DAType returnType) {
-        return new DAClassMethodWriter<DAClassWriter<T>>(name, returnType, commons.getBufferedWriter(), commons.getIndentOffset() + 1, this);
-    }
-
-    public T end() throws IOException {
-        commons.appendIndent();
-        commons.append("}");
-        commons.newLine();
-        return parent;
-    }
-
-    public DAClassWriter<DAClassWriter<T>> newClass(DAType classType) {
-        return new DAClassWriter<DAClassWriter<T>>(classType, commons.getBufferedWriter(), this, commons.getIndentOffset() + 1);
-    }
-
-    private void appendExtended() throws IOException {
-        if (extended == null) {
-            return;
-        }
-
-        commons.append("extends ");
-        commons.appendType(extended);
-        commons.append(" ");
-    }
-
-    private void appendImplemented() throws IOException {
-        if (implemented.isEmpty()) {
-            return;
-        }
-
-        commons.append("implements ");
-        Iterator<DAType> it = implemented.iterator();
-        while (it.hasNext()) {
-            commons.appendType(it.next());
-            if (it.hasNext()) {
-                commons.append(",");
-            }
-            commons.append(" ");
-        }
-    }
+  }
 }

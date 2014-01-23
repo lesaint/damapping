@@ -19,11 +19,12 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 /**
-* SourceGenerator -
-*
-* @author Sébastien Lesaint
-*/
+ * SourceGenerator -
+ *
+ * @author Sébastien Lesaint
+ */
 public interface SourceGenerator {
-    String fileName(FileGeneratorContext context);
-    void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException;
+  String fileName(FileGeneratorContext context);
+
+  void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException;
 }

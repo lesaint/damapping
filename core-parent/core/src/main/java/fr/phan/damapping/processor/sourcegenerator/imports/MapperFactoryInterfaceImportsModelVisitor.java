@@ -27,23 +27,23 @@ import fr.phan.damapping.processor.model.visitor.DAModelVisitor;
  * @author Sébastien Lesaint
  */
 public class MapperFactoryInterfaceImportsModelVisitor extends ImportListBuilder implements DAModelVisitor {
-    @Override
-    public void visit(DASourceClass daSourceClass) {
-        addImport(daSourceClass.getType().getQualifiedName());
-    }
+  @Override
+  public void visit(DASourceClass daSourceClass) {
+    addImport(daSourceClass.getType().getQualifiedName());
+  }
 
-    @Override
-    public void visit(DAInterface daInterface) {
-        // interfaces are not used in the Factory
-    }
+  @Override
+  public void visit(DAInterface daInterface) {
+    // interfaces are not used in the Factory
+  }
 
-    @Override
-    public void visit(DAMethod daMethod) {
-        // mapperFactoryMethod are exposed as methods of the MapperFactory
-        if (daMethod.isMapperFactoryMethod()) {
-            for (DAParameter parameter : daMethod.getParameters()) {
-                addImports(parameter.getType());
-            }
-        }
+  @Override
+  public void visit(DAMethod daMethod) {
+    // mapperFactoryMethod are exposed as methods of the MapperFactory
+    if (daMethod.isMapperFactoryMethod()) {
+      for (DAParameter parameter : daMethod.getParameters()) {
+        addImports(parameter.getType());
+      }
     }
+  }
 }

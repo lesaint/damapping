@@ -32,37 +32,37 @@ import com.google.common.collect.Iterables;
 import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
 
 /**
-* MapperFactoryInterfaceSourceGenerator - Générateur du fichier source de l'interface MapperFactory générée dans le cas
-* où il existe au moins une méthode annotée avec @MapperFactoryMethod dans la class annotée avec @Mapper.
-*
-* @author Sébastien Lesaint
-*/
+ * MapperFactoryInterfaceSourceGenerator - Générateur du fichier source de l'interface MapperFactory générée dans le cas
+ * où il existe au moins une méthode annotée avec @MapperFactoryMethod dans la class annotée avec @Mapper.
+ *
+ * @author Sébastien Lesaint
+ */
 public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerator {
-    @Override
-    public String fileName(FileGeneratorContext context) {
-        return context.getMapperFactoryInterfaceDAType().getQualifiedName().getName();
+  @Override
+  public String fileName(FileGeneratorContext context) {
+    return context.getMapperFactoryInterfaceDAType().getQualifiedName().getName();
+  }
+
+  @Override
+  public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
+    DASourceClass sourceClass = context.getSourceClass();
+    DAFileWriter fileWriter = new DAFileWriter(bw)
+        .appendPackage(sourceClass.getPackageName())
+        .appendImports(context.getMapperFactoryInterfaceImports())
+        .appendWarningComment();
+
+    DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter
+        .newInterface(context.getMapperFactoryInterfaceDAType().getSimpleName().getName())
+        .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
+        .start();
+
+    DAType mapperClass = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "Mapper");
+    for (DAMethod method : Iterables.filter(sourceClass.getMethods(), DAMethodPredicates.isMapperFactoryMethod())) {
+      String name = isConstructor().apply(method) ? "instanceByConstructor" : method.getName().getName();
+      interfaceWriter.newMethod(name, mapperClass).withParams(method.getParameters()).write();
     }
 
-    @Override
-    public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
-        DASourceClass sourceClass = context.getSourceClass();
-        DAFileWriter fileWriter = new DAFileWriter(bw)
-                .appendPackage(sourceClass.getPackageName())
-                .appendImports(context.getMapperFactoryInterfaceImports())
-                .appendWarningComment();
-
-        DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter.newInterface(context.getMapperFactoryInterfaceDAType().getSimpleName().getName())
-                .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
-                .start();
-
-        DAType mapperClass = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "Mapper");
-        for (DAMethod method : Iterables.filter(sourceClass.getMethods(), DAMethodPredicates.isMapperFactoryMethod())) {
-            String name = isConstructor().apply(method) ? "instanceByConstructor" : method.getName().getName();
-            interfaceWriter.newMethod(name, mapperClass)
-                    .withParams(method.getParameters()).write();
-        }
-
-        interfaceWriter.end();
-        fileWriter.end();
-    }
+    interfaceWriter.end();
+    fileWriter.end();
+  }
 }

@@ -20,11 +20,12 @@ import fr.phan.damapping.processor.model.DAName;
 import javax.annotation.Nullable;
 
 /**
-* ImportVisitor -
-*
-* @author Sébastien Lesaint
-*/
+ * ImportVisitor -
+ *
+ * @author Sébastien Lesaint
+ */
 public interface ImportVisitor {
-    void addMapperFactoryImplImport(@Nullable DAName qualifiedName);
-    void addMapperFactoryImplImport(@Nullable Iterable<DAName> qualifiedNames);
+  void addMapperFactoryImplImport(@Nullable DAName qualifiedName);
+
+  void addMapperFactoryImplImport(@Nullable Iterable<DAName> qualifiedNames);
 }

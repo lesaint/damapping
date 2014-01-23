@@ -16,12 +16,12 @@
 package fr.phan.damapping.processor.sourcegenerator;
 
 /**
-* AbstractSourceGenerator -
-*
-* @author Sébastien Lesaint
-*/
+ * AbstractSourceGenerator -
+ *
+ * @author Sébastien Lesaint
+ */
 abstract class AbstractSourceGenerator implements SourceGenerator {
 
-    protected static final String INDENT = "    ";
+  protected static final String INDENT = "    ";
 
 }

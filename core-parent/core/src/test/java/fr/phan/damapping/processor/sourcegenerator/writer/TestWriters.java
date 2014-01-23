@@ -20,16 +20,16 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 /**
-* TestWriters -
-*
-* @author Sébastien Lesaint
-*/
+ * TestWriters -
+ *
+ * @author Sébastien Lesaint
+ */
 class TestWriters {
-    final StringWriter out = new StringWriter();
-    final BufferedWriter bw = new BufferedWriter(out);
+  final StringWriter out = new StringWriter();
+  final BufferedWriter bw = new BufferedWriter(out);
 
-    String getRes() throws IOException {
-        bw.flush();
-        return out.getBuffer().toString();
-    }
+  String getRes() throws IOException {
+    bw.flush();
+    return out.getBuffer().toString();
+  }
 }

@@ -23,16 +23,16 @@ import java.io.BufferedWriter;
  * @author Sébastien Lesaint
  */
 public class AbstractDAWriter<T extends DAWriter> implements DAWriter {
-    protected final CommonMethods commons;
-    protected final T parent;
+  protected final CommonMethods commons;
+  protected final T parent;
 
-    AbstractDAWriter(BufferedWriter bw, T parent, int indentOffset) {
-        this(new CommonMethodsImpl(bw, indentOffset), parent);
-    }
+  AbstractDAWriter(BufferedWriter bw, T parent, int indentOffset) {
+    this(new CommonMethodsImpl(bw, indentOffset), parent);
+  }
 
-    AbstractDAWriter(CommonMethods commonMethods, T parent) {
-        this.commons = commonMethods;
-        this.parent = parent;
-    }
+  AbstractDAWriter(CommonMethods commonMethods, T parent) {
+    this.commons = commonMethods;
+    this.parent = parent;
+  }
 
 }

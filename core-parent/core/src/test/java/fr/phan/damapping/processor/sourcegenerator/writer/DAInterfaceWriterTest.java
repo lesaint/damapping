@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableSet;
 import org.testng.annotations.Test;
 
 import static fr.phan.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
+import static fr.phan.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -31,82 +32,100 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Sébastien Lesaint
  */
 public class DAInterfaceWriterTest {
-    @Test
-    public void empty_interface() throws Exception {
-        TestWriters testWriters = new TestWriters();
-        daInterfaceWriter(testWriters, "name").start().end();
+  @Test
+  public void empty_interface() throws Exception {
+    TestWriters testWriters = new TestWriters();
+    daInterfaceWriter(testWriters, "name").start().end();
 
-        assertThat(testWriters.getRes()).isEqualTo(INDENT + "interface name {" + DAWriterTestUtil.LINE_SEPARATOR + DAWriterTestUtil.LINE_SEPARATOR
-                + INDENT + "}" + DAWriterTestUtil.LINE_SEPARATOR);
-    }
+    assertThat(testWriters.getRes()).isEqualTo(
+        INDENT + "interface name {" + LINE_SEPARATOR
+            + LINE_SEPARATOR
+            + INDENT + "}" + LINE_SEPARATOR
+    );
+  }
 
-    @Test
-    public void public_empty_interface() throws Exception {
-        TestWriters testWriters = new TestWriters();
-        daInterfaceWriter(testWriters, "name")
-                .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
-                .start().end();
+  @Test
+  public void public_empty_interface() throws Exception {
+    TestWriters testWriters = new TestWriters();
+    daInterfaceWriter(testWriters, "name")
+        .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
+        .start().end();
 
-        assertThat(testWriters.getRes()).isEqualTo(INDENT + "public interface name {" + DAWriterTestUtil.LINE_SEPARATOR + DAWriterTestUtil.LINE_SEPARATOR
-                + INDENT + "}" + DAWriterTestUtil.LINE_SEPARATOR);
-    }
+    assertThat(testWriters.getRes()).isEqualTo(
+        INDENT + "public interface name {" + LINE_SEPARATOR
+            + LINE_SEPARATOR
+            + INDENT + "}" + LINE_SEPARATOR
+    );
+  }
 
-    @Test
-    public void annoted_empty_interface() throws Exception {
-        TestWriters testWriters = new TestWriters();
-        daInterfaceWriter(testWriters, "name")
-                .withAnnotations(ImmutableList.of(DAWriterTestUtil.NULLABLE_ANNOTATION))
-                .start().end();
+  @Test
+  public void annoted_empty_interface() throws Exception {
+    TestWriters testWriters = new TestWriters();
+    daInterfaceWriter(testWriters, "name")
+        .withAnnotations(ImmutableList.of(NULLABLE_ANNOTATION))
+        .start().end();
 
-        assertThat(testWriters.getRes()).isEqualTo(INDENT + "@Nullable" + DAWriterTestUtil.LINE_SEPARATOR
-                + INDENT + "interface name {" + DAWriterTestUtil.LINE_SEPARATOR + DAWriterTestUtil.LINE_SEPARATOR
-                + INDENT + "}" + DAWriterTestUtil.LINE_SEPARATOR);
-    }
+    assertThat(testWriters.getRes()).isEqualTo(INDENT + "@Nullable" + LINE_SEPARATOR
+        + INDENT + "interface name {" + LINE_SEPARATOR
+        + LINE_SEPARATOR
+        + INDENT + "}" + LINE_SEPARATOR
+    );
+  }
 
-    @Test
-    public void empty_interface_extends_once() throws Exception {
-        TestWriters testWriters = new TestWriters();
-        daInterfaceWriter(testWriters, "name")
-                .withExtended(ImmutableList.of(DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE))
-                .start().end();
+  @Test
+  public void empty_interface_extends_once() throws Exception {
+    TestWriters testWriters = new TestWriters();
+    daInterfaceWriter(testWriters, "name")
+        .withExtended(ImmutableList.of(FUNCTION_INTEGER_TO_STRING_INTERFACE))
+        .start().end();
 
-        assertThat(testWriters.getRes()).isEqualTo(INDENT + "interface name extends Function<Integer, String> {" + DAWriterTestUtil.LINE_SEPARATOR + DAWriterTestUtil.LINE_SEPARATOR
-                + INDENT + "}" + DAWriterTestUtil.LINE_SEPARATOR);
-    }
+    assertThat(testWriters.getRes()).isEqualTo(
+        INDENT + "interface name extends Function<Integer, String> {" + LINE_SEPARATOR +
+            LINE_SEPARATOR
+            + INDENT + "}" + LINE_SEPARATOR
+    );
+  }
 
-    @Test
-    public void empty_interface_extends_twice() throws Exception {
-        TestWriters testWriters = new TestWriters();
-        daInterfaceWriter(testWriters, "name")
-                .withExtended(ImmutableList.of(DAWriterTestUtil.SERIALIZABLE_INTERFACE, DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE))
-                .start().end();
+  @Test
+  public void empty_interface_extends_twice() throws Exception {
+    TestWriters testWriters = new TestWriters();
+    daInterfaceWriter(testWriters, "name")
+        .withExtended(ImmutableList.of(SERIALIZABLE_INTERFACE,
+            FUNCTION_INTEGER_TO_STRING_INTERFACE
+        )
+        )
+        .start().end();
 
-        assertThat(testWriters.getRes()).isEqualTo(INDENT + "interface name extends Serializable, Function<Integer, String> {" + DAWriterTestUtil.LINE_SEPARATOR + DAWriterTestUtil.LINE_SEPARATOR
-                + INDENT + "}" + DAWriterTestUtil.LINE_SEPARATOR);
-    }
+    assertThat(testWriters.getRes()).isEqualTo(
+        INDENT + "interface name extends Serializable, Function<Integer, String> {" + LINE_SEPARATOR
+            + LINE_SEPARATOR
+            + INDENT + "}" + LINE_SEPARATOR
+    );
+  }
 
-    @Test
-    public void one_method_interface() throws Exception {
-        TestWriters testWriters = new TestWriters();
-        daInterfaceWriter(testWriters, "name")
-                .start()
-                    .newMethod("methodName", DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE)
-                    .withAnnotations(ImmutableList.of(DAWriterTestUtil.OVERRIDE_ANNOTATION))
-                    .write()
-                .end();
+  @Test
+  public void one_method_interface() throws Exception {
+    TestWriters testWriters = new TestWriters();
+    daInterfaceWriter(testWriters, "name")
+        .start()
+        .newMethod("methodName", FUNCTION_INTEGER_TO_STRING_INTERFACE)
+        .withAnnotations(ImmutableList.of(OVERRIDE_ANNOTATION))
+        .write()
+        .end();
 
-        assertThat(testWriters.getRes()).isEqualTo(INDENT + "interface name {" + DAWriterTestUtil.LINE_SEPARATOR
-                + DAWriterTestUtil.LINE_SEPARATOR
-                + INDENT + INDENT + "@Override" + DAWriterTestUtil.LINE_SEPARATOR
-                + INDENT + INDENT + "Function<Integer, String> methodName();" + DAWriterTestUtil.LINE_SEPARATOR
-                + DAWriterTestUtil.LINE_SEPARATOR
-                + INDENT + "}" + DAWriterTestUtil.LINE_SEPARATOR);
-    }
+    assertThat(testWriters.getRes()).isEqualTo(INDENT + "interface name {" + LINE_SEPARATOR
+        + LINE_SEPARATOR
+        + INDENT + INDENT + "@Override" + LINE_SEPARATOR
+        + INDENT + INDENT + "Function<Integer, String> methodName();" + LINE_SEPARATOR
+        + LINE_SEPARATOR
+        + INDENT + "}" + LINE_SEPARATOR
+    );
+  }
 
-    private DAInterfaceWriter<DAWriter> daInterfaceWriter(TestWriters testWriters, String interfaceName) {
-        DAWriter parent = new DAWriter() {
+  private DAInterfaceWriter<DAWriter> daInterfaceWriter(TestWriters testWriters, String interfaceName) {
+    DAWriter parent = new DAWriter() {
 
-        };
-        return new DAInterfaceWriter<DAWriter>(interfaceName, testWriters.bw, parent, 1);
-    }
+    };
+    return new DAInterfaceWriter<DAWriter>(interfaceName, testWriters.bw, parent, 1);
+  }
 }

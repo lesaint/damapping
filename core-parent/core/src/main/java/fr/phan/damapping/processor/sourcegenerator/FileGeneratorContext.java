@@ -24,31 +24,41 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
-* FileGeneratorContext -
-*
-* @author Sébastien Lesaint
-*/
+ * FileGeneratorContext -
+ *
+ * @author Sébastien Lesaint
+ */
 public interface FileGeneratorContext {
-    @Nullable
-    DASourceClass getSourceClass();
-    @Nonnull
-    List<DAName> getMapperImports();
-    @Nonnull
-    List<DAName> getMapperImplImports();
-    @Nonnull
-    List<DAName> getMapperFactoryInterfaceImports();
-    @Nonnull
-    List<DAName> getMapperFactoryClassImports();
-    @Nonnull
-    List<DAName> getMapperFactoryImplImports();
-    @Nonnull
-    DAType getMapperDAType();
-    @Nonnull
-    DAType getMapperImplDAType();
-    @Nonnull
-    DAType getMapperFactoryClassDAType();
-    @Nonnull
-    DAType getMapperFactoryInterfaceDAType();
-    @Nonnull
-    DAType getMapperFactoryImplDAType();
+  @Nullable
+  DASourceClass getSourceClass();
+
+  @Nonnull
+  List<DAName> getMapperImports();
+
+  @Nonnull
+  List<DAName> getMapperImplImports();
+
+  @Nonnull
+  List<DAName> getMapperFactoryInterfaceImports();
+
+  @Nonnull
+  List<DAName> getMapperFactoryClassImports();
+
+  @Nonnull
+  List<DAName> getMapperFactoryImplImports();
+
+  @Nonnull
+  DAType getMapperDAType();
+
+  @Nonnull
+  DAType getMapperImplDAType();
+
+  @Nonnull
+  DAType getMapperFactoryClassDAType();
+
+  @Nonnull
+  DAType getMapperFactoryInterfaceDAType();
+
+  @Nonnull
+  DAType getMapperFactoryImplDAType();
 }

@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableSet;
 import org.testng.annotations.Test;
 
 import static fr.phan.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
+import static fr.phan.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.LINE_SEPARATOR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -32,42 +33,49 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class DAPropertyWriterTest {
 
-    @Test
-    public void property() throws Exception {
-        TestWriters testWriters = new TestWriters();
-        daPropertyWriter(testWriters).write();
+  @Test
+  public void property() throws Exception {
+    TestWriters testWriters = new TestWriters();
+    daPropertyWriter(testWriters).write();
 
-        assertThat(testWriters.getRes()).isEqualTo(INDENT + "Function<Integer, String> name;" + DAWriterTestUtil.LINE_SEPARATOR
-                + DAWriterTestUtil.LINE_SEPARATOR);
-    }
+    assertThat(testWriters.getRes()).isEqualTo(
+        INDENT + "Function<Integer, String> name;" + LINE_SEPARATOR
+            + LINE_SEPARATOR
+    );
+  }
 
-    @Test
-    public void private_property() throws Exception {
-        TestWriters testWriters = new TestWriters();
-        daPropertyWriter(testWriters)
-                .withModifier(ImmutableSet.of(DAModifier.PRIVATE))
-                .write();
+  @Test
+  public void private_property() throws Exception {
+    TestWriters testWriters = new TestWriters();
+    daPropertyWriter(testWriters)
+        .withModifier(ImmutableSet.of(DAModifier.PRIVATE))
+        .write();
 
-        assertThat(testWriters.getRes()).isEqualTo(INDENT + "private Function<Integer, String> name;" + DAWriterTestUtil.LINE_SEPARATOR
-                + DAWriterTestUtil.LINE_SEPARATOR);
-    }
+    assertThat(testWriters.getRes()).isEqualTo(
+        INDENT + "private Function<Integer, String> name;" + LINE_SEPARATOR
+            + LINE_SEPARATOR
+    );
+  }
 
-    @Test
-    public void annoted_property() throws Exception {
-        TestWriters testWriters = new TestWriters();
-        daPropertyWriter(testWriters)
-                .withAnnotations(ImmutableList.of(DAWriterTestUtil.NULLABLE_ANNOTATION))
-                .write();
+  @Test
+  public void annoted_property() throws Exception {
+    TestWriters testWriters = new TestWriters();
+    daPropertyWriter(testWriters)
+        .withAnnotations(ImmutableList.of(DAWriterTestUtil.NULLABLE_ANNOTATION))
+        .write();
 
-        assertThat(testWriters.getRes()).isEqualTo(INDENT + "@Nullable" + DAWriterTestUtil.LINE_SEPARATOR
-                + INDENT + "Function<Integer, String> name;" + DAWriterTestUtil.LINE_SEPARATOR
-                + DAWriterTestUtil.LINE_SEPARATOR);
-    }
+    assertThat(testWriters.getRes()).isEqualTo(INDENT + "@Nullable" + LINE_SEPARATOR
+        + INDENT + "Function<Integer, String> name;" + LINE_SEPARATOR
+        + LINE_SEPARATOR
+    );
+  }
 
-    private static DAPropertyWriter<DAWriter> daPropertyWriter(TestWriters testWriters) {
-        DAWriter parent = new DAWriter() {
+  private static DAPropertyWriter<DAWriter> daPropertyWriter(TestWriters testWriters) {
+    DAWriter parent = new DAWriter() {
 
-        };
-        return new DAPropertyWriter<DAWriter>("name", DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE, testWriters.bw, parent, 1);
-    }
+    };
+    return new DAPropertyWriter<DAWriter>("name", DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE, testWriters.bw,
+        parent, 1
+    );
+  }
 }

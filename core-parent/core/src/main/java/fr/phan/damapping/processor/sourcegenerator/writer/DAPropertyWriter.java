@@ -31,35 +31,35 @@ import com.google.common.collect.ImmutableList;
  * @author Sébastien Lesaint
  */
 public class DAPropertyWriter<T extends DAWriter> extends AbstractDAWriter<T> {
-    private final String name;
-    private final DAType type;
-    private List<DAType> annotations = Collections.<DAType>emptyList();
-    private Set<DAModifier> modifiers = Collections.<DAModifier>emptySet();
+  private final String name;
+  private final DAType type;
+  private List<DAType> annotations = Collections.<DAType>emptyList();
+  private Set<DAModifier> modifiers = Collections.<DAModifier>emptySet();
 
-    DAPropertyWriter(String name, DAType type, BufferedWriter bw, T parent, int indentOffset) {
-        super(bw, parent, indentOffset);
-        this.name = name;
-        this.type = type;
-    }
+  DAPropertyWriter(String name, DAType type, BufferedWriter bw, T parent, int indentOffset) {
+    super(bw, parent, indentOffset);
+    this.name = name;
+    this.type = type;
+  }
 
-    public DAPropertyWriter<T> withAnnotations(List<DAType> annotations) {
-        this.annotations = annotations == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(annotations);
-        return this;
-    }
+  public DAPropertyWriter<T> withAnnotations(List<DAType> annotations) {
+    this.annotations = annotations == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(annotations);
+    return this;
+  }
 
-    public DAPropertyWriter<T> withModifier(Set<DAModifier> modifiers) {
-        this.modifiers = modifiers;
-        return this;
-    }
+  public DAPropertyWriter<T> withModifier(Set<DAModifier> modifiers) {
+    this.modifiers = modifiers;
+    return this;
+  }
 
-    public T write() throws IOException {
-        commons.appendAnnotations(annotations);
-        commons.appendIndent();
-        commons.appendModifiers(modifiers);
-        commons.appendType(type);
-        commons.append(" ").append(name).append(";");
-        commons.newLine();
-        commons.newLine();
-        return parent;
-    }
+  public T write() throws IOException {
+    commons.appendAnnotations(annotations);
+    commons.appendIndent();
+    commons.appendModifiers(modifiers);
+    commons.appendType(type);
+    commons.append(" ").append(name).append(";");
+    commons.newLine();
+    commons.newLine();
+    return parent;
+  }
 }

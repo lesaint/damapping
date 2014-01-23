@@ -36,57 +36,58 @@ import com.google.common.collect.FluentIterable;
  * @author Sébastien Lesaint
  */
 public class MapperSourceGenerator extends AbstractSourceGenerator {
-    @Override
-    public String fileName(FileGeneratorContext context) {
-        return context.getSourceClass().getType().getQualifiedName().getName() + "Mapper";
-    }
+  @Override
+  public String fileName(FileGeneratorContext context) {
+    return context.getSourceClass().getType().getQualifiedName().getName() + "Mapper";
+  }
 
-    @Override
-    public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
+  @Override
+  public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
 
-        // générer l'interface du Mapper
-        //     -> nom de package
-        //     -> nom de la classe (infère nom du Mapper)
-        //     -> visibilite de la classe (protected ou public ?)
-        //     -> liste des interfaces implémentées
-        //     -> compute liste des imports à réaliser
-        DASourceClass sourceClass = context.getSourceClass();
-        DAFileWriter fileWriter = new DAFileWriter(bw)
-                .appendPackage(sourceClass.getPackageName())
-                .appendImports(context.getMapperImports())
-                .appendWarningComment();
+    // générer l'interface du Mapper
+    //     -> nom de package
+    //     -> nom de la classe (infère nom du Mapper)
+    //     -> visibilite de la classe (protected ou public ?)
+    //     -> liste des interfaces implémentées
+    //     -> compute liste des imports à réaliser
+    DASourceClass sourceClass = context.getSourceClass();
+    DAFileWriter fileWriter = new DAFileWriter(bw)
+        .appendPackage(sourceClass.getPackageName())
+        .appendImports(context.getMapperImports())
+        .appendWarningComment();
 
-        fileWriter.newInterface(sourceClass.getType().getSimpleName() + "Mapper")
-                .withModifiers(filterModifiers(sourceClass.getModifiers()))
-                .withExtended(toDAType(sourceClass.getInterfaces())).start().end();
+    fileWriter.newInterface(sourceClass.getType().getSimpleName() + "Mapper")
+              .withModifiers(filterModifiers(sourceClass.getModifiers()))
+              .withExtended(toDAType(sourceClass.getInterfaces())).start().end();
 
-        bw.flush();
-        bw.close();
-    }
+    bw.flush();
+    bw.close();
+  }
 
-    private static List<DAType> toDAType(List<DAInterface> interfaces) {
-        return FluentIterable.from(interfaces)
-                .transform(new Function<DAInterface, DAType>() {
-                    @Nullable
-                    @Override
-                    public DAType apply(@Nullable DAInterface daInterface) {
-                        if (daInterface == null) {
-                            return null;
-                        }
-                        return daInterface.getType();
-                    }
-                }).filter(Predicates.notNull())
-                .toList();
-    }
+  private static List<DAType> toDAType(List<DAInterface> interfaces) {
+    return FluentIterable.from(interfaces)
+                         .transform(new Function<DAInterface, DAType>() {
+                           @Nullable
+                           @Override
+                           public DAType apply(@Nullable DAInterface daInterface) {
+                             if (daInterface == null) {
+                               return null;
+                             }
+                             return daInterface.getType();
+                           }
+                         }
+                         ).filter(Predicates.notNull())
+                         .toList();
+  }
 
-    private static Set<DAModifier> filterModifiers(Set<DAModifier> modifiers) {
-        return FluentIterable.from(modifiers)
-                .filter(
-                        Predicates.not(
-                                // an interface can not be final, will not compile
-                                Predicates.equalTo(DAModifier.FINAL)
-                        )
-                )
-                .toSet();
-    }
+  private static Set<DAModifier> filterModifiers(Set<DAModifier> modifiers) {
+    return FluentIterable.from(modifiers)
+                         .filter(
+                             Predicates.not(
+                                 // an interface can not be final, will not compile
+                                 Predicates.equalTo(DAModifier.FINAL)
+                             )
+                         )
+                         .toSet();
+  }
 }

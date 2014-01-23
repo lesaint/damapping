@@ -31,35 +31,35 @@ import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isD
  */
 public class MapperImplImportsModelVisitor extends ImportListBuilder implements DAModelVisitor {
 
-    @Override
-    public void visit(DASourceClass daSourceClass) {
-        addImport(daSourceClass.getType().getQualifiedName());
-    }
+  @Override
+  public void visit(DASourceClass daSourceClass) {
+    addImport(daSourceClass.getType().getQualifiedName());
+  }
 
-    @Override
-    public void visit(DAInterface daInterface) {
-        // interface are declared directly only in Mapper
-        // in MapperImpl there is no need to import them again since they are inherited from Mapper
-    }
+  @Override
+  public void visit(DAInterface daInterface) {
+    // interface are declared directly only in Mapper
+    // in MapperImpl there is no need to import them again since they are inherited from Mapper
+  }
 
-    @Override
-    public void visit(DAMethod daMethod) {
-        if (isDefaultConstructor().apply(daMethod)) {
-            // constructor is not generated in MapperImpl class
-            return;
-        }
-        if (!DAMethodPredicates.isGuavaFunction().apply(daMethod)) {
-            // mapper interface does not define any method of it own, only the one
-            // inherited from Guava's Function interface which imports are added via the DAInterface
-            // TOIMPROVE : when supporting @MapperMethod, we will need to add imports from this method
-            return;
-        }
-        for (DAParameter parameter : daMethod.getParameters()) {
-            addImports(parameter.getType());
-        }
-        if (daMethod.getReturnType() != null) {
-            addImports(daMethod.getReturnType());
-        }
+  @Override
+  public void visit(DAMethod daMethod) {
+    if (isDefaultConstructor().apply(daMethod)) {
+      // constructor is not generated in MapperImpl class
+      return;
     }
+    if (!DAMethodPredicates.isGuavaFunction().apply(daMethod)) {
+      // mapper interface does not define any method of it own, only the one
+      // inherited from Guava's Function interface which imports are added via the DAInterface
+      // TOIMPROVE : when supporting @MapperMethod, we will need to add imports from this method
+      return;
+    }
+    for (DAParameter parameter : daMethod.getParameters()) {
+      addImports(parameter.getType());
+    }
+    if (daMethod.getReturnType() != null) {
+      addImports(daMethod.getReturnType());
+    }
+  }
 
 }

@@ -17,24 +17,25 @@ import java.util.Set;
  * @author Sébastien Lesaint
  */
 interface CommonMethods extends Appendable, Closeable, Flushable {
-    BufferedWriter getBufferedWriter();
+  BufferedWriter getBufferedWriter();
 
-    /**
-     * The indent offset.
-     * Starts with 0.
-     * @return a int
-     */
-    int getIndentOffset();
+  /**
+   * The indent offset.
+   * Starts with 0.
+   *
+   * @return a int
+   */
+  int getIndentOffset();
 
-    void appendIndent() throws IOException;
+  void appendIndent() throws IOException;
 
-    void appendModifiers(Set<DAModifier> modifiers) throws IOException;
+  void appendModifiers(Set<DAModifier> modifiers) throws IOException;
 
-    void appendAnnotations(Collection<DAType> annotations) throws IOException;
+  void appendAnnotations(Collection<DAType> annotations) throws IOException;
 
-    void appendType(DAType type) throws IOException;
+  void appendType(DAType type) throws IOException;
 
-    void appendTypeArgs(List<DAType> typeArgs) throws IOException;
+  void appendTypeArgs(List<DAType> typeArgs) throws IOException;
 
-    void newLine() throws IOException;
+  void newLine() throws IOException;
 }

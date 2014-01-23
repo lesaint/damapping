@@ -30,61 +30,61 @@ import java.util.List;
  */
 public class DAStatementWriter<T extends DAWriter> extends AbstractDAWriter<T> {
 
-    DAStatementWriter(BufferedWriter bw, T parent, int indentOffset) {
-        super(bw, parent, indentOffset);
+  DAStatementWriter(BufferedWriter bw, T parent, int indentOffset) {
+    super(bw, parent, indentOffset);
+  }
+
+  DAStatementWriter(CommonMethods commonMethods, T parent) {
+    super(commonMethods, parent);
+  }
+
+  public DAStatementWriter<T> start() throws IOException {
+    commons.appendIndent();
+    return this;
+  }
+
+  public DAStatementWriter<T> append(CharSequence s) throws IOException {
+    commons.append(s);
+    return this;
+  }
+
+  public DAStatementWriter<T> append(char c) throws IOException {
+    commons.append(c);
+    return this;
+  }
+
+  public DAStatementWriter<T> appendType(DAType type) throws IOException {
+    commons.appendType(type);
+    return this;
+  }
+
+  public DAStatementWriter<T> appendTypeArgs(List<DAType> typeArgs) throws IOException {
+    commons.appendTypeArgs(typeArgs);
+    return this;
+  }
+
+  public DAStatementWriter<T> appendParamValues(List<DAParameter> params) throws IOException {
+    if (params.isEmpty()) {
+      commons.append("()");
+      return this;
     }
 
-    DAStatementWriter(CommonMethods commonMethods, T parent) {
-        super(commonMethods, parent);
+    commons.append("(");
+    Iterator<DAParameter> it = params.iterator();
+    while (it.hasNext()) {
+      DAParameter parameter = it.next();
+      commons.append(parameter.getName());
+      if (it.hasNext()) {
+        commons.append(", ");
+      }
     }
+    commons.append(")");
+    return this;
+  }
 
-    public DAStatementWriter<T> start() throws IOException {
-        commons.appendIndent();
-        return this;
-    }
-
-    public DAStatementWriter<T> append(CharSequence s) throws IOException {
-        commons.append(s);
-        return this;
-    }
-
-    public DAStatementWriter<T> append(char c) throws IOException {
-        commons.append(c);
-        return this;
-    }
-
-    public DAStatementWriter<T> appendType(DAType type) throws IOException {
-        commons.appendType(type);
-        return this;
-    }
-
-    public DAStatementWriter<T> appendTypeArgs(List<DAType> typeArgs) throws IOException {
-        commons.appendTypeArgs(typeArgs);
-        return this;
-    }
-
-    public DAStatementWriter<T> appendParamValues(List<DAParameter> params) throws IOException {
-        if (params.isEmpty()) {
-            commons.append("()");
-            return this;
-        }
-
-        commons.append("(");
-        Iterator<DAParameter> it = params.iterator();
-        while (it.hasNext()) {
-            DAParameter parameter = it.next();
-            commons.append(parameter.getName());
-            if (it.hasNext()) {
-                commons.append(", ");
-            }
-        }
-        commons.append(")");
-        return this;
-    }
-
-    public T end() throws IOException {
-        commons.append(";");
-        commons.newLine();
-        return parent;
-    }
+  public T end() throws IOException {
+    commons.append(";");
+    commons.newLine();
+    return parent;
+  }
 }

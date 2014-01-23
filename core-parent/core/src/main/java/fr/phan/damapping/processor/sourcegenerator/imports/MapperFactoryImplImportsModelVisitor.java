@@ -30,29 +30,29 @@ import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isG
  * @author Sébastien Lesaint
  */
 public class MapperFactoryImplImportsModelVisitor extends ImportListBuilder implements DAModelVisitor {
-    @Override
-    public void visit(DASourceClass daSourceClass) {
-        addImport(daSourceClass.getType().getQualifiedName());
+  @Override
+  public void visit(DASourceClass daSourceClass) {
+    addImport(daSourceClass.getType().getQualifiedName());
+  }
+
+  @Override
+  public void visit(DAInterface daInterface) {
+    // interfaces are not used in MapperFactory impl
+  }
+
+  @Override
+  public void visit(DAMethod daMethod) {
+    // mapperFactoryMethod are exposed as methods of the MapperFactory
+    if (isConstructor().apply(daMethod) && isGuavaFunction().apply(daMethod)) {
+      for (DAParameter parameter : daMethod.getParameters()) {
+        addImports(parameter.getType());
+      }
     }
 
-    @Override
-    public void visit(DAInterface daInterface) {
-        // interfaces are not used in MapperFactory impl
+    if (isGuavaFunction().apply(daMethod)) { // remplacer par isMapperMethod
+      for (DAParameter parameter : daMethod.getParameters()) {
+        addImports(parameter.getType());
+      }
     }
-
-    @Override
-    public void visit(DAMethod daMethod) {
-        // mapperFactoryMethod are exposed as methods of the MapperFactory
-        if (isConstructor().apply(daMethod) && isGuavaFunction().apply(daMethod)) {
-            for (DAParameter parameter : daMethod.getParameters()) {
-                addImports(parameter.getType());
-            }
-        }
-
-        if (isGuavaFunction().apply(daMethod)) { // remplacer par isMapperMethod
-            for (DAParameter parameter : daMethod.getParameters()) {
-                addImports(parameter.getType());
-            }
-        }
-    }
+  }
 }

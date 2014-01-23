@@ -22,30 +22,30 @@ import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.visitor.DAModelVisitor;
 
 /**
-* MapperImportsModelVisitor - Visitor building the list of imports for the Mapper interface
-*
-* @author Sébastien Lesaint
-*/
+ * MapperImportsModelVisitor - Visitor building the list of imports for the Mapper interface
+ *
+ * @author Sébastien Lesaint
+ */
 public class MapperImportsModelVisitor extends ImportListBuilder implements DAModelVisitor {
 
-    @Override
-    public void visit(DASourceClass daSourceClass) {
-        addImport(daSourceClass.getType().getQualifiedName());
-    }
+  @Override
+  public void visit(DASourceClass daSourceClass) {
+    addImport(daSourceClass.getType().getQualifiedName());
+  }
 
-    @Override
-    public void visit(DAInterface daInterface) {
-        addImports(daInterface.getType());
-        for (DAType typeArg : daInterface.getType().getTypeArgs()) {
-            addImports(typeArg);
-        }
+  @Override
+  public void visit(DAInterface daInterface) {
+    addImports(daInterface.getType());
+    for (DAType typeArg : daInterface.getType().getTypeArgs()) {
+      addImports(typeArg);
     }
+  }
 
-    @Override
-    public void visit(DAMethod daMethod) {
-        // mapper interface does not define any method of it own, only the one
-        // inherited from Guava's Function interface which imports are added via the DAInterface
-        // TOIMPROVE : when supporting @MapperMethod, we will need to add imports from this method
-    }
+  @Override
+  public void visit(DAMethod daMethod) {
+    // mapper interface does not define any method of it own, only the one
+    // inherited from Guava's Function interface which imports are added via the DAInterface
+    // TOIMPROVE : when supporting @MapperMethod, we will need to add imports from this method
+  }
 
 }

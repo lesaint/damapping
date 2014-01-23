@@ -15,14 +15,14 @@ import java.util.Set;
  * @author: Sébastien Lesaint
  */
 public interface DASourceClassValidator {
-    void validate(DASourceClass sourceClass) throws ValidationError;
+  void validate(DASourceClass sourceClass) throws ValidationError;
 
-    void validateModifiers(Set<DAModifier> modifiers) throws ValidationError;
+  void validateModifiers(Set<DAModifier> modifiers) throws ValidationError;
 
-    // TODO make interface validate for Guava Function optional when supported @MapperFunction
-    void validateInterfaces(List<DAInterface> interfaces) throws ValidationError;
+  // TODO make interface validate for Guava Function optional when supported @MapperFunction
+  void validateInterfaces(List<DAInterface> interfaces) throws ValidationError;
 
-    void validateInstantiationTypeRequirements(DASourceClass daSourceClass) throws ValidationError;
+  void validateInstantiationTypeRequirements(DASourceClass daSourceClass) throws ValidationError;
 
-    void validateMethods(List<DAMethod> methods) throws ValidationError;
+  void validateMethods(List<DAMethod> methods) throws ValidationError;
 }

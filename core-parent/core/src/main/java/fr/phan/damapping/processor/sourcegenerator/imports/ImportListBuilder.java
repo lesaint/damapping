@@ -29,22 +29,22 @@ import com.google.common.collect.ImmutableList;
  * @author Sébastien Lesaint
  */
 public class ImportListBuilder {
-    private final ImmutableList.Builder<DAName> imports = ImmutableList.builder();
+  private final ImmutableList.Builder<DAName> imports = ImmutableList.builder();
 
-    protected void addImport(@Nullable DAName qualifiedDAName) {
-        if (qualifiedDAName != null) {
-            imports.add(qualifiedDAName);
-        }
+  protected void addImport(@Nullable DAName qualifiedDAName) {
+    if (qualifiedDAName != null) {
+      imports.add(qualifiedDAName);
     }
+  }
 
-    protected void addImports(@Nullable DAType daType) {
-        if (daType != null) {
-            imports.addAll(DATypeImportComputer.computeImports(daType));
-        }
+  protected void addImports(@Nullable DAType daType) {
+    if (daType != null) {
+      imports.addAll(DATypeImportComputer.computeImports(daType));
     }
+  }
 
-    @Nonnull
-    public List<DAName> getImports() {
-        return imports.build();
-    }
+  @Nonnull
+  public List<DAName> getImports() {
+    return imports.build();
+  }
 }

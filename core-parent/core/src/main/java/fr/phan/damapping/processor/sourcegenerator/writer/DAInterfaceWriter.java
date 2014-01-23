@@ -33,67 +33,69 @@ import com.google.common.collect.ImmutableSet;
  * @author Sébastien Lesaint
  */
 public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
-    private final String name;
-    private List<DAType> annotations = Collections.emptyList();
-    private Set<DAModifier> modifiers = Collections.emptySet();
-    private List<DAType> extended = Collections.emptyList();
+  private final String name;
+  private List<DAType> annotations = Collections.emptyList();
+  private Set<DAModifier> modifiers = Collections.emptySet();
+  private List<DAType> extended = Collections.emptyList();
 
-    DAInterfaceWriter(String name, BufferedWriter bw, T parent, int indentOffset) {
-        super(bw, parent, indentOffset);
-        this.name = name;
+  DAInterfaceWriter(String name, BufferedWriter bw, T parent, int indentOffset) {
+    super(bw, parent, indentOffset);
+    this.name = name;
+  }
+
+  public DAInterfaceWriter<T> withAnnotations(List<DAType> annotations) {
+    this.annotations = annotations == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(annotations);
+    return this;
+  }
+
+  public DAInterfaceWriter<T> withModifiers(Set<DAModifier> modifiers) {
+    this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : ImmutableSet.copyOf(modifiers);
+    return this;
+  }
+
+  public DAInterfaceWriter<T> withExtended(List<DAType> extended) {
+    this.extended = extended == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(extended);
+    return this;
+  }
+
+  public DAInterfaceWriter<T> start() throws IOException {
+    commons.appendAnnotations(annotations);
+    commons.appendIndent();
+    commons.appendModifiers(modifiers);
+    commons.append("interface ").append(name).append(" ");
+    appendExtended();
+    commons.append("{");
+    commons.newLine();
+    commons.newLine();
+    return this;
+  }
+
+  private void appendExtended() throws IOException {
+    if (extended.isEmpty()) {
+      return;
     }
 
-    public DAInterfaceWriter<T> withAnnotations(List<DAType> annotations) {
-        this.annotations = annotations == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(annotations);
-        return this;
+    commons.append("extends ");
+    Iterator<DAType> it = extended.iterator();
+    while (it.hasNext()) {
+      commons.appendType(it.next());
+      if (it.hasNext()) {
+        commons.append(",");
+      }
+      commons.append(" ");
     }
+  }
 
-    public DAInterfaceWriter<T> withModifiers(Set<DAModifier> modifiers) {
-        this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : ImmutableSet.copyOf(modifiers);
-        return this;
-    }
+  public DAInterfaceMethodWriter<DAInterfaceWriter<T>> newMethod(String name, DAType returnType) {
+    return new DAInterfaceMethodWriter<DAInterfaceWriter<T>>(name, returnType, commons.getBufferedWriter(),
+        commons.getIndentOffset() + 1, this
+    );
+  }
 
-    public DAInterfaceWriter<T> withExtended(List<DAType> extended) {
-        this.extended = extended == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(extended);
-        return this;
-    }
-
-    public DAInterfaceWriter<T> start() throws IOException {
-        commons.appendAnnotations(annotations);
-        commons.appendIndent();
-        commons.appendModifiers(modifiers);
-        commons.append("interface ").append(name).append(" ");
-        appendExtended();
-        commons.append("{");
-        commons.newLine();
-        commons.newLine();
-        return this;
-    }
-
-    private void appendExtended() throws IOException {
-        if (extended.isEmpty()) {
-            return;
-        }
-
-        commons.append("extends ");
-        Iterator<DAType> it = extended.iterator();
-        while (it.hasNext()) {
-            commons.appendType(it.next());
-            if (it.hasNext()) {
-                commons.append(",");
-            }
-            commons.append(" ");
-        }
-    }
-
-    public DAInterfaceMethodWriter<DAInterfaceWriter<T>> newMethod(String name, DAType returnType) {
-        return new DAInterfaceMethodWriter<DAInterfaceWriter<T>>(name, returnType, commons.getBufferedWriter(), commons.getIndentOffset() + 1, this);
-    }
-
-    public T end() throws IOException {
-        commons.appendIndent();
-        commons.append("}");
-        commons.newLine();
-        return parent;
-    }
+  public T end() throws IOException {
+    commons.appendIndent();
+    commons.append("}");
+    commons.newLine();
+    return parent;
+  }
 }

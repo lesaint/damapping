@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableSet;
 import org.testng.annotations.Test;
 
 import static fr.phan.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
+import static fr.phan.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.LINE_SEPARATOR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -33,68 +34,71 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class DAConstructorWriterTest {
 
-    @Test
-    public void empty_constructor() throws Exception {
-        TestWriters testWriters = new TestWriters();
-        constructorWriter("com.acme.TotoClass", testWriters).start().end();
+  @Test
+  public void empty_constructor() throws Exception {
+    TestWriters testWriters = new TestWriters();
+    constructorWriter("com.acme.TotoClass", testWriters).start().end();
 
-        assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "TotoClass() {" + DAWriterTestUtil.LINE_SEPARATOR + INDENT + "}" + DAWriterTestUtil.LINE_SEPARATOR
-                        + DAWriterTestUtil.LINE_SEPARATOR
-                );
-    }
+    assertThat(testWriters.getRes())
+        .isEqualTo(
+            INDENT + "TotoClass() {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
+                + LINE_SEPARATOR
+        );
+  }
 
-    @Test
-    public void public_empty_constructor() throws Exception {
-        TestWriters testWriters = new TestWriters();
-        constructorWriter("com.acme.TotoClass", testWriters)
-                .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
-                .start()
-                .end();
+  @Test
+  public void public_empty_constructor() throws Exception {
+    TestWriters testWriters = new TestWriters();
+    constructorWriter("com.acme.TotoClass", testWriters)
+        .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
+        .start()
+        .end();
 
-        assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "public TotoClass() {" + DAWriterTestUtil.LINE_SEPARATOR + INDENT + "}" + DAWriterTestUtil.LINE_SEPARATOR
-                        + DAWriterTestUtil.LINE_SEPARATOR
-                );
-    }
+    assertThat(testWriters.getRes())
+        .isEqualTo(
+            INDENT + "public TotoClass() {" + LINE_SEPARATOR + INDENT + "}" +
+                LINE_SEPARATOR
+                + LINE_SEPARATOR
+        );
+  }
 
-    @Test
-    public void private_constructor_with_params() throws Exception {
-        TestWriters testWriters = new TestWriters();
-        constructorWriter("com.acme.TotoClass", testWriters)
-                .withModifiers(ImmutableSet.of(DAModifier.PRIVATE))
-                .withParams(ImmutableList.of(DAWriterTestUtil.STRING_TITI_PARAMETER))
-                .start()
-                    .newStatement()
-                    .start()
-                    .append("Preconditions.checkNotNull(titi)")
-                    .end()
-                .end();
+  @Test
+  public void private_constructor_with_params() throws Exception {
+    TestWriters testWriters = new TestWriters();
+    constructorWriter("com.acme.TotoClass", testWriters)
+        .withModifiers(ImmutableSet.of(DAModifier.PRIVATE))
+        .withParams(ImmutableList.of(DAWriterTestUtil.STRING_TITI_PARAMETER))
+        .start()
+        .newStatement()
+        .start()
+        .append("Preconditions.checkNotNull(titi)")
+        .end()
+        .end();
 
-        assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "private TotoClass(String titi) {" + DAWriterTestUtil.LINE_SEPARATOR
-                        + INDENT + INDENT + "Preconditions.checkNotNull(titi);" + DAWriterTestUtil.LINE_SEPARATOR
-                        + INDENT + "}" + DAWriterTestUtil.LINE_SEPARATOR
-                        + DAWriterTestUtil.LINE_SEPARATOR
-                );
-    }
+    assertThat(testWriters.getRes())
+        .isEqualTo(INDENT + "private TotoClass(String titi) {" + LINE_SEPARATOR
+            + INDENT + INDENT + "Preconditions.checkNotNull(titi);" + LINE_SEPARATOR
+            + INDENT + "}" + LINE_SEPARATOR
+            + LINE_SEPARATOR
+        );
+  }
 
-    @Test
-    public void constructor_with_multiple_params() throws Exception {
-        TestWriters testWriters = new TestWriters();
-        constructorWriter("com.acme.TotoClass", testWriters)
-                .withParams(ImmutableList.of(DAWriterTestUtil.STRING_TITI_PARAMETER, DAWriterTestUtil.STRING_TOTO_PARAMETER))
-                .start();
+  @Test
+  public void constructor_with_multiple_params() throws Exception {
+    TestWriters testWriters = new TestWriters();
+    constructorWriter("com.acme.TotoClass", testWriters)
+        .withParams(ImmutableList.of(DAWriterTestUtil.STRING_TITI_PARAMETER, DAWriterTestUtil.STRING_TOTO_PARAMETER))
+        .start();
 
 
-        assertThat(testWriters.getRes())
-                .isEqualTo(INDENT + "TotoClass(String titi, String toto) {" + DAWriterTestUtil.LINE_SEPARATOR);
-    }
+    assertThat(testWriters.getRes())
+        .isEqualTo(INDENT + "TotoClass(String titi, String toto) {" + LINE_SEPARATOR);
+  }
 
-    private static DAConstructorWriter<DAWriter> constructorWriter(String returnType, TestWriters testWriters) {
-        DAWriter parent = new DAWriter() {
+  private static DAConstructorWriter<DAWriter> constructorWriter(String returnType, TestWriters testWriters) {
+    DAWriter parent = new DAWriter() {
 
-        };
-        return new DAConstructorWriter<DAWriter>(DATypeFactory.declared(returnType), testWriters.bw, parent, 1);
-    }
+    };
+    return new DAConstructorWriter<DAWriter>(DATypeFactory.declared(returnType), testWriters.bw, parent, 1);
+  }
 }
