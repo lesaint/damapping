@@ -49,7 +49,8 @@ ROADMAP
  - ajouter une annotation pour définir ou surcharger le comportement par défaut qui ajoute des @Component
  - ajouter une annotation @MapperMethod pour ne pas être dépendant de guava
  - removing model dependency on Javax.lang
-   - DASourceClass#classElement
-    - add enum flag to DASourceClass
-    - add enum value(s) to DASourceClass
-   - Modifier enum (DASourceClass, DAParameter, DAMethod)
+   * DASourceClass#classElement
+    * add enum flag to DASourceClass
+    * add enum value(s) to DASourceClass
+   * Modifier enum (DASourceClass, DAParameter, DAMethod)
+   * remove ElementKind and TypeKind dependency
