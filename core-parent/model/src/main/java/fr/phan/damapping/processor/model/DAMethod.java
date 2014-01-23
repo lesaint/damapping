@@ -23,12 +23,9 @@ import fr.phan.damapping.processor.model.visitor.DAModelVisitor;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import javax.lang.model.element.ElementKind;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
 * DAMethod -
@@ -37,11 +34,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 */
 @Immutable
 public class DAMethod implements DAModelVisitable {
-    /**
-     * Le ElementKind de la méthode : soit {@link ElementKind.CONSTRUCTOR}, soit {@ŀink ElementKind.METHOD}
-     */
-    @Nonnull
-    private final ElementKind kind;
+    private final boolean constructor;
     /**
      * nom de la méthode
      */
@@ -73,7 +66,7 @@ public class DAMethod implements DAModelVisitable {
     private final boolean mapperFactoryMethod;
 
     private DAMethod(Builder builder) {
-        this.kind = builder.kind;
+        this.constructor = builder.constructor;
         this.name = builder.name;
         this.modifiers = builder.modifiers == null ? Collections.<DAModifier>emptySet() : ImmutableSet.copyOf(builder.modifiers);
         this.returnType = builder.returnType;
@@ -82,13 +75,16 @@ public class DAMethod implements DAModelVisitable {
         this.mapperFactoryMethod = builder.mapperFactoryMethod;
     }
 
-    public static Builder builder(@Nonnull ElementKind kind) {
-        return new Builder(kind);
+    public static Builder methodBuilder() {
+        return new Builder(false);
     }
 
-    @Nonnull
-    public ElementKind getKind() {
-        return kind;
+    public static Builder constructorBuilder() {
+        return new Builder(true);
+    }
+
+    public boolean isConstructor() {
+        return constructor;
     }
 
     @Nonnull
@@ -126,7 +122,7 @@ public class DAMethod implements DAModelVisitable {
 
     public static class Builder {
         @Nonnull
-        private final ElementKind kind;
+        private final boolean constructor;
         @Nonnull
         private DAName name;
         @Nullable
@@ -138,11 +134,8 @@ public class DAMethod implements DAModelVisitable {
         private boolean mapperMethod;
         private boolean mapperFactoryMethod;
 
-        public Builder(@Nonnull ElementKind kind) {
-            checkArgument(kind == ElementKind.CONSTRUCTOR || kind == ElementKind.METHOD,
-                    "ElementKind of a DAMethod instance can only be either CONSTRUCTOR or METHOD"
-            );
-            this.kind = kind;
+        public Builder(boolean constructor) {
+            this.constructor = constructor;
         }
 
         public Builder withName(@Nonnull DAName name) {

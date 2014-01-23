@@ -99,7 +99,8 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
                         }
 
                         ExecutableElement methodElement = (ExecutableElement) o;
-                        DAMethod.Builder res = DAMethod.builder(o.getKind())
+                        DAMethod.Builder builder = daMethodBuilder(methodElement);
+                        DAMethod.Builder res = builder
                                 .withModifiers(javaxExtractor.extractModifiers(methodElement))
                                 .withParameters(javaxExtractor.extractParameters(methodElement))
                                 .withMapperMethod(isMapperMethod(methodElement))
@@ -116,6 +117,21 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
                 })
                 .filter(Predicates.notNull())
                 .toList();
+    }
+
+    private DAMethod.Builder daMethodBuilder(ExecutableElement element) {
+        if (element.getKind() == ElementKind.METHOD) {
+            return DAMethod.methodBuilder();
+        }
+        if (element.getKind() == ElementKind.CONSTRUCTOR) {
+            return DAMethod.constructorBuilder();
+        }
+        throw new IllegalArgumentException(
+                String.format(
+                        "Kind %s of element %s is not supported to build a DAMethod from", element.getKind(),
+                        element
+                )
+        );
     }
 
     private boolean isMapperMethod(ExecutableElement methodElement) {

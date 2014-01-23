@@ -15,15 +15,14 @@
  */
 package fr.phan.damapping.processor.model.predicate;
 
-import fr.phan.damapping.processor.model.DAMethod;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.lang.model.element.ElementKind;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
+import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DAModifier;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * DAMethodPredicates -
@@ -45,7 +44,7 @@ public class DAMethodPredicates {
 
         @Override
         public boolean apply(@Nonnull DAMethod daMethod) {
-            return daMethod.getKind() == ElementKind.CONSTRUCTOR;
+            return daMethod.isConstructor();
         }
     }
 
@@ -99,7 +98,7 @@ public class DAMethodPredicates {
         @Override
         public boolean apply(@Nonnull DAMethod daMethod) {
             // TOIMPROVE, check more specific info in the model, can we know if method override from an interface ? we should check the parameter type and the return type
-            return daMethod.getKind() == ElementKind.METHOD
+            return !daMethod.isConstructor()
                     && daMethod.getName() != null && "apply".equals(daMethod.getName().getName());
         }
     }
