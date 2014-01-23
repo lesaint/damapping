@@ -22,8 +22,8 @@ package fr.phan.damapping.test;
  */
 public class EnumInstancedGuavaFunctionTest extends AbstractMapperTest {
 
-    public EnumInstancedGuavaFunctionTest() {
-        super(EnumInstancedGuavaFunction.class);
-    }
+  public EnumInstancedGuavaFunctionTest() {
+    super(EnumInstancedGuavaFunction.class);
+  }
 
 }

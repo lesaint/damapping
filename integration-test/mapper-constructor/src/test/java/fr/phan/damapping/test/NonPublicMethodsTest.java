@@ -22,8 +22,8 @@ package fr.phan.damapping.test;
  */
 public class NonPublicMethodsTest extends AbstractMapperTest {
 
-    public NonPublicMethodsTest() {
-        super(NonPublicMethods.class);
-    }
+  public NonPublicMethodsTest() {
+    super(NonPublicMethods.class);
+  }
 
 }

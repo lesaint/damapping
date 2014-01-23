@@ -29,16 +29,16 @@ import com.google.common.base.Function;
  */
 @Mapper
 public class ConstructorWithParameter implements Function<BigDecimal, String> {
-    private final String salt;
+  private final String salt;
 
-    @MapperFactoryMethod
-    public ConstructorWithParameter(String salt) {
-        this.salt = salt;
-    }
+  @MapperFactoryMethod
+  public ConstructorWithParameter(String salt) {
+    this.salt = salt;
+  }
 
-    @Nullable
-    @Override
-    public String apply(@Nullable BigDecimal bigDecimal) {
-        return bigDecimal + "-" + salt;
-    }
+  @Nullable
+  @Override
+  public String apply(@Nullable BigDecimal bigDecimal) {
+    return bigDecimal + "-" + salt;
+  }
 }

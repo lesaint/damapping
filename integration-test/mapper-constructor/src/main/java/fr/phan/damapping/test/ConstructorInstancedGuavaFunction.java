@@ -23,8 +23,8 @@ import com.google.common.base.Function;
 @Mapper
 public class ConstructorInstancedGuavaFunction implements Function<Integer, String> {
 
-    @Override
-    public String apply(@Nullable Integer input) {
-        return input.toString();
-    }
+  @Override
+  public String apply(@Nullable Integer input) {
+    return input.toString();
+  }
 }

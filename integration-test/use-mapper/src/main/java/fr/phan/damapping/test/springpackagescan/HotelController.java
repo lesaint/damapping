@@ -27,12 +27,12 @@ import javax.annotation.Resource;
  * @author Sébastien Lesaint
  */
 public class HotelController {
-    @Resource
-    private HotelToHotelDtoMapper hotelToHotelDtoMapper;
-    @Resource
-    private HotelService hotelService;
+  @Resource
+  private HotelToHotelDtoMapper hotelToHotelDtoMapper;
+  @Resource
+  private HotelService hotelService;
 
-    public HotelDto getHotel() {
-        return hotelToHotelDtoMapper.apply(hotelService.getHotel());
-    }
+  public HotelDto getHotel() {
+    return hotelToHotelDtoMapper.apply(hotelService.getHotel());
+  }
 }

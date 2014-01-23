@@ -29,9 +29,9 @@ import com.google.common.base.Optional;
  */
 @Mapper
 public class WildcardGenerics implements Function<Optional<? extends OutOfPackage>, String> {
-    @Nullable
-    @Override
-    public String apply(@Nullable Optional<? extends OutOfPackage> optional) {
-        return "resultDoesNotMatter";
-    }
+  @Nullable
+  @Override
+  public String apply(@Nullable Optional<? extends OutOfPackage> optional) {
+    return "resultDoesNotMatter";
+  }
 }

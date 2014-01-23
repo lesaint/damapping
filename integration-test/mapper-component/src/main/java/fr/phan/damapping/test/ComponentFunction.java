@@ -30,9 +30,9 @@ import org.springframework.stereotype.Component;
 @Mapper
 @Component
 public class ComponentFunction implements Function<A, String> {
-    @Nullable
-    @Override
-    public String apply(@Nullable A a) {
-        return a.toString();
-    }
+  @Nullable
+  @Override
+  public String apply(@Nullable A a) {
+    return a.toString();
+  }
 }

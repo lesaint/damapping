@@ -23,13 +23,13 @@ import java.util.List;
  * @author Sébastien Lesaint
  */
 public class FloorDto {
-    private final List<RoomDto> rooms;
+  private final List<RoomDto> rooms;
 
-    public FloorDto(List<RoomDto> rooms) {
-        this.rooms = rooms;
-    }
+  public FloorDto(List<RoomDto> rooms) {
+    this.rooms = rooms;
+  }
 
-    public List<RoomDto> getRooms() {
-        return rooms;
-    }
+  public List<RoomDto> getRooms() {
+    return rooms;
+  }
 }

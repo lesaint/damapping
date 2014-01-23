@@ -24,24 +24,24 @@ import com.google.common.base.Function;
 @Mapper
 public class NonPublicMethods implements Function<Integer, String> {
 
-    @Override
-    public String apply(@Nullable Integer input) {
-        return input.toString();
-    }
+  @Override
+  public String apply(@Nullable Integer input) {
+    return input.toString();
+  }
 
-    private OutOfPackage method_a(String a_param) {
-        return null; // implementation doesn't matter
-    }
+  private OutOfPackage method_a(String a_param) {
+    return null; // implementation doesn't matter
+  }
 
-    protected OutOfPackage method_b(String b_param) {
-        return null; // implementation doesn't matter
-    }
+  protected OutOfPackage method_b(String b_param) {
+    return null; // implementation doesn't matter
+  }
 
-    OutOfPackage method_c(String c_param) {
-        return null; // implementation doesn't matter
-    }
+  OutOfPackage method_c(String c_param) {
+    return null; // implementation doesn't matter
+  }
 
-    private void method_d(OutOfPackage bru) {
-        // implementation doesn't matter
-    }
+  private void method_d(OutOfPackage bru) {
+    // implementation doesn't matter
+  }
 }

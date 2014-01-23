@@ -24,8 +24,8 @@ import com.google.common.base.Function;
 @Mapper
 public class HandleCustomTypes implements Function<OutOfPackage, InPackage> {
 
-    @Override
-    public InPackage apply(@Nullable OutOfPackage input) {
-        return new InPackage();
-    }
+  @Override
+  public InPackage apply(@Nullable OutOfPackage input) {
+    return new InPackage();
+  }
 }

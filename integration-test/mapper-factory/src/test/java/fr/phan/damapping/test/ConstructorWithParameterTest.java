@@ -23,8 +23,8 @@ package fr.phan.damapping.test;
  */
 public class ConstructorWithParameterTest extends AbstractMapperFactoryTest {
 
-    public ConstructorWithParameterTest() {
-        super(ConstructorWithParameter.class);
-    }
+  public ConstructorWithParameterTest() {
+    super(ConstructorWithParameter.class);
+  }
 
 }

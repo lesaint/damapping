@@ -21,6 +21,6 @@ package fr.phan.damapping.test.springpackagescan.dto;
  * @author Sébastien Lesaint
  */
 public class CustomerDto {
-    private String fistName;
-    private String lastName;
+  private String fistName;
+  private String lastName;
 }

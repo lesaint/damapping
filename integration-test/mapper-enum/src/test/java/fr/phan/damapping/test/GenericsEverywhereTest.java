@@ -22,8 +22,8 @@ package fr.phan.damapping.test;
  */
 public class GenericsEverywhereTest extends AbstractMapperTest {
 
-    public GenericsEverywhereTest() {
-        super(GenericsEverywhere.class);
-    }
+  public GenericsEverywhereTest() {
+    super(GenericsEverywhere.class);
+  }
 
 }

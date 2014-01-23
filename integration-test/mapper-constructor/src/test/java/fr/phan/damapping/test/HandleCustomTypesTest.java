@@ -22,8 +22,8 @@ package fr.phan.damapping.test;
  */
 public class HandleCustomTypesTest extends AbstractMapperTest {
 
-    public HandleCustomTypesTest() {
-        super(HandleCustomTypes.class);
-    }
+  public HandleCustomTypesTest() {
+    super(HandleCustomTypes.class);
+  }
 
 }

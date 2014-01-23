@@ -23,8 +23,8 @@ package fr.phan.damapping.test;
  */
 public class MultipleImplementationAsEnumTest extends AbstractMapperFactoryTest {
 
-    public MultipleImplementationAsEnumTest() {
-        super(MultipleImplementationAsEnum.class);
-    }
+  public MultipleImplementationAsEnumTest() {
+    super(MultipleImplementationAsEnum.class);
+  }
 
 }

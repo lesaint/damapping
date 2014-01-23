@@ -24,25 +24,25 @@ import org.testng.annotations.Test;
  */
 public abstract class AbstractMapperFactoryTest {
 
-    protected final TestUtil testUtil;
+  protected final TestUtil testUtil;
 
-    public AbstractMapperFactoryTest(Class<?> classUnderTest) {
-        this.testUtil = new TestUtil(classUnderTest);
-    }
+  public AbstractMapperFactoryTest(Class<?> classUnderTest) {
+    this.testUtil = new TestUtil(classUnderTest);
+  }
 
-    @Test
-    public void check_generated_mapper_file() throws Exception {
-        testUtil.checkGeneratedFile("Mapper");
-    }
+  @Test
+  public void check_generated_mapper_file() throws Exception {
+    testUtil.checkGeneratedFile("Mapper");
+  }
 
-    @Test
-    public void check_generated_mapperFactoryImpl_file() throws Exception {
-        testUtil.checkGeneratedFile("MapperFactoryImpl");
-    }
+  @Test
+  public void check_generated_mapperFactoryImpl_file() throws Exception {
+    testUtil.checkGeneratedFile("MapperFactoryImpl");
+  }
 
-    @Test
-    public void check_generated_mapperFactory_file() throws Exception {
-        testUtil.checkGeneratedFile("MapperFactory");
-    }
+  @Test
+  public void check_generated_mapperFactory_file() throws Exception {
+    testUtil.checkGeneratedFile("MapperFactory");
+  }
 
 }

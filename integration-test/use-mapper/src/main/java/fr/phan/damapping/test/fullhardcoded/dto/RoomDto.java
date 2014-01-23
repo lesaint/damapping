@@ -21,13 +21,13 @@ package fr.phan.damapping.test.fullhardcoded.dto;
  * @author Sébastien Lesaint
  */
 public class RoomDto {
-    private final String number;
+  private final String number;
 
-    public RoomDto(String number) {
-        this.number = number;
-    }
+  public RoomDto(String number) {
+    this.number = number;
+  }
 
-    public String getNumber() {
-        return number;
-    }
+  public String getNumber() {
+    return number;
+  }
 }

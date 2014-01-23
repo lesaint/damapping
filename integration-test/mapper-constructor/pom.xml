@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -42,31 +43,31 @@
 
     <!--pour mémoire, la configuration ci-dessous permet d'utiliser un AnnotationProcessor qui n'est pas déclaré dans META-INF-->
     <!--<build>-->
-        <!--<plugins>-->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-compiler-plugin</artifactId>-->
-                <!--<configuration>-->
-                    <!--<source>${jdk.version}</source>-->
-                    <!--<target>${jdk.version}</target>-->
-                    <!--&lt;!&ndash;déclare un ou plusieurs Processor à utiliser par le compilateur javac-->
-                        <!--cet argument est optionnel car il existe aussi une méthode de découverte automatique des-->
-                        <!--processor par le compilateur&ndash;&gt;-->
-                    <!--<annotationProcessors>-->
-                        <!--<annotationProcessor>DAAnnotationProcessor-->
-                        <!--</annotationProcessor>-->
-                    <!--</annotationProcessors>-->
-                    <!--&lt;!&ndash;vérifie si le traitement des annotations et/ou la compilation sont effectués&ndash;&gt;-->
-                    <!--<proc />-->
-                    <!--<compilerArgs>-->
-                        <!--&lt;!&ndash;option non standard qui permet d'afficher des informations sur le traitement des annotations par les processeurs&ndash;&gt;-->
-                        <!--<compilerArg>-XprintRounds</compilerArg>-->
-                        <!--&lt;!&ndash;option non standard qui affiche la liste des annotations qui seront traitées par les processeurs d'annotations&ndash;&gt;-->
-                        <!--<compilerArg>-XprintProcessorInfo</compilerArg>-->
-                    <!--</compilerArgs>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
-        <!--</plugins>-->
+    <!--<plugins>-->
+    <!--<plugin>-->
+    <!--<groupId>org.apache.maven.plugins</groupId>-->
+    <!--<artifactId>maven-compiler-plugin</artifactId>-->
+    <!--<configuration>-->
+    <!--<source>${jdk.version}</source>-->
+    <!--<target>${jdk.version}</target>-->
+    <!--&lt;!&ndash;déclare un ou plusieurs Processor à utiliser par le compilateur javac-->
+    <!--cet argument est optionnel car il existe aussi une méthode de découverte automatique des-->
+    <!--processor par le compilateur&ndash;&gt;-->
+    <!--<annotationProcessors>-->
+    <!--<annotationProcessor>DAAnnotationProcessor-->
+    <!--</annotationProcessor>-->
+    <!--</annotationProcessors>-->
+    <!--&lt;!&ndash;vérifie si le traitement des annotations et/ou la compilation sont effectués&ndash;&gt;-->
+    <!--<proc />-->
+    <!--<compilerArgs>-->
+    <!--&lt;!&ndash;option non standard qui permet d'afficher des informations sur le traitement des annotations par les processeurs&ndash;&gt;-->
+    <!--<compilerArg>-XprintRounds</compilerArg>-->
+    <!--&lt;!&ndash;option non standard qui affiche la liste des annotations qui seront traitées par les processeurs d'annotations&ndash;&gt;-->
+    <!--<compilerArg>-XprintProcessorInfo</compilerArg>-->
+    <!--</compilerArgs>-->
+    <!--</configuration>-->
+    <!--</plugin>-->
+    <!--</plugins>-->
     <!--</build>-->
 
 </project>

@@ -28,10 +28,10 @@ import com.google.common.base.Predicate;
 
 @Mapper
 public enum GenericsEverywhere implements Function<Optional<Integer[]>, Collection<Predicate<Map<Long, File>>>> {
-    INSTANCE;
+  INSTANCE;
 
-    @Override
-    public Collection<Predicate<Map<Long, File>>> apply(@Nullable Optional<Integer[]> input) {
-        return Collections.emptyList();
-    }
+  @Override
+  public Collection<Predicate<Map<Long, File>>> apply(@Nullable Optional<Integer[]> input) {
+    return Collections.emptyList();
+  }
 }

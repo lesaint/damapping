@@ -22,10 +22,10 @@ import com.google.common.base.Function;
 
 @Mapper
 public enum EnumInstancedGuavaFunction implements Function<Integer, String> {
-    INSTANCE;
+  INSTANCE;
 
-    @Override
-    public String apply(@Nullable Integer input) {
-        return input.toString();
-    }
+  @Override
+  public String apply(@Nullable Integer input) {
+    return input.toString();
+  }
 }

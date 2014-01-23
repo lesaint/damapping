@@ -26,10 +26,10 @@ import fr.phan.damapping.test.fullhardcoded.service.HotelService;
  * @author Sébastien Lesaint
  */
 public class HotelController {
-    private HotelToHotelDtoMapper hotelToHotelDtoMapper = new HotelToHotelDtoMapperImpl();
-    private HotelService hotelService = new HotelService();
+  private HotelToHotelDtoMapper hotelToHotelDtoMapper = new HotelToHotelDtoMapperImpl();
+  private HotelService hotelService = new HotelService();
 
-    public HotelDto getHotel() {
-        return hotelToHotelDtoMapper.apply(hotelService.getHotel());
-    }
+  public HotelDto getHotel() {
+    return hotelToHotelDtoMapper.apply(hotelService.getHotel());
+  }
 }

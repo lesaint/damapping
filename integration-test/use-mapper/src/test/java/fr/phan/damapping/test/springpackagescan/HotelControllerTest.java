@@ -30,20 +30,22 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class HotelControllerTest {
 
-    private final HotelController hotelController = new HotelController();
+  private final HotelController hotelController = new HotelController();
 
-    @BeforeClass
-    public void setup() {
-        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext("fr.phan.damapping.test.springpackagescan");
-        ctx.getAutowireCapableBeanFactory().autowireBean(hotelController);
-        ctx.start();
-    }
+  @BeforeClass
+  public void setup() {
+    AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
+        "fr.phan.damapping.test.springpackagescan"
+    );
+    ctx.getAutowireCapableBeanFactory().autowireBean(hotelController);
+    ctx.start();
+  }
 
-    @Test
-    public void testGetHotel() throws Exception {
-        HotelDto hotel = hotelController.getHotel();
-        assertThat(hotel.getFloors()).hasSize(2);
-        assertThat(hotel.getFloors().get(0).getRooms()).extracting("number").containsExactly("1", "2");
-        assertThat(hotel.getFloors().get(1).getRooms()).extracting("number").containsExactly("11", "12");
-    }
+  @Test
+  public void testGetHotel() throws Exception {
+    HotelDto hotel = hotelController.getHotel();
+    assertThat(hotel.getFloors()).hasSize(2);
+    assertThat(hotel.getFloors().get(0).getRooms()).extracting("number").containsExactly("1", "2");
+    assertThat(hotel.getFloors().get(1).getRooms()).extracting("number").containsExactly("11", "12");
+  }
 }

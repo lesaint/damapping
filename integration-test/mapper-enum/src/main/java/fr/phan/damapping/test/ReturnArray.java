@@ -22,10 +22,10 @@ import com.google.common.base.Function;
 
 @Mapper
 public enum ReturnArray implements Function<Integer, String[]> {
-    INSTANCE;
+  INSTANCE;
 
-    @Override
-    public String[] apply(@Nullable Integer input) {
-        return new String[]{input.toString()};
-    }
+  @Override
+  public String[] apply(@Nullable Integer input) {
+    return new String[]{input.toString()};
+  }
 }

@@ -29,9 +29,9 @@ import com.google.common.base.Function;
  */
 @Mapper
 public class RoomToRoomDto implements Function<Room, RoomDto> {
-    @Nullable
-    @Override
-    public RoomDto apply(@Nullable Room room) {
-        return new RoomDto(room.getRoomNumber());
-    }
+  @Nullable
+  @Override
+  public RoomDto apply(@Nullable Room room) {
+    return new RoomDto(room.getRoomNumber());
+  }
 }

@@ -30,13 +30,13 @@ import com.google.common.collect.FluentIterable;
  */
 @Mapper
 public class FloorToFloorDto implements Function<Floor, FloorDto> {
-    private final RoomToRoomDtoMapper roomToRoomDto = new RoomToRoomDtoMapperImpl();
+  private final RoomToRoomDtoMapper roomToRoomDto = new RoomToRoomDtoMapperImpl();
 
-    @Nullable
-    @Override
-    public FloorDto apply(@Nullable Floor floor) {
-        return new FloorDto(
-                FluentIterable.from(floor.getRooms()).transform(roomToRoomDto).toList()
-        );
-    }
+  @Nullable
+  @Override
+  public FloorDto apply(@Nullable Floor floor) {
+    return new FloorDto(
+        FluentIterable.from(floor.getRooms()).transform(roomToRoomDto).toList()
+    );
+  }
 }

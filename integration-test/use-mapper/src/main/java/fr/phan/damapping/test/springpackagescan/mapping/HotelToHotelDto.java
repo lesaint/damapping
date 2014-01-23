@@ -34,14 +34,14 @@ import org.springframework.stereotype.Component;
 @Component
 @Mapper
 public class HotelToHotelDto implements Function<Hotel, HotelDto> {
-    @Resource
-    private FloorToFloorDtoMapper floorToFloorDtoMapper;
+  @Resource
+  private FloorToFloorDtoMapper floorToFloorDtoMapper;
 
-    @Nullable
-    @Override
-    public HotelDto apply(@Nullable Hotel hotel) {
-        return new HotelDto(
-                FluentIterable.from(hotel.getFloors()).transform(floorToFloorDtoMapper).toList()
-        );
-    }
+  @Nullable
+  @Override
+  public HotelDto apply(@Nullable Hotel hotel) {
+    return new HotelDto(
+        FluentIterable.from(hotel.getFloors()).transform(floorToFloorDtoMapper).toList()
+    );
+  }
 }

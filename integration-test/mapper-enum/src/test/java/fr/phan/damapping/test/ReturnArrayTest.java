@@ -22,8 +22,8 @@ package fr.phan.damapping.test;
  */
 public class ReturnArrayTest extends AbstractMapperTest {
 
-    public ReturnArrayTest() {
-        super(ReturnArray.class);
-    }
+  public ReturnArrayTest() {
+    super(ReturnArray.class);
+  }
 
 }

@@ -22,8 +22,8 @@ package fr.phan.damapping.test;
  */
 public class WildcardGenericsTest extends AbstractMapperTest {
 
-    public WildcardGenericsTest() {
-        super(WildcardGenerics.class);
-    }
+  public WildcardGenericsTest() {
+    super(WildcardGenerics.class);
+  }
 
 }

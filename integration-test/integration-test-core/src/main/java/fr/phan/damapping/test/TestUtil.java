@@ -28,26 +28,34 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Sébastien Lesaint
  */
 class TestUtil {
-    private static final String CHARSET_NAME = "UTF-8";
+  private static final String CHARSET_NAME = "UTF-8";
 
-    private final Class<?> classUnderTest;
+  private final Class<?> classUnderTest;
 
-    TestUtil(Class<?> classUnderTest) {
-        this.classUnderTest = classUnderTest;
-    }
+  TestUtil(Class<?> classUnderTest) {
+    this.classUnderTest = classUnderTest;
+  }
 
-    void checkGeneratedFile(String suffix) throws URISyntaxException, IOException {
-        String tgtName = buildTargetFilename(suffix);
+  void checkGeneratedFile(String suffix) throws URISyntaxException, IOException {
+    String tgtName = buildTargetFilename(suffix);
 
-        File tgtFile = new File(getClass().getResource(tgtName).toURI());
-        // assuming tgtFile is in the form [path_to_clone_of_dozer-annihilation]/test/test-mapper-enum/target/test-classes/fr/phan/damapping/test/ConstructorInstancedGuavaFunctionMapper.java.tgt
-        File mavenTargetDir = tgtFile.getParentFile().getParentFile().getParentFile().getParentFile().getParentFile().getParentFile();
-        File srcFile = new File(mavenTargetDir, "generated-sources/annotations/" + classUnderTest.getCanonicalName().replaceAll("\\.", "/") + suffix + ".java");
+    File tgtFile = new File(getClass().getResource(tgtName).toURI());
+    // assuming tgtFile is in the form [path_to_clone_of_dozer-annihilation]/test/test-mapper-enum/target/test
+    // -classes/fr/phan/damapping/test/ConstructorInstancedGuavaFunctionMapper.java.tgt
+    File mavenTargetDir = tgtFile.getParentFile()
+                                 .getParentFile()
+                                 .getParentFile()
+                                 .getParentFile()
+                                 .getParentFile()
+                                 .getParentFile();
+    File srcFile = new File(mavenTargetDir,
+        "generated-sources/annotations/" + classUnderTest.getCanonicalName().replaceAll("\\.", "/") + suffix + ".java"
+    );
 
-        assertThat(srcFile).usingCharset(CHARSET_NAME).hasContent(FileUtils.readFileToString(tgtFile, "UTF-8"));
-    }
+    assertThat(srcFile).usingCharset(CHARSET_NAME).hasContent(FileUtils.readFileToString(tgtFile, "UTF-8"));
+  }
 
-    String buildTargetFilename(String suffix) {
-        return classUnderTest.getSimpleName() + suffix + ".java.tgt";
-    }
+  String buildTargetFilename(String suffix) {
+    return classUnderTest.getSimpleName() + suffix + ".java.tgt";
+  }
 }
