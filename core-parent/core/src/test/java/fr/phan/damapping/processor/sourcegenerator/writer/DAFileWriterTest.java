@@ -15,15 +15,16 @@
  */
 package fr.phan.damapping.processor.sourcegenerator.writer;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
-import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.util.Collections;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+
+import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

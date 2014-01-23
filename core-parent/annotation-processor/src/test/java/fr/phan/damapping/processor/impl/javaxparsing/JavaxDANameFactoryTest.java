@@ -18,10 +18,10 @@
 
 package fr.phan.damapping.processor.impl.javaxparsing;
 
+import javax.lang.model.element.Name;
+
 import org.mockito.Mockito;
 import org.testng.annotations.Test;
-
-import javax.lang.model.element.Name;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;

@@ -15,13 +15,13 @@
  */
 package fr.phan.damapping.processor.sourcegenerator.imports;
 
-import com.google.common.collect.ImmutableList;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAType;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 /**
  * ImportListBuilder -

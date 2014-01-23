@@ -1,16 +1,22 @@
 package fr.phan.damapping.intellij.plugin.integration.provider;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.augment.PsiAugmentProvider;
 import fr.phan.damapping.annotation.Mapper;
 import fr.phan.damapping.intellij.plugin.integration.psiparsing.PsiAnnotationUtil;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
+
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.DumbService;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiAnnotation;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiModifierList;
+import com.intellij.psi.augment.PsiAugmentProvider;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * DAMappingAugmentProvider -

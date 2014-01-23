@@ -1,11 +1,14 @@
 package fr.phan.damapping.processor.impl.javaxparsing;
 
-import fr.phan.damapping.processor.model.*;
+import fr.phan.damapping.processor.model.DAInterface;
+import fr.phan.damapping.processor.model.DAMethod;
+import fr.phan.damapping.processor.model.DAName;
+import fr.phan.damapping.processor.model.DASourceClass;
+import fr.phan.damapping.processor.model.InstantiationType;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
-import java.util.List;
 
 /**
  * JavaxParsingService -

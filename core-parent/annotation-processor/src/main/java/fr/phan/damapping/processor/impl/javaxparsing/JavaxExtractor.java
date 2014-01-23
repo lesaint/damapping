@@ -1,8 +1,13 @@
 package fr.phan.damapping.processor.impl.javaxparsing;
 
-import com.google.common.base.Function;
-import fr.phan.damapping.processor.model.*;
+import fr.phan.damapping.processor.model.DAEnumValue;
+import fr.phan.damapping.processor.model.DAModifier;
+import fr.phan.damapping.processor.model.DAName;
+import fr.phan.damapping.processor.model.DAParameter;
+import fr.phan.damapping.processor.model.DAType;
 
+import java.util.List;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
@@ -12,8 +17,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.WildcardType;
-import java.util.List;
-import java.util.Set;
+import com.google.common.base.Function;
 
 /**
  * JavaxExtractor - Extracts objects of the DAMapping model from the objects of the Javax model.

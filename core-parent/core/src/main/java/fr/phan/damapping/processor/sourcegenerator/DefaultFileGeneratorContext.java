@@ -19,10 +19,14 @@ import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
-import fr.phan.damapping.processor.sourcegenerator.imports.*;
+import fr.phan.damapping.processor.sourcegenerator.imports.MapperFactoryClassImportsModelVisitor;
+import fr.phan.damapping.processor.sourcegenerator.imports.MapperFactoryImplImportsModelVisitor;
+import fr.phan.damapping.processor.sourcegenerator.imports.MapperFactoryInterfaceImportsModelVisitor;
+import fr.phan.damapping.processor.sourcegenerator.imports.MapperImplImportsModelVisitor;
+import fr.phan.damapping.processor.sourcegenerator.imports.MapperImportsModelVisitor;
 
-import javax.annotation.Nonnull;
 import java.util.List;
+import javax.annotation.Nonnull;
 
 /**
 * DefaultFileGeneratorContext -

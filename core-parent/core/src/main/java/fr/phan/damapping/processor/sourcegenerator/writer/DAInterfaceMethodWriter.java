@@ -15,7 +15,6 @@
  */
 package fr.phan.damapping.processor.sourcegenerator.writer;
 
-import com.google.common.collect.ImmutableList;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DAType;
 
@@ -24,6 +23,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 /**
  * DAInterfaceMethodWriter - Writer pour les méthodes d'une interface

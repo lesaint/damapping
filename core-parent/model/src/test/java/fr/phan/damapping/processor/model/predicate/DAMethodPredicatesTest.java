@@ -1,19 +1,27 @@
 package fr.phan.damapping.processor.model.predicate;
 
-import com.google.common.collect.ImmutableSet;
 import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
+
+import java.util.Collections;
+import com.google.common.collect.ImmutableSet;
+
 import org.mockito.Mockito;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.util.Collections;
-
-import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.*;
+import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
+import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isDefaultConstructor;
+import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunction;
+import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isMapperFactoryMethod;
+import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isStatic;
+import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.notPrivate;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 /**
  * DAMethodPredicatesTest -

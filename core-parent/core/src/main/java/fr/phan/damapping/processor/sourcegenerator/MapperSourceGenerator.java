@@ -15,20 +15,20 @@
  */
 package fr.phan.damapping.processor.sourcegenerator;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
-import com.google.common.collect.FluentIterable;
 import fr.phan.damapping.processor.model.DAInterface;
 import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.sourcegenerator.writer.DAFileWriter;
 
-import javax.annotation.Nullable;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
+import com.google.common.base.Function;
+import com.google.common.base.Predicates;
+import com.google.common.collect.FluentIterable;
 
 /**
  * MapperSourceGenerator -

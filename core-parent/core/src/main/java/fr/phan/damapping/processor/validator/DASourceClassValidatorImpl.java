@@ -1,7 +1,5 @@
 package fr.phan.damapping.processor.validator;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.FluentIterable;
 import fr.phan.damapping.processor.model.DAInterface;
 import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DAModifier;
@@ -11,6 +9,8 @@ import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 
 import java.util.List;
 import java.util.Set;
+import com.google.common.base.Optional;
+import com.google.common.collect.FluentIterable;
 
 import static com.google.common.collect.FluentIterable.from;
 

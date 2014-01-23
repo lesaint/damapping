@@ -17,7 +17,6 @@ package fr.phan.damapping.test.springpackagescan.mapping;
 
 import fr.phan.damapping.annotation.Mapper;
 import fr.phan.damapping.test.springpackagescan.dto.FloorDto;
-import fr.phan.damapping.test.springpackagescan.mapping.RoomToRoomDtoMapper;
 import fr.phan.damapping.test.springpackagescan.service.Floor;
 
 import javax.annotation.Nullable;

@@ -17,8 +17,6 @@ package fr.phan.damapping.test.fullhardcoded.mapping;
 
 import fr.phan.damapping.annotation.Mapper;
 import fr.phan.damapping.test.fullhardcoded.dto.FloorDto;
-import fr.phan.damapping.test.fullhardcoded.mapping.RoomToRoomDtoMapper;
-import fr.phan.damapping.test.fullhardcoded.mapping.RoomToRoomDtoMapperImpl;
 import fr.phan.damapping.test.fullhardcoded.service.Floor;
 
 import javax.annotation.Nullable;

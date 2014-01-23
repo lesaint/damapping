@@ -15,22 +15,28 @@
  */
 package fr.phan.damapping.processor.sourcegenerator;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import fr.phan.damapping.processor.sourcegenerator.writer.DAClassMethodWriter;
-import fr.phan.damapping.processor.sourcegenerator.writer.DAClassWriter;
-import fr.phan.damapping.processor.sourcegenerator.writer.DAFileWriter;
-import fr.phan.damapping.processor.model.*;
+import fr.phan.damapping.processor.model.DAMethod;
+import fr.phan.damapping.processor.model.DAModifier;
+import fr.phan.damapping.processor.model.DAName;
+import fr.phan.damapping.processor.model.DASourceClass;
+import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.InstantiationType;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
-import org.springframework.stereotype.Component;
+import fr.phan.damapping.processor.sourcegenerator.writer.DAClassMethodWriter;
+import fr.phan.damapping.processor.sourcegenerator.writer.DAClassWriter;
+import fr.phan.damapping.processor.sourcegenerator.writer.DAFileWriter;
 
-import javax.annotation.Resource;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
+import javax.annotation.Resource;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+
+import org.springframework.stereotype.Component;
 
 import static com.google.common.collect.FluentIterable.from;
 

@@ -19,6 +19,13 @@ import fr.phan.damapping.annotation.Mapper;
 import fr.phan.damapping.processor.impl.javaxparsing.JavaxParsingService;
 import fr.phan.damapping.processor.impl.javaxparsing.JavaxParsingServiceImpl;
 import fr.phan.damapping.processor.model.DASourceClass;
+import fr.phan.damapping.processor.sourcegenerator.DefaultFileGeneratorContext;
+import fr.phan.damapping.processor.sourcegenerator.SourceGenerationService;
+import fr.phan.damapping.processor.sourcegenerator.SourceGenerationServiceImpl;
+import fr.phan.damapping.processor.sourcegenerator.SourceWriterDelegate;
+import fr.phan.damapping.processor.validator.DASourceClassValidator;
+import fr.phan.damapping.processor.validator.DASourceClassValidatorImpl;
+import fr.phan.damapping.processor.validator.ValidationError;
 
 import java.io.IOException;
 import java.util.Set;
@@ -28,14 +35,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
-
 import com.google.common.collect.ImmutableSet;
-import fr.phan.damapping.processor.sourcegenerator.*;
-import fr.phan.damapping.processor.validator.DASourceClassValidator;
-import fr.phan.damapping.processor.validator.DASourceClassValidatorImpl;
-import fr.phan.damapping.processor.validator.ValidationError;
-
-import static com.google.common.collect.FluentIterable.from;
 
 /**
  * MapperAnnotationProcessor -

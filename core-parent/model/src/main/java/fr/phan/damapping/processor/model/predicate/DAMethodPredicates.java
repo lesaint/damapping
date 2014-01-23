@@ -15,14 +15,14 @@
  */
 package fr.phan.damapping.processor.model.predicate;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.FluentIterable;
 import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DAModifier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.FluentIterable;
 
 /**
  * DAMethodPredicates -

@@ -1,12 +1,11 @@
 package fr.phan.damapping.processor.impl.javaxparsing;
 
-import com.google.common.base.Optional;
-
+import java.lang.annotation.Annotation;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
-import java.lang.annotation.Annotation;
+import com.google.common.base.Optional;
 
 /**
  * JavaxUtil -

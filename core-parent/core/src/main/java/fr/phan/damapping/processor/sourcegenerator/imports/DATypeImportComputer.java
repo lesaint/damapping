@@ -15,12 +15,13 @@
  */
 package fr.phan.damapping.processor.sourcegenerator.imports;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.DATypeKind;
+
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 /**
  * DATypeImportComputer -

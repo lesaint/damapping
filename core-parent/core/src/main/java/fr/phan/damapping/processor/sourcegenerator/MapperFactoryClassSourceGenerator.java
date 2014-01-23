@@ -15,8 +15,6 @@
  */
 package fr.phan.damapping.processor.sourcegenerator;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DASourceClass;
@@ -26,10 +24,12 @@ import fr.phan.damapping.processor.sourcegenerator.writer.DAClassMethodWriter;
 import fr.phan.damapping.processor.sourcegenerator.writer.DAClassWriter;
 import fr.phan.damapping.processor.sourcegenerator.writer.DAFileWriter;
 
-import javax.annotation.Resource;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
+import javax.annotation.Resource;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 /**
 * MapperFactoryClassSourceGenerator -

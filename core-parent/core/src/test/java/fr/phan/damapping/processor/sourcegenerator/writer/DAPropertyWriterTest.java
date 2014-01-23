@@ -15,9 +15,11 @@
  */
 package fr.phan.damapping.processor.sourcegenerator.writer;
 
+import fr.phan.damapping.processor.model.DAModifier;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import fr.phan.damapping.processor.model.DAModifier;
+
 import org.testng.annotations.Test;
 
 import static fr.phan.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;

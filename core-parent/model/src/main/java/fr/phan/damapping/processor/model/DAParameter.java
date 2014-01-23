@@ -15,12 +15,11 @@
  */
 package fr.phan.damapping.processor.model;
 
-import com.google.common.collect.ImmutableSet;
-
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import java.util.Set;
+import com.google.common.collect.ImmutableSet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

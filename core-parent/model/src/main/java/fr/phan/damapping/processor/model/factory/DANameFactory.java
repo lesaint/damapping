@@ -15,12 +15,12 @@
  */
 package fr.phan.damapping.processor.model.factory;
 
-import com.google.common.base.Preconditions;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DATypeKind;
 
-import javax.annotation.Nonnull;
 import java.util.Locale;
+import javax.annotation.Nonnull;
+import com.google.common.base.Preconditions;
 
 /**
  * DANameFactory - final class exposing static factory methods for DAName class

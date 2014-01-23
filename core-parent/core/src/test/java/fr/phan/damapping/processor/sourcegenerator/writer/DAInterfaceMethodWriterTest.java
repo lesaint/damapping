@@ -15,9 +15,10 @@
  */
 package fr.phan.damapping.processor.sourcegenerator.writer;
 
-import com.google.common.collect.ImmutableList;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
-import org.assertj.core.api.Assertions;
+
+import com.google.common.collect.ImmutableList;
+
 import org.testng.annotations.Test;
 
 import static fr.phan.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;

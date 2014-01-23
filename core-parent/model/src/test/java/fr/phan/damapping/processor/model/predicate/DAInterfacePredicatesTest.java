@@ -1,11 +1,13 @@
 package fr.phan.damapping.processor.model.predicate;
 
-import com.google.common.base.Function;
 import fr.phan.damapping.processor.model.DAInterface;
 import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.DATypeKind;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
+
+import com.google.common.base.Function;
+
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -15,20 +15,21 @@
  */
 package fr.phan.damapping.processor.sourcegenerator.writer;
 
-import com.google.common.collect.ImmutableList;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import com.google.common.collect.ImmutableList;
+
 import org.assertj.core.api.Assertions;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;

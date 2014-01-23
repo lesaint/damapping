@@ -15,19 +15,19 @@
  */
 package fr.phan.damapping.processor.sourcegenerator;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import fr.phan.damapping.processor.model.DAModifier;
-import fr.phan.damapping.processor.sourcegenerator.writer.DAFileWriter;
-import fr.phan.damapping.processor.sourcegenerator.writer.DAInterfaceWriter;
 import fr.phan.damapping.processor.model.DAMethod;
+import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
+import fr.phan.damapping.processor.sourcegenerator.writer.DAFileWriter;
+import fr.phan.damapping.processor.sourcegenerator.writer.DAInterfaceWriter;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 
 import static fr.phan.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
 

@@ -1,23 +1,35 @@
 package fr.phan.damapping.processor.impl.javaxparsing;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicates;
 import fr.phan.damapping.annotation.MapperFactoryMethod;
-import fr.phan.damapping.processor.model.*;
+import fr.phan.damapping.processor.model.DAInterface;
+import fr.phan.damapping.processor.model.DAMethod;
+import fr.phan.damapping.processor.model.DAName;
+import fr.phan.damapping.processor.model.DASourceClass;
+import fr.phan.damapping.processor.model.DAType;
+import fr.phan.damapping.processor.model.InstantiationType;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.*;
-import javax.lang.model.type.*;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
-import java.util.Collections;
-import java.util.List;
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicates;
+
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import static com.google.common.collect.FluentIterable.from;
 

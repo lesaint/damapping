@@ -1,10 +1,10 @@
 package fr.phan.damapping.processor.sourcegenerator;
 
-import com.google.common.collect.ImmutableSet;
 import fr.phan.damapping.processor.model.InstantiationType;
 
 import java.io.IOException;
 import java.util.Set;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * SourceGenerationService -

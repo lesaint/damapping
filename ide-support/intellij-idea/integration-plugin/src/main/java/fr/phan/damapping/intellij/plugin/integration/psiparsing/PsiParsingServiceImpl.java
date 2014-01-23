@@ -1,7 +1,8 @@
 package fr.phan.damapping.intellij.plugin.integration.psiparsing;
 
-import com.intellij.psi.PsiClass;
 import fr.phan.damapping.processor.model.DASourceClass;
+
+import com.intellij.psi.PsiClass;
 
 /**
  * PsiParsingServiceImpl -

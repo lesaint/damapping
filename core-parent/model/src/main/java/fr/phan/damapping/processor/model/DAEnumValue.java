@@ -18,9 +18,8 @@
 
 package fr.phan.damapping.processor.model;
 
-import com.google.common.base.Preconditions;
-
 import javax.annotation.Nonnull;
+import com.google.common.base.Preconditions;
 
 /**
  * DAEnumValue -

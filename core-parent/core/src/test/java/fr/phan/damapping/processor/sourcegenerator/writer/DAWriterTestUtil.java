@@ -15,8 +15,6 @@
  */
 package fr.phan.damapping.processor.sourcegenerator.writer;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DAType;
@@ -24,8 +22,10 @@ import fr.phan.damapping.processor.model.DATypeKind;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 
-import javax.annotation.Nullable;
 import java.io.Serializable;
+import javax.annotation.Nullable;
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 
 import static fr.phan.damapping.processor.model.factory.DATypeFactory.declared;
 

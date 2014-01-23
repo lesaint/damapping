@@ -15,7 +15,6 @@
  */
 package fr.phan.damapping.processor.sourcegenerator.writer;
 
-import com.google.common.collect.ImmutableList;
 import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAType;
 
@@ -24,6 +23,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import com.google.common.collect.ImmutableList;
 
 /**
  * DAPropertyWriter -

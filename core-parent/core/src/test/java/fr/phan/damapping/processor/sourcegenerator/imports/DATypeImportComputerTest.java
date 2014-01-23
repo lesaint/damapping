@@ -15,16 +15,17 @@
  */
 package fr.phan.damapping.processor.sourcegenerator.imports;
 
-import com.google.common.collect.ImmutableList;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.DATypeKind;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
-import org.assertj.core.api.Assertions;
-import org.testng.annotations.Test;
 
 import java.util.Collections;
 import java.util.List;
+import com.google.common.collect.ImmutableList;
+
+import org.assertj.core.api.Assertions;
+import org.testng.annotations.Test;
 
 /**
  * DATypeImportComputerTest -

@@ -2,9 +2,10 @@ package fr.phan.damapping.processor.model.factory;
 
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DATypeKind;
-import org.testng.annotations.Test;
 
 import java.util.Locale;
+
+import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

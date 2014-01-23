@@ -4,12 +4,12 @@ import fr.phan.damapping.processor.sourcegenerator.FileGeneratorContext;
 import fr.phan.damapping.processor.sourcegenerator.SourceGenerator;
 import fr.phan.damapping.processor.sourcegenerator.SourceWriterDelegate;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
-import java.io.BufferedWriter;
-import java.io.IOException;
 
 /**
 * JavaxSourceWriterDelegate -

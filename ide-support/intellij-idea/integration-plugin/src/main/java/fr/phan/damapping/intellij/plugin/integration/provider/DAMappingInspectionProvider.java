@@ -1,7 +1,8 @@
 package fr.phan.damapping.intellij.plugin.integration.provider;
 
-import com.intellij.codeInspection.InspectionToolProvider;
 import fr.phan.damapping.intellij.plugin.integration.inspection.DAMappingIntegrationInspection;
+
+import com.intellij.codeInspection.InspectionToolProvider;
 
 /**
  * @author Sébastien Lesaint
