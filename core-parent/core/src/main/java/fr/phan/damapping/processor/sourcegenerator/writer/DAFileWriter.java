@@ -72,23 +72,21 @@ public class DAFileWriter implements DAWriter {
   }
 
   private List<DAName> filterAndSortImports(Collection<DAName> mapperImports, @Nullable DAName packageName) {
+    Predicate<DAName> notDisplayedBase = Predicates.or(
+        // defense against null values, of null/empty DAName.name
+        InvalidDAName.INSTANCE,
+        // imports from java itself
+        JavaLangDANamePredicate.INSTANCE
+    );
     Predicate<DAName> notDisplayed;
     if (packageName == null) {
-      notDisplayed = Predicates.or(
-          // defense against null values, of null/empty DAName.name
-          InvalidDAName.INSTANCE,
-          // imports from java itself
-          JavaLangDANamePredicate.INSTANCE
-      );
+      notDisplayed = notDisplayedBase;
     }
     else {
       notDisplayed = Predicates.or(
-          // defense against null values, of null/empty DAName.name
-          InvalidDAName.INSTANCE,
+          notDisplayedBase,
           // imports in the same package as the generated class (ie. the package of the Mapper class)
-          new PackagePredicate(packageName),
-          // imports from java itself
-          JavaLangDANamePredicate.INSTANCE
+          new PackagePredicate(packageName)
       );
     }
 

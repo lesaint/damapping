@@ -57,9 +57,9 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
 
   @Nonnull
   public DASourceClass parse(TypeElement classElement) {
-    DAType type = javaxExtractor.extractType((DeclaredType) classElement.asType());
+    DAType type = javaxExtractor.extractType(classElement.asType());
 
-    DASourceClass.Builder builder;
+    DASourceClass.Builder<?> builder;
     if (classElement.getKind() == ElementKind.ENUM) {
       builder = DASourceClass.enumBuilder(type, javaxExtractor.extractEnumValues(classElement));
     }

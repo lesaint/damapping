@@ -51,7 +51,7 @@ public class DASourceClass implements DAModelVisitable {
   @Nonnull
   private final InstantiationType instantiationType;
 
-  private DASourceClass(Builder builder) {
+  private DASourceClass(Builder<?> builder) {
     this.type = builder.getType();
     this.packageName = builder.getPackageName();
     this.modifiers = builder.getModifiers() == null ? Collections.<DAModifier>emptySet() : ImmutableSet.copyOf(
