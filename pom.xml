@@ -22,11 +22,12 @@
     <properties>
         <git.repository>scm:git:https://gitlab.fullsix.com/sfr-sandbox/dozer-annihilation.git</git.repository>
 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <guava.version>14.0.1</guava.version>
         <springframework.version>3.1.0.RELEASE</springframework.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jdk.version>1.7</jdk.version>
         <maven.version>3.0.0</maven.version>
     </properties>
