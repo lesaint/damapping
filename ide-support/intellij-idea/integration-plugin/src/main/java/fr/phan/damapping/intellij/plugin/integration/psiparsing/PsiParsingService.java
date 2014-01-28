@@ -7,7 +7,7 @@ import com.intellij.psi.PsiClass;
 /**
  * PsiParsingService -
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public interface PsiParsingService {
     DASourceClass parse(PsiClass psiClass);
