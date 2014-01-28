@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author: Sébastien Lesaint
  */
 public interface SourceGenerationService {
-  void generateSourceFiles(DefaultFileGeneratorContext context) throws IOException;
+  void generateSourceFiles(FileGeneratorContext context) throws IOException;
 
   void generateMapper(FileGeneratorContext context) throws IOException;
 

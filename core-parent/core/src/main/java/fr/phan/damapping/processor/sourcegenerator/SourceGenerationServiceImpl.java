@@ -23,7 +23,8 @@ public class SourceGenerationServiceImpl implements SourceGenerationService {
     this.delegate = delegate;
   }
 
-  public void generateSourceFiles(DefaultFileGeneratorContext context) throws IOException {
+  @Override
+  public void generateSourceFiles(FileGeneratorContext context) throws IOException {
     // 1 - générer l'interface du Mapper
     generateMapper(context);
 
