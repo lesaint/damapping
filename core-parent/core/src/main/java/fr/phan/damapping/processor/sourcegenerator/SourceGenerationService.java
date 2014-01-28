@@ -1,6 +1,7 @@
 package fr.phan.damapping.processor.sourcegenerator;
 
 import java.io.IOException;
+import javax.annotation.Nonnull;
 
 /**
  * SourceGenerationService -
@@ -8,15 +9,15 @@ import java.io.IOException;
  * @author: Sébastien Lesaint
  */
 public interface SourceGenerationService {
-  void generateSourceFiles(FileGeneratorContext context) throws IOException;
+  void generateSourceFiles(@Nonnull FileGeneratorContext context, @Nonnull SourceWriterDelegate delegate) throws IOException;
 
-  void generateMapper(FileGeneratorContext context) throws IOException;
+  void generateMapper(FileGeneratorContext context, SourceWriterDelegate delegate) throws IOException;
 
-  void generateMapperFactoryClass(FileGeneratorContext context) throws IOException;
+  void generateMapperFactoryClass(FileGeneratorContext context, SourceWriterDelegate delegate) throws IOException;
 
-  void generateMapperFactoryInterface(FileGeneratorContext context) throws IOException;
+  void generateMapperFactoryInterface(FileGeneratorContext context, SourceWriterDelegate delegate) throws IOException;
 
-  void generateMapperFactoryImpl(FileGeneratorContext context) throws IOException;
+  void generateMapperFactoryImpl(FileGeneratorContext context, SourceWriterDelegate delegate) throws IOException;
 
-  void generateMapperImpl(FileGeneratorContext context) throws IOException;
+  void generateMapperImpl(FileGeneratorContext context, SourceWriterDelegate delegate) throws IOException;
 }

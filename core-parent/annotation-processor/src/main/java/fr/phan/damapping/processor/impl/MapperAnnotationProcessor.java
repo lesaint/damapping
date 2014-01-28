@@ -22,7 +22,6 @@ import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.sourcegenerator.DefaultFileGeneratorContext;
 import fr.phan.damapping.processor.sourcegenerator.SourceGenerationService;
 import fr.phan.damapping.processor.sourcegenerator.SourceGenerationServiceImpl;
-import fr.phan.damapping.processor.sourcegenerator.SourceWriterDelegate;
 import fr.phan.damapping.processor.validator.DASourceClassValidator;
 import fr.phan.damapping.processor.validator.DASourceClassValidatorImpl;
 import fr.phan.damapping.processor.validator.ValidationError;
@@ -79,9 +78,11 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
       return;
     }
 
-    SourceWriterDelegate sourceWriterDelegate = new JavaxSourceWriterDelegate(processingEnv, classElement);
-    SourceGenerationService sourceGenerationService = new SourceGenerationServiceImpl(sourceWriterDelegate);
-    sourceGenerationService.generateSourceFiles(new DefaultFileGeneratorContext(daSourceClass));
+    SourceGenerationService sourceGenerationService = new SourceGenerationServiceImpl();
+    sourceGenerationService.generateSourceFiles(
+        new DefaultFileGeneratorContext(daSourceClass),
+        new JavaxSourceWriterDelegate(processingEnv, classElement)
+    );
   }
 
 }
