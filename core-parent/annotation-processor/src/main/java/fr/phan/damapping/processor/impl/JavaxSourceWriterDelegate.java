@@ -14,7 +14,7 @@ import javax.tools.JavaFileObject;
 /**
  * JavaxSourceWriterDelegate -
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public class JavaxSourceWriterDelegate implements SourceWriterDelegate {
   private final ProcessingEnvironment processingEnv;

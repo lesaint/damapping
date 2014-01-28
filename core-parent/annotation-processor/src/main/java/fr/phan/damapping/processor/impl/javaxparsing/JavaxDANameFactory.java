@@ -26,7 +26,7 @@ import javax.lang.model.element.Name;
 /**
  * JavaxDANameFactory -
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public final class JavaxDANameFactory {
   private JavaxDANameFactory() {

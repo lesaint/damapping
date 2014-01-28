@@ -12,7 +12,7 @@ import java.util.Set;
  * DASourceClassValidator - Class responsible for validating part or all of a DASourceClass instance before processing
  * to generate classes.
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public interface DASourceClassValidator {
   void validate(DASourceClass sourceClass) throws ValidationError;

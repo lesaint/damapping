@@ -22,7 +22,7 @@ import com.google.common.base.Function;
 /**
  * JavaxExtractor - Extracts objects of the DAMapping model from the objects of the Javax model.
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public interface JavaxExtractor {
   @Nonnull

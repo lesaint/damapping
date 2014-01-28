@@ -19,7 +19,7 @@ import static com.google.common.collect.FluentIterable.from;
  * <p/>
  * TODO add unit test coverage for DASourceClassValidatorImpl
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public class DASourceClassValidatorImpl implements DASourceClassValidator {
   @Override

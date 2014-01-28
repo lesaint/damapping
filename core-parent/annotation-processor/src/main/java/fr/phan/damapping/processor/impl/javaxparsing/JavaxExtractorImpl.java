@@ -35,7 +35,7 @@ import static com.google.common.collect.FluentIterable.from;
 /**
  * JavaxExtractor -
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public class JavaxExtractorImpl implements JavaxExtractor {
   private final Types typeUtils;

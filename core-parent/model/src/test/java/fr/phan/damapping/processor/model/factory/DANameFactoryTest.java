@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * DANameFactoryTest -
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public class DANameFactoryTest {
 

@@ -36,7 +36,7 @@ import static com.google.common.collect.FluentIterable.from;
 /**
  * JavaxParsingService -
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public class JavaxParsingServiceImpl implements JavaxParsingService {
   private final ProcessingEnvironment processingEnv;

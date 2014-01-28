@@ -3,7 +3,7 @@ package fr.phan.damapping.processor.model;
 /**
  * DAModifier -
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 
 /**

@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 /**
  * JavaxDANameFactoryTest -
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public class JavaxDANameFactoryTest {
 

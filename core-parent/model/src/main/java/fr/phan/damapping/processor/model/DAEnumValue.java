@@ -24,7 +24,7 @@ import com.google.common.base.Preconditions;
 /**
  * DAEnumValue -
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public class DAEnumValue implements CharSequence {
   @Nonnull

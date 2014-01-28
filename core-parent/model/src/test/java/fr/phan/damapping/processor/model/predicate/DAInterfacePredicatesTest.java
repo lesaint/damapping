@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * DAInterfacePredicatesTest -
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public class DAInterfacePredicatesTest {
   @Test

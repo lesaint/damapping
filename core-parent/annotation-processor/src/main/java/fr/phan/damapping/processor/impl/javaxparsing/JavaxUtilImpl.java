@@ -14,7 +14,7 @@ import com.google.common.base.Optional;
 /**
  * JavaxUtilImpl -
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public class JavaxUtilImpl implements JavaxUtil {
 

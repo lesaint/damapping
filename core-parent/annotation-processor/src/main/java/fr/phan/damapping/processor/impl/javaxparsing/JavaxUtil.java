@@ -10,7 +10,7 @@ import com.google.common.base.Optional;
 /**
  * JavaxUtil -
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public interface JavaxUtil {
   @Nonnull

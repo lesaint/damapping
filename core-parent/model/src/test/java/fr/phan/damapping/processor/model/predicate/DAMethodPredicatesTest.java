@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 /**
  * DAMethodPredicatesTest -
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public class DAMethodPredicatesTest {
   @Test(expectedExceptions = NullPointerException.class)

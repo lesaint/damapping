@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableSet;
 /**
  * SourceGenerationService -
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public class SourceGenerationServiceImpl implements SourceGenerationService {
   private static final Set<InstantiationType> MAPPER_FACTORY_CLASS_INTANTIATIONTYPES =

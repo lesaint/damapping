@@ -3,7 +3,7 @@ package fr.phan.damapping.processor.validator;
 /**
  * ValidationError - Check exception representing a validation error
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public class ValidationError extends Exception {
 

@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 /**
  * SourceGenerationService -
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public interface SourceGenerationService {
   void generateSourceFiles(@Nonnull FileGeneratorContext context, @Nonnull SourceWriterDelegate delegate) throws IOException;

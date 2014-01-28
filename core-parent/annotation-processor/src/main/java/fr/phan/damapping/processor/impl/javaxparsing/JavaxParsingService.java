@@ -13,7 +13,7 @@ import javax.lang.model.element.TypeElement;
 /**
  * JavaxParsingService -
  *
- * @author: Sébastien Lesaint
+ * @author Sébastien Lesaint
  */
 public interface JavaxParsingService {
   DASourceClass parse(TypeElement classElement);
