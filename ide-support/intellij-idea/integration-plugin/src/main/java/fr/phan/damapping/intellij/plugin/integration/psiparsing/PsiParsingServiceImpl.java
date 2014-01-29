@@ -8,6 +8,7 @@ import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.InstantiationType;
+import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.validator.DASourceClassValidator;
 import fr.phan.damapping.processor.validator.DASourceClassValidatorImpl;
 
@@ -19,8 +20,11 @@ import javax.annotation.Nullable;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
+import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassType;
+import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiPackage;
 import com.intellij.psi.PsiReferenceList;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -84,7 +88,9 @@ public class PsiParsingServiceImpl implements PsiParsingService {
   }
 
   private DAName extractPackageName(PsiClass psiClass) {
-    return null;  //To change body of created methods use File | Settings | File Templates.
+    PsiJavaFile javaFile = (PsiJavaFile) psiClass.getContainingFile();
+    PsiPackage pkg = JavaPsiFacade.getInstance(psiClass.getProject()).findPackage(javaFile.getPackageName());
+    return DANameFactory.from(pkg.getQualifiedName());
   }
 
   private Set<DAModifier> extractModifiers(PsiClass psiClass) {
