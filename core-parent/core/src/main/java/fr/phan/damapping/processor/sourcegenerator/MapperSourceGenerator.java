@@ -77,7 +77,7 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
                            }
                          }
                          ).filter(Predicates.notNull())
-                         .toList();
+                         .toImmutableList(); // using deprecated method because old version of Guava is bundled into IDEA 12
   }
 
   private static Set<DAModifier> filterModifiers(Set<DAModifier> modifiers) {
@@ -88,6 +88,6 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
                                  Predicates.equalTo(DAModifier.FINAL)
                              )
                          )
-                         .toSet();
+                         .toImmutableSet(); // using deprecated method because old version of Guava is bundled into IDEA 12
   }
 }

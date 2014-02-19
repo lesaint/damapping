@@ -96,7 +96,7 @@ public class DAFileWriter implements DAWriter {
                 Predicates.not(
                     notDisplayed
                 )
-            ).toSet()
+            ).toImmutableSet() // using deprecated method because old version of Guava is bundled into IDEA 12
     );
     Collections.sort(res);
     return res;

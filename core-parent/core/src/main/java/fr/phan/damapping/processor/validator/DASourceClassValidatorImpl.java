@@ -51,7 +51,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     // rechercher si la classe Mapper implémente Function
     List<DAInterface> guavaFunctionInterfaces = from(interfaces)
         .filter(DAInterfacePredicates.isGuavaFunction())
-        .toList();
+        .toImmutableList();
     if (guavaFunctionInterfaces.size() > 1) {
       throw new ValidationError("Mapper implementing more than one Function interface is not supported");
     }
@@ -112,7 +112,9 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     if (methods.isEmpty()) {
       throw new ValidationError("Class annoted with @Mapper must have at least one methode");
     }
-    List<DAMethod> guavaFunctionMethods = from(methods).filter(DAMethodPredicates.isGuavaFunction()).toList();
+    List<DAMethod> guavaFunctionMethods = from(methods)
+        .filter(DAMethodPredicates.isGuavaFunction())
+        .toImmutableList(); // using deprecated method because old version of Guava is bundled into IDEA 12
     if (guavaFunctionMethods.size() > 1) {
       throw new ValidationError("Mapper having more than one apply method is not supported");
     }
