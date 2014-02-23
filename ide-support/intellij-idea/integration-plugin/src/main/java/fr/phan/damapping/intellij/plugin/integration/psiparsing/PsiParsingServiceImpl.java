@@ -39,7 +39,6 @@ import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiParameterList;
 import com.intellij.psi.PsiReferenceList;
 import com.intellij.psi.PsiTypeElement;
-import com.intellij.psi.impl.source.PsiClassReferenceType;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.FluentIterable.from;
@@ -121,14 +120,14 @@ public class PsiParsingServiceImpl implements PsiParsingService {
   @Nullable
   private DAName extractInterfaceQualifiedName(final PsiClassType psiClassType, PsiImportList psiImportList) {
     final String simpleName = psiClassType.getClassName();
-    if (psiClassType instanceof PsiClassReferenceType) {
-      String qualifiedName = ((PsiClassReferenceType) psiClassType).getReference().getQualifiedName();
-      // qualified name is equals to simple name means qualified name was written in plain text in the "implements"
-      // declaration
-      if (!simpleName.equals(qualifiedName)) {
-        return DANameFactory.from(qualifiedName);
-      }
-    }
+//    if (psiClassType instanceof PsiClassReferenceType) {
+//      String qualifiedName = ((PsiClassReferenceType) psiClassType).getReference().getQualifiedName();
+//      // qualified name is equals to simple name means qualified name was written in plain text in the "implements"
+//      // declaration
+//      if (!simpleName.equals(qualifiedName)) {
+//        return DANameFactory.from(qualifiedName);
+//      }
+//    }
     if (psiImportList == null) {
       LOGGER.error(
           String.format("qualified name of interface PsiClassType %s can not be resolved", simpleName)

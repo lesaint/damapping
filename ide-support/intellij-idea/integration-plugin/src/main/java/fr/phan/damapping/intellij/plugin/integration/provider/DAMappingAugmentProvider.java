@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
@@ -34,7 +36,8 @@ import org.codehaus.groovy.runtime.StringBufferWriter;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * DAMappingAugmentProvider -
+ * DAMappingAugmentProvider - IDEA extension responsible for providing feedback to the developer on whether her usage
+ * of the @Mapper annotation is valid or not.
  *
  * @author Sébastien Lesaint
  */
@@ -82,17 +85,17 @@ public class DAMappingAugmentProvider extends PsiAugmentProvider {
     PsiModifierList modifierList = psiClass.getModifierList();
     PsiAnnotation[] annotations = modifierList.getAnnotations();
 
-    String mapperSrc = createMapper(psiClass);
-    JavaPsiFacade.getElementFactory(project)
-                 .createClassFromText(mapperSrc, element /*TODO verify what is this second argument*/);
-
-//        PsiClass res = new LightClass(JavaPsiFacade.getElementFactory(project).createClass(psiClass.getName() +
-// "Mapper"));
-
-    return Collections.emptyList();
+    return createMapper(psiClass, project, element);
+//    JavaPsiFacade.getElementFactory(project)
+//                 .createClassFromText(mapperSrc, element /*TODO verify what is this second argument*/);
+//
+////        PsiClass res = new LightClass(JavaPsiFacade.getElementFactory(project).createClass(psiClass.getName() +
+//// "Mapper"));
+//
+//    return Collections.emptyList();
   }
 
-  private String createMapper(PsiClass psiClass) {
+  private <Psi extends PsiElement> List<Psi> createMapper(PsiClass psiClass, final Project project, final PsiElement element) {
     DASourceClass daSourceClass = parsingService.parse(psiClass);
     try {
       sourceClassValidator.validate(daSourceClass);
@@ -101,6 +104,7 @@ public class DAMappingAugmentProvider extends PsiAugmentProvider {
       LOGGER.error("Validation failed", validationError);
     }
 
+    final List<Psi> res = Lists.newArrayList();
     try {
       sourceGenerationService.generateSourceFiles(
           new DefaultFileGeneratorContext(daSourceClass),
@@ -109,7 +113,12 @@ public class DAMappingAugmentProvider extends PsiAugmentProvider {
             public void generateFile(SourceGenerator sourceGenerator, FileGeneratorContext context) throws IOException {
               StringBuffer buffer = new StringBuffer();
               sourceGenerator.writeFile(new BufferedWriter(new StringBufferWriter(buffer)), context);
-              generatedFile(sourceGenerator.fileName(context), buffer.toString(), context);
+              PsiClass classFromText = JavaPsiFacade.getElementFactory(project)
+                                                    .createClassFromText(buffer.toString(),
+                                                        element /*TODO verify what is this second argument*/);
+
+//              res.add(classFromText);
+//              generatedFile(sourceGenerator.fileName(context), buffer.toString(), context);
             }
 
           }
@@ -120,7 +129,7 @@ public class DAMappingAugmentProvider extends PsiAugmentProvider {
 
     // convert PsiClass to DASource class
     // use Writer to create String instead of file from DASource class and return it
-    return "";
+    return res;
   }
 
   private void generatedFile(String fileName, String fileContent, FileGeneratorContext context) {
