@@ -19,6 +19,7 @@ import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.DATypeKind;
 
+import java.util.List;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -35,8 +36,8 @@ public class DATypeImportComputer {
 
   // TODO : cache the list of imports for a specific DAType
   public static Iterable<DAName> computeImports(DAType daType) {
-    ImmutableList<DAName> empty = ImmutableList.<DAName>of();
-    ImmutableList<DAName> qualifiedName = hasNoName(daType.getKind()) ? empty : of(daType.getQualifiedName());
+    List<DAName> empty = ImmutableList.<DAName>of();
+    List<DAName> qualifiedName = hasNoName(daType.getKind()) || daType.getQualifiedName() == null ? empty : of(daType.getQualifiedName());
     Iterable<Iterable<DAName>> typesImports = Iterables.transform(
         daType.getTypeArgs(),
         new Function<DAType, Iterable<DAName>>() {
