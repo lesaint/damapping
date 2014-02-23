@@ -21,7 +21,7 @@ public class SourceGenerationServiceImpl implements SourceGenerationService {
   @Override
   public void generateSourceFiles(@Nonnull FileGeneratorContext context, @Nonnull SourceWriterDelegate delegate) throws IOException {
     // 1 - générer l'interface du Mapper
-    generateMapper(context, delegate);
+    generateMapperInterface(context, delegate);
 
     // 2 - générer la factory interface (si @MapperFactoryMethod)
     generateMapperFactoryInterface(context, delegate);
@@ -35,7 +35,7 @@ public class SourceGenerationServiceImpl implements SourceGenerationService {
   }
 
   @Override
-  public void generateMapper(FileGeneratorContext context, SourceWriterDelegate delegate) throws IOException {
+  public void generateMapperInterface(FileGeneratorContext context, SourceWriterDelegate delegate) throws IOException {
     delegate.generateFile(new MapperSourceGenerator(), context);
   }
 
@@ -71,7 +71,8 @@ public class SourceGenerationServiceImpl implements SourceGenerationService {
     }
   }
 
-  private boolean shouldGenerateMapperFactoryInterface(FileGeneratorContext context) {
+  @Override
+  public boolean shouldGenerateMapperFactoryInterface(FileGeneratorContext context) {
     return MAPPER_FACTORY_INTERFACE_INTANTIATIONTYPES.contains(context.getSourceClass().getInstantiationType());
   }
 }

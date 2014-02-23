@@ -33,13 +33,13 @@ public interface FileGeneratorContext {
   DASourceClass getSourceClass();
 
   @Nonnull
-  List<DAName> getMapperImports();
-
-  @Nonnull
-  List<DAName> getMapperImplImports();
+  List<DAName> getMapperInterfaceImports();
 
   @Nonnull
   List<DAName> getMapperFactoryInterfaceImports();
+
+  @Nonnull
+  List<DAName> getMapperImplImports();
 
   @Nonnull
   List<DAName> getMapperFactoryClassImports();
@@ -48,7 +48,7 @@ public interface FileGeneratorContext {
   List<DAName> getMapperFactoryImplImports();
 
   @Nonnull
-  DAType getMapperDAType();
+  DAType getMapperInterfaceDAType();
 
   @Nonnull
   DAType getMapperImplDAType();

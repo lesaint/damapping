@@ -23,7 +23,7 @@ import fr.phan.damapping.processor.sourcegenerator.imports.MapperFactoryClassImp
 import fr.phan.damapping.processor.sourcegenerator.imports.MapperFactoryImplImportsModelVisitor;
 import fr.phan.damapping.processor.sourcegenerator.imports.MapperFactoryInterfaceImportsModelVisitor;
 import fr.phan.damapping.processor.sourcegenerator.imports.MapperImplImportsModelVisitor;
-import fr.phan.damapping.processor.sourcegenerator.imports.MapperImportsModelVisitor;
+import fr.phan.damapping.processor.sourcegenerator.imports.MapperInterfaceImportsModelVisitor;
 
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -37,24 +37,24 @@ public class DefaultFileGeneratorContext implements FileGeneratorContext {
   @Nonnull
   private final DASourceClass sourceClass;
   @Nonnull
-  private final DAType mapperDAType;
+  private final DAType mapperInterfaceDAType;
+  @Nonnull
+  private final DAType mapperFactoryInterfaceDAType;
   @Nonnull
   private final DAType mapperImplDAType;
   @Nonnull
   private final DAType mapperFactoryClassDAType;
   @Nonnull
-  private final DAType mapperFactoryInterfaceDAType;
-  @Nonnull
   private final DAType mapperFactoryImplDAType;
 
   public DefaultFileGeneratorContext(DASourceClass sourceClass) {
     this.sourceClass = sourceClass;
-    this.mapperDAType = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "Mapper");
-    this.mapperImplDAType = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "MapperImpl");
-    this.mapperFactoryClassDAType = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "MapperFactory");
+    this.mapperInterfaceDAType = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "Mapper");
     this.mapperFactoryInterfaceDAType = DATypeFactory.declared(
         sourceClass.getType().getQualifiedName() + "MapperFactory"
     );
+    this.mapperImplDAType = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "MapperImpl");
+    this.mapperFactoryClassDAType = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "MapperFactory");
     this.mapperFactoryImplDAType = DATypeFactory.declared(
         sourceClass.getType().getQualifiedName() + "MapperFactoryImpl"
     );
@@ -68,16 +68,8 @@ public class DefaultFileGeneratorContext implements FileGeneratorContext {
 
   @Override
   @Nonnull
-  public List<DAName> getMapperImports() {
-    MapperImportsModelVisitor visitor = new MapperImportsModelVisitor();
-    sourceClass.accept(visitor);
-    return visitor.getImports();
-  }
-
-  @Override
-  @Nonnull
-  public List<DAName> getMapperImplImports() {
-    MapperImplImportsModelVisitor visitor = new MapperImplImportsModelVisitor();
+  public List<DAName> getMapperInterfaceImports() {
+    MapperInterfaceImportsModelVisitor visitor = new MapperInterfaceImportsModelVisitor();
     sourceClass.accept(visitor);
     return visitor.getImports();
   }
@@ -86,6 +78,14 @@ public class DefaultFileGeneratorContext implements FileGeneratorContext {
   @Nonnull
   public List<DAName> getMapperFactoryInterfaceImports() {
     MapperFactoryInterfaceImportsModelVisitor visitor = new MapperFactoryInterfaceImportsModelVisitor();
+    sourceClass.accept(visitor);
+    return visitor.getImports();
+  }
+
+  @Override
+  @Nonnull
+  public List<DAName> getMapperImplImports() {
+    MapperImplImportsModelVisitor visitor = new MapperImplImportsModelVisitor();
     sourceClass.accept(visitor);
     return visitor.getImports();
   }
@@ -108,8 +108,14 @@ public class DefaultFileGeneratorContext implements FileGeneratorContext {
 
   @Override
   @Nonnull
-  public DAType getMapperDAType() {
-    return mapperDAType;
+  public DAType getMapperInterfaceDAType() {
+    return mapperInterfaceDAType;
+  }
+
+  @Override
+  @Nonnull
+  public DAType getMapperFactoryInterfaceDAType() {
+    return mapperFactoryInterfaceDAType;
   }
 
   @Override
@@ -122,12 +128,6 @@ public class DefaultFileGeneratorContext implements FileGeneratorContext {
   @Nonnull
   public DAType getMapperFactoryClassDAType() {
     return mapperFactoryClassDAType;
-  }
-
-  @Override
-  @Nonnull
-  public DAType getMapperFactoryInterfaceDAType() {
-    return mapperFactoryInterfaceDAType;
   }
 
   @Override

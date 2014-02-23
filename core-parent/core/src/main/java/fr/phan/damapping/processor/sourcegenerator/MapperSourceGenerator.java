@@ -53,7 +53,7 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
     DASourceClass sourceClass = context.getSourceClass();
     DAFileWriter fileWriter = new DAFileWriter(bw)
         .appendPackage(sourceClass.getPackageName())
-        .appendImports(context.getMapperImports())
+        .appendImports(context.getMapperInterfaceImports())
         .appendWarningComment();
 
     fileWriter.newInterface(sourceClass.getType().getSimpleName() + "Mapper")

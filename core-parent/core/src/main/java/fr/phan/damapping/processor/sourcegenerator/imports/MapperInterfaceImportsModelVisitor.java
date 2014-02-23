@@ -22,11 +22,11 @@ import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.visitor.DAModelVisitor;
 
 /**
- * MapperImportsModelVisitor - Visitor building the list of imports for the Mapper interface
+ * MapperInterfaceImportsModelVisitor - Visitor building the list of imports for the Mapper interface
  *
  * @author Sébastien Lesaint
  */
-public class MapperImportsModelVisitor extends ImportListBuilder implements DAModelVisitor {
+public class MapperInterfaceImportsModelVisitor extends ImportListBuilder implements DAModelVisitor {
 
   @Override
   public void visit(DASourceClass daSourceClass) {
