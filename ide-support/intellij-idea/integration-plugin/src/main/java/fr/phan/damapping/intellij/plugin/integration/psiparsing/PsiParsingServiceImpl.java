@@ -39,6 +39,7 @@ import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiParameterList;
 import com.intellij.psi.PsiReferenceList;
 import com.intellij.psi.PsiTypeElement;
+import com.intellij.psi.impl.source.PsiClassReferenceType;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.FluentIterable.from;
@@ -120,14 +121,6 @@ public class PsiParsingServiceImpl implements PsiParsingService {
   @Nullable
   private DAName extractInterfaceQualifiedName(final PsiClassType psiClassType, PsiImportList psiImportList) {
     final String simpleName = psiClassType.getClassName();
-//    if (psiClassType instanceof PsiClassReferenceType) {
-//      String qualifiedName = ((PsiClassReferenceType) psiClassType).getReference().getQualifiedName();
-//      // qualified name is equals to simple name means qualified name was written in plain text in the "implements"
-//      // declaration
-//      if (!simpleName.equals(qualifiedName)) {
-//        return DANameFactory.from(qualifiedName);
-//      }
-//    }
     if (psiImportList == null) {
       LOGGER.error(
           String.format("qualified name of interface PsiClassType %s can not be resolved", simpleName)
@@ -151,13 +144,17 @@ public class PsiParsingServiceImpl implements PsiParsingService {
       return DANameFactory.from(importStatements.iterator().next().getQualifiedName());
     }
     if (importStatements.size() > 1) {
-      LOGGER.error("More than one matching import for interface PsiClassType %s", simpleName);
+      LOGGER.error(String.format("More than one matching import for interface PsiClassType %s", simpleName));
     }
-    if (importStatements.isEmpty()) {
-      LOGGER.error("No matching import for interface PsiClassType %s", simpleName);
+    if (importStatements.isEmpty() && !(psiClassType instanceof PsiClassReferenceType)) {
+      LOGGER.error(String.format("No matching import for interface PsiClassType %s", simpleName));
+    }
+
+    // If implements statement uses qualifiedName, psiClassType should be an instanceof PsiClassReferenceType
+    if (psiClassType instanceof PsiClassReferenceType) {
+      return DANameFactory.from(((PsiClassReferenceType) psiClassType).getReference().getQualifiedName());
     }
     return null;
-
   }
 
   private DATypeKind extractDATypeKind(PsiClassType psiClassType) {
