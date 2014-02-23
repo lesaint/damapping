@@ -279,6 +279,8 @@ public class DAMappingElementFinder extends PsiElementFinder {
           continue;
         }
 
+        // TODO : should we filter out the Mapper and MapperFactory classes from existing source files ?
+
         DASourceClass daSourceClass = parsingService.parse(psiClass);
         try {
           sourceClassValidator.validate(daSourceClass);
