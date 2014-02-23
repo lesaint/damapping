@@ -36,4 +36,12 @@ Good to Have features (no order)
 * action on class to add @Mapper
     * this could launch a wizard, couldn't it not ?
 
+TODOs
+-----------
+[ ] fix missing Psi parsing of generated parameters of implemented interfaces
+[ ] add support for default package, currently treated (with bug) as a packageName with empty string
+  [ ] make integration text for enum and for class
+  [ ] fix Psi parsing also
+  [ ] fix import filtering
+[X] filter and transforms on Array from Psi model : use Arrays.asList() which does not create a new array but a ArrayList with the specified array as the underlying Array
 
