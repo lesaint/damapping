@@ -19,7 +19,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-
 import com.google.common.collect.Lists;
 
 import com.intellij.openapi.diagnostic.Logger;

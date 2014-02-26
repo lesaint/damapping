@@ -31,6 +31,7 @@ public abstract class AbstractDAMappingTestCase extends LightCodeInsightFixtureT
   private static final Logger LOG = Logger.getLogger(AbstractDAMappingTestCase.class);
 
   private static final String DAMAPPING_SRC_PATH = "core-parent/annotations/src/main/java";
+  public static final String MAIN_JAVA = "main/java/";
 
   @Override
   protected String getTestDataPath() {
@@ -57,14 +58,14 @@ public abstract class AbstractDAMappingTestCase extends LightCodeInsightFixtureT
     doTest(getTestName(false).replace('$', '/') + ".java");
   }
 
-  protected void doTest(String fileName) throws IOException {
-    final PsiFile psiFile = loadToPsiFile("before/" + fileName);
+  private void doTest(String fileName) throws IOException {
+    PsiFile psiFile = loadToPsiFile(fileName);
 
     if (!(psiFile instanceof PsiJavaFile)) {
       fail("The test file type is not supported");
     }
 
-    final PsiJavaFile intellij = (PsiJavaFile) psiFile;
+    PsiJavaFile intellij = (PsiJavaFile) psiFile;
 
     PsiClass[] intellijClasses = intellij.getClasses();
     for (PsiClass intellijClass : intellijClasses) {
@@ -73,7 +74,11 @@ public abstract class AbstractDAMappingTestCase extends LightCodeInsightFixtureT
   }
 
   protected PsiFile loadToPsiFile(String fileName) {
-    VirtualFile virtualFile = myFixture.copyFileToProject(getBasePath() + "/" + fileName, fileName);
+    String filePath = getBasePath() + "/" + fileName;
+    String relativeBase = getBasePath().substring(getBasePath().indexOf(MAIN_JAVA) + MAIN_JAVA.length());
+    String relativePath = relativeBase + "/" + fileName;
+    LOG.info("filePath=" + filePath + " relativePath=" + relativePath);
+    VirtualFile virtualFile = myFixture.copyFileToProject(filePath, relativePath);
     myFixture.configureFromExistingVirtualFile(virtualFile);
     return myFixture.getFile();
   }
@@ -83,7 +88,7 @@ public abstract class AbstractDAMappingTestCase extends LightCodeInsightFixtureT
     for (File javaFile : filesByMask) {
       String filePath = javaFile.getPath().replace("\\", "/");
       String substring = filePath.substring(srcPath.length() + 1);
-      LOG.error("filePath="+filePath+" substring="+substring);
+      LOG.info("filePath=" + filePath + " substring=" + substring);
       myFixture.copyFileToProject(filePath, substring);
     }
   }
