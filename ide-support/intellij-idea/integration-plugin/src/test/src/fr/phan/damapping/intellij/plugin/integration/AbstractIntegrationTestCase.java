@@ -15,6 +15,10 @@ public abstract class AbstractIntegrationTestCase extends AbstractDAMappingTestC
     this.module = module;
   }
 
+  private String getModule() {
+    return module;
+  }
+
   @Override
   protected String getBasePath() {
     return "integration-test/" + module + "/src/main/java/fr/phan/damapping/test";

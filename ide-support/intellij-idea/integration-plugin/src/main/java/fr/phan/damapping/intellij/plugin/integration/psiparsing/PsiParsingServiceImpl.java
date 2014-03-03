@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableMap;
 
 import com.intellij.openapi.diagnostic.Logger;
@@ -38,6 +39,7 @@ import com.intellij.psi.PsiModifierList;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiParameterList;
 import com.intellij.psi.PsiReferenceList;
+import com.intellij.psi.PsiType;
 import com.intellij.psi.PsiTypeElement;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
 
@@ -170,7 +172,7 @@ public class PsiParsingServiceImpl implements PsiParsingService {
   }
 
   private Set<DAModifier> extractModifiers(PsiClass psiClass) {
-    return null;  //To change body of created methods use File | Settings | File Templates.
+    return toDAModifierSet(psiClass.getModifierList());
   }
 
   private List<DAInterface> extractInterfaces(final PsiClass psiClass) {
@@ -194,8 +196,62 @@ public class PsiParsingServiceImpl implements PsiParsingService {
     PsiImportList psiImportList = extratPsiImportList(psiClass);
     return DAType.builder(extractDATypeKind(psiClassType), DANameFactory.from(psiClassType.getClassName()))
         .withQualifiedName(extractInterfaceQualifiedName(psiClassType, psiImportList))
-//        .withTypeArgs()
+        .withTypeArgs(extractTypeArgs(psiClassType))
         .build();
+  }
+
+  private List<DAType> extractTypeArgs(PsiClassType psiClassType) {
+
+    return from(Arrays.asList(psiClassType.getParameters()))
+        .transform(new Function<PsiType, DAType>() {
+          @Nullable
+          @Override
+          public DAType apply(@Nullable PsiType psiType) {
+            if (psiType == null) {
+              return null;
+            }
+            return extractDAType(psiType);
+          }
+        }
+        ).filter(Predicates.notNull())
+        .toImmutableList();
+  }
+
+  private DAType extractDAType(PsiType psiType) {
+    return DAType.builder(extractDATypeKind(psiType), extractSimpleName(psiType))
+        .withTypeArgs(extractTypeArgs(psiType))
+        .withExtendsBound(extractExtendsBound(psiType))
+        .withSuperBound(extractSuperBound(psiType))
+        .build();
+  }
+
+  private DAType extractSuperBound(PsiType psiType) {
+    return null;  //To change body of created methods use File | Settings | File Templates.
+  }
+
+  private DAType extractExtendsBound(PsiType psiType) {
+    return null;  //To change body of created methods use File | Settings | File Templates.
+  }
+
+  private List<DAType> extractTypeArgs(PsiType psiType) {
+    if (psiType instanceof PsiClassType) {
+      return extractTypeArgs((PsiClassType) psiType);
+    }
+    throw new IllegalArgumentException("Huhu, PsiType is not a PsiClassType ?! fix it then !");
+  }
+
+  private DAName extractSimpleName(PsiType psiType) {
+    if (psiType instanceof PsiClassReferenceType) {
+      return DANameFactory.from(((PsiClassReferenceType) psiType).getClassName());
+    }
+    return DANameFactory.from(psiType.getCanonicalText());
+  }
+
+  private DATypeKind extractDATypeKind(PsiType psiType) {
+    if (psiType.getArrayDimensions() > 0) {
+      return DATypeKind.ARRAY;
+    }
+    return DATypeKind.DECLARED;
   }
 
   @Nullable
@@ -234,11 +290,15 @@ public class PsiParsingServiceImpl implements PsiParsingService {
     return toDAModifierSet(psiMethod.getModifierList());
   }
 
-  private static Set<DAModifier> toDAModifierSet(PsiModifierList modifierList) {
+  private static Set<DAModifier> toDAModifierSet(@Nullable PsiModifierList modifierList) {
+    if (modifierList == null) {
+      return Collections.emptySet();
+    }
 
     return from(Arrays.asList(modifierList.getChildren()))
         .filter(PsiKeyword.class)
-        .transform(PsiKeywordToDAModifier.INSTANCE).toImmutableSet();
+        .transform(PsiKeywordToDAModifier.INSTANCE)
+        .toImmutableSet();
   }
 
   private static enum PsiKeywordToDAModifier implements Function<PsiKeyword, DAModifier> {
