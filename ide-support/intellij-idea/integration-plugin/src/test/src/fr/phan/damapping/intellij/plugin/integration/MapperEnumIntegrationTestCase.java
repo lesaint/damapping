@@ -11,6 +11,10 @@ public class MapperEnumIntegrationTestCase extends AbstractIntegrationTestCase {
   }
 
   public void testEnumInstancedGuavaFunction() throws Exception {
-    doTest();
+    doAugmentTest();
   }
+
+//  public void testEnumInstancedGuavaFunction_resolve() throws Exception {
+//    doResolveTest("EnumInstancedGuavaFunction");
+//  }
 }

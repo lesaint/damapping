@@ -54,11 +54,11 @@ public abstract class AbstractDAMappingTestCase extends LightCodeInsightFixtureT
     loadFilesFrom(DAMAPPING_SRC_PATH);
   }
 
-  protected void doTest() throws IOException {
-    doTest(getTestName(false).replace('$', '/') + ".java");
+  protected void doAugmentTest() throws IOException {
+    doAugmentTestImpl(getTestName(false).replace('$', '/') + ".java");
   }
 
-  private void doTest(String fileName) throws IOException {
+  private void doAugmentTestImpl(String fileName) throws IOException {
     PsiFile psiFile = loadToPsiFile(fileName);
 
     if (!(psiFile instanceof PsiJavaFile)) {
