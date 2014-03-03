@@ -38,6 +38,9 @@ Good to Have features (no order)
 
 TODOs
 -----------
+[ ] add unit test of Psi to DAClass parsing by simply using the PsiClass in the PsiFile returned when adding a file to the fixture
+  * source and test data from integration-test module can very easily be used
+[ ] ask on the forum how to unit test the ElementFinder with a fixture (how to trigger the call, how to setup the project)
 [ ] fix missing Psi parsing of generated parameters of implemented interfaces
 [ ] add support for default package, currently treated (with bug) as a packageName with empty string
   [ ] make integration text for enum and for class
