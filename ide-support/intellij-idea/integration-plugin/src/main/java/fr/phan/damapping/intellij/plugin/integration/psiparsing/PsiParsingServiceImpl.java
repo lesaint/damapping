@@ -27,6 +27,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableMap;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.psi.PsiArrayType;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiEnumConstant;
@@ -123,39 +124,16 @@ public class PsiParsingServiceImpl implements PsiParsingService {
   @Nullable
   private DAName extractInterfaceQualifiedName(final PsiClassType psiClassType, PsiImportList psiImportList) {
     final String simpleName = psiClassType.getClassName();
-    if (psiImportList == null) {
-      LOGGER.error(
-          String.format("qualified name of interface PsiClassType %s can not be resolved", simpleName)
-      );
-      // FIXME raise an exception instead of just logging and returning null and display a message or just block the
-      // Augment
-      return null;
-    }
-    Set<PsiImportStatement> importStatements = from(Arrays.asList(psiImportList.getChildren())
-    ) // TODO minor optimisation, pass PsiImportStatement as a list instead of the PsiImportList object
-        .filter(PsiImportStatement.class).filter(new Predicate<PsiImportStatement>() {
-          @Override
-          public boolean apply(@Nullable PsiImportStatement psiImportStatement) {
-            return psiImportStatement != null
-                && psiImportStatement.getQualifiedName() != null
-                && psiImportStatement.getQualifiedName().endsWith(simpleName);
-          }
-        }
-        ).toImmutableSet();
-    if (importStatements.size() == 1) {
-      return DANameFactory.from(importStatements.iterator().next().getQualifiedName());
-    }
-    if (importStatements.size() > 1) {
-      LOGGER.error(String.format("More than one matching import for interface PsiClassType %s", simpleName));
-    }
-    if (importStatements.isEmpty() && !(psiClassType instanceof PsiClassReferenceType)) {
-      LOGGER.error(String.format("No matching import for interface PsiClassType %s", simpleName));
+    DAName nameFromImports = extractQualifiedName(simpleName, psiImportList);
+    if (nameFromImports != null) {
+      return nameFromImports;
     }
 
     // If implements statement uses qualifiedName, psiClassType should be an instanceof PsiClassReferenceType
     if (psiClassType instanceof PsiClassReferenceType) {
       return DANameFactory.from(((PsiClassReferenceType) psiClassType).getReference().getQualifiedName());
     }
+    LOGGER.error(String.format("No matching import for interface PsiClassType %s", simpleName));
     return null;
   }
 
@@ -193,14 +171,14 @@ public class PsiParsingServiceImpl implements PsiParsingService {
   }
 
   private DAType extractInterfaceDAType(PsiClass psiClass, PsiClassType psiClassType) {
-    PsiImportList psiImportList = extratPsiImportList(psiClass);
+    PsiImportList psiImportList = extractPsiImportList(psiClass);
     return DAType.builder(extractDATypeKind(psiClassType), DANameFactory.from(psiClassType.getClassName()))
-        .withQualifiedName(extractInterfaceQualifiedName(psiClassType, psiImportList))
-        .withTypeArgs(extractTypeArgs(psiClassType))
-        .build();
+                 .withQualifiedName(extractInterfaceQualifiedName(psiClassType, psiImportList))
+                 .withTypeArgs(extractTypeArgs(psiClassType, psiImportList))
+                 .build();
   }
 
-  private List<DAType> extractTypeArgs(PsiClassType psiClassType) {
+  private List<DAType> extractTypeArgs(PsiClassType psiClassType, final PsiImportList psiImportList) {
 
     return from(Arrays.asList(psiClassType.getParameters()))
         .transform(new Function<PsiType, DAType>() {
@@ -210,19 +188,51 @@ public class PsiParsingServiceImpl implements PsiParsingService {
             if (psiType == null) {
               return null;
             }
-            return extractDAType(psiType);
+            return extractDAType(psiType, psiImportList);
           }
         }
         ).filter(Predicates.notNull())
         .toImmutableList();
   }
 
-  private DAType extractDAType(PsiType psiType) {
-    return DAType.builder(extractDATypeKind(psiType), extractSimpleName(psiType))
-        .withTypeArgs(extractTypeArgs(psiType))
-        .withExtendsBound(extractExtendsBound(psiType))
-        .withSuperBound(extractSuperBound(psiType))
-        .build();
+  private DAType extractDAType(PsiType psiType, PsiImportList psiImportList) {
+    DAName simpleName = extractSimpleName(psiType);
+    return DAType.builder(extractDATypeKind(psiType), simpleName)
+                 .withQualifiedName(extractQualifiedName(simpleName.getName(), psiImportList))
+                 .withTypeArgs(extractTypeArgs(psiType, psiImportList))
+                 .withExtendsBound(extractExtendsBound(psiType))
+                 .withSuperBound(extractSuperBound(psiType))
+                 .build();
+  }
+
+  private DAName extractQualifiedName(final String simpleName, PsiImportList psiImportList) {
+    Optional<DAName> foundImport = from(Arrays.asList(psiImportList.getImportStatements()))
+        .filter(new Predicate<PsiImportStatement>() {
+          @Override
+          public boolean apply(@Nullable PsiImportStatement psiImportStatement) {
+            return psiImportStatement != null
+                && psiImportStatement.getQualifiedName() != null
+                && psiImportStatement.getQualifiedName().endsWith(simpleName);
+          }
+        }
+        )
+        .transform(new Function<PsiImportStatement, DAName>() {
+          @Nullable
+          @Override
+          public DAName apply(@Nullable PsiImportStatement psiImportStatement) {
+            if (psiImportStatement == null || psiImportStatement.getQualifiedName() == null) {
+              return null;
+            }
+            return DANameFactory.from(psiImportStatement.getQualifiedName());
+          }
+        }
+        )
+        .filter(Predicates.notNull())
+        .first();
+    if (foundImport.isPresent()) {
+      return foundImport.get();
+    }
+    return null;
   }
 
   private DAType extractSuperBound(PsiType psiType) {
@@ -233,9 +243,12 @@ public class PsiParsingServiceImpl implements PsiParsingService {
     return null;  //To change body of created methods use File | Settings | File Templates.
   }
 
-  private List<DAType> extractTypeArgs(PsiType psiType) {
+  private List<DAType> extractTypeArgs(PsiType psiType, PsiImportList psiImportList) {
     if (psiType instanceof PsiClassType) {
-      return extractTypeArgs((PsiClassType) psiType);
+      return extractTypeArgs((PsiClassType) psiType, psiImportList);
+    }
+    if (psiType instanceof PsiArrayType) {
+      return Collections.emptyList();
     }
     throw new IllegalArgumentException("Huhu, PsiType is not a PsiClassType ?! fix it then !");
   }
@@ -243,6 +256,9 @@ public class PsiParsingServiceImpl implements PsiParsingService {
   private DAName extractSimpleName(PsiType psiType) {
     if (psiType instanceof PsiClassReferenceType) {
       return DANameFactory.from(((PsiClassReferenceType) psiType).getClassName());
+    }
+    if (psiType instanceof PsiArrayType) {
+      return extractSimpleName(((PsiArrayType) psiType).getComponentType());
     }
     return DANameFactory.from(psiType.getCanonicalText());
   }
@@ -255,7 +271,7 @@ public class PsiParsingServiceImpl implements PsiParsingService {
   }
 
   @Nullable
-  private PsiImportList extratPsiImportList(PsiClass psiClass) {
+  private PsiImportList extractPsiImportList(PsiClass psiClass) {
     return from(Arrays.asList(psiClass.getParent().getChildren()))
         .filter(PsiImportList.class)
         .first()
@@ -264,6 +280,7 @@ public class PsiParsingServiceImpl implements PsiParsingService {
 
 
   private List<DAMethod> extractMethods(PsiClass psiClass) {
+    final PsiImportList psiImportList = extractPsiImportList(psiClass);
     return from(Arrays.asList(psiClass.getChildren()))
         .filter(PsiMethod.class)
         .transform(new Function<PsiMethod, DAMethod>() {
@@ -276,8 +293,8 @@ public class PsiParsingServiceImpl implements PsiParsingService {
             return DAMethod.methodBuilder()
                            .withName(DANameFactory.from(psiMethod.getName()))
                            .withModifiers(extractModifiers(psiMethod))
-                           .withParameters(extractParameters(psiMethod))
-                           .withReturnType(extractReturnType(psiMethod))
+                           .withParameters(extractParameters(psiMethod, psiImportList))
+                           .withReturnType(extractReturnType(psiMethod, psiImportList))
                            .withMapperFactoryMethod(isMapperFactoryMethod(psiMethod))
                            .withMapperMethod(isMapperMethod(psiMethod))
                            .build();
@@ -322,9 +339,11 @@ public class PsiParsingServiceImpl implements PsiParsingService {
       }
       return PSIKEYWORD_DAMODIFIER_MAP.get(psiKeyword.getText());
     }
-  };
+  }
 
-  private List<DAParameter> extractParameters(PsiMethod psiMethod) {
+  ;
+
+  private List<DAParameter> extractParameters(PsiMethod psiMethod, final PsiImportList psiImportList) {
     Optional<PsiParameterList> optional = from(Arrays.asList(psiMethod.getChildren())).filter(PsiParameterList.class)
         .first();
     if (!optional.isPresent()) {
@@ -332,38 +351,44 @@ public class PsiParsingServiceImpl implements PsiParsingService {
     }
     return from(Arrays.asList(optional.get().getParameters()))
         .transform(new Function<PsiParameter, DAParameter>() {
-      @Nullable
-      @Override
-      public DAParameter apply(@Nullable PsiParameter psiParameter) {
-        return DAParameter.builder(DANameFactory.from(psiParameter.getName()), extractParameterDAType(psiParameter))
-            .withModifiers(extractModifiers(psiParameter))
-            .build();
-      }
-    }).toImmutableList();
+          @Nullable
+          @Override
+          public DAParameter apply(@Nullable PsiParameter psiParameter) {
+            return DAParameter
+                .builder(
+                    DANameFactory.from(psiParameter.getName()),
+                    extractParameterDAType(psiParameter, psiImportList)
+                ).withModifiers(extractModifiers(psiParameter))
+                .build();
+          }
+        }
+        ).toImmutableList();
   }
 
   private Set<DAModifier> extractModifiers(PsiParameter psiParameter) {
-    Optional<PsiModifierList> modifiers = from(Arrays.asList(psiParameter.getChildren())).filter(PsiModifierList.class).first();
+    Optional<PsiModifierList> modifiers = from(Arrays.asList(psiParameter.getChildren())).filter(PsiModifierList.class)
+        .first();
     if (modifiers.isPresent()) {
       return toDAModifierSet(modifiers.get());
     }
     return Collections.<DAModifier>emptySet();
   }
 
-  private DAType extractParameterDAType(PsiParameter psiParameter) {
-    Optional<PsiTypeElement> typeElement = from(Arrays.asList(psiParameter.getChildren())).filter(PsiTypeElement.class).first();
+  private DAType extractParameterDAType(PsiParameter psiParameter, PsiImportList psiImportList) {
+    Optional<PsiTypeElement> typeElement = from(Arrays.asList(psiParameter.getChildren())).filter(PsiTypeElement.class)
+        .first();
     if (!typeElement.isPresent()) {
       throw new IllegalArgumentException("PsiParameter has no PsiTypeElement");
     }
-    return extractDAType(typeElement.get());
+    return extractDAType(typeElement.get(), psiImportList);
   }
 
-  private DAType extractDAType(@Nonnull PsiTypeElement typeElement) {
-    return DAType.builder(DATypeKind.DECLARED, DANameFactory.from(typeElement.getText())).build();
+  private DAType extractDAType(@Nonnull PsiTypeElement typeElement, PsiImportList psiImportList) {
+    return extractDAType(typeElement.getType(), psiImportList);
   }
 
-  private DAType extractReturnType(PsiMethod psiMethod) {
-    return extractDAType(psiMethod.getReturnTypeElement());
+  private DAType extractReturnType(PsiMethod psiMethod, PsiImportList psiImportList) {
+    return extractDAType(psiMethod.getReturnTypeElement(), psiImportList);
   }
 
   private boolean isMapperFactoryMethod(PsiMethod psiMethod) {
