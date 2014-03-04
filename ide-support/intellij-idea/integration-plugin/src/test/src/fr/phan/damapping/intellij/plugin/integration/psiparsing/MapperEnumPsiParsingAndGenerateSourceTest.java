@@ -12,16 +12,23 @@ public class MapperEnumPsiParsingAndGenerateSourceTest extends AbstractPsiParsin
   }
 
   /**
-   * Tests Psi parsing, DASourceClass validation and generated class source generation for @Mapper class : EnumInstancedGuavaFunction.
+   * @Mapper class : EnumInstancedGuavaFunction.
    */
   public void testEnumInstancedGuavaFunction() throws Exception {
     doPsiParsingAndGenerateSourceTest();
   }
 
   /**
-   * Tests Psi parsing, DASourceClass validation and generated class source generation for @Mapper class : GenericsEverywhere.
+   * @Mapper class : GenericsEverywhere.
    */
   public void testGenericsEverywhere() throws Exception {
+    doPsiParsingAndGenerateSourceTest();
+  }
+
+  /**
+   * @Mapper class : ReturnArray.
+   */
+  public void testReturnArray() throws Exception {
     doPsiParsingAndGenerateSourceTest();
   }
 
