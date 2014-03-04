@@ -11,6 +11,7 @@ import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.DATypeKind;
 import fr.phan.damapping.processor.model.InstantiationType;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
+import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,7 +25,9 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiArrayType;
@@ -281,7 +284,7 @@ public class PsiParsingServiceImpl implements PsiParsingService {
 
   private List<DAMethod> extractMethods(PsiClass psiClass) {
     final PsiImportList psiImportList = extractPsiImportList(psiClass);
-    return from(Arrays.asList(psiClass.getChildren()))
+    List<DAMethod> daMethods = from(Arrays.asList(psiClass.getChildren()))
         .filter(PsiMethod.class)
         .transform(new Function<PsiMethod, DAMethod>() {
           @Nullable
@@ -290,17 +293,38 @@ public class PsiParsingServiceImpl implements PsiParsingService {
             if (psiMethod == null) {
               return null;
             }
-            return DAMethod.methodBuilder()
-                           .withName(DANameFactory.from(psiMethod.getName()))
-                           .withModifiers(extractModifiers(psiMethod))
-                           .withParameters(extractParameters(psiMethod, psiImportList))
-                           .withReturnType(extractReturnType(psiMethod, psiImportList))
-                           .withMapperFactoryMethod(isMapperFactoryMethod(psiMethod))
-                           .withMapperMethod(isMapperMethod(psiMethod))
-                           .build();
+            return daMethodBuilder(psiMethod)
+                .withName(DANameFactory.from(psiMethod.getName()))
+                .withModifiers(extractModifiers(psiMethod))
+                .withParameters(extractParameters(psiMethod, psiImportList))
+                .withReturnType(extractReturnType(psiMethod, psiImportList))
+                .withMapperFactoryMethod(isMapperFactoryMethod(psiMethod))
+                .withMapperMethod(isMapperMethod(psiMethod))
+                .build();
+          }
+
+          private DAMethod.Builder daMethodBuilder(PsiMethod psiMethod) {
+            if (psiMethod.isConstructor()) {
+              return DAMethod.constructorBuilder();
+            }
+            return DAMethod.methodBuilder();
           }
         }
         ).toImmutableList();
+    if (!Iterables.any(daMethods, DAMethodPredicates.isDefaultConstructor())) {
+      return ImmutableList.copyOf(
+          Iterables.concat(Collections.singletonList(instanceDefaultConstructor(psiClass)), daMethods)
+      );
+    }
+    return daMethods;
+  }
+
+  private DAMethod instanceDefaultConstructor(PsiClass psiClass) {
+    return DAMethod.constructorBuilder()
+        .withName(DANameFactory.from(psiClass.getName()))
+        .withModifiers(Collections.singleton(DAModifier.PUBLIC))
+        .withReturnType(extractDAType(psiClass))
+        .build();
   }
 
   private Set<DAModifier> extractModifiers(PsiMethod psiMethod) {
@@ -388,6 +412,9 @@ public class PsiParsingServiceImpl implements PsiParsingService {
   }
 
   private DAType extractReturnType(PsiMethod psiMethod, PsiImportList psiImportList) {
+    if (psiMethod.isConstructor()) {
+      return null;
+    }
     return extractDAType(psiMethod.getReturnTypeElement(), psiImportList);
   }
 
@@ -400,6 +427,6 @@ public class PsiParsingServiceImpl implements PsiParsingService {
   }
 
   private InstantiationType computeClassInstantiationType(PsiClass psiClass) {
-    return null;  //To change body of created methods use File | Settings | File Templates.
+    return InstantiationType.CONSTRUCTOR;
   }
 }
