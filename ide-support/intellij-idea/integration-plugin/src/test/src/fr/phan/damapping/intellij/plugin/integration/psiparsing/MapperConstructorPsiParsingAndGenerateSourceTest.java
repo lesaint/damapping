@@ -14,4 +14,8 @@ public class MapperConstructorPsiParsingAndGenerateSourceTest extends AbstractPs
   public void testConstructorInstancedGuavaFunction() throws Exception {
     doPsiParsingAndGenerateSourceTest();
   }
+
+  public void testNonPublicMethods() throws Exception {
+    doPsiParsingAndGenerateSourceTest();
+  }
 }

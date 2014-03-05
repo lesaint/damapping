@@ -42,6 +42,7 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiModifierList;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiParameterList;
+import com.intellij.psi.PsiPrimitiveType;
 import com.intellij.psi.PsiReferenceList;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.PsiTypeElement;
@@ -250,7 +251,7 @@ public class PsiParsingServiceImpl implements PsiParsingService {
     if (psiType instanceof PsiClassType) {
       return extractTypeArgs((PsiClassType) psiType, psiImportList);
     }
-    if (psiType instanceof PsiArrayType) {
+    if (psiType instanceof PsiArrayType || psiType instanceof PsiPrimitiveType) {
       return Collections.emptyList();
     }
     throw new IllegalArgumentException("Huhu, PsiType is not a PsiClassType ?! fix it then !");
