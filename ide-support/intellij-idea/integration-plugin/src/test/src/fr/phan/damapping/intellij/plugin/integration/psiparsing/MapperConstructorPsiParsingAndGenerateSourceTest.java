@@ -22,4 +22,8 @@ public class MapperConstructorPsiParsingAndGenerateSourceTest extends AbstractPs
   public void testWildcardGenerics() throws Exception {
     doPsiParsingAndGenerateSourceTest();
   }
+
+  public void testHandleCustomTypes() throws Exception {
+    doPsiParsingAndGenerateSourceTest();
+  }
 }
