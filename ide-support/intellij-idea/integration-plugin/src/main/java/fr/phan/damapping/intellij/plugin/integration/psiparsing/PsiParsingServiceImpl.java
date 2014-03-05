@@ -46,6 +46,7 @@ import com.intellij.psi.PsiPrimitiveType;
 import com.intellij.psi.PsiReferenceList;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.PsiTypeElement;
+import com.intellij.psi.PsiWildcardType;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -192,7 +193,8 @@ public class PsiParsingServiceImpl implements PsiParsingService {
             if (psiType == null) {
               return null;
             }
-            return extractDAType(psiType, psiImportList);
+            DAType daType = extractDAType(psiType, psiImportList);
+            return daType;
           }
         }
         ).filter(Predicates.notNull())
@@ -204,8 +206,8 @@ public class PsiParsingServiceImpl implements PsiParsingService {
     return DAType.builder(extractDATypeKind(psiType), simpleName)
                  .withQualifiedName(extractQualifiedName(simpleName.getName(), psiImportList))
                  .withTypeArgs(extractTypeArgs(psiType, psiImportList))
-                 .withExtendsBound(extractExtendsBound(psiType))
-                 .withSuperBound(extractSuperBound(psiType))
+                 .withExtendsBound(extractExtendsBound(psiType, psiImportList))
+                 .withSuperBound(extractSuperBound(psiType, psiImportList))
                  .build();
   }
 
@@ -239,19 +241,37 @@ public class PsiParsingServiceImpl implements PsiParsingService {
     return null;
   }
 
-  private DAType extractSuperBound(PsiType psiType) {
-    return null;  //To change body of created methods use File | Settings | File Templates.
+  private DAType extractSuperBound(PsiType psiType, PsiImportList psiImportList) {
+    if (!(psiType instanceof PsiWildcardType)) {
+      return null;
+    }
+
+    PsiWildcardType psiWildcardType = (PsiWildcardType) psiType;
+    if (!psiWildcardType.isExtends()) {
+      return extractDAType(psiWildcardType.getBound(), psiImportList);
+    }
+    return null;
   }
 
-  private DAType extractExtendsBound(PsiType psiType) {
-    return null;  //To change body of created methods use File | Settings | File Templates.
+  private DAType extractExtendsBound(PsiType psiType, PsiImportList psiImportList) {
+    if (!(psiType instanceof PsiWildcardType)) {
+      return null;
+    }
+
+    PsiWildcardType psiWildcardType = (PsiWildcardType) psiType;
+    if (psiWildcardType.isExtends()) {
+      DAType extendsBound = extractDAType(psiWildcardType.getBound(), psiImportList);
+      return extendsBound;
+    }
+    return null;
   }
 
   private List<DAType> extractTypeArgs(PsiType psiType, PsiImportList psiImportList) {
     if (psiType instanceof PsiClassType) {
       return extractTypeArgs((PsiClassType) psiType, psiImportList);
     }
-    if (psiType instanceof PsiArrayType || psiType instanceof PsiPrimitiveType) {
+    if (psiType instanceof PsiArrayType || psiType instanceof PsiPrimitiveType ||
+        psiType instanceof PsiWildcardType) {
       return Collections.emptyList();
     }
     throw new IllegalArgumentException("Huhu, PsiType is not a PsiClassType ?! fix it then !");
@@ -264,10 +284,16 @@ public class PsiParsingServiceImpl implements PsiParsingService {
     if (psiType instanceof PsiArrayType) {
       return extractSimpleName(((PsiArrayType) psiType).getComponentType());
     }
+    if (psiType instanceof PsiWildcardType) {
+      return DANameFactory.wildcard();
+    }
     return DANameFactory.from(psiType.getCanonicalText());
   }
 
   private DATypeKind extractDATypeKind(PsiType psiType) {
+    if (psiType instanceof PsiWildcardType) {
+      return DATypeKind.WILDCARD;
+    }
     if (psiType.getArrayDimensions() > 0) {
       return DATypeKind.ARRAY;
     }
