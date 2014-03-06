@@ -1,5 +1,6 @@
 package fr.phan.damapping.intellij.plugin.integration.psiparsing;
 
+import fr.phan.damapping.annotation.MapperFactoryMethod;
 import fr.phan.damapping.processor.model.DAEnumValue;
 import fr.phan.damapping.processor.model.DAInterface;
 import fr.phan.damapping.processor.model.DAMethod;
@@ -30,6 +31,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiArrayType;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassType;
@@ -81,12 +83,13 @@ public class PsiParsingServiceImpl implements PsiParsingService {
   }
 
   private DASourceClass parseClass(PsiClass psiClass) {
+    List<DAMethod> methods = extractMethods(psiClass);
     return DASourceClass.classbuilder(extractDAType(psiClass))
                         .withPackageName(extractPackageName(psiClass))
                         .withModifiers(extractModifiers(psiClass))
                         .withInterfaces(extractInterfaces(psiClass))
-                        .withMethods(extractMethods(psiClass))
-                        .withInstantiationType(computeClassInstantiationType(psiClass))
+                        .withMethods(methods)
+                        .withInstantiationType(computeClassInstantiationType(psiClass, methods))
                         .build();
   }
 
@@ -338,7 +341,7 @@ public class PsiParsingServiceImpl implements PsiParsingService {
           }
         }
         ).toImmutableList();
-    if (!Iterables.any(daMethods, DAMethodPredicates.isDefaultConstructor())) {
+    if (!Iterables.any(daMethods, DAMethodPredicates.isConstructor())) {
       return ImmutableList.copyOf(
           Iterables.concat(Collections.singletonList(instanceDefaultConstructor(psiClass)), daMethods)
       );
@@ -445,15 +448,36 @@ public class PsiParsingServiceImpl implements PsiParsingService {
     return extractDAType(psiMethod.getReturnTypeElement(), psiImportList);
   }
 
+  /**
+   * A PsiMethod is a MapperFactoryMethod if it has the {@link MapperFactoryMethod} annotation
+   */
   private boolean isMapperFactoryMethod(PsiMethod psiMethod) {
-    return false;  //To change body of created methods use File | Settings | File Templates.
+    return from(Arrays.asList(psiMethod.getModifierList().getAnnotations())).filter(new Predicate<PsiAnnotation>() {
+      @Override
+      public boolean apply(@Nullable PsiAnnotation psiAnnotation) {
+        return psiAnnotation != null
+            && psiAnnotation.getQualifiedName() != null
+            && MapperFactoryMethod.class.getName().equals(psiAnnotation.getQualifiedName());
+      }
+    }).first().isPresent();
   }
 
   private boolean isMapperMethod(PsiMethod psiMethod) {
     return false;  //To change body of created methods use File | Settings | File Templates.
   }
 
-  private InstantiationType computeClassInstantiationType(PsiClass psiClass) {
+  private static final Predicate<DAMethod> NON_DEFAULT_CONSTRUCTOR = Predicates.and(
+      DAMethodPredicates.isConstructor(),
+      Predicates.not(DAMethodPredicates.isDefaultConstructor())
+  );
+
+  private InstantiationType computeClassInstantiationType(PsiClass psiClass, List<DAMethod> methods) {
+    Optional<DAMethod> constructorWithParams = from(methods)
+        .filter(NON_DEFAULT_CONSTRUCTOR)
+        .first();
+    if (constructorWithParams.isPresent()) {
+      return InstantiationType.CONSTRUCTOR_FACTORY;
+    }
     return InstantiationType.CONSTRUCTOR;
   }
 }

@@ -1,7 +1,8 @@
 package fr.phan.damapping.intellij.plugin.integration.psiparsing;
 
 /**
- * MapperEnumPsiParsingAndGenerateSourceTest -
+ * MapperEnumPsiParsingAndGenerateSourceTest - Psi Parsing, validation and source generation unit test for
+ * integration-test module : mapper-enum
  *
  * @author Sébastien Lesaint
  */
