@@ -15,19 +15,21 @@
  */
 package fr.phan.damapping.processor.model;
 
+import fr.phan.damapping.processor.model.predicate.DAAnnotationPredicates;
+import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.phan.damapping.processor.model.visitor.DAModelVisitable;
 import fr.phan.damapping.processor.model.visitor.DAModelVisitor;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.base.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.FluentIterable.from;
+import static fr.phan.damapping.processor.model.util.ImmutabilityHelper.nonNullFrom;
 
 /**
  * DASourceClass - Représente la classe annotée avec @Mapper
@@ -41,6 +43,8 @@ public class DASourceClass implements DAModelVisitable {
   @Nullable
   private final DAName packageName;
   @Nonnull
+  private final List<DAAnnotation> annotations;
+  @Nonnull
   private final Set<DAModifier> modifiers;
   @Nonnull
   private final List<DAInterface> interfaces;
@@ -51,22 +55,15 @@ public class DASourceClass implements DAModelVisitable {
   @Nonnull
   private final InstantiationType instantiationType;
 
-  private DASourceClass(Builder<?> builder) {
+  private DASourceClass(Builder<?> builder, InstantiationType instantiationType) {
     this.type = builder.getType();
     this.packageName = builder.getPackageName();
-    this.modifiers = builder.getModifiers() == null ? Collections.<DAModifier>emptySet() : ImmutableSet.copyOf(
-        builder.getModifiers()
-    );
-    this.interfaces = builder.getInterfaces() == null ? Collections.<DAInterface>emptyList() : ImmutableList.copyOf(
-        builder.getInterfaces()
-    );
-    this.methods = builder.getMethods() == null ? Collections.<DAMethod>emptyList() : ImmutableList.copyOf(
-        builder.getMethods()
-    );
-    this.enumValues = builder.getEnumValues() == null ? Collections.<DAEnumValue>emptyList() : ImmutableList.copyOf(
-        builder.getEnumValues()
-    );
-    this.instantiationType = builder.getInstantiationType();
+    this.annotations = nonNullFrom(builder.getAnnotations());
+    this.modifiers = nonNullFrom(builder.getModifiers());
+    this.interfaces = nonNullFrom(builder.getInterfaces());
+    this.methods = nonNullFrom(builder.getMethods());
+    this.enumValues = nonNullFrom(builder.getEnumValues());
+    this.instantiationType = instantiationType;
   }
 
   public static ClassBuilder classbuilder(@Nonnull DAType type) {
@@ -85,6 +82,11 @@ public class DASourceClass implements DAModelVisitable {
   @Nullable
   public DAName getPackageName() {
     return packageName;
+  }
+
+  @Nonnull
+  public List<DAAnnotation> getAnnotations() {
+    return annotations;
   }
 
   @Nonnull
@@ -127,13 +129,13 @@ public class DASourceClass implements DAModelVisitable {
 
     T withPackageName(DAName packageName);
 
+    T withAnnotations(List<DAAnnotation> annotations);
+
     T withModifiers(Set<DAModifier> modifiers);
 
     T withInterfaces(List<DAInterface> interfaces);
 
     T withMethods(List<DAMethod> methods);
-
-    T withInstantiationType(InstantiationType instantiationType);
 
     DASourceClass build();
 
@@ -141,35 +143,42 @@ public class DASourceClass implements DAModelVisitable {
 
     DAName getPackageName();
 
+    List<DAAnnotation> getAnnotations();
+
     Set<DAModifier> getModifiers();
 
     List<DAInterface> getInterfaces();
 
     List<DAMethod> getMethods();
 
-    InstantiationType getInstantiationType();
-
     List<DAEnumValue> getEnumValues();
 
   }
 
   public static abstract class AbstractBuilder<T extends Builder> implements Builder<T> {
+    private final boolean isEnum;
     private final Class<T> clazz;
     private final DAType type;
     private DAName packageName;
+    private List<DAAnnotation> annotations;
     private Set<DAModifier> modifiers;
     private List<DAInterface> interfaces;
     private List<DAMethod> methods;
-    // specific to the class annoted with @Mapper
-    private InstantiationType instantiationType;
 
-    protected AbstractBuilder(Class<T> clazz, @Nonnull DAType type) {
+    protected AbstractBuilder(Class<T> clazz, boolean isEnum, @Nonnull DAType type) {
       this.clazz = clazz;
+      this.isEnum = isEnum;
       this.type = checkNotNull(type);
     }
 
     public T withPackageName(DAName packageName) {
       this.packageName = packageName;
+      return clazz.cast(this);
+    }
+
+    @Override
+    public T withAnnotations(List<DAAnnotation> annotations) {
+      this.annotations = annotations;
       return clazz.cast(this);
     }
 
@@ -188,14 +197,42 @@ public class DASourceClass implements DAModelVisitable {
       return clazz.cast(this);
     }
 
-    public T withInstantiationType(InstantiationType instantiationType) {
-      this.instantiationType = instantiationType;
-      return clazz.cast(this);
+    public DASourceClass build() {
+      return new DASourceClass(
+          this,
+          computeInstantiationType(nonNullFrom(this.annotations), nonNullFrom(this.methods), this.isEnum)
+      );
     }
 
-    public DASourceClass build() {
-      checkNotNull(this.instantiationType, "IntantiationType is mandatory");
-      return new DASourceClass(this);
+    private static InstantiationType computeInstantiationType(@Nonnull List<DAAnnotation> daAnnotations,
+                                                              @Nonnull List<DAMethod> daMethods,
+                                                              boolean isEnumFlag) {
+      Optional<DAMethod> mapperFactoryConstructor = from(daMethods)
+          .filter(DAMethodPredicates.isConstructor())
+          .filter(DAMethodPredicates.isMapperFactoryMethod())
+          .first();
+      if (mapperFactoryConstructor.isPresent()) {
+        return InstantiationType.CONSTRUCTOR_FACTORY;
+      }
+
+      Optional<DAMethod> mapperFactoryStaticMethods = from(daMethods)
+          .filter(DAMethodPredicates.isStatic())
+          .filter(DAMethodPredicates.isMapperFactoryMethod())
+          .first();
+      if (mapperFactoryStaticMethods.isPresent()) {
+        return InstantiationType.STATIC_FACTORY;
+      }
+
+      if (isEnumFlag) {
+        return InstantiationType.SINGLETON_ENUM;
+      }
+
+      Optional<DAAnnotation> springComponentAnnotation = from(daAnnotations).filter(
+          DAAnnotationPredicates.isSpringComponent()).first();
+      if (springComponentAnnotation.isPresent()) {
+        return InstantiationType.SPRING_COMPONENT;
+      }
+      return InstantiationType.CONSTRUCTOR;
     }
 
     @Override
@@ -206,6 +243,10 @@ public class DASourceClass implements DAModelVisitable {
     @Override
     public DAName getPackageName() {
       return packageName;
+    }
+
+    public List<DAAnnotation> getAnnotations() {
+      return annotations;
     }
 
     @Override
@@ -223,16 +264,12 @@ public class DASourceClass implements DAModelVisitable {
       return methods;
     }
 
-    @Override
-    public InstantiationType getInstantiationType() {
-      return instantiationType;
-    }
   }
 
   public static class ClassBuilder extends AbstractBuilder<ClassBuilder> {
 
     public ClassBuilder(@Nonnull DAType type) {
-      super(ClassBuilder.class, type);
+      super(ClassBuilder.class, false, type);
     }
 
     @Override
@@ -246,7 +283,7 @@ public class DASourceClass implements DAModelVisitable {
     private final List<DAEnumValue> enumValues;
 
     public EnumBuilder(@Nonnull DAType type, List<DAEnumValue> enumValues) {
-      super(EnumBuilder.class, type);
+      super(EnumBuilder.class, true, type);
       this.enumValues = enumValues;
     }
 

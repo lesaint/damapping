@@ -1,5 +1,6 @@
 package fr.phan.damapping.processor.impl.javaxparsing;
 
+import fr.phan.damapping.processor.model.DAAnnotation;
 import fr.phan.damapping.processor.model.DAEnumValue;
 import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAName;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -46,6 +48,9 @@ public interface JavaxExtractor {
   @Nonnull
   Function<Modifier, DAModifier> toDAModifier();
 
+  @Nonnull
+  Function<AnnotationMirror,DAAnnotation> toDAAnnotation();
+
   @Nullable
   List<DAParameter> extractParameters(ExecutableElement methodElement);
 
@@ -60,4 +65,10 @@ public interface JavaxExtractor {
 
   @Nullable
   List<DAEnumValue> extractEnumValues(@Nonnull TypeElement classElement);
+
+  @Nullable
+  List<DAAnnotation> extractDAAnnotations(@Nullable TypeElement classElement);
+
+  @Nullable
+  List<DAAnnotation> extractDAAnnotations(@Nullable ExecutableElement methodElement);
 }

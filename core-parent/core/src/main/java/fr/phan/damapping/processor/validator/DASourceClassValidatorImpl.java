@@ -1,5 +1,7 @@
 package fr.phan.damapping.processor.validator;
 
+import fr.phan.damapping.processor.model.DAAnnotation;
+import fr.phan.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.phan.damapping.processor.model.DAInterface;
 import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DAModifier;
@@ -11,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
 
 import static com.google.common.collect.FluentIterable.from;
 
@@ -24,6 +27,7 @@ import static com.google.common.collect.FluentIterable.from;
 public class DASourceClassValidatorImpl implements DASourceClassValidator {
   @Override
   public void validate(DASourceClass sourceClass) throws ValidationError {
+    validateAnnotations(sourceClass.getAnnotations());
     validateModifiers(sourceClass.getModifiers());
     validateInterfaces(sourceClass.getInterfaces());
     validateMethods(sourceClass.getMethods());
@@ -34,6 +38,17 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     // compilation
     //  - SPRING_COMPONENT : TOFINISH quelles vérifications sur la class si le InstantiationType est SPRING_COMPONENT ?
     validateInstantiationTypeRequirements(sourceClass);
+  }
+
+  private void validateAnnotations(List<DAAnnotation> annotations) throws ValidationError {
+    ImmutableList<DAAnnotation> mapperAnnotations = from(annotations).filter(DAAnnotationPredicates.isMapper())
+        .toImmutableList();
+    if (mapperAnnotations.size() > 1) {
+      throw new ValidationError("Mapper with more than one @Mapper annotation is not supported");
+    }
+    if (mapperAnnotations.isEmpty()) {
+      throw new ValidationError("Mapper without @Mapper annotation is not supported");
+    }
   }
 
   @Override

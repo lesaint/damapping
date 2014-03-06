@@ -1,6 +1,7 @@
 package fr.phan.damapping.intellij.plugin.integration.psiparsing;
 
 import fr.phan.damapping.annotation.MapperFactoryMethod;
+import fr.phan.damapping.processor.model.DAAnnotation;
 import fr.phan.damapping.processor.model.DAEnumValue;
 import fr.phan.damapping.processor.model.DAInterface;
 import fr.phan.damapping.processor.model.DAMethod;
@@ -10,7 +11,6 @@ import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.DAType;
 import fr.phan.damapping.processor.model.DATypeKind;
-import fr.phan.damapping.processor.model.InstantiationType;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
 import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 
@@ -76,41 +76,21 @@ public class PsiParsingServiceImpl implements PsiParsingService {
     List<DAMethod> methods = extractMethods(psiClass);
     return DASourceClass.enumBuilder(extractDAType(psiClass), extractEnumValues(psiClass))
                         .withPackageName(extractPackageName(psiClass))
+                        .withAnnotations(extractAnnotations(psiClass))
                         .withModifiers(extractModifiers(psiClass))
                         .withInterfaces(extractInterfaces(psiClass))
                         .withMethods(methods)
-                        .withInstantiationType(computeEnumInstantiationType(psiClass, methods))
                         .build();
-  }
-
-  private InstantiationType computeEnumInstantiationType(PsiClass psiClass, List<DAMethod> methods) {
-    Optional<DAMethod> constructorWithParams = from(methods)
-        .filter(NON_DEFAULT_CONSTRUCTOR)
-        .first();
-    if (constructorWithParams.isPresent()) {
-      return InstantiationType.CONSTRUCTOR_FACTORY;
-    }
-    return InstantiationType.SINGLETON_ENUM;
-  }
-
-  private InstantiationType computeClassInstantiationType(PsiClass psiClass, List<DAMethod> methods) {
-    Optional<DAMethod> constructorWithParams = from(methods)
-        .filter(NON_DEFAULT_CONSTRUCTOR)
-        .first();
-    if (constructorWithParams.isPresent()) {
-      return InstantiationType.CONSTRUCTOR_FACTORY;
-    }
-    return InstantiationType.CONSTRUCTOR;
   }
 
   private DASourceClass parseClass(PsiClass psiClass) {
     List<DAMethod> methods = extractMethods(psiClass);
     return DASourceClass.classbuilder(extractDAType(psiClass))
                         .withPackageName(extractPackageName(psiClass))
+                        .withAnnotations(extractAnnotations(psiClass))
                         .withModifiers(extractModifiers(psiClass))
                         .withInterfaces(extractInterfaces(psiClass))
                         .withMethods(methods)
-                        .withInstantiationType(computeClassInstantiationType(psiClass, methods))
                         .build();
   }
 
@@ -176,6 +156,35 @@ public class PsiParsingServiceImpl implements PsiParsingService {
   private DAName extractPackageName(PsiClass psiClass) {
     PsiJavaFile javaFile = (PsiJavaFile) psiClass.getContainingFile();
     return DANameFactory.from(javaFile.getPackageName());
+  }
+
+  private List<DAAnnotation> extractAnnotations(PsiClass psiClass) {
+    if (psiClass.getModifierList() == null) {
+      return null;
+    }
+
+    final PsiImportList psiImportList = extractPsiImportList(psiClass);
+
+    return from(Arrays.asList(psiClass.getModifierList().getChildren()))
+        .filter(PsiAnnotation.class)
+        .transform(new Function<PsiAnnotation, DAAnnotation>() {
+          @Nullable
+          @Override
+          public DAAnnotation apply(@Nullable PsiAnnotation psiAnnotation) {
+            DAName qualifiedName = DANameFactory.from(psiAnnotation.getQualifiedName());
+            DAName simpleName = DANameFactory.simpleFromQualified(qualifiedName);
+            if (qualifiedName.equals(simpleName)) {
+              qualifiedName = extractQualifiedName(simpleName.getName(), psiImportList);
+            }
+            DAType daType = DAType.builder(DATypeKind.DECLARED, simpleName)
+                                 .withQualifiedName(qualifiedName)
+                                 .build();
+            DAAnnotation res = new DAAnnotation(daType);
+            return res;
+          }
+        }
+        )
+        .toImmutableList();
   }
 
   private Set<DAModifier> extractModifiers(PsiClass psiClass) {

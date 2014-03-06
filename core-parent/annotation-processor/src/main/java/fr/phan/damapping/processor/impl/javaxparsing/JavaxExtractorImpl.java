@@ -1,5 +1,6 @@
 package fr.phan.damapping.processor.impl.javaxparsing;
 
+import fr.phan.damapping.processor.model.DAAnnotation;
 import fr.phan.damapping.processor.model.DAEnumValue;
 import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAName;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -30,6 +32,7 @@ import javax.lang.model.util.Types;
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 
+import static com.google.common.base.Predicates.notNull;
 import static com.google.common.collect.FluentIterable.from;
 
 /**
@@ -39,6 +42,17 @@ import static com.google.common.collect.FluentIterable.from;
  */
 public class JavaxExtractorImpl implements JavaxExtractor {
   private final Types typeUtils;
+
+  private final Function<AnnotationMirror, DAAnnotation> annotationMirrorToDAAnnotation = new Function<AnnotationMirror, DAAnnotation>() {
+    @Nullable
+    @Override
+    public DAAnnotation apply(@Nullable AnnotationMirror input) {
+      if (input == null) {
+        return null;
+      }
+      return new DAAnnotation(extractType(input.getAnnotationType()));
+    }
+  };
 
   public JavaxExtractorImpl(Types typeUtils) {
     this.typeUtils = typeUtils;
@@ -121,7 +135,7 @@ public class JavaxExtractorImpl implements JavaxExtractor {
           }
         }
         )
-        .filter(Predicates.notNull())
+        .filter(notNull())
         .toList();
   }
 
@@ -143,7 +157,13 @@ public class JavaxExtractorImpl implements JavaxExtractor {
   @Override
   @Nonnull
   public Function<Modifier, DAModifier> toDAModifier() {
-    return ModifierToDAMoifier.INSTANCE;
+    return ModifierToDAModifier.INSTANCE;
+  }
+
+  @Nonnull
+  @Override
+  public Function<AnnotationMirror, DAAnnotation> toDAAnnotation() {
+    return annotationMirrorToDAAnnotation;
   }
 
 
@@ -165,11 +185,11 @@ public class JavaxExtractorImpl implements JavaxExtractor {
           }
         }
         )
-        .filter(Predicates.notNull())
+        .filter(notNull())
         .toList();
   }
 
-  private static enum ModifierToDAMoifier implements Function<Modifier, DAModifier> {
+  private static enum ModifierToDAModifier implements Function<Modifier, DAModifier> {
     INSTANCE;
 
     @Nonnull
@@ -245,5 +265,24 @@ public class JavaxExtractorImpl implements JavaxExtractor {
         }
         )
         .toList();
+  }
+
+  @Nullable
+  @Override
+  public List<DAAnnotation> extractDAAnnotations(@Nullable TypeElement classElement) {
+    if (classElement == null || classElement.getAnnotationMirrors() == null) {
+      return null;
+    }
+
+    return from(classElement.getAnnotationMirrors()).transform(toDAAnnotation()).filter(notNull()).toList();
+  }
+
+  @Nullable
+  @Override
+  public List<DAAnnotation> extractDAAnnotations(@Nullable ExecutableElement methodElement) {
+    if (methodElement == null || methodElement.getAnnotationMirrors() == null) {
+      return null;
+    }
+    return from(methodElement.getAnnotationMirrors()).transform(toDAAnnotation()).filter(notNull()).toList();
   }
 }

@@ -6,9 +6,7 @@ import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.model.DAType;
-import fr.phan.damapping.processor.model.InstantiationType;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
-import fr.phan.damapping.processor.model.predicate.DAMethodPredicates;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +26,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicates;
 
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import static com.google.common.collect.FluentIterable.from;
@@ -73,6 +70,8 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
     // retrieve name of the package of the class with @Mapper
     builder.withPackageName(retrievePackageName(classElement));
 
+    builder.withAnnotations(javaxExtractor.extractDAAnnotations(classElement));
+
     builder.withModifiers(
         from(classElement.getModifiers()).transform(javaxExtractor.toDAModifier()).toSet()
     );
@@ -87,7 +86,6 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
 
     List<DAMethod> methods = retrieveMethods(classElement);
     builder.withMethods(methods);
-    builder.withInstantiationType(computeInstantiationType(classElement, methods));
     return builder.build();
   }
 
@@ -113,6 +111,7 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
             ExecutableElement methodElement = (ExecutableElement) o;
             DAMethod.Builder builder = daMethodBuilder(methodElement);
             DAMethod.Builder res = builder
+                .withAnnotations(javaxExtractor.extractDAAnnotations(methodElement))
                 .withModifiers(javaxExtractor.extractModifiers(methodElement))
                 .withParameters(javaxExtractor.extractParameters(methodElement))
                 .withMapperMethod(isMapperMethod(methodElement))
@@ -191,32 +190,4 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
     return JavaxDANameFactory.from(packageElement.getQualifiedName());
   }
 
-  @Override
-  public InstantiationType computeInstantiationType(TypeElement classElement, List<DAMethod> methods) {
-    Optional<DAMethod> mapperFactoryConstructor = from(methods)
-        .filter(DAMethodPredicates.isConstructor())
-        .filter(DAMethodPredicates.isMapperFactoryMethod())
-        .first();
-    if (mapperFactoryConstructor.isPresent()) {
-      return InstantiationType.CONSTRUCTOR_FACTORY;
-    }
-
-    Optional<DAMethod> mapperFactoryStaticMethods = from(methods)
-        .filter(DAMethodPredicates.isStatic())
-        .filter(DAMethodPredicates.isMapperFactoryMethod())
-        .first();
-    if (mapperFactoryStaticMethods.isPresent()) {
-      return InstantiationType.STATIC_FACTORY;
-    }
-
-    if (classElement.getKind() == ElementKind.ENUM) {
-      return InstantiationType.SINGLETON_ENUM;
-    }
-
-    Optional<AnnotationMirror> annotationMirror = javaxUtil.getAnnotationMirror(classElement, Component.class);
-    if (annotationMirror.isPresent()) {
-      return InstantiationType.SPRING_COMPONENT;
-    }
-    return InstantiationType.CONSTRUCTOR;
-  }
 }
