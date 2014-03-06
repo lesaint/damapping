@@ -1,6 +1,5 @@
 package fr.phan.damapping.processor.impl.javaxparsing;
 
-import fr.phan.damapping.annotation.MapperFactoryMethod;
 import fr.phan.damapping.processor.model.DAInterface;
 import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DAName;
@@ -13,7 +12,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -23,7 +21,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.base.Predicates;
 
 import org.springframework.util.StringUtils;
@@ -113,9 +110,7 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
             DAMethod.Builder res = builder
                 .withAnnotations(javaxExtractor.extractDAAnnotations(methodElement))
                 .withModifiers(javaxExtractor.extractModifiers(methodElement))
-                .withParameters(javaxExtractor.extractParameters(methodElement))
-                .withMapperMethod(isMapperMethod(methodElement))
-                .withMapperFactoryMethod(isMapperFactoryMethod(methodElement));
+                .withParameters(javaxExtractor.extractParameters(methodElement));
             if (o.getKind() == ElementKind.CONSTRUCTOR) {
               res.withName(DANameFactory.from(StringUtils.uncapitalize(classElement.getSimpleName().toString())));
               res.withReturnType(javaxExtractor.extractType(classElement.asType()));
@@ -145,18 +140,6 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
             element
         )
     );
-  }
-
-  private boolean isMapperMethod(ExecutableElement methodElement) {
-    // TODO implementer isMapperMethod si on ajoute une annotation MapperMethod
-    return false;
-  }
-
-  private boolean isMapperFactoryMethod(ExecutableElement methodElement) {
-    Optional<AnnotationMirror> annotationMirror = javaxUtil.getAnnotationMirror(methodElement,
-        MapperFactoryMethod.class
-    );
-    return annotationMirror.isPresent();
   }
 
   @Override

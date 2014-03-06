@@ -15,18 +15,19 @@
  */
 package fr.phan.damapping.processor.model;
 
+import fr.phan.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.phan.damapping.processor.model.visitor.DAModelVisitable;
 import fr.phan.damapping.processor.model.visitor.DAModelVisitor;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import com.google.common.collect.ImmutableSet;
 
-import static com.google.common.collect.ImmutableList.copyOf;
+import com.google.common.collect.FluentIterable;
+
+import static fr.phan.damapping.processor.model.util.ImmutabilityHelper.nonNullFrom;
 
 /**
  * DAMethod -
@@ -41,6 +42,11 @@ public class DAMethod implements DAModelVisitable {
    */
   @Nonnull
   private final DAName name;
+  /**
+   * annotations de la méthode
+   */
+  @Nonnull
+  private final List<DAAnnotation> annotations;
   /**
    * modifiers de la méthode (private, final, static, abstract, ...)
    */
@@ -66,16 +72,15 @@ public class DAMethod implements DAModelVisitable {
    */
   private final boolean mapperFactoryMethod;
 
-  private DAMethod(Builder builder) {
+  private DAMethod(Builder builder, boolean mapperMethod, boolean mapperFactoryMethod) {
     this.constructor = builder.constructor;
     this.name = builder.name;
-    this.modifiers = builder.modifiers == null ? Collections.<DAModifier>emptySet() : ImmutableSet.copyOf(
-        builder.modifiers
-    );
+    this.annotations = nonNullFrom(builder.annotations);
+    this.modifiers = nonNullFrom(builder.modifiers);
     this.returnType = builder.returnType;
-    this.parameters = builder.parameters == null ? Collections.<DAParameter>emptyList() : copyOf(builder.parameters);
-    this.mapperMethod = builder.mapperMethod;
-    this.mapperFactoryMethod = builder.mapperFactoryMethod;
+    this.parameters = nonNullFrom(builder.parameters);
+    this.mapperMethod = mapperMethod;
+    this.mapperFactoryMethod = mapperFactoryMethod;
   }
 
   public static Builder methodBuilder() {
@@ -93,6 +98,11 @@ public class DAMethod implements DAModelVisitable {
   @Nonnull
   public DAName getName() {
     return name;
+  }
+
+  @Nonnull
+  public List<DAAnnotation> getAnnotations() {
+    return annotations;
   }
 
   @Nonnull
@@ -129,13 +139,13 @@ public class DAMethod implements DAModelVisitable {
     @Nonnull
     private DAName name;
     @Nullable
+    private List<DAAnnotation> annotations;
+    @Nullable
     private Set<DAModifier> modifiers;
     @Nullable
     private DAType returnType;
     @Nullable
     private List<DAParameter> parameters;
-    private boolean mapperMethod;
-    private boolean mapperFactoryMethod;
 
     public Builder(boolean constructor) {
       this.constructor = constructor;
@@ -143,6 +153,11 @@ public class DAMethod implements DAModelVisitable {
 
     public Builder withName(@Nonnull DAName name) {
       this.name = name;
+      return this;
+    }
+
+    public Builder withAnnotations(@Nullable List<DAAnnotation> annotations) {
+      this.annotations = annotations;
       return this;
     }
 
@@ -161,18 +176,18 @@ public class DAMethod implements DAModelVisitable {
       return this;
     }
 
-    public Builder withMapperMethod(boolean mapperMethod) {
-      this.mapperMethod = mapperMethod;
-      return this;
-    }
-
-    public Builder withMapperFactoryMethod(boolean mapperFactoryMethod) {
-      this.mapperFactoryMethod = mapperFactoryMethod;
-      return this;
-    }
-
     public DAMethod build() {
-      return new DAMethod(this);
+      List<DAAnnotation> daAnnotations = nonNullFrom(this.annotations);
+      return new DAMethod(this, computeMapperMethodFlag(daAnnotations), computeMapperFactoryMethodFlag(daAnnotations));
+    }
+
+    private static boolean computeMapperMethodFlag(List<DAAnnotation> daAnnotations) {
+      // TODO implementer isMapperMethod si on ajoute une annotation MapperMethod
+      return false;
+    }
+
+    private static boolean computeMapperFactoryMethodFlag(List<DAAnnotation> daAnnotations) {
+      return FluentIterable.from(daAnnotations).filter(DAAnnotationPredicates.isMapperFactoryMethod()).first().isPresent();
     }
   }
 }

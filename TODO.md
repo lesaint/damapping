@@ -33,7 +33,7 @@ ROADMAP
 [ ] ajouter une méthode appendReturn à DAStatementWriter ?
 [ ] ajouter un test U pour DAType.superBound
 [ ] ajout support de génériques avec bounds multiples : <T extends B1 & B2 & B3>
-[ ] remplacer la propriété DAMethod.mapperFactoryMethod par l'ajout de la liste des annotations sur la méhode de sorte
+[X] remplacer la propriété DAMethod.mapperFactoryMethod par l'ajout de la liste des annotations sur la méhode de sorte
   que la logique de calcul de cette propriété ne soit pas dupliquée dans le parsing Psi ou Javax
 [X] remplacer la propriété instantiationType dans DASourceClass en ajoutant les annotations au modèles
 [ ] test U pour DAClassWriter.newClass

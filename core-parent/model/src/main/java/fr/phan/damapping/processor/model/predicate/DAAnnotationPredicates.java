@@ -1,6 +1,7 @@
 package fr.phan.damapping.processor.model.predicate;
 
 import fr.phan.damapping.annotation.Mapper;
+import fr.phan.damapping.annotation.MapperFactoryMethod;
 import fr.phan.damapping.processor.model.DAAnnotation;
 import fr.phan.damapping.processor.model.DAName;
 
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 public final class DAAnnotationPredicates {
 
   private static final String MAPPER_ANNOTATION_QUALIFIEDNAME = Mapper.class.getName();
+  private static final String MAPPERFACTORYMETHOD_ANNOTATION_QUALIFIEDNAME = MapperFactoryMethod.class.getName();
   private static final String SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME = Component.class.getName();
 
   private DAAnnotationPredicates() {
@@ -39,6 +41,23 @@ public final class DAAnnotationPredicates {
       Optional<DAName> daNameOptional = extractQualifiedName(input);
       if (daNameOptional.isPresent()) {
         return MAPPER_ANNOTATION_QUALIFIEDNAME.equals(daNameOptional.get().getName());
+      }
+      return false;
+    }
+  }
+
+  public static Predicate<DAAnnotation> isMapperFactoryMethod() {
+    return MapperFactoryPredicate.INSTANCE;
+  }
+
+  private static enum MapperFactoryPredicate implements Predicate<DAAnnotation> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nullable DAAnnotation input) {
+      Optional<DAName> daNameOptional = extractQualifiedName(input);
+      if (daNameOptional.isPresent()) {
+        return MAPPERFACTORYMETHOD_ANNOTATION_QUALIFIEDNAME.equals(daNameOptional.get().getName());
       }
       return false;
     }

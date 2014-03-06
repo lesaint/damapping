@@ -1,6 +1,5 @@
 package fr.phan.damapping.intellij.plugin.integration.psiparsing;
 
-import fr.phan.damapping.annotation.MapperFactoryMethod;
 import fr.phan.damapping.processor.model.DAAnnotation;
 import fr.phan.damapping.processor.model.DAEnumValue;
 import fr.phan.damapping.processor.model.DAInterface;
@@ -76,7 +75,7 @@ public class PsiParsingServiceImpl implements PsiParsingService {
     List<DAMethod> methods = extractMethods(psiClass);
     return DASourceClass.enumBuilder(extractDAType(psiClass), extractEnumValues(psiClass))
                         .withPackageName(extractPackageName(psiClass))
-                        .withAnnotations(extractAnnotations(psiClass))
+                        .withAnnotations(extractAnnotations(psiClass.getModifierList(), extractPsiImportList(psiClass)))
                         .withModifiers(extractModifiers(psiClass))
                         .withInterfaces(extractInterfaces(psiClass))
                         .withMethods(methods)
@@ -87,7 +86,7 @@ public class PsiParsingServiceImpl implements PsiParsingService {
     List<DAMethod> methods = extractMethods(psiClass);
     return DASourceClass.classbuilder(extractDAType(psiClass))
                         .withPackageName(extractPackageName(psiClass))
-                        .withAnnotations(extractAnnotations(psiClass))
+                        .withAnnotations(extractAnnotations(psiClass.getModifierList(), extractPsiImportList(psiClass)))
                         .withModifiers(extractModifiers(psiClass))
                         .withInterfaces(extractInterfaces(psiClass))
                         .withMethods(methods)
@@ -158,33 +157,32 @@ public class PsiParsingServiceImpl implements PsiParsingService {
     return DANameFactory.from(javaFile.getPackageName());
   }
 
-  private List<DAAnnotation> extractAnnotations(PsiClass psiClass) {
-    if (psiClass.getModifierList() == null) {
+  private ImmutableList<DAAnnotation> extractAnnotations(@Nullable PsiModifierList modifierList,
+                                                         @Nonnull final PsiImportList psiImportList) {
+    if (modifierList == null) {
       return null;
     }
 
-    final PsiImportList psiImportList = extractPsiImportList(psiClass);
-
-    return from(Arrays.asList(psiClass.getModifierList().getChildren()))
-        .filter(PsiAnnotation.class)
-        .transform(new Function<PsiAnnotation, DAAnnotation>() {
-          @Nullable
-          @Override
-          public DAAnnotation apply(@Nullable PsiAnnotation psiAnnotation) {
-            DAName qualifiedName = DANameFactory.from(psiAnnotation.getQualifiedName());
-            DAName simpleName = DANameFactory.simpleFromQualified(qualifiedName);
-            if (qualifiedName.equals(simpleName)) {
-              qualifiedName = extractQualifiedName(simpleName.getName(), psiImportList);
+    return from(Arrays.asList(modifierList.getChildren()))
+          .filter(PsiAnnotation.class)
+          .transform(new Function<PsiAnnotation, DAAnnotation>() {
+            @Nullable
+            @Override
+            public DAAnnotation apply(@Nullable PsiAnnotation psiAnnotation) {
+              DAName qualifiedName = DANameFactory.from(psiAnnotation.getQualifiedName());
+              DAName simpleName = DANameFactory.simpleFromQualified(qualifiedName);
+              if (qualifiedName.equals(simpleName)) {
+                qualifiedName = extractQualifiedName(simpleName.getName(), psiImportList);
+              }
+              DAType daType = DAType.builder(DATypeKind.DECLARED, simpleName)
+                                    .withQualifiedName(qualifiedName)
+                                    .build();
+              DAAnnotation res = new DAAnnotation(daType);
+              return res;
             }
-            DAType daType = DAType.builder(DATypeKind.DECLARED, simpleName)
-                                 .withQualifiedName(qualifiedName)
-                                 .build();
-            DAAnnotation res = new DAAnnotation(daType);
-            return res;
           }
-        }
-        )
-        .toImmutableList();
+          )
+          .toImmutableList();
   }
 
   private Set<DAModifier> extractModifiers(PsiClass psiClass) {
@@ -355,11 +353,10 @@ public class PsiParsingServiceImpl implements PsiParsingService {
             }
             return daMethodBuilder(psiMethod)
                 .withName(DANameFactory.from(psiMethod.getName()))
+                .withAnnotations(extractAnnotations(psiMethod.getModifierList(), psiImportList))
                 .withModifiers(extractModifiers(psiMethod))
                 .withParameters(extractParameters(psiMethod, psiImportList))
                 .withReturnType(extractReturnType(psiMethod, psiImportList))
-                .withMapperFactoryMethod(isMapperFactoryMethod(psiMethod))
-                .withMapperMethod(isMapperMethod(psiMethod))
                 .build();
           }
 
@@ -476,24 +473,6 @@ public class PsiParsingServiceImpl implements PsiParsingService {
       return null;
     }
     return extractDAType(psiMethod.getReturnTypeElement(), psiImportList);
-  }
-
-  /**
-   * A PsiMethod is a MapperFactoryMethod if it has the {@link MapperFactoryMethod} annotation
-   */
-  private boolean isMapperFactoryMethod(PsiMethod psiMethod) {
-    return from(Arrays.asList(psiMethod.getModifierList().getAnnotations())).filter(new Predicate<PsiAnnotation>() {
-      @Override
-      public boolean apply(@Nullable PsiAnnotation psiAnnotation) {
-        return psiAnnotation != null
-            && psiAnnotation.getQualifiedName() != null
-            && MapperFactoryMethod.class.getName().equals(psiAnnotation.getQualifiedName());
-      }
-    }).first().isPresent();
-  }
-
-  private boolean isMapperMethod(PsiMethod psiMethod) {
-    return false;  //To change body of created methods use File | Settings | File Templates.
   }
 
   private static final Predicate<DAMethod> NON_DEFAULT_CONSTRUCTOR = Predicates.and(

@@ -1,11 +1,16 @@
 package fr.phan.damapping.processor.model.predicate;
 
+import fr.phan.damapping.annotation.MapperFactoryMethod;
+import fr.phan.damapping.processor.model.DAAnnotation;
 import fr.phan.damapping.processor.model.DAMethod;
 import fr.phan.damapping.processor.model.DAModifier;
 import fr.phan.damapping.processor.model.DAParameter;
 import fr.phan.damapping.processor.model.factory.DANameFactory;
+import fr.phan.damapping.processor.model.factory.DATypeFactory;
 
 import java.util.Collections;
+
+import com.google.common.collect.ImmutableList;
 
 import org.mockito.Mockito;
 import org.testng.annotations.DataProvider;
@@ -123,8 +128,16 @@ public class DAMethodPredicatesTest {
   @Test
   public void isMapperFactoryMethod_uses_mapperFactoryProperty() throws Exception {
     DAMethod.Builder builder = DAMethod.methodBuilder();
-    assertThat(isMapperFactoryMethod().apply(builder.withMapperFactoryMethod(false).build())).isFalse();
-    assertThat(isMapperFactoryMethod().apply(builder.withMapperFactoryMethod(true).build())).isTrue();
+    assertThat(
+        isMapperFactoryMethod().apply(
+          builder.withAnnotations(ImmutableList.of(new DAAnnotation(DATypeFactory.declared("com.acme.Foo")))).build()
+        )
+    ).isFalse();
+    assertThat(
+        isMapperFactoryMethod().apply(
+            builder.withAnnotations(ImmutableList.of(new DAAnnotation(DATypeFactory.declared(MapperFactoryMethod.class.getName())))).build()
+        )
+    ).isTrue();
   }
 
   @Test(expectedExceptions = NullPointerException.class)
