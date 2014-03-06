@@ -30,6 +30,9 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
 
+import static fr.phan.damapping.processor.util.FluentIterableProxy.toList;
+import static fr.phan.damapping.processor.util.FluentIterableProxy.toSet;
+
 /**
  * MapperSourceGenerator -
  *
@@ -65,29 +68,31 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
   }
 
   private static List<DAType> toDAType(List<DAInterface> interfaces) {
-    return FluentIterable.from(interfaces)
-                         .transform(new Function<DAInterface, DAType>() {
-                           @Nullable
-                           @Override
-                           public DAType apply(@Nullable DAInterface daInterface) {
-                             if (daInterface == null) {
-                               return null;
-                             }
-                             return daInterface.getType();
-                           }
-                         }
-                         ).filter(Predicates.notNull())
-                         .toImmutableList(); // using deprecated method because old version of Guava is bundled into IDEA 12
+    return toList(
+        FluentIterable.from(interfaces)
+                      .transform(new Function<DAInterface, DAType>() {
+                        @Nullable
+                        @Override
+                        public DAType apply(@Nullable DAInterface daInterface) {
+                          if (daInterface == null) {
+                            return null;
+                          }
+                          return daInterface.getType();
+                        }
+                      }
+                      ).filter(Predicates.notNull())
+    );
   }
 
   private static Set<DAModifier> filterModifiers(Set<DAModifier> modifiers) {
-    return FluentIterable.from(modifiers)
-                         .filter(
-                             Predicates.not(
-                                 // an interface can not be final, will not compile
-                                 Predicates.equalTo(DAModifier.FINAL)
-                             )
-                         )
-                         .toImmutableSet(); // using deprecated method because old version of Guava is bundled into IDEA 12
+    return toSet(
+        FluentIterable.from(modifiers)
+                      .filter(
+                          Predicates.not(
+                              // an interface can not be final, will not compile
+                              Predicates.equalTo(DAModifier.FINAL)
+                          )
+                      )
+    );
   }
 }

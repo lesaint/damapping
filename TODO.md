@@ -21,7 +21,7 @@ ROADMAP
 [X] auto discovery de l'annotation processor
 [X] séparation en modules spécifiques des annotations et du processor
 [X] toute exception doit indiquer la classe @Mapper pour laquelle ça a pété
-[ ] supprimer usage de FluentIterable.toImmutableList() et toImmutableSet() ou de toList() et toSet()
+[X] supprimer usage de FluentIterable.toImmutableList() et toImmutableSet() ou de toList() et toSet()
 [ ] optimiser les classes annonymes (Function, Predicate, ...)
 [ ] mettre en place un système d'exception internes pour ne pas faire des getMessager().[...] un peu partout, afficher
   ces exceptions avec un getMessager() mais ne pas remonter à javac

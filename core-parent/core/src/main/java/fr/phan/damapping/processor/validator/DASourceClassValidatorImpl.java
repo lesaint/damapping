@@ -16,6 +16,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 
 import static com.google.common.collect.FluentIterable.from;
+import static fr.phan.damapping.processor.util.FluentIterableProxy.toList;
 
 /**
  * DASourceClassValidator -
@@ -41,8 +42,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
   }
 
   private void validateAnnotations(List<DAAnnotation> annotations) throws ValidationError {
-    ImmutableList<DAAnnotation> mapperAnnotations = from(annotations).filter(DAAnnotationPredicates.isMapper())
-        .toImmutableList();
+    ImmutableList<DAAnnotation> mapperAnnotations = toList(from(annotations).filter(DAAnnotationPredicates.isMapper()));
     if (mapperAnnotations.size() > 1) {
       throw new ValidationError("Mapper with more than one @Mapper annotation is not supported");
     }
@@ -64,9 +64,9 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
   @Override
   public void validateInterfaces(List<DAInterface> interfaces) throws ValidationError {
     // rechercher si la classe Mapper implémente Function
-    List<DAInterface> guavaFunctionInterfaces = from(interfaces)
-        .filter(DAInterfacePredicates.isGuavaFunction())
-        .toImmutableList();
+    List<DAInterface> guavaFunctionInterfaces = toList(
+        from(interfaces).filter(DAInterfacePredicates.isGuavaFunction())
+    );
     if (guavaFunctionInterfaces.size() > 1) {
       throw new ValidationError("Mapper implementing more than one Function interface is not supported");
     }
@@ -127,9 +127,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     if (methods.isEmpty()) {
       throw new ValidationError("Class annoted with @Mapper must have at least one methode");
     }
-    List<DAMethod> guavaFunctionMethods = from(methods)
-        .filter(DAMethodPredicates.isGuavaFunction())
-        .toImmutableList(); // using deprecated method because old version of Guava is bundled into IDEA 12
+    List<DAMethod> guavaFunctionMethods = toList(from(methods).filter(DAMethodPredicates.isGuavaFunction()));
     if (guavaFunctionMethods.size() > 1) {
       throw new ValidationError("Mapper having more than one apply method is not supported");
     }
