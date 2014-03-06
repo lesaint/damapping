@@ -73,13 +73,34 @@ public class PsiParsingServiceImpl implements PsiParsingService {
   }
 
   private DASourceClass parseEnum(PsiClass psiClass) {
+    List<DAMethod> methods = extractMethods(psiClass);
     return DASourceClass.enumBuilder(extractDAType(psiClass), extractEnumValues(psiClass))
                         .withPackageName(extractPackageName(psiClass))
                         .withModifiers(extractModifiers(psiClass))
                         .withInterfaces(extractInterfaces(psiClass))
-                        .withMethods(extractMethods(psiClass))
-                        .withInstantiationType(InstantiationType.SINGLETON_ENUM)
+                        .withMethods(methods)
+                        .withInstantiationType(computeEnumInstantiationType(psiClass, methods))
                         .build();
+  }
+
+  private InstantiationType computeEnumInstantiationType(PsiClass psiClass, List<DAMethod> methods) {
+    Optional<DAMethod> constructorWithParams = from(methods)
+        .filter(NON_DEFAULT_CONSTRUCTOR)
+        .first();
+    if (constructorWithParams.isPresent()) {
+      return InstantiationType.CONSTRUCTOR_FACTORY;
+    }
+    return InstantiationType.SINGLETON_ENUM;
+  }
+
+  private InstantiationType computeClassInstantiationType(PsiClass psiClass, List<DAMethod> methods) {
+    Optional<DAMethod> constructorWithParams = from(methods)
+        .filter(NON_DEFAULT_CONSTRUCTOR)
+        .first();
+    if (constructorWithParams.isPresent()) {
+      return InstantiationType.CONSTRUCTOR_FACTORY;
+    }
+    return InstantiationType.CONSTRUCTOR;
   }
 
   private DASourceClass parseClass(PsiClass psiClass) {
@@ -471,13 +492,4 @@ public class PsiParsingServiceImpl implements PsiParsingService {
       Predicates.not(DAMethodPredicates.isDefaultConstructor())
   );
 
-  private InstantiationType computeClassInstantiationType(PsiClass psiClass, List<DAMethod> methods) {
-    Optional<DAMethod> constructorWithParams = from(methods)
-        .filter(NON_DEFAULT_CONSTRUCTOR)
-        .first();
-    if (constructorWithParams.isPresent()) {
-      return InstantiationType.CONSTRUCTOR_FACTORY;
-    }
-    return InstantiationType.CONSTRUCTOR;
-  }
 }

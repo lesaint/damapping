@@ -14,4 +14,8 @@ public class MapperFactoryPsiParsingAndGenerateSourceTest extends AbstractPsiPar
   public void testConstructorWithParameter() throws Exception {
     doPsiParsingAndGenerateSourceTest();
   }
+
+  public void testMultipleImplementationAsEnum() throws Exception {
+    doPsiParsingAndGenerateSourceTest();
+  }
 }
