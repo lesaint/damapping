@@ -43,7 +43,7 @@ public class MapperFactoryImplImportsModelVisitor extends ImportListBuilder impl
   @Override
   public void visit(DAMethod daMethod) {
     // mapperFactoryMethod are exposed as methods of the MapperFactory
-    if (isConstructor().apply(daMethod) && isGuavaFunction().apply(daMethod)) {
+    if (isConstructor().apply(daMethod) || isGuavaFunction().apply(daMethod)) {
       for (DAParameter parameter : daMethod.getParameters()) {
         addImports(parameter.getType());
       }

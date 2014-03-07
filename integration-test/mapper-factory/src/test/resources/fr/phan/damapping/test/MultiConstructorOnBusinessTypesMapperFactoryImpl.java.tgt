@@ -1,0 +1,33 @@
+package fr.phan.damapping.test;
+
+import fr.phan.damapping.test.sub.B;
+import fr.phan.damapping.test.sub.C;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public class MultiConstructorOnBusinessTypesMapperFactoryImpl implements MultiConstructorOnBusinessTypesMapperFactory {
+
+    @Override
+    public MultiConstructorOnBusinessTypesMapper instanceByConstructor(A a) {
+        return new MultiConstructorOnBusinessTypesMapperImpl(new MultiConstructorOnBusinessTypes(a));
+    }
+
+    @Override
+    public MultiConstructorOnBusinessTypesMapper instanceByConstructor(B b) {
+        return new MultiConstructorOnBusinessTypesMapperImpl(new MultiConstructorOnBusinessTypes(b));
+    }
+
+    private static class MultiConstructorOnBusinessTypesMapperImpl implements MultiConstructorOnBusinessTypesMapper {
+
+        private final MultiConstructorOnBusinessTypes instance;
+
+        public MultiConstructorOnBusinessTypesMapperImpl(MultiConstructorOnBusinessTypes instance) {
+            this.instance = instance;
+        }
+
+        @Override
+        public String apply(C input) {
+            return instance.apply(input);
+        }
+
+    }
+}

@@ -1,0 +1,9 @@
+package fr.phan.damapping.test;
+
+import com.google.common.base.Function;
+import fr.phan.damapping.test.sub.C;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public interface MultiConstructorOnBusinessTypesMapper extends Function<C, String> {
+
+}
