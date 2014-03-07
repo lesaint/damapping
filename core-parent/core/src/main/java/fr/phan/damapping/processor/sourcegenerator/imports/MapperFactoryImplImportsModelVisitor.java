@@ -53,6 +53,7 @@ public class MapperFactoryImplImportsModelVisitor extends ImportListBuilder impl
       for (DAParameter parameter : daMethod.getParameters()) {
         addImports(parameter.getType());
       }
+      addImport(daMethod.getReturnType());
     }
   }
 }

@@ -22,4 +22,8 @@ public class MapperFactoryPsiParsingAndGenerateSourceTest extends AbstractPsiPar
   public void testMultiConstructorOnBusinessTypes() throws Exception {
     doPsiParsingAndGenerateSourceTest();
   }
+
+  public void testMultiConstructorWithGenerics() throws Exception {
+    doPsiParsingAndGenerateSourceTest();
+  }
 }

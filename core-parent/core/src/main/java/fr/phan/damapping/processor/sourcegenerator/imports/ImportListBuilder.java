@@ -37,6 +37,12 @@ public class ImportListBuilder {
     }
   }
 
+  protected void addImport(@Nullable DAType daType) {
+    if (daType != null) {
+      imports.addAll(DATypeImportComputer.computeImports(daType));
+    }
+  }
+
   protected void addImports(@Nullable DAType daType) {
     if (daType != null) {
       imports.addAll(DATypeImportComputer.computeImports(daType));
