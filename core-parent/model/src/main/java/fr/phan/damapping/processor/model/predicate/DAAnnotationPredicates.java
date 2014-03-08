@@ -9,8 +9,6 @@ import javax.annotation.Nullable;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 
-import org.springframework.stereotype.Component;
-
 /**
  * DAAnnotationPredicates - Predicate factory for class DAAnnotation
  *
@@ -20,7 +18,7 @@ public final class DAAnnotationPredicates {
 
   private static final String MAPPER_ANNOTATION_QUALIFIEDNAME = Mapper.class.getName();
   private static final String MAPPERFACTORYMETHOD_ANNOTATION_QUALIFIEDNAME = MapperFactoryMethod.class.getName();
-  private static final String SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME = Component.class.getName();
+  private static final String SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME = "org.springframework.stereotype.Component";
 
   private DAAnnotationPredicates() {
     // prevents instantiation

@@ -23,8 +23,6 @@ import javax.tools.Diagnostic;
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 
-import org.springframework.util.StringUtils;
-
 import static com.google.common.collect.FluentIterable.from;
 
 /**
@@ -112,7 +110,7 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
                 .withModifiers(javaxExtractor.extractModifiers(methodElement))
                 .withParameters(javaxExtractor.extractParameters(methodElement));
             if (o.getKind() == ElementKind.CONSTRUCTOR) {
-              res.withName(DANameFactory.from(StringUtils.uncapitalize(classElement.getSimpleName().toString())));
+              res.withName(DANameFactory.from(uncapitalize(classElement.getSimpleName().toString())));
               res.withReturnType(javaxExtractor.extractType(classElement.asType()));
             }
             else {
@@ -125,6 +123,15 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
         )
         .filter(Predicates.notNull())
         .toList();
+  }
+  public static String uncapitalize(String str) {
+    if (str == null || str.length() == 0) {
+      return str;
+    }
+    StringBuilder sb = new StringBuilder(str.length());
+    sb.append(Character.toLowerCase(str.charAt(0)));
+    sb.append(str.substring(1));
+    return sb.toString();
   }
 
   private DAMethod.Builder daMethodBuilder(ExecutableElement element) {

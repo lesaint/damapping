@@ -36,8 +36,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
-import org.springframework.stereotype.Component;
-
 import static com.google.common.collect.FluentIterable.from;
 
 /**
@@ -46,12 +44,14 @@ import static com.google.common.collect.FluentIterable.from;
  * @author Sébastien Lesaint
  */
 public class MapperImplSourceGenerator extends AbstractSourceGenerator {
+  private static final String SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME = "org.springframework.stereotype.Component";
+
   private static final List<DAName> SPRING_COMPONENT_IMPORTS = ImmutableList.of(
       DANameFactory.from(Resource.class.getCanonicalName()),
-      DANameFactory.from(Component.class.getCanonicalName())
+      DANameFactory.from(SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME)
   );
 
-  private static final DAType SPRING_COMPONENT_DATYPE = DATypeFactory.from(Component.class);
+  private static final DAType SPRING_COMPONENT_DATYPE = DATypeFactory.declared(SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME);
 
   @Override
   public String fileName(FileGeneratorContext context) {

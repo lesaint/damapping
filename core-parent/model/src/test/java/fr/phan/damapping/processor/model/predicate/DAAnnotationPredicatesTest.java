@@ -4,7 +4,6 @@ import fr.phan.damapping.annotation.Mapper;
 import fr.phan.damapping.processor.model.DAAnnotation;
 import fr.phan.damapping.processor.model.factory.DATypeFactory;
 
-import org.springframework.stereotype.Component;
 import org.testng.annotations.Test;
 
 import static fr.phan.damapping.processor.model.predicate.DAAnnotationPredicates.isMapper;
@@ -33,6 +32,6 @@ public class DAAnnotationPredicatesTest {
     assertThat(isSpringComponent().apply(new DAAnnotation(DATypeFactory.declared("com.toto.Component")))).isFalse();
     assertThat(isSpringComponent().apply(new DAAnnotation(DATypeFactory.declared("org.acme.zoom.Foo")))).isFalse();
     assertThat(isSpringComponent().apply(new DAAnnotation(DATypeFactory.declared("Bar")))).isFalse();
-    assertThat(isSpringComponent().apply(new DAAnnotation(DATypeFactory.declared(Component.class.getName())))).isTrue();
+    assertThat(isSpringComponent().apply(new DAAnnotation(DATypeFactory.declared("org.springframework.stereotype.Component")))).isTrue();
   }
 }
