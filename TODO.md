@@ -27,7 +27,7 @@ ROADMAP
   ces exceptions avec un getMessager() mais ne pas remonter à javac
 [ ] disposer d'une liste de String pour y coller les simples warnings pour ne pas faire de getMessager() un peu partout,
   afficher ces warnings avant de traiter l'exception interne
-[ ] tester MapperFactory avec des Objets non java.lang, des génériques, ...
+[X] tester MapperFactory avec des Objets non java.lang, des génériques, ...
 [ ] test U pour les méthodes appendType, appendParams, ... de DAStatementWriter ?
 [ ] ajouter un contrôle : les MapperFactoryMethods doivent retourner le type de l'objet annotée avec @Mapper
 [ ] ajouter une méthode appendReturn à DAStatementWriter ?
