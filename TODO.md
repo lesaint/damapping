@@ -50,8 +50,13 @@ ROADMAP
 [ ] passe de refacto : sortir code de lecture de API javac des annotation processors, predicates singleton si applicable, ajouter des tests U
 [ ] étudier l'intégration avec l'IDE
 [ ] visibilité du mapper généré
-[ ] rendre optionel la dépendance à Spring
-[ ] ajouter une annotation pour définir ou surcharger le comportement par défaut qui ajoute des @Component
+[ ] améliorer le support de l'injection de dépendance
+    [ ] utiliser injection par constructeur au lieu de l'injection par propriété dans les classes générées
+    [ ] mettre en place un mécanisme de plugin ? utiliser un plugin pour avoir un module core qui dépend de spring et offre plus d'options
+    [ ] donner le choix de l'annotation Spring à mettre sur les classes générées (@Component ou toute annotation qui l'étends)
+    [ ] créer une class @Configuration pour tous les mapper d'un package pour éviter de faire un package-scan ?
+    [ ] faire un plugin compatible avec la JSR de Dependency Injection de Java (javax.annotation.Resource & co ?)
+    [ ] ajouter une annotation pour définir ou surcharger le comportement par défaut qui ajoute des @Component
 [ ] ajouter une annotation @MapperMethod pour ne pas être dépendant de guava
 [ ] removing model dependency on Javax.lang
     [X] DASourceClass#classElement
