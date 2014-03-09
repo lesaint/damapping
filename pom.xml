@@ -20,7 +20,7 @@
     </developers>
 
     <properties>
-        <git.repository>scm:git:https://gitlab.fullsix.com/sfr-sandbox/dozer-annihilation.git</git.repository>
+        <git.repository>scm:git:https://github.com/lesaint/damapping.git</git.repository>
 
         <guava.version>14.0.1</guava.version>
         <springframework.version>3.1.0.RELEASE</springframework.version>
