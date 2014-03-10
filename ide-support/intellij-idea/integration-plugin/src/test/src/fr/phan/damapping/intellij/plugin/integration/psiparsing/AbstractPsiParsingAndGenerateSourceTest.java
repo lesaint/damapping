@@ -1,6 +1,7 @@
 package fr.phan.damapping.intellij.plugin.integration.psiparsing;
 
 import fr.phan.damapping.intellij.plugin.integration.AbstractIntegrationTestCase;
+import fr.phan.damapping.intellij.plugin.integration.psiparsing.impl.PsiParsingServiceImpl;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.sourcegenerator.DefaultFileGeneratorContext;
 import fr.phan.damapping.processor.sourcegenerator.FileGeneratorContext;

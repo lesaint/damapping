@@ -2,7 +2,7 @@ package fr.phan.damapping.intellij.plugin.integration.provider;
 
 import fr.phan.damapping.annotation.Mapper;
 import fr.phan.damapping.intellij.plugin.integration.psiparsing.PsiParsingService;
-import fr.phan.damapping.intellij.plugin.integration.psiparsing.PsiParsingServiceImpl;
+import fr.phan.damapping.intellij.plugin.integration.psiparsing.impl.PsiParsingServiceImpl;
 import fr.phan.damapping.processor.model.DASourceClass;
 import fr.phan.damapping.processor.sourcegenerator.DefaultFileGeneratorContext;
 import fr.phan.damapping.processor.sourcegenerator.FileGeneratorContext;
