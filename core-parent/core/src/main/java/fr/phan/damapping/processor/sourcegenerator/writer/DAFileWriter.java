@@ -15,22 +15,23 @@
  */
 package fr.phan.damapping.processor.sourcegenerator.writer;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Lists;
 import fr.phan.damapping.processor.model.DAName;
 import fr.phan.damapping.processor.model.DAType;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Lists;
 
 import static com.google.common.collect.FluentIterable.from;
+import static fr.phan.damapping.processor.util.FluentIterableProxy.toSet;
 
 /**
  * DAFileWriter -
@@ -75,30 +76,31 @@ public class DAFileWriter implements DAWriter {
 
   private List<DAName> filterAndSortImports(Collection<DAName> mapperImports, @Nullable DAName packageName) {
     Predicate<DAName> notDisplayedBase = Predicates.or(
-        // defense against null values, of null/empty DAName.name
-        InvalidDAName.INSTANCE,
-        // imports from java itself
-        JavaLangDANamePredicate.INSTANCE
+      // defense against null values, of null/empty DAName.name
+      InvalidDAName.INSTANCE,
+      // imports from java itself
+      JavaLangDANamePredicate.INSTANCE
     );
     Predicate<DAName> notDisplayed;
     if (packageName == null) {
       notDisplayed = notDisplayedBase;
-    }
-    else {
+    } else {
       notDisplayed = Predicates.or(
-          notDisplayedBase,
-          // imports in the same package as the generated class (ie. the package of the Mapper class)
-          new PackagePredicate(packageName)
+        notDisplayedBase,
+        // imports in the same package as the generated class (ie. the package of the Mapper class)
+        new PackagePredicate(packageName)
       );
     }
 
     List<DAName> res = Lists.newArrayList(
+      toSet(
         from(mapperImports)
-            .filter(
-                Predicates.not(
-                    notDisplayed
-                )
-            ).toImmutableSet() // using deprecated method because old version of Guava is bundled into IDEA 12
+          .filter(
+            Predicates.not(
+              notDisplayed
+            )
+          )
+      )
     );
     Collections.sort(res);
     return res;
