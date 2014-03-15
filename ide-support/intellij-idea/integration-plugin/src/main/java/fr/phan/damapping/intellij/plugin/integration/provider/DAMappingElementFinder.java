@@ -273,7 +273,12 @@ public class DAMappingElementFinder extends PsiElementFinder {
           continue;
         }
 
-        PsiClass psiClass = ((PsiJavaFile) psiFile).getClasses()[0]; // assuming the first class if the public class
+        PsiClass[] classes = ((PsiJavaFile) psiFile).getClasses();
+        if (classes.length == 0) { // current psiFile may be package-info.java which does not contain classes, ignore it
+          continue;
+        }
+
+        PsiClass psiClass = classes[0]; // assuming the first class if the public class
         if (!hasMapperAnnotation(psiClass)) {
           // class is not annoted, ignore it
           continue;
