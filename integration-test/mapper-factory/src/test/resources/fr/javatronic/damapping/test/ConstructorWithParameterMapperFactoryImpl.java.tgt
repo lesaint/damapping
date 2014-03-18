@@ -1,0 +1,27 @@
+package fr.javatronic.damapping.test;
+
+import java.math.BigDecimal;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public class ConstructorWithParameterMapperFactoryImpl implements ConstructorWithParameterMapperFactory {
+
+    @Override
+    public ConstructorWithParameterMapper instanceByConstructor(String salt) {
+        return new ConstructorWithParameterMapperImpl(new ConstructorWithParameter(salt));
+    }
+
+    private static class ConstructorWithParameterMapperImpl implements ConstructorWithParameterMapper {
+
+        private final ConstructorWithParameter instance;
+
+        public ConstructorWithParameterMapperImpl(ConstructorWithParameter instance) {
+            this.instance = instance;
+        }
+
+        @Override
+        public String apply(BigDecimal bigDecimal) {
+            return instance.apply(bigDecimal);
+        }
+
+    }
+}

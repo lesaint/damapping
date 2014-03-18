@@ -1,0 +1,13 @@
+package fr.javatronic.damapping.test;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import fr.javatronic.damapping.test.sub.C;
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.Set;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public interface MultiConstructorWithGenericsMapper extends Function<Map<C, Set<BigDecimal>>, Optional<String>> {
+
+}

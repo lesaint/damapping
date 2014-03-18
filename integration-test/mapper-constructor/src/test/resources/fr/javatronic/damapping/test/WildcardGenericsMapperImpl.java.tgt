@@ -1,0 +1,14 @@
+package fr.javatronic.damapping.test;
+
+import com.google.common.base.Optional;
+import fr.javatronic.damapping.test.subpackage.OutOfPackage;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public class WildcardGenericsMapperImpl implements WildcardGenericsMapper {
+
+    @Override
+    public String apply(Optional<? extends OutOfPackage> optional) {
+        return WildcardGenericsMapperFactory.instance().apply(optional);
+    }
+
+}

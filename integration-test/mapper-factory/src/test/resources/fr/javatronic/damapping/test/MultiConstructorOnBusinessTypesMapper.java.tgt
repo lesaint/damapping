@@ -1,0 +1,9 @@
+package fr.javatronic.damapping.test;
+
+import com.google.common.base.Function;
+import fr.javatronic.damapping.test.sub.C;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public interface MultiConstructorOnBusinessTypesMapper extends Function<C, String> {
+
+}

@@ -1,0 +1,12 @@
+package fr.javatronic.damapping.test;
+
+import fr.javatronic.damapping.test.sub.B;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public interface MultiConstructorOnBusinessTypesMapperFactory {
+
+    MultiConstructorOnBusinessTypesMapper instanceByConstructor(A a);
+
+    MultiConstructorOnBusinessTypesMapper instanceByConstructor(B b);
+
+}

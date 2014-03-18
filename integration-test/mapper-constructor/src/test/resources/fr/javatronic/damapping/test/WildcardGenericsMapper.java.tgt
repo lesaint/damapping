@@ -1,0 +1,10 @@
+package fr.javatronic.damapping.test;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import fr.javatronic.damapping.test.subpackage.OutOfPackage;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public interface WildcardGenericsMapper extends Function<Optional<? extends OutOfPackage>, String> {
+
+}
