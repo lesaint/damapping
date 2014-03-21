@@ -1,68 +1,31 @@
 DA Mapping Framework
 ====================
 
-A little history and context
-----------------------------
-DA Mapping Framework is yet another bean mapping framework but it is entitled to handle some issues encountered with
-quite a bunch of mapping frameworks I had the opportunity to either use or study.
+DA Mapping Framework is bean mapping framework that focuses on a key aspect of software development that other frameworks tend to under-estimate: **maintenance**. 
 
-Most mapping framework focus on the ease of writing the mapping code, most of the time by somehow generating automagically
-the mapping for you. In this process, they often miss a key element of the life cycle of programming : **maintenance**.
+Mapping frameworks usually compete on the ease of writing the mapping code, usually by somehow generating automagically the mapping for the developper.
+It's then a matter of taste which framework's approach you prefer.
 
-As such, Dozer is by far the "best" example of this. Mapping beans or even hierarchy of beans by just calling the mapper
-can just magically work! As your application live, developers come by and go and you end up asking just too many
-times: where does this value come from? Is it ever set? Where/when is it set? Could it be set more than once?
+But more often that not, maintening that mapping code will become difficult as the code base grows, the time goes and developers come and go.
 
-This mapping framework got the first word of its name from this hell : **D**ozer **A**nnihilation (and as some kind of tribute to
-the famous RTS game).
+So, DAMapping framework provides developers with a tool to write mapping code that will:
+* respect the best practices of code : testability, [SOC](http://en.wikipedia.org/wiki/Separation_of_concerns) and [KISS](http://en.wikipedia.org/wiki/Keep_it_simple_stupid)
+    - DAMapping enforces the pattern of 1 to 1 mapping
+* require no specific extra knownledge so that any one can hack into the mapping code and extend/modify/fix it in no time
+    - no XML configuration
+    - very small set of annotations
+    - plain java code everywhere
+* be easy to debug, inspect and search into with common tools
+* keep strong typing and benefit from compile time error checking
+* keep excellent performance by using plain java code (no reflection, no byte-code manipulation)
 
-The spirit
-----------
-DA Mapping framework makes the following choices :
+# How to use DAMapping
 
-1. the implementation of the mapping is the only thing the developer really cares about
-    * the rest is just boilerplate and we want to deal with it as little as possible
-2. the developer must have the control on the implementation of the mapping
-    * we don't want reflection, XML configuration, interfaces to implement to "extend" the framework, etc.
-    * also, plain java mapping code means you can just ask your IDE "where is this value set" and get a definitive answer in no time
-    * plan java code also means anyone can maintain it without the need to know some mapping magic
-3. mapping must be strongly typed
-    * think of all the work the guys have put into the compiler, that's just a shame not to use it!
-3. code must be unit testable
-    * we want to test the mapping not the mapping framework => we want to test the implementation
-    * testable code can be mocked, composed, ... you name it!
-4. usually such testable code will be wired by a DI framework
-    * obviously, we need to support the most popular DI frameworks
-5. writing obvious mapping code can be tedious? Then get help to generate that tedious code
-    * no need to hide it in the bytecode or do the mapping at runtime
-    * just have the IDE write it in your source code, so that later on, anyone can understand what's going on and where it is happening
-6. "mapping occurs only from one object to another, not from any number of objects to one"
-    * obviously, many use cases make it clear that such a statement isn't totally true
-    * but we can still handle them with a single "source" object, other objects are just considered as part of a context
-
-Current implementation
-----------------------
-This framework is pretty young and this first implementation is most likely still buggy, misses some features and has
-some limitations:
-
-1. every mapper (what a mapper is is explained below) must implement Guava's Function interface
-    * Guava's `Function` interface has been chosen for a very specific reason : so that mappers can be very easily used
-      when handling collections (and Java 8 adoption is well... you know...)
-2. only Spring DI framework is currently supported, with limited scope at the moment
-2. IDE support for DA Mapping framework is not developed yet
-3. no code generation plugin has been developed yet
-4. this is beta stage, so lost of bugs are most likely hiding and implementation of the framework needs refactoring
-
-How does it work
-----------------
-To use DA Mapping Framework, write Foo class exposing a method creating an instance of class A from an instance of class B,
-add a `@Mapper` annotation on that class and then just use the FooMapper interface in your code.
-
-Creating a Mapper
+Write a class implementing the mapping from one type to another with the DAMapping `@Mapper` annotation:
 
 ```java
 @Mapper
-public class Foo implements Function<Bar, Bundy> {
+public class BarToBundy implements Function<Bar, Bundy> {
     @Override
     public Bundy apply(Bar bar) {
         // some code return a Bundy instance
@@ -70,47 +33,188 @@ public class Foo implements Function<Bar, Bundy> {
 }
 ```
 
-Handcrafted (no DI) use of a Mapper
+DAMapping generates for you a `BarToBundyMapper` interface and a `BarToBundyMapperImpl` class implementing `BarToBundyMapper`.
+
+> Please note that `BarToBundy` implements Guava's `Function` interface.
+> This is currently a requirement. But even though it is an excellent practice (more details on that below), this will become optionnal in the near futur.
+
+Now use the `BarToBundyMapper` type wherever you need to convert a `Bar` object to new `Bundy` object, with the benefits of excellent testability:
 
 ```java
-public class SomeService {
-    private final FooMapper fooMapper;
+public class MyService {
+    private final BarProvider barProvider;
+    private final BarToBundyMapper barToBundyMapper;
 
-    public SomeService() {
-        this(new FooMapperImpl());
+    public MyService(BarProvider barProvider, BarToBundyMapper barToBundyMapper) {
+        this.barProvider = barProvider;
+        this.barToBundyMapper = barToBundyMapper;
     }
 
-    public SomeService(FooMapper fooMapper) {
-        this.fooMapper = fooMapper;
-    }
-
-    public void someMethod(Bar bar) {
-        Bundy bundy = fooMapper.apply(bar);
-        // ...
+    public Bundy search(String barId) {
+        Bar bar = barProvider.findById(barId);
+        return barToBundyMapper.apply(bar);
     }
 }
 ```
 
-What just happened ?
-In the previous example, notice the following :
+# Installation
 
-1. class `Foo` has a `@Mapper` annotation and implements Guava's `Function` interface
-2. class `SomeService` has a property `fooMapper` of type `FooMapper` (which we didn't code!!)
-3. class `SomeService` instantiates a `FooMapperImpl` object in its default constructor
+### For Maven-based build tools
 
-DA Mapping framework uses annotation processing to generate the boilerplaty interface `FooMapper` and its implementation class `FooMapperImpl`.
+DAMapping will be soon available in Maven Central.
 
-By doing this, DA Mapping framework makes your code :
+To use DAMapping, the DAMapping annotation-processor has to be a direct compile dependency of your project.
 
-* instantly unit testable
-    * write the unit test for `Foo` and you get 100% coverage
-    * you can easily mock `FooMapper` while testing `SomeService`
-* instantly usable with any DI framework
-    * just add the injection annotation of your choice, instantiate the `FooMapperImpl` in your DI context
-    * DA Mapping framework can also handle this part for even more convenience
-* perfectly maintainable
-    * plan java code I said!
-* and most likely more performant
-    * this mapping code is generated at compile-time! No runtime performance impact!
+```xml
+<dependency>
+    <groupId>fr.phan.damapping</groupId>
+    <artifactId>annotation-processor</artifactId>
+    <version>0.2.0</version>
+    <scope>compile</scope>
+</dependency>
+```
 
-All you have to do for all of this is to write the implementation of the mapping and only that. Just the stuff you actually are about!
+Details on how to setup Maven in various cases and details on how it works are available in the sample projects:
+* [Maven single module project](https://github.com/lesaint/damapping-samples/tree/master/maven-project)
+* [Maven multi modules project](https://github.com/lesaint/damapping-samples/tree/master/maven-multimodule-project)
+
+## Build from source
+
+This is the best option if you are using another build tools or none (who does ?!).
+
+For other build tools, feel free to contribute installation instructions :)
+
+* clone DAMapping Github repository
+    - current version in developpement is in branch master
+    - to buid a released version, checkout the tag of that version
+  
+     ```sh
+    git clone https://github.com/lesaint/damapping.git
+     ```
+
+* build project with maven
+    - you need Maven 3.0 or later installed. Download Maven from [here](http://maven.apache.org/download.cgi)
+    
+    ```sh
+    cd damapping
+    mvn clean package
+    ```
+
+* DAMapping annotation processor jar file will be available in `damapping/core-parent/annotation-processor/target/` directory
+
+# Requirements
+
+DAMapping supports the Java compiler for :
+* Java 6 (TODO verify)
+* Java 7
+* Java 8 (planed)
+
+As long as you declare the artifact of DAMapping annotation-processor as a depdendency, the annotation processor should
+be automatically used by the Java compiler.
+
+# Features
+
+## Plain mappers
+
+> TODO link to sample-projects
+
+## Mapper factories
+ 
+> TODO link to sample-projects
+
+## Dependency Injection frameworks support
+
+### Spring
+
+Current version of DAMapping as limited but working support for dependency injection with Spring.
+
+### Other frameworks
+
+Support for other framework is planned but will required (in order) :
+* some internal work to make support for Dependency Injection framework more pluggable
+* requests from user (or implementation proposal) to prioritize support for one frameowrk or another
+
+Current idea is to provide support for JSR 330 (aka CDI) dependency injection in order to leverage support for compliant
+frameworks.
+
+# IDE support
+
+## Eclipse
+There shouldn't be any configuration required to use DAMapping with Eclipse.
+
+## IntelliJ IDEA
+
+Using DAMapping with Intellij IDEA requires the use of a plugin.
+
+Current version of the plugin focuses of making IDEA aware of the generated classes and interface so that using Mapper and MapperFactory in your code doesn't result in compilation warnings.
+
+### Installation instructions
+
+DAMapping plugin will be soon available in IntelliJ IDEA's plugin repository.
+
+TODO add link to plugin installation help page of Jetbrains
+
+### Supported versions
+
+DAMapping plugin has been tested with :
+* IntelliJ IDEA 12.06
+
+### Planned features
+
+> TODO
+
+# Three steps to better mapping code
+
+## Step 1 : Dozer and the like
+
+DAMapping framework has been created from several years of experience with Dozer usage in a large application.
+
+This application beeing correctly designed with separated software layers, bean mapping occured quite often and Dozer was used to speed up mapping code writing.
+
+But this code was pretty hard to maintain due to the opacity of Dozer mapping operations.
+
+I found myself wasting long hours debuging, looking for the place some specific property was set (or not), struggling because that property was set in multiple places, hard to find obviously, investigating existing code written some time ago, ...
+
+## Step 2 : Guava's Function
+
+At some point, we replaced this Dozer code with code based on Guava's `Function` interface.
+It was very convenient when dealing with collections and also mapping code was now written in plain Java. Find out if a property was set (or not) and where would only two keustrokes in IntelliJ IDEA.
+
+Also, the `apply` method kind of created a convention on how to write mapper which tended to make the code much more readable.
+
+But developers quickly abused of the Enum instance pattern to instanciate mapper objects:
+
+```java
+public enum FooBarMapper implements Function<Foo, Bar> {
+    INSTANCE;
+
+    public Bar apply(Foo foo) {
+        // implement me
+    }
+
+}
+```
+
+This pattern is very convenient because it solves the instanciation problem (only one per JVM) but it creates static code.
+Static code crashes the testability of your code, especially when mapping tree of beans where mappers use mappers that use mappers, ...
+
+## Step 3 : interface extends Guava's Function + implementation
+
+To solve the testability problem, the solution is to separate the interface from the implementation : create a `FooBarMapper` interface that extends Guava's `Function` and implement it in `FooBarMapperImpl`.
+
+Used in conjonction with a Dependency Injection framework, we would get maximum testability of each Mapper and very easily wire them with each other and the rest of the application.
+
+But that's a lots of extra code. Creating the interface, creating the implementation, it's time consuming and boring. Not so good either.
+
+## The final step : DAMapping
+
+Introducing DAMapping !
+
+The goal of DAMapping is to make step 3 seamless.
+
+DAMapping takes care of generation the boiler plate code for you and you keep your application clean.
+
+## Where does the name come from ?
+
+Initially, this framework was named after this Dozer hell experience : **D**ozer **A**nnihilation (and as some kind of tribute to the famous RTS game).
+But, as good a prototype codename as it was, I renamed it to **DA**Mapping.

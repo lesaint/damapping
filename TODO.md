@@ -63,4 +63,70 @@ ROADMAP
         [X] add enum flag to DASourceClass
         [X] add enum value(s) to DASourceClass
     [X] Modifier enum (DASourceClass, DAParameter, DAMethod)
-    [X} remove ElementKind and TypeKind dependency
+    [X] remove ElementKind and TypeKind dependency
+
+
+
+==============================
+
+
+
+### How to use DAMapping with Spring
+
+To use DAMapping with Spring, simply add Spring's `@Component` annotation on the class annoted with `@Mapper`.
+DAMapping generated classes will be automatically annoted with `@Component` and will declare the instance of
+your class `@Mapper` to be injected via property-injection using the `@Resource` annotation.
+
+Since, generated classes belong the same package as the class annotated with `@Mapper, adding a package-scan on that
+package will make all generated classes available in the Spring context.
+
+TODO : add code sample to make description easier to follow
+
+
+Spring support :
+
+Spring is currently supported via the `@Component` annotation parsing on classes annoted with `@Mapper`.
+
+Example :
+
+```java
+package fr.phan.dammaping.demo;
+
+[... imports ...]
+
+@Component
+@Mapper
+public class Foo implements Function<Bar, Bundy> {
+    @Override
+    public Bundy apply(Bar bar) {
+        // some code return a Bundy instance
+    }
+}
+```
+
+DAMapping generated `FooMapper` interface and `FooMapperImpl` class will be created in the same package as the `Foo`
+class as usual but the `FooMapperImpl` class will be annoted with `@Component` and will retrieve the `Foo` instance
+by injection.
+
+Therefor, the most convenient way to use DAMapping with Spring is to add a component-scan on the package where the
+`@Mapper` class(es) and the generated classes and interfaces are.
+
+Sample XML configuration based Spring Application context declaration :
+
+```xml
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+  <!-- scanning package fr.phan.dammaping.demo for @Component beans -->
+  <context:component-scan base-package="fr.phan.dammaping.demo"/>
+
+</beans>
+```
+
+=================================
+
+
+
