@@ -1,11 +1,11 @@
 package fr.javatronic.damapping.processor.sourcegenerator;
 
-import fr.javatronic.damapping.processor.model.InstantiationType;
-
 import java.io.IOException;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import com.google.common.collect.ImmutableSet;
+
+import fr.javatronic.damapping.processor.model.InstantiationType;
 
 /**
  * SourceGenerationService -
@@ -46,7 +46,8 @@ public class SourceGenerationServiceImpl implements SourceGenerationService {
     }
   }
 
-  private boolean shouldGenerateMapperFactoryClass(FileGeneratorContext context) {
+  @Override
+  public boolean shouldGenerateMapperFactoryClass(FileGeneratorContext context) {
     return MAPPER_FACTORY_CLASS_INTANTIATIONTYPES.contains(context.getSourceClass().getInstantiationType());
   }
 
@@ -59,14 +60,14 @@ public class SourceGenerationServiceImpl implements SourceGenerationService {
 
   @Override
   public void generateMapperFactoryImpl(FileGeneratorContext context, SourceWriterDelegate delegate) throws IOException {
-    if (shouldGenerateMapperFactoryInterface(context)) {
+    if (shouldGenerateMapperFactoryImpl(context)) {
       delegate.generateFile(new MapperFactoryImplSourceGenerator(), context);
     }
   }
 
   @Override
   public void generateMapperImpl(FileGeneratorContext context, SourceWriterDelegate delegate) throws IOException {
-    if (!shouldGenerateMapperFactoryInterface(context)) {
+    if (shouldGenerateMapperImpl(context)) {
       delegate.generateFile(new MapperImplSourceGenerator(), context);
     }
   }
@@ -74,5 +75,15 @@ public class SourceGenerationServiceImpl implements SourceGenerationService {
   @Override
   public boolean shouldGenerateMapperFactoryInterface(FileGeneratorContext context) {
     return MAPPER_FACTORY_INTERFACE_INTANTIATIONTYPES.contains(context.getSourceClass().getInstantiationType());
+  }
+
+  @Override
+  public boolean shouldGenerateMapperImpl(FileGeneratorContext context) {
+    return !shouldGenerateMapperFactoryInterface(context);
+  }
+
+  @Override
+  public boolean shouldGenerateMapperFactoryImpl(FileGeneratorContext context) {
+    return shouldGenerateMapperFactoryInterface(context);
   }
 }

@@ -22,4 +22,10 @@ public interface SourceGenerationService {
   void generateMapperImpl(FileGeneratorContext context, SourceWriterDelegate delegate) throws IOException;
 
   boolean shouldGenerateMapperFactoryInterface(FileGeneratorContext context);
+
+  boolean shouldGenerateMapperImpl(FileGeneratorContext context);
+
+  boolean shouldGenerateMapperFactoryImpl(FileGeneratorContext context);
+
+  boolean shouldGenerateMapperFactoryClass(FileGeneratorContext context);
 }
