@@ -78,7 +78,22 @@ public final class DANameFactory {
    */
   @Nonnull
   public static DAName simpleFromQualified(@Nonnull DAName daName) {
-    String qualifiedName = daName.getName();
+    return simpleFromQualified(daName.getName());
+  }
+
+  /**
+   * Crée un objet DAName contenant un simpleName à partir de la String spécifiée représentant un qualifiedName ou
+   * un name..
+   * <br/>
+   * En pratique, cela consiste à parser la String {@code qualifiedName} et extraire tout ce qui suit le dernier point
+   * (s'il y en a un).
+   *
+   * @param qualifiedName a {@link String}
+   *
+   * @return a {@link DAName}
+   */
+  @Nonnull
+  public static DAName simpleFromQualified(@Nonnull String qualifiedName) {
     return from(qualifiedName.substring(qualifiedName.lastIndexOf(".") + 1));
   }
 

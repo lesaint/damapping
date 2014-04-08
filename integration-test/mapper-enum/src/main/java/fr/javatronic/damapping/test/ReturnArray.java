@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Function;
 
 @Mapper
-public enum ReturnArray implements Function<Integer, String[]> {
+public enum ReturnArray implements Function<Integer, String    []> {
   INSTANCE;
 
   @Override

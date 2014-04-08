@@ -1,11 +1,13 @@
 package fr.javatronic.damapping.intellij.plugin.integration.psiparsing.impl;
 
+import fr.javatronic.damapping.intellij.plugin.integration.psiparsing.PsiContext;
 import fr.javatronic.damapping.intellij.plugin.integration.psiparsing.PsiParsingService;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAEnumValue;
 import fr.javatronic.damapping.processor.model.DAInterface;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
+import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
@@ -15,6 +17,7 @@ import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -24,9 +27,9 @@ import com.google.common.collect.Iterables;
 
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiEnumConstant;
 import com.intellij.psi.PsiImportList;
+import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiModifierList;
 import com.intellij.psi.PsiParameter;
@@ -69,12 +72,14 @@ public class PsiParsingServiceImpl implements PsiParsingService {
     DASourceClass.Builder builder = daSourceBuilder(psiClass, daTypeExtractor.forClassOrEnum(psiClass));
 
     PsiImportList psiImportList = extractPsiImportList(psiClass);
+    DAName packageName = daNameExtractor.extractPackageName(psiClass);
+    PsiContext psiContext = new PsiContext(psiImportList, packageName);
     return builder
-        .withPackageName(daNameExtractor.extractPackageName(psiClass))
-        .withAnnotations(extractAnnotations(psiClass.getModifierList(), psiImportList))
+        .withPackageName(psiContext.getPackageName())
+        .withAnnotations(extractAnnotations(psiClass.getModifierList(), psiContext))
         .withModifiers(daModifierExtractor.extractModifiers(psiClass))
-        .withInterfaces(extractInterfaces(psiClass))
-        .withMethods(extractMethods(psiClass, psiImportList))
+        .withInterfaces(extractInterfaces(psiClass, psiContext))
+        .withMethods(extractMethods(psiClass, psiContext))
         .build();
   }
 
@@ -96,7 +101,7 @@ public class PsiParsingServiceImpl implements PsiParsingService {
   }
 
   private List<DAAnnotation> extractAnnotations(@Nullable PsiModifierList modifierList,
-                                                @Nullable final PsiImportList psiImportList) {
+                                                @Nullable final PsiContext psiContext) {
     if (modifierList == null) {
       return null;
     }
@@ -108,7 +113,7 @@ public class PsiParsingServiceImpl implements PsiParsingService {
           @Override
           public DAAnnotation apply(@Nullable PsiAnnotation psiAnnotation) {
             DAAnnotation res = new DAAnnotation(
-                daTypeExtractor.forAnnotation(psiAnnotation, psiImportList)
+                daTypeExtractor.forAnnotation(psiAnnotation, psiContext)
             );
             return res;
           }
@@ -117,16 +122,15 @@ public class PsiParsingServiceImpl implements PsiParsingService {
         .toImmutableList();
   }
 
-  private List<DAInterface> extractInterfaces(final PsiClass psiClass) {
+  private List<DAInterface> extractInterfaces(final PsiClass psiClass, @Nonnull final PsiContext psiContext) {
     PsiReferenceList implementsList = psiClass.getImplementsList();
     if (implementsList != null /* null for anonymous classes */
         && implementsList.getRole() == PsiReferenceList.Role.IMPLEMENTS_LIST) {
-      final PsiImportList psiImportList = extractPsiImportList(psiClass);
-      return from(Arrays.asList(implementsList.getReferencedTypes()))
-          .transform(new Function<PsiClassType, DAInterface>() {
+      return from(Arrays.asList(implementsList.getReferenceElements()))
+          .transform(new Function<PsiJavaCodeReferenceElement, DAInterface>() {
             @Override
-            public DAInterface apply(@Nullable PsiClassType psiClassType) {
-              return new DAInterface(daTypeExtractor.forInterface(psiClassType, psiImportList));
+            public DAInterface apply(@Nullable PsiJavaCodeReferenceElement referenceElement) {
+              return new DAInterface(daTypeExtractor.forInterface(referenceElement, psiContext));
             }
           }
           )
@@ -143,7 +147,7 @@ public class PsiParsingServiceImpl implements PsiParsingService {
         .orNull();
   }
 
-  private List<DAMethod> extractMethods(PsiClass psiClass, final PsiImportList psiImportList) {
+  private List<DAMethod> extractMethods(PsiClass psiClass, final PsiContext psiContext) {
     List<DAMethod> daMethods = from(Arrays.asList(psiClass.getChildren()))
         .filter(PsiMethod.class)
         .transform(new Function<PsiMethod, DAMethod>() {
@@ -155,10 +159,10 @@ public class PsiParsingServiceImpl implements PsiParsingService {
             }
             return daMethodBuilder(psiMethod)
                 .withName(DANameFactory.from(psiMethod.getName()))
-                .withAnnotations(extractAnnotations(psiMethod.getModifierList(), psiImportList))
+                .withAnnotations(extractAnnotations(psiMethod.getModifierList(), psiContext))
                 .withModifiers(daModifierExtractor.extractModifiers(psiMethod))
-                .withParameters(extractParameters(psiMethod, psiImportList))
-                .withReturnType(daTypeExtractor.forMethod(psiMethod, psiImportList))
+                .withParameters(extractParameters(psiMethod, psiContext))
+                .withReturnType(daTypeExtractor.forMethod(psiMethod, psiContext))
                 .build();
           }
 
@@ -186,7 +190,7 @@ public class PsiParsingServiceImpl implements PsiParsingService {
                    .build();
   }
 
-  private List<DAParameter> extractParameters(PsiMethod psiMethod, final PsiImportList psiImportList) {
+  private List<DAParameter> extractParameters(PsiMethod psiMethod, final PsiContext psiContext) {
     Optional<PsiParameterList> optional = from(Arrays.asList(psiMethod.getChildren())).filter(PsiParameterList.class)
         .first();
     if (!optional.isPresent()) {
@@ -201,7 +205,7 @@ public class PsiParsingServiceImpl implements PsiParsingService {
             return DAParameter
                 .builder(
                     DANameFactory.from(psiParameter.getName()),
-                    daTypeExtractor.forParameter(psiParameter, psiImportList)
+                    daTypeExtractor.forParameter(psiParameter, psiContext)
                 ).withModifiers(daModifierExtractor.extractModifiers(psiParameter))
                 .build();
           }
