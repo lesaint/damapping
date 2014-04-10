@@ -1,5 +1,19 @@
 package fr.javatronic.damapping.intellij.plugin.integration.provider;
 
+import fr.javatronic.damapping.annotation.Mapper;
+import fr.javatronic.damapping.intellij.plugin.integration.psiparsing.PsiParsingService;
+import fr.javatronic.damapping.intellij.plugin.integration.psiparsing.impl.PsiParsingServiceImpl;
+import fr.javatronic.damapping.processor.model.DASourceClass;
+import fr.javatronic.damapping.processor.sourcegenerator.DefaultFileGeneratorContext;
+import fr.javatronic.damapping.processor.sourcegenerator.FileGeneratorContext;
+import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerationService;
+import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerationServiceImpl;
+import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerator;
+import fr.javatronic.damapping.processor.sourcegenerator.SourceWriterDelegate;
+import fr.javatronic.damapping.processor.validator.DASourceClassValidator;
+import fr.javatronic.damapping.processor.validator.DASourceClassValidatorImpl;
+import fr.javatronic.damapping.processor.validator.ValidationError;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Arrays;
@@ -16,7 +30,6 @@ import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileTypes;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
@@ -30,20 +43,8 @@ import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiPackage;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.PsiShortNamesCache;
 import com.intellij.util.Processor;
-import fr.javatronic.damapping.annotation.Mapper;
-import fr.javatronic.damapping.intellij.plugin.integration.psiparsing.PsiParsingService;
-import fr.javatronic.damapping.intellij.plugin.integration.psiparsing.impl.PsiParsingServiceImpl;
-import fr.javatronic.damapping.processor.model.DASourceClass;
-import fr.javatronic.damapping.processor.sourcegenerator.DefaultFileGeneratorContext;
-import fr.javatronic.damapping.processor.sourcegenerator.FileGeneratorContext;
-import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerationService;
-import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerationServiceImpl;
-import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerator;
-import fr.javatronic.damapping.processor.sourcegenerator.SourceWriterDelegate;
-import fr.javatronic.damapping.processor.validator.DASourceClassValidator;
-import fr.javatronic.damapping.processor.validator.DASourceClassValidatorImpl;
-import fr.javatronic.damapping.processor.validator.ValidationError;
 import org.codehaus.groovy.runtime.StringBufferWriter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -208,13 +209,25 @@ public class DAMappingElementFinder extends PsiElementFinder {
   }
 
   private PsiClass retrieveSourceclass(String mapperFile, GlobalSearchScope scope) {
-    return JavaPsiFacade.getInstance(scope.getProject()).findClass(mapperFile, scope);
+    PsiFile[] filesByName = PsiShortNamesCache.getInstance(scope.getProject()).getFilesByName(mapperFile + ".java");
+    if (filesByName.length == 0) {
+      return null;
+    }
+    Optional<PsiJavaFile> first = FluentIterable.from(Arrays.asList(filesByName)).filter(PsiJavaFile.class).first();
+    if (first.isPresent()) {
+      return first.get().getClasses()[0];
+    }
+    return null;
   }
 
   @NotNull
   @Override
   public PsiClass[] findClasses(@NotNull String qualifiedName, @NotNull GlobalSearchScope scope) {
-    return new PsiClass[0]; // TODO call findClass and return array never containing null
+    PsiClass aClass = findClass(qualifiedName, scope);
+    if (aClass == null) {
+      return PsiClass.EMPTY_ARRAY;
+    }
+    return new PsiClass[]{aClass};
   }
 
   @Nullable
@@ -247,6 +260,8 @@ public class DAMappingElementFinder extends PsiElementFinder {
         if (classes.length == 0) { // current psiFile may be package-info.java which does not contain classes, ignore it
           continue;
         }
+
+        res.addAll(Arrays.asList(classes));
 
         PsiClass psiClass = classes[0]; // assuming the first class if the public class
         if (!hasMapperAnnotation(psiClass)) {
