@@ -7,7 +7,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.PsiTypeElement;
@@ -28,14 +27,14 @@ public interface DANameExtractor {
   @Nonnull
   DAName simpleName(PsiTypeElement psiTypeElement);
 
+  @Nullable
+  DAName simpleName(PsiJavaCodeReferenceElement referenceElement);
+
   @Nonnull
   DAName qualifiedName(@Nonnull PsiClass psiClass);
 
   @Nullable
   DAName qualifiedName(String name, @Nullable PsiContext psiContext);
-
-  @Nullable
-  DAName interfaceQualifiedName(PsiClassType psiClassType, PsiContext psiContext);
 
   @Nullable
   DAName interfaceQualifiedName(PsiJavaCodeReferenceElement referenceElement, PsiContext psiContext);

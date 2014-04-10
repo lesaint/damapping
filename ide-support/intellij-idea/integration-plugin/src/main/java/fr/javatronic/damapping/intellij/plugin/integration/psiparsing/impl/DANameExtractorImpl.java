@@ -79,6 +79,12 @@ public class DANameExtractorImpl implements DANameExtractor {
 
   }
 
+  @Nullable
+  @Override
+  public DAName simpleName(PsiJavaCodeReferenceElement referenceElement) {
+    return DANameFactory.simpleFromQualified(referenceElement.getReferenceName());
+  }
+
   /**
    * Extracts the qualifiedName of the PsiClass representing the enum or class annotated with @Mapper.
    * {@link com.intellij.psi.PsiClass#getQualifiedName()} can return {@code null} but in our case, I don't see yet if
@@ -135,23 +141,6 @@ public class DANameExtractorImpl implements DANameExtractor {
 
   private static boolean isQualified(@Nonnull String name) {
     return name.indexOf(".") >= 0;
-  }
-
-  @Override
-  @Nullable
-  public DAName interfaceQualifiedName(PsiClassType psiClassType, PsiContext psiContext) {
-    String simpleName = psiClassType.getClassName();
-    DAName nameFromImports = qualifiedName(simpleName, psiContext);
-    if (nameFromImports != null) {
-      return nameFromImports;
-    }
-
-    // If implements statement uses qualifiedName, psiClassType should be an instanceof PsiClassReferenceType
-    if (psiClassType instanceof PsiClassReferenceType) {
-      return DANameFactory.from(((PsiClassReferenceType) psiClassType).getReference().getQualifiedName());
-    }
-    LOGGER.error(String.format("No matching import for interface PsiClassType %s", simpleName));
-    return null;
   }
 
   @Nullable

@@ -130,7 +130,7 @@ public class DATypeExtractorImpl implements DATypeExtractor {
   @Nonnull
   public DAType forInterface(PsiJavaCodeReferenceElement referenceElement, PsiContext psiContext) {
     return DAType.builder(
-        extractDATypeKind(referenceElement), DANameFactory.simpleFromQualified(referenceElement.getQualifiedName()))
+        extractDATypeKind(referenceElement), daNameExtractor.simpleName(referenceElement))
                  .withQualifiedName(daNameExtractor.interfaceQualifiedName(referenceElement, psiContext))
                  .withTypeArgs(extractTypeArgs(referenceElement, psiContext))
                  .build();
