@@ -25,6 +25,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiEnumConstant;
@@ -45,7 +46,7 @@ import static com.google.common.collect.FluentIterable.from;
  * @author Sébastien Lesaint
  */
 public class PsiParsingServiceImpl implements PsiParsingService {
-//  private static final Logger LOGGER = Logger.getInstance(PsiParsingServiceImpl.class.getName());
+  private static final Logger LOGGER = Logger.getInstance(PsiParsingServiceImpl.class.getName());
 
   private final DANameExtractor daNameExtractor;
   private final DATypeExtractor daTypeExtractor;
@@ -69,18 +70,24 @@ public class PsiParsingServiceImpl implements PsiParsingService {
     checkArgument(!psiClass.isAnnotationType(), "Annotation annoted with @Mapper is not supported");
     checkArgument(!psiClass.isInterface(), "Interface annoted with @Mapper is not supported");
 
-    DASourceClass.Builder builder = daSourceBuilder(psiClass, daTypeExtractor.forClassOrEnum(psiClass));
+    try {
+      DASourceClass.Builder builder = daSourceBuilder(psiClass, daTypeExtractor.forClassOrEnum(psiClass));
 
-    PsiImportList psiImportList = extractPsiImportList(psiClass);
-    DAName packageName = daNameExtractor.extractPackageName(psiClass);
-    PsiContext psiContext = new PsiContext(psiImportList, packageName);
-    return builder
-        .withPackageName(psiContext.getPackageName())
-        .withAnnotations(extractAnnotations(psiClass.getModifierList(), psiContext))
-        .withModifiers(daModifierExtractor.extractModifiers(psiClass))
-        .withInterfaces(extractInterfaces(psiClass, psiContext))
-        .withMethods(extractMethods(psiClass, psiContext))
-        .build();
+      PsiImportList psiImportList = extractPsiImportList(psiClass);
+      DAName packageName = daNameExtractor.extractPackageName(psiClass);
+      PsiContext psiContext = new PsiContext(psiImportList, packageName);
+      return builder
+          .withPackageName(psiContext.getPackageName())
+          .withAnnotations(extractAnnotations(psiClass.getModifierList(), psiContext))
+          .withModifiers(daModifierExtractor.extractModifiers(psiClass))
+          .withInterfaces(extractInterfaces(psiClass, psiContext))
+          .withMethods(extractMethods(psiClass, psiContext))
+          .build();
+    }
+    catch (Throwable r) {
+      LOGGER.error("An exception occured while parsing Psi tree", r);
+      throw new RuntimeException(r);
+    }
   }
 
   private static DASourceClass.Builder daSourceBuilder(PsiClass psiClass, DAType daType) {
