@@ -1,23 +1,23 @@
 DA Mapping Framework
 ====================
 
-DA Mapping Framework is bean mapping framework that focuses on a key aspect of software development that other frameworks tend to under-estimate: **maintenance**. 
-
 Mapping frameworks usually compete on the ease of writing the mapping code, usually by somehow generating automagically the mapping for the developper.
 It's then a matter of taste which framework's approach you prefer.
 
-But more often that not, maintening that mapping code will become difficult as the code base grows, the time goes and developers come and go.
+But very often, maintening that mapping code becomes difficult as the code base grows, the time goes and developers come and go.
 
-So, DAMapping framework provides developers with a tool to write mapping code that will:
-* respect the best practices of code : testability, [SOC](http://en.wikipedia.org/wiki/Separation_of_concerns) and [KISS](http://en.wikipedia.org/wiki/Keep_it_simple_stupid)
-    - DAMapping enforces the pattern of 1 to 1 mapping
-* require no specific extra knownledge so that any one can hack into the mapping code and extend/modify/fix it in no time
-    - no XML configuration
-    - very small set of annotations
-    - plain java code everywhere
-* be easy to debug, inspect and search into with common tools
-* keep strong typing and benefit from compile time error checking
-* keep excellent performance by using plain java code (no reflection, no byte-code manipulation)
+That's because that mapping code is not regular code but it shoud be !
+
+So DAMapping is here to provide the developper with the missing glue to make writting mapping code easy while still following the common code paradigms:
+* testability:
+    - use interface and implementations
+    - use aggregation over inheritance
+    - [SOC](http://en.wikipedia.org/wiki/Separation_of_concerns)
+    - [KISS](http://en.wikipedia.org/wiki/Keep_it_simple_stupid)
+* integration with Dependency Injection frameworks
+* use plain Java code
+    - to leverage the power of your IDE, static analysis tools, to be easy to debug and so on... out of the box
+    - keep excellent performance (no reflection, no byte-code manipulation)
 
 # How to use DAMapping
 
@@ -78,7 +78,7 @@ Details on how to setup Maven in various cases and details on how it works are a
 * [Maven single module project](https://github.com/lesaint/damapping-samples/tree/master/maven-project)
 * [Maven multi modules project](https://github.com/lesaint/damapping-samples/tree/master/maven-multimodule-project)
 
-## Build from source
+### From source
 
 This is the best option if you are using another build tools or none (who does ?!).
 
