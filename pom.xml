@@ -45,11 +45,6 @@
     <maven.version>3.0.0</maven.version>
   </properties>
 
-  <ciManagement>
-    <system>jenkins</system>
-    <url>https://sebastienlesaint.ci.cloudbees.com</url>
-  </ciManagement>
-
   <distributionManagement>
     <snapshotRepository>
       <id>ossrh</id>
