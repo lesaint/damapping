@@ -24,6 +24,7 @@
   <scm>
     <connection>scm:git:https://github.com/lesaint/damapping.git</connection>
     <developerConnection>scm:git:git@github.com:lesaint/damapping.git</developerConnection>
+    <url>https://github.com/lesaint/damapping.git</url>
     <tag>HEAD</tag>
   </scm>
 
