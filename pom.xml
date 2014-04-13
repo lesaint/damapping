@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>fr.javatronic.damapping</groupId>
   <artifactId>parent</artifactId>
@@ -18,6 +19,21 @@
       <name>Sébastien Lesaint</name>
     </developer>
   </developers>
+  <url>http://damapping.javatronic.fr</url>
+
+  <scm>
+    <connection>scm:git:https://github.com/lesaint/damapping.git</connection>
+    <developerConnection>scm:git:git@github.com:lesaint/damapping.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <properties>
     <guava.version>14.0.1</guava.version>
@@ -28,12 +44,6 @@
     <jdk.version>1.7</jdk.version>
     <maven.version>3.0.0</maven.version>
   </properties>
-
-  <scm>
-    <connection>scm:git:https://github.com/lesaint/damapping.git</connection>
-    <developerConnection>scm:git:git@github.com:lesaint/damapping.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
 
   <ciManagement>
     <system>jenkins</system>
