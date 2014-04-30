@@ -29,14 +29,14 @@ import org.codehaus.groovy.runtime.StringBufferWriter;
  *
  * @author Sébastien Lesaint
  */
-public class AbstractPsiParsingAndGenerateSourceTest extends AbstractIntegrationTestCase {
+public abstract class AbstractPsiParsingAndGenerateSourceTest extends AbstractIntegrationTestCase {
   private final File tgtFileDirPath;
 
   private final DASourceClassValidator sourceClassValidator = new DASourceClassValidatorImpl();
   private final SourceGenerationService sourceGenerationService = new SourceGenerationServiceImpl();
   private final PsiParsingService psiParsingService = new PsiParsingServiceImpl();
 
-  public AbstractPsiParsingAndGenerateSourceTest(String moduleName) {
+  protected AbstractPsiParsingAndGenerateSourceTest(String moduleName) {
     super(moduleName);
     tgtFileDirPath = new File("integration-test/" + moduleName + "/src/test/resources");
   }
