@@ -187,7 +187,7 @@ public class DATypeExtractorImpl implements DATypeExtractor {
   @Override
   @Nonnull
   public DAType forAnnotation(PsiAnnotation psiAnnotation, PsiContext psiContext) {
-    DAName qualifiedName = DANameFactory.from(psiAnnotation.getQualifiedName());
+    DAName qualifiedName = daNameExtractor.qualifiedName(psiAnnotation, psiContext);
     DAName simpleName = DANameFactory.simpleFromQualified(qualifiedName);
     if (qualifiedName.equals(simpleName)) {
       qualifiedName = daNameExtractor.qualifiedName(simpleName.getName(), psiContext);

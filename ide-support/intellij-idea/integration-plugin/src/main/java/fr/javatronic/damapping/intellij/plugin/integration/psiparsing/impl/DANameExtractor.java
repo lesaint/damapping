@@ -6,6 +6,7 @@ import fr.javatronic.damapping.processor.model.DAName;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiType;
@@ -41,4 +42,8 @@ public interface DANameExtractor {
 
   @Nullable
   DAName qualifiedName(PsiTypeElement psiTypeElement, PsiContext psiContext);
+
+  @Nullable
+  DAName qualifiedName(PsiAnnotation psiAnnotation, PsiContext psiContext);
+
 }

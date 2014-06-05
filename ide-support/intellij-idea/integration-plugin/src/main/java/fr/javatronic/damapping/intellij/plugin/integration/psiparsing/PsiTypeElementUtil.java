@@ -42,6 +42,10 @@ public final class PsiTypeElementUtil {
     return from(Arrays.asList(referenceElement.getChildren())).filter(PsiIdentifier.class).first();
   }
 
+  public static Optional<PsiIdentifier> getPsiIdentifier(PsiJavaCodeReferenceElement nameReferenceElement) {
+    return from(Arrays.asList(nameReferenceElement.getChildren())).filter(PsiIdentifier.class).first();
+  }
+
   public static boolean isVoid(PsiTypeElement psiTypeElement) {
     PsiElement[] children = psiTypeElement.getChildren();
     return children.length >= 1 && "void".equals(children[0].getText());

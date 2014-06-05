@@ -1,44 +1,48 @@
 <idea-plugin version="2">
-    <id>fr.javatronic.damapping.intellij.plugin.integration</id>
-    <name>DAMapping integration plugin</name>
-    <version>1.0</version>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">DAMapping</vendor>
+  <id>fr.javatronic.damapping.intellij.plugin.integration</id>
+  <name>DAMapping integration plugin</name>
+  <version>1.0</version>
+  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">DAMapping</vendor>
 
-    <description><![CDATA[
+  <description><![CDATA[
       Enter short description for your plugin here.<br>
       <small>most HTML tags may be used</small>
       ]]></description>
-    <category>Tools Integration</category>
-    <idea-version since-build="123.72"/>
+  <category>Tools Integration</category>
+  <idea-version since-build="123.72" />
 
-    <depends>com.intellij.modules.lang</depends>
-    <depends>com.intellij.modules.platform</depends>
-    <depends>com.intellij.modules.java</depends>
+  <depends>com.intellij.modules.lang</depends>
+  <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.java</depends>
 
-    <!--<project-components>-->
-    <!--&lt;!&ndash; Add your project components here &ndash;&gt;-->
-    <!--</project-components>-->
+  <!--<project-components>-->
+  <!--&lt;!&ndash; Add your project components here &ndash;&gt;-->
+  <!--</project-components>-->
 
-    <application-components>
-        <component>
-            <implementation-class>fr.javatronic.damapping.intellij.plugin.integration.DAMappingIntegrationLoader
-            </implementation-class>
-        </component>
-    </application-components>
+  <application-components>
+    <component>
+      <implementation-class>fr.javatronic.damapping.intellij.plugin.integration.DAMappingIntegrationLoader
+      </implementation-class>
+    </component>
+  </application-components>
 
-    <!-- Add your actions here -->
-    <!--<actions>-->
-    <!--</actions>-->
+  <!-- Add your actions here -->
+  <!--<actions>-->
+  <!--</actions>-->
 
-    <extensions defaultExtensionNs="com.intellij">
-        <!--<lang.psiAugmentProvider implementation="fr.javatronic.damapping.intellij.plugin.integration.provider.DAMappingAugmentProvider"/>-->
-        <java.elementFinder implementation="fr.javatronic.damapping.intellij.plugin.integration.provider.DAMappingElementFinder"/>
-        <inspectionToolProvider implementation="fr.javatronic.damapping.intellij.plugin.integration.provider.DAMappingInspectionProvider"/>
-    </extensions>
+  <extensions defaultExtensionNs="com.intellij">
+    <!--<lang.psiAugmentProvider implementation="fr.javatronic.damapping.intellij.plugin.integration.provider.DAMappingAugmentProvider"/>-->
+    <java.elementFinder
+        implementation="fr.javatronic.damapping.intellij.plugin.integration.provider.DAMappingElementFinder" />
+    <inspectionToolProvider
+        implementation="fr.javatronic.damapping.intellij.plugin.integration.provider.DAMappingInspectionProvider" />
+    <java.shortNamesCache
+        implementation="fr.javatronic.damapping.intellij.plugin.integration.cache.DAMappingPsiShortNamesCache" />
+  </extensions>
 
-    <change-notes><![CDATA[
+  <change-notes><![CDATA[
       Add change notes here.<br>
       <small>most HTML tags may be used</small>
       ]]>
-    </change-notes>
+  </change-notes>
 </idea-plugin>

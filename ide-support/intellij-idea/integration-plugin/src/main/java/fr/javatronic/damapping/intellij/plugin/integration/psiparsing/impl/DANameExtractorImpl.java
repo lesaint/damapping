@@ -14,9 +14,9 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiArrayType;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiIdentifier;
 import com.intellij.psi.PsiImportStatement;
 import com.intellij.psi.PsiJavaCodeReferenceElement;
@@ -146,13 +146,10 @@ public class DANameExtractorImpl implements DANameExtractor {
   @Nullable
   @Override
   public DAName interfaceQualifiedName(PsiJavaCodeReferenceElement referenceElement, PsiContext psiContext) {
-    if (referenceElement.isQualified()) {
-      return DANameFactory.from(referenceElement.getQualifiedName());
-    }
-
-    DAName nameFromImports = qualifiedName(referenceElement.getQualifiedName(), psiContext);
-    if (nameFromImports != null) {
-      return nameFromImports;
+    Optional<PsiIdentifier> psiIdentifier = PsiTypeElementUtil.getPsiIdentifier(referenceElement);
+    Optional<DAName> res = qualifiedName(psiIdentifier, psiContext);
+    if (res.isPresent()) {
+      return res.get();
     }
     LOGGER.error(String.format("No matching import for interface PsiClassType %s", referenceElement.getQualifiedName()));
     return null;
@@ -169,18 +166,46 @@ public class DANameExtractorImpl implements DANameExtractor {
     }
 
     Optional<PsiIdentifier> psiIdentifier = PsiTypeElementUtil.getPsiIdentifier(psiTypeElement);
+    Optional<DAName> res = qualifiedName(psiIdentifier, psiContext);
+    if (res.isPresent()) {
+      return res.get();
+    }
+    return DANameFactory.from(psiContext.getPackageName().getName() + "." + psiTypeElement.getText());
+  }
+
+  @Nonnull
+  Optional<DAName> qualifiedName(Optional<PsiIdentifier> psiIdentifier, PsiContext psiContext) {
     if (psiIdentifier.isPresent()) {
       // FIXME must handle the case of an array
       DAName nameFromImports = qualifiedName(psiIdentifier.get().getText(), psiContext);
       if (nameFromImports != null) {
-        return nameFromImports;
+        return Optional.of(nameFromImports);
       }
       DAName javaLangName = resolveJavaLangQualifiedName(psiIdentifier.get().getText());
       if (javaLangName != null) {
-        return javaLangName;
+        return Optional.of(javaLangName);
       }
     }
-    return DANameFactory.from(psiContext.getPackageName().getName() + "." + psiTypeElement.getText());
+    return Optional.absent();
+  }
+
+  @Nullable
+  @Override
+  public DAName qualifiedName(PsiAnnotation psiAnnotation, PsiContext psiContext) {
+    Optional<PsiIdentifier> psiIdentifier = PsiTypeElementUtil.getPsiIdentifier(psiAnnotation.getNameReferenceElement());
+
+    Optional<DAName> res = qualifiedName(psiIdentifier, psiContext);
+    if (res.isPresent()) {
+      return res.get();
+    }
+    return DANameFactory.from(psiContext.getPackageName().getName() + "." + removeHeadingAt(psiAnnotation.getText()));
+  }
+
+  /**
+   * Remove heading "@" char from the specified String
+   */
+  private static String removeHeadingAt(String text) {
+    return text.substring(1);
   }
 
   @Nullable
