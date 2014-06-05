@@ -13,6 +13,10 @@
  - TODO : ajouter un paramètre à @Mapper pour préciser la visibilité de la classe Mapper générée (public par défaut, sinon protected)
            -> on n'ajoute pas de paramètre, la visibilité de l'interface générée sera la même que celle de la classe annotée avec @Mapper
  - framework d'injection super léger : essayer Dagger
+ - pour étendre DAMapping de façon pluggable, utiliser la méthode de Dozer: utiliser le SPI discovery
+    - cf. http://thecodersbreakfast.net/index.php?post/2008/12/26/Java-%3A-pr%C3%A9sentation-du-Service-Provider-API
+    - cf. javadoc JavacAnnotationHandler in lombok
+    - cf. HandlerLibrary in lombok pour la découverte (méthode static)
 
 
 ROADMAP
