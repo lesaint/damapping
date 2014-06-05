@@ -1,47 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <artifactId>parent</artifactId>
-        <groupId>fr.javatronic.damapping</groupId>
-        <version>0.2.3-SNAPSHOT</version>
-    </parent>
+  <parent>
+    <artifactId>parent</artifactId>
+    <groupId>fr.javatronic.damapping</groupId>
+    <version>0.2.3-SNAPSHOT</version>
+  </parent>
 
-    <artifactId>core-parent</artifactId>
-    <name>Core - POM Parent</name>
-    <packaging>pom</packaging>
+  <artifactId>core-parent</artifactId>
+  <name>Core - POM Parent</name>
+  <packaging>pom</packaging>
 
-    <modules>
-        <module>annotations</module>
-        <module>model</module>
-        <module>core</module>
-        <module>annotation-processor</module>
-    </modules>
+  <modules>
+    <module>annotations</module>
+    <module>model</module>
+    <module>core</module>
+    <module>annotation-processor</module>
+  </modules>
 
-    <dependencies>
-        <!--<dependency>-->
-            <!--<groupId>com.squareup.dagger</groupId>-->
-            <!--<artifactId>dagger</artifactId>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-        </dependency>
+  <dependencies>
+    <!--<dependency>-->
+    <!--<groupId>com.squareup.dagger</groupId>-->
+    <!--<artifactId>dagger</artifactId>-->
+    <!--</dependency>-->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+    </dependency>
 
-        <!--test dependencies-->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-        </dependency>
-    </dependencies>
+    <!--test dependencies-->
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>
