@@ -1,24 +1,24 @@
 package fr.javatronic.damapping.intellij.plugin.integration.cache;
 
+import fr.javatronic.damapping.intellij.plugin.integration.index.MapperSimpleNameIndex;
 import fr.javatronic.damapping.intellij.plugin.integration.provider.Common;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.JavaDirectoryService;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.PsiShortNamesCache;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.HashSet;
+import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +32,6 @@ public class DAMappingPsiShortNamesCache extends PsiShortNamesCache {
   private static final PsiMethod[] NO_PSI_METHODS = new PsiMethod[0];
   private static final PsiField[] NO_PSI_FIELDS = new PsiField[0];
   private static final String[] NO_NAMES = new String[0];
-  private static final PsiClass[] NO_PSI_CLASSES = new PsiClass[0];
 
   private final Project project;
 
@@ -44,53 +43,27 @@ public class DAMappingPsiShortNamesCache extends PsiShortNamesCache {
   @Override
   public PsiClass[] getClassesByName(@NotNull @NonNls String name, @NotNull GlobalSearchScope scope) {
     Project project = scope.getProject();
-
-    List<PsiClass> res = getAllPsiClass(scope, project);
-
-    for (PsiClass psiClass : res) {
-      if (name.equals(psiClass.getName())) {
-        return new PsiClass[] { psiClass };
+    Collection<VirtualFile> files = FileBasedIndex.getInstance()
+                                               .getContainingFiles(MapperSimpleNameIndex.NAME, name, scope);
+    for (VirtualFile file : files) {
+      PsiManager psiManager = PsiManager.getInstance(project);
+      PsiFile psiFile = psiManager.findFile(file);
+      if (psiFile instanceof PsiJavaFile) {
+        PsiClass psiClass = Common.generateClass(scope, ((PsiJavaFile) psiFile).getClasses()[0].getQualifiedName());
+        if (psiClass != null) {
+          return new PsiClass[] { psiClass };
+        }
       }
     }
 
-    return NO_PSI_CLASSES;
-  }
-
-  private static List<PsiClass> getAllPsiClass(GlobalSearchScope scope, Project project) {
-    List<PsiClass> res = new ArrayList<PsiClass>();
-    PsiManager psiManager = PsiManager.getInstance(project);
-    for (VirtualFile root : ProjectRootManager.getInstance(psiManager.getProject()).getContentSourceRoots()) {
-      PsiDirectory directory = psiManager.findDirectory(root);
-      addClasses(scope, res, directory);
-    }
-    return res;
-  }
-
-  private static void addClasses(GlobalSearchScope scope, List<PsiClass> res, PsiDirectory directory) {
-    PsiClass[] classes = JavaDirectoryService.getInstance().getClasses(directory);
-
-    res.addAll(Arrays.asList(classes));
-    for (PsiClass psiClass : classes) {
-      PsiClass psiClass1 = Common.generateClass(scope, psiClass.getName());
-      if (psiClass1 != null) {
-        res.add(psiClass1);
-      }
-    }
-
-    for (PsiDirectory psiDirectory : directory.getSubdirectories()) {
-      addClasses(scope, res, psiDirectory);
-    }
+    return PsiClass.EMPTY_ARRAY;
   }
 
   @NotNull
   @Override
   public String[] getAllClassNames() {
-    List<PsiClass> classes = getAllPsiClass(GlobalSearchScope.allScope(project), project);
-    List<String> names = new ArrayList<String>(classes.size());
-    for (PsiClass aClass : classes) {
-      names.add(aClass.getName());
-    }
-    return names.toArray(new String[names.size()]);
+    Collection<String> allKeys = FileBasedIndex.getInstance().getAllKeys(MapperSimpleNameIndex.NAME, project);
+    return allKeys.toArray(new String[allKeys.size()]);
   }
 
   @Override
