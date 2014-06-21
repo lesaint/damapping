@@ -31,8 +31,8 @@
   <!--</actions>-->
 
   <extensions defaultExtensionNs="com.intellij">
-    <fileBasedIndex implementation="fr.javatronic.damapping.intellij.plugin.integration.index.MapperSimpleNameIndex"/>
-    <fileBasedIndex implementation="fr.javatronic.damapping.intellij.plugin.integration.index.MapperQualifiedNameIndex"/>
+    <fileBasedIndex implementation="fr.javatronic.damapping.intellij.plugin.integration.index.GeneratedClassSimpleNameIndex"/>
+    <fileBasedIndex implementation="fr.javatronic.damapping.intellij.plugin.integration.index.GeneratedClassQualifiedNameIndex"/>
     <!--<lang.psiAugmentProvider implementation="fr.javatronic.damapping.intellij.plugin.integration.provider.DAMappingAugmentProvider"/>-->
     <java.elementFinder
         implementation="fr.javatronic.damapping.intellij.plugin.integration.provider.DAMappingElementFinder" />

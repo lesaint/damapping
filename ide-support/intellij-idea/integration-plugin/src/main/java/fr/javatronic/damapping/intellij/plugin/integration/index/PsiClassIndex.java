@@ -1,9 +1,8 @@
 package fr.javatronic.damapping.intellij.plugin.integration.index;
 
-import fr.javatronic.damapping.intellij.plugin.integration.provider.Common;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -18,11 +17,11 @@ import com.intellij.util.io.KeyDescriptor;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * MapperNameIndex -
+ * PsiClassIndex -
  *
  * @author Sébastien Lesaint
  */
-public abstract class MapperNameIndex extends ScalarIndexExtension<String> {
+public abstract class PsiClassIndex extends ScalarIndexExtension<String> {
 
   private static final FileBasedIndex.InputFilter JAVA_SOURCE_FILE_INPUT_FILTER = new FileBasedIndex.InputFilter() {
     @Override
@@ -41,8 +40,11 @@ public abstract class MapperNameIndex extends ScalarIndexExtension<String> {
         PsiJavaFile psiJavaFile = (PsiJavaFile) inputData.getPsiFile();
         Map<String, Void> res = new HashMap<String, Void>(psiJavaFile.getClasses().length);
         for (PsiClass psiClass : psiJavaFile.getClasses()) {
-          if (Common.hasMapperAnnotation(psiClass)) {
-            res.put(getKey(psiClass), null);
+          if (filter(psiClass)) {
+            Set<String> keys = getKeys(psiClass);
+            for (String key : keys) {
+              res.put(key, null);
+            }
           }
         }
         return res;
@@ -50,7 +52,9 @@ public abstract class MapperNameIndex extends ScalarIndexExtension<String> {
     };
   }
 
-  protected abstract String getKey(PsiClass psiClass);
+  protected abstract boolean filter(PsiClass psiClass);
+
+  protected abstract Set<String> getKeys(PsiClass psiClass);
 
   @Override
   public KeyDescriptor<String> getKeyDescriptor() {

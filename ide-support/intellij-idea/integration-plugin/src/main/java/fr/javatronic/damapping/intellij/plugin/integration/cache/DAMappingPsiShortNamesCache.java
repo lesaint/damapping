@@ -1,6 +1,6 @@
 package fr.javatronic.damapping.intellij.plugin.integration.cache;
 
-import fr.javatronic.damapping.intellij.plugin.integration.index.MapperSimpleNameIndex;
+import fr.javatronic.damapping.intellij.plugin.integration.index.GeneratedClassSimpleNameIndex;
 import fr.javatronic.damapping.intellij.plugin.integration.provider.Common;
 
 import java.util.Arrays;
@@ -44,7 +44,7 @@ public class DAMappingPsiShortNamesCache extends PsiShortNamesCache {
   public PsiClass[] getClassesByName(@NotNull @NonNls String name, @NotNull GlobalSearchScope scope) {
     Project project = scope.getProject();
     Collection<VirtualFile> files = FileBasedIndex.getInstance()
-                                               .getContainingFiles(MapperSimpleNameIndex.NAME, name, scope);
+                                               .getContainingFiles(GeneratedClassSimpleNameIndex.NAME, name, scope);
     for (VirtualFile file : files) {
       PsiManager psiManager = PsiManager.getInstance(project);
       PsiFile psiFile = psiManager.findFile(file);
@@ -62,7 +62,7 @@ public class DAMappingPsiShortNamesCache extends PsiShortNamesCache {
   @NotNull
   @Override
   public String[] getAllClassNames() {
-    Collection<String> allKeys = FileBasedIndex.getInstance().getAllKeys(MapperSimpleNameIndex.NAME, project);
+    Collection<String> allKeys = FileBasedIndex.getInstance().getAllKeys(GeneratedClassSimpleNameIndex.NAME, project);
     return allKeys.toArray(new String[allKeys.size()]);
   }
 
