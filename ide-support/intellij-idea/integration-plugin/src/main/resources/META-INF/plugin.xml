@@ -15,24 +15,31 @@
   <depends>com.intellij.modules.platform</depends>
   <depends>com.intellij.modules.java</depends>
 
-  <!--<project-components>-->
-  <!--&lt;!&ndash; Add your project components here &ndash;&gt;-->
-  <!--</project-components>-->
-
   <application-components>
     <component>
-      <implementation-class>fr.javatronic.damapping.intellij.plugin.integration.DAMappingIntegrationLoader
+      <implementation-class>
+        fr.javatronic.damapping.intellij.plugin.integration.component.application.DAMappingIntegrationLoader
       </implementation-class>
     </component>
   </application-components>
+
+  <project-components>
+    <component>
+      <implementation-class>
+        fr.javatronic.damapping.intellij.plugin.integration.component.project.ParseAndGenerateManager
+      </implementation-class>
+    </component>
+  </project-components>
 
   <!-- Add your actions here -->
   <!--<actions>-->
   <!--</actions>-->
 
   <extensions defaultExtensionNs="com.intellij">
-    <fileBasedIndex implementation="fr.javatronic.damapping.intellij.plugin.integration.index.GeneratedClassSimpleNameIndex"/>
-    <fileBasedIndex implementation="fr.javatronic.damapping.intellij.plugin.integration.index.GeneratedClassQualifiedNameIndex"/>
+    <fileBasedIndex
+        implementation="fr.javatronic.damapping.intellij.plugin.integration.index.GeneratedClassSimpleNameIndex" />
+    <fileBasedIndex
+        implementation="fr.javatronic.damapping.intellij.plugin.integration.index.GeneratedClassQualifiedNameIndex" />
     <!--<lang.psiAugmentProvider implementation="fr.javatronic.damapping.intellij.plugin.integration.provider.DAMappingAugmentProvider"/>-->
     <java.elementFinder
         implementation="fr.javatronic.damapping.intellij.plugin.integration.provider.DAMappingElementFinder" />

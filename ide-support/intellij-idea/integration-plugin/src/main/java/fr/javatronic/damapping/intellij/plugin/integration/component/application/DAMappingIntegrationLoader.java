@@ -1,4 +1,4 @@
-package fr.javatronic.damapping.intellij.plugin.integration;
+package fr.javatronic.damapping.intellij.plugin.integration.component.application;
 
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.diagnostic.Logger;
