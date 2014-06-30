@@ -3,11 +3,12 @@ package fr.javatronic.damapping.intellij.plugin.integration.component.project;
 import fr.javatronic.damapping.intellij.plugin.integration.psiparsing.PsiParsingService;
 import fr.javatronic.damapping.intellij.plugin.integration.psiparsing.impl.PsiParsingServiceImpl;
 import fr.javatronic.damapping.processor.model.DASourceClass;
-import fr.javatronic.damapping.processor.sourcegenerator.DefaultFileGeneratorContext;
-import fr.javatronic.damapping.processor.sourcegenerator.FileGeneratorContext;
+import fr.javatronic.damapping.processor.sourcegenerator.GeneratedFileDescriptor;
+import fr.javatronic.damapping.processor.sourcegenerator.GenerationContext;
+import fr.javatronic.damapping.processor.sourcegenerator.GenerationContextComputer;
+import fr.javatronic.damapping.processor.sourcegenerator.GenerationContextComputerImpl;
 import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerationService;
 import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerationServiceImpl;
-import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerator;
 import fr.javatronic.damapping.processor.sourcegenerator.SourceWriterDelegate;
 import fr.javatronic.damapping.processor.validator.DASourceClassValidator;
 import fr.javatronic.damapping.processor.validator.DASourceClassValidatorImpl;
@@ -18,8 +19,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 
 import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.openapi.components.ProjectComponent;
@@ -43,6 +44,7 @@ public class ParseAndGenerateManager implements ProjectComponent {
 
   private final PsiParsingService parsingService;
   private final DASourceClassValidator sourceClassValidator;
+  private final GenerationContextComputer generationContextComputer;
   private final SourceGenerationService sourceGenerationService;
 
   @NotNull
@@ -51,47 +53,66 @@ public class ParseAndGenerateManager implements ProjectComponent {
   }
 
   public ParseAndGenerateManager() {
-    this(new PsiParsingServiceImpl(), new DASourceClassValidatorImpl(), new SourceGenerationServiceImpl());
+    this(new PsiParsingServiceImpl(), new DASourceClassValidatorImpl(), new GenerationContextComputerImpl(),
+        new SourceGenerationServiceImpl()
+    );
   }
 
   public ParseAndGenerateManager(PsiParsingService parsingService, DASourceClassValidator sourceClassValidator,
+                                 GenerationContextComputer generationContextComputer,
                                  SourceGenerationService sourceGenerationService) {
     this.parsingService = parsingService;
     this.sourceClassValidator = sourceClassValidator;
+    this.generationContextComputer = generationContextComputer;
     this.sourceGenerationService = sourceGenerationService;
     LOGGER.debug("ParseAndGenerateManager created");
   }
 
   @NotNull
   public List<PsiClass> getGeneratedPsiClasses(@NotNull PsiClass psiClass, @NotNull GlobalSearchScope scope) {
+    Optional<GenerationContext> generationContext = computeGenerationContext(psiClass, scope);
+    if (!generationContext.isPresent()) {
+      return Collections.emptyList();
+    }
+
+    List<PsiClass> res = new ArrayList<PsiClass>(6);
+    for (String key : generationContext.get().getDescriptorKeys()) {
+      Optional<PsiClass> psiClass1 = getGeneratedPsiClass(generationContext.get(), key, scope.getProject());
+      if (psiClass1.isPresent()) {
+        res.add(psiClass1.get());
+      }
+    }
+
+    return res;
+  }
+
+
+  public Optional<PsiClass> getGeneratedPsiClass(GenerationContext generationContext, String key, Project project) {
+    PsiClassGeneratorDelegate delegate = new PsiClassGeneratorDelegate(project);
+    try {
+      sourceGenerationService.generate(generationContext, key, delegate);
+      PsiClass generatedPsiClass = delegate.getGeneratedPsiClass();
+      if (generatedPsiClass != null) {
+        return Optional.of(generatedPsiClass);
+      }
+    } catch (IOException e) {
+      LOGGER.error("Failed to generate source files");
+    }
+    return Optional.absent();
+  }
+
+  @NotNull
+  public Optional<GenerationContext> computeGenerationContext(@NotNull PsiClass psiClass,
+                                                              @NotNull GlobalSearchScope scope) {
     DASourceClass daSourceClass = parsingService.parse(psiClass);
     try {
       sourceClassValidator.validate(daSourceClass);
     } catch (ValidationError validationError) {
       LOGGER.debug(String.format("Failed to validate class %s", psiClass.getQualifiedName()), validationError);
-      return Collections.emptyList();
+      return Optional.absent();
     }
 
-    List<PsiClass> res = new ArrayList<PsiClass>(6);
-    try {
-      for (PsiClassGeneratorFacade generatorFacade : ImmutableList.of(
-          new MapperInterfaceFacade(daSourceClass, scope, sourceGenerationService),
-          new MapperFactoryInterfaceGenerator(daSourceClass, scope, sourceGenerationService),
-          new MapperImplGenerator(daSourceClass, scope, sourceGenerationService),
-          new MapperFactoryImplGenerator(daSourceClass, scope, sourceGenerationService),
-          new MapperFactoryClassGenerator(daSourceClass, scope, sourceGenerationService)
-      )) {
-        Optional<PsiClass> generatePsiClass = generatorFacade.generatePsiClass();
-        if (generatePsiClass.isPresent()) {
-          res.add(generatePsiClass.get());
-        }
-
-      }
-    } catch (IOException e) {
-      LOGGER.error("Failed to generate source files");
-    }
-
-    return res;
+    return Optional.of(generationContextComputer.compute(daSourceClass));
   }
 
   @Override
@@ -120,33 +141,6 @@ public class ParseAndGenerateManager implements ProjectComponent {
     return this.getClass().getSimpleName();
   }
 
-  private static abstract class PsiClassGeneratorFacade {
-    protected final FileGeneratorContext generatorContext;
-    protected final GlobalSearchScope scope;
-    protected final SourceGenerationService sourceGenerationService;
-
-    private PsiClassGeneratorFacade(DASourceClass daSourceClass, GlobalSearchScope scope,
-                                    SourceGenerationService sourceGenerationService) {
-      this.scope = scope;
-      this.sourceGenerationService = sourceGenerationService;
-      this.generatorContext = new DefaultFileGeneratorContext(daSourceClass);
-    }
-
-    public Optional<PsiClass> generatePsiClass() throws IOException {
-      if (shouldGenerate()) {
-        PsiClassGeneratorDelegate delegate = new PsiClassGeneratorDelegate(scope.getProject());
-        generate(delegate);
-        return Optional.of(delegate.getGeneratedPsiClass());
-      }
-      return Optional.absent();
-    }
-
-    protected abstract boolean shouldGenerate();
-
-    protected abstract void generate(PsiClassGeneratorDelegate delegate) throws IOException;
-
-  }
-
   private static class PsiClassGeneratorDelegate implements SourceWriterDelegate {
     private final Project project;
     private PsiClass generatedPsiClass;
@@ -160,14 +154,15 @@ public class ParseAndGenerateManager implements ProjectComponent {
     }
 
     @Override
-    public void generateFile(SourceGenerator sourceGenerator, FileGeneratorContext context) throws IOException {
+    public void generateFile(@Nonnull GeneratedFileDescriptor descriptor) throws IOException {
       StringBuffer buffer = new StringBuffer();
-      sourceGenerator.writeFile(new BufferedWriter(new StringBufferWriter(buffer)), context);
+      descriptor.getSourceGenerator().writeFile(new BufferedWriter(new StringBufferWriter(buffer)), descriptor);
       // ((PsiJavaFile) PsiFileFactory.getInstance(project).createFileFromText(sourceGenerator.fileName(context),
       // JavaFileType.INSTANCE, buffer.toString(), LocalTimeCounter     .currentTime(), false,
       // false)).getClasses()[0].getImplementsListTypes()
       PsiJavaFile psiJavaFile = (PsiJavaFile) PsiFileFactory.getInstance(project)
-                                                            .createFileFromText(sourceGenerator.fileName(context),
+                                                            .createFileFromText(
+                                                                descriptor.getType().getSimpleName().getName(),
                                                                 JavaFileType.INSTANCE, buffer.toString()
                                                             );
       this.generatedPsiClass = psiJavaFile.getClasses()[0];
@@ -175,98 +170,4 @@ public class ParseAndGenerateManager implements ProjectComponent {
 
   }
 
-  private static class MapperInterfaceFacade extends PsiClassGeneratorFacade {
-
-    private MapperInterfaceFacade(DASourceClass daSourceClass,
-                                  GlobalSearchScope scope,
-                                  SourceGenerationService sourceGenerationService) {
-      super(daSourceClass, scope, sourceGenerationService);
-    }
-
-    @Override
-    protected boolean shouldGenerate() {
-      return true;
-    }
-
-    @Override
-    protected void generate(PsiClassGeneratorDelegate delegate) throws IOException {
-      sourceGenerationService.generateMapperInterface(generatorContext, delegate);
-    }
-  }
-
-  private static class MapperFactoryInterfaceGenerator extends PsiClassGeneratorFacade {
-
-    public MapperFactoryInterfaceGenerator(DASourceClass daSourceClass,
-                                           GlobalSearchScope scope,
-                                           SourceGenerationService sourceGenerationService) {
-      super(daSourceClass, scope, sourceGenerationService);
-    }
-
-    @Override
-    protected boolean shouldGenerate() {
-      return sourceGenerationService.shouldGenerateMapperFactoryInterface(generatorContext);
-    }
-
-    @Override
-    protected void generate(PsiClassGeneratorDelegate delegate) throws IOException {
-      sourceGenerationService.generateMapperFactoryInterface(generatorContext, delegate);
-    }
-  }
-
-  private static class MapperImplGenerator extends PsiClassGeneratorFacade {
-
-    public MapperImplGenerator(DASourceClass daSourceClass,
-                               GlobalSearchScope scope,
-                               SourceGenerationService sourceGenerationService) {
-      super(daSourceClass, scope, sourceGenerationService);
-    }
-
-    @Override
-    protected boolean shouldGenerate() {
-      return sourceGenerationService.shouldGenerateMapperImpl(generatorContext);
-    }
-
-    @Override
-    protected void generate(PsiClassGeneratorDelegate delegate) throws IOException {
-      sourceGenerationService.generateMapperImpl(generatorContext, delegate);
-    }
-  }
-
-  private static class MapperFactoryImplGenerator extends PsiClassGeneratorFacade {
-
-    public MapperFactoryImplGenerator(DASourceClass daSourceClass,
-                                      GlobalSearchScope scope,
-                                      SourceGenerationService sourceGenerationService) {
-      super(daSourceClass, scope, sourceGenerationService);
-    }
-
-    @Override
-    protected boolean shouldGenerate() {
-      return sourceGenerationService.shouldGenerateMapperFactoryImpl(generatorContext);
-    }
-
-    @Override
-    protected void generate(PsiClassGeneratorDelegate delegate) throws IOException {
-      sourceGenerationService.generateMapperFactoryImpl(generatorContext, delegate);
-    }
-  }
-
-  private static class MapperFactoryClassGenerator extends PsiClassGeneratorFacade {
-
-    public MapperFactoryClassGenerator(DASourceClass daSourceClass,
-                                       GlobalSearchScope scope,
-                                       SourceGenerationService sourceGenerationService) {
-      super(daSourceClass, scope, sourceGenerationService);
-    }
-
-    @Override
-    protected boolean shouldGenerate() {
-      return sourceGenerationService.shouldGenerateMapperFactoryClass(generatorContext);
-    }
-
-    @Override
-    protected void generate(PsiClassGeneratorDelegate delegate) throws IOException {
-      sourceGenerationService.generateMapperFactoryClass(generatorContext, delegate);
-    }
-  }
 }

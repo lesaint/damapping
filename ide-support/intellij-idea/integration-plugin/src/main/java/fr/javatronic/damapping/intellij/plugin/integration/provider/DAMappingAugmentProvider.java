@@ -5,18 +5,13 @@ import fr.javatronic.damapping.intellij.plugin.integration.psiparsing.PsiAnnotat
 import fr.javatronic.damapping.intellij.plugin.integration.psiparsing.PsiParsingService;
 import fr.javatronic.damapping.intellij.plugin.integration.psiparsing.impl.PsiParsingServiceImpl;
 import fr.javatronic.damapping.processor.model.DASourceClass;
-import fr.javatronic.damapping.processor.sourcegenerator.DefaultFileGeneratorContext;
-import fr.javatronic.damapping.processor.sourcegenerator.FileGeneratorContext;
+import fr.javatronic.damapping.processor.sourcegenerator.GenerationContext;
 import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerationService;
 import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerationServiceImpl;
-import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerator;
-import fr.javatronic.damapping.processor.sourcegenerator.SourceWriterDelegate;
 import fr.javatronic.damapping.processor.validator.DASourceClassValidator;
 import fr.javatronic.damapping.processor.validator.DASourceClassValidatorImpl;
 import fr.javatronic.damapping.processor.validator.ValidationError;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import com.google.common.collect.Lists;
@@ -24,14 +19,12 @@ import com.google.common.collect.Lists;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiModifierList;
 import com.intellij.psi.augment.PsiAugmentProvider;
-import org.codehaus.groovy.runtime.StringBufferWriter;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -104,34 +97,34 @@ public class DAMappingAugmentProvider extends PsiAugmentProvider {
     }
 
     final List<Psi> res = Lists.newArrayList();
-    try {
-      sourceGenerationService.generateSourceFiles(
-          new DefaultFileGeneratorContext(daSourceClass),
-          new SourceWriterDelegate() {
-            @Override
-            public void generateFile(SourceGenerator sourceGenerator, FileGeneratorContext context) throws IOException {
-              StringBuffer buffer = new StringBuffer();
-              sourceGenerator.writeFile(new BufferedWriter(new StringBufferWriter(buffer)), context);
-              PsiClass classFromText = JavaPsiFacade.getElementFactory(project)
-                                                    .createClassFromText(buffer.toString(),
-                                                        element /*TODO verify what is this second argument*/);
-
-//              res.add(classFromText);
-//              generatedFile(sourceGenerator.fileName(context), buffer.toString(), context);
-            }
-
-          }
-      );
-    } catch (IOException e) {
-      LOGGER.error("Failed to generate source files");
-    }
+//    try {
+//      sourceGenerationService.generateSourceFiles(
+//          new DefaultGenerationContext(daSourceClass),
+//          new SourceWriterDelegate() {
+//            @Override
+//            public void generateFile(SourceGenerator sourceGenerator, GenerationContext context) throws IOException {
+//              StringBuffer buffer = new StringBuffer();
+//              sourceGenerator.writeFile(new BufferedWriter(new StringBufferWriter(buffer)), context);
+//              PsiClass classFromText = JavaPsiFacade.getElementFactory(project)
+//                                                    .createClassFromText(buffer.toString(),
+//                                                        element /*TODO verify what is this second argument*/);
+//
+////              res.add(classFromText);
+////              generatedFile(sourceGenerator.fileName(context), buffer.toString(), context);
+//            }
+//
+//          }
+//      );
+//    } catch (IOException e) {
+//      LOGGER.error("Failed to generate source files");
+//    }
 
     // convert PsiClass to DASource class
     // use Writer to create String instead of file from DASource class and return it
     return res;
   }
 
-  private void generatedFile(String fileName, String fileContent, FileGeneratorContext context) {
+  private void generatedFile(String fileName, String fileContent, GenerationContext context) {
     // TODO feed the new file to
   }
 }

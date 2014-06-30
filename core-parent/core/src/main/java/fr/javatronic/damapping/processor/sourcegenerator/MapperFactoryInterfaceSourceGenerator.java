@@ -26,6 +26,7 @@ import fr.javatronic.damapping.processor.sourcegenerator.writer.DAInterfaceWrite
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import javax.annotation.Nonnull;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
@@ -38,21 +39,17 @@ import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicat
  * @author Sébastien Lesaint
  */
 public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerator {
-  @Override
-  public String fileName(FileGeneratorContext context) {
-    return context.getMapperFactoryInterfaceDAType().getQualifiedName().getName();
-  }
 
   @Override
-  public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
-    DASourceClass sourceClass = context.getSourceClass();
+  public void writeFile(@Nonnull BufferedWriter bw, @Nonnull GeneratedFileDescriptor descriptor) throws IOException {
+    DASourceClass sourceClass = descriptor.getContext().getSourceClass();
     DAFileWriter fileWriter = new DAFileWriter(bw)
         .appendPackage(sourceClass.getPackageName())
-        .appendImports(context.getMapperFactoryInterfaceImports())
+        .appendImports(descriptor.getImports())
         .appendWarningComment();
 
     DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter
-        .newInterface(context.getMapperFactoryInterfaceDAType().getSimpleName().getName())
+        .newInterface(descriptor.getType().getSimpleName().getName())
         .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
         .start();
 

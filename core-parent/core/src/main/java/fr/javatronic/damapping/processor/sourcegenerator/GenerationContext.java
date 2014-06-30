@@ -1,3 +1,6 @@
+
+
+
 /*
  * Copyright 2013 Sébastien Lesaint
  *
@@ -15,50 +18,31 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
-import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DASourceClass;
-import fr.javatronic.damapping.processor.model.DAType;
 
-import java.util.List;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * FileGeneratorContext -
+ * GenerationContext -
  *
  * @author Sébastien Lesaint
  */
-public interface FileGeneratorContext {
-  @Nullable
+public interface GenerationContext {
+  static final String MAPPER_INTERFACE_KEY = "MapperInterface";
+  static final String MAPPER_FACTORY_INTERFACE_KEY = "MapperFactoryInterface";
+  static final String MAPPER_IMPL_KEY = "MapperImpl";
+  static final String MAPPER_FACTORY_CLASS_KEY = "MapperFactoryClass";
+  static final String MAPPER_FACTORY_IMPL_KEY = "MapperFactoryImpl";
+
+  @Nonnull
   DASourceClass getSourceClass();
 
-  @Nonnull
-  List<DAName> getMapperInterfaceImports();
+  @Nullable
+  GeneratedFileDescriptor getDescriptor(String key);
 
   @Nonnull
-  List<DAName> getMapperFactoryInterfaceImports();
+  Set<String> getDescriptorKeys();
 
-  @Nonnull
-  List<DAName> getMapperImplImports();
-
-  @Nonnull
-  List<DAName> getMapperFactoryClassImports();
-
-  @Nonnull
-  List<DAName> getMapperFactoryImplImports();
-
-  @Nonnull
-  DAType getMapperInterfaceDAType();
-
-  @Nonnull
-  DAType getMapperImplDAType();
-
-  @Nonnull
-  DAType getMapperFactoryClassDAType();
-
-  @Nonnull
-  DAType getMapperFactoryInterfaceDAType();
-
-  @Nonnull
-  DAType getMapperFactoryImplDAType();
 }

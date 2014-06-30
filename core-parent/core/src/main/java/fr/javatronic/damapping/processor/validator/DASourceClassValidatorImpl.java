@@ -1,11 +1,11 @@
 package fr.javatronic.damapping.processor.validator;
 
 import fr.javatronic.damapping.processor.model.DAAnnotation;
-import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.javatronic.damapping.processor.model.DAInterface;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DASourceClass;
+import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAInterfacePredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 

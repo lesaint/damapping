@@ -9,23 +9,12 @@ import javax.annotation.Nonnull;
  * @author Sébastien Lesaint
  */
 public interface SourceGenerationService {
-  void generateSourceFiles(@Nonnull FileGeneratorContext context, @Nonnull SourceWriterDelegate delegate) throws IOException;
 
-  void generateMapperInterface(FileGeneratorContext context, SourceWriterDelegate delegate) throws IOException;
+  void generateAll(@Nonnull GenerationContext generationContext,
+                   @Nonnull SourceWriterDelegate delegate) throws IOException;
 
-  void generateMapperFactoryInterface(FileGeneratorContext context, SourceWriterDelegate delegate) throws IOException;
+  void generate(@Nonnull GenerationContext generationContext,
+                @Nonnull String key,
+                @Nonnull SourceWriterDelegate delegate) throws IOException;
 
-  void generateMapperFactoryClass(FileGeneratorContext context, SourceWriterDelegate delegate) throws IOException;
-
-  void generateMapperFactoryImpl(FileGeneratorContext context, SourceWriterDelegate delegate) throws IOException;
-
-  void generateMapperImpl(FileGeneratorContext context, SourceWriterDelegate delegate) throws IOException;
-
-  boolean shouldGenerateMapperFactoryInterface(FileGeneratorContext context);
-
-  boolean shouldGenerateMapperImpl(FileGeneratorContext context);
-
-  boolean shouldGenerateMapperFactoryImpl(FileGeneratorContext context);
-
-  boolean shouldGenerateMapperFactoryClass(FileGeneratorContext context);
 }

@@ -25,6 +25,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
@@ -39,27 +40,22 @@ import static fr.javatronic.damapping.processor.util.FluentIterableProxy.toSet;
  * @author Sébastien Lesaint
  */
 public class MapperSourceGenerator extends AbstractSourceGenerator {
-  @Override
-  public String fileName(FileGeneratorContext context) {
-    return context.getSourceClass().getType().getQualifiedName().getName() + "Mapper";
-  }
 
   @Override
-  public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
-
+  public void writeFile(@Nonnull BufferedWriter bw, @Nonnull GeneratedFileDescriptor descriptor) throws IOException {
     // générer l'interface du Mapper
     //     -> nom de package
     //     -> nom de la classe (infère nom du Mapper)
     //     -> visibilite de la classe (protected ou public ?)
     //     -> liste des interfaces implémentées
     //     -> compute liste des imports à réaliser
-    DASourceClass sourceClass = context.getSourceClass();
+    DASourceClass sourceClass = descriptor.getContext().getSourceClass();
     DAFileWriter fileWriter = new DAFileWriter(bw)
         .appendPackage(sourceClass.getPackageName())
-        .appendImports(context.getMapperInterfaceImports())
+        .appendImports(descriptor.getImports())
         .appendWarningComment();
 
-    fileWriter.newInterface(sourceClass.getType().getSimpleName() + "Mapper")
+    fileWriter.newInterface(descriptor.getType().getSimpleName().getName())
               .withModifiers(filterModifiers(sourceClass.getModifiers()))
               .withExtended(toDAType(sourceClass.getInterfaces())).start().end();
 

@@ -1,10 +1,12 @@
 package fr.javatronic.damapping.intellij.plugin.integration.cache;
 
+import fr.javatronic.damapping.intellij.plugin.integration.component.project.ParseAndGenerateManager;
 import fr.javatronic.damapping.intellij.plugin.integration.index.GeneratedClassSimpleNameIndex;
-import fr.javatronic.damapping.intellij.plugin.integration.provider.Common;
+import fr.javatronic.damapping.processor.sourcegenerator.GenerationContext;
 
 import java.util.Arrays;
 import java.util.Collection;
+import com.google.common.base.Optional;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -42,16 +44,29 @@ public class DAMappingPsiShortNamesCache extends PsiShortNamesCache {
   @NotNull
   @Override
   public PsiClass[] getClassesByName(@NotNull @NonNls String name, @NotNull GlobalSearchScope scope) {
-    Project project = scope.getProject();
+    ParseAndGenerateManager parseAndGenerateManager = ParseAndGenerateManager.getInstance(project);
     Collection<VirtualFile> files = FileBasedIndex.getInstance()
                                                .getContainingFiles(GeneratedClassSimpleNameIndex.NAME, name, scope);
     for (VirtualFile file : files) {
       PsiManager psiManager = PsiManager.getInstance(project);
       PsiFile psiFile = psiManager.findFile(file);
       if (psiFile instanceof PsiJavaFile) {
-        PsiClass psiClass = Common.generateClass(scope, ((PsiJavaFile) psiFile).getClasses()[0].getQualifiedName());
-        if (psiClass != null) {
-          return new PsiClass[] { psiClass };
+        Optional<GenerationContext> generationContext = parseAndGenerateManager.computeGenerationContext(
+            ((PsiJavaFile) psiFile).getClasses()[0], scope
+        );
+        if (!generationContext.isPresent()) {
+          continue;
+        }
+
+        for (String key : generationContext.get().getDescriptorKeys()) {
+          if (name.equals(generationContext.get().getDescriptor(key).getType().getSimpleName().getName())) {
+            Optional<PsiClass> generatedPsiClass = parseAndGenerateManager.getGeneratedPsiClass(
+                generationContext.get(), key, project
+            );
+            if (generatedPsiClass.isPresent()) {
+              return new PsiClass[] { generatedPsiClass.get() };
+            }
+          }
         }
       }
     }

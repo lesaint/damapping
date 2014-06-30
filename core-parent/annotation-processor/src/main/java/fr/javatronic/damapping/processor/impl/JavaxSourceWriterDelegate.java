@@ -1,11 +1,11 @@
 package fr.javatronic.damapping.processor.impl;
 
-import fr.javatronic.damapping.processor.sourcegenerator.FileGeneratorContext;
-import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerator;
+import fr.javatronic.damapping.processor.sourcegenerator.GeneratedFileDescriptor;
 import fr.javatronic.damapping.processor.sourcegenerator.SourceWriterDelegate;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
@@ -26,13 +26,13 @@ public class JavaxSourceWriterDelegate implements SourceWriterDelegate {
   }
 
   @Override
-  public void generateFile(SourceGenerator sourceGenerator, FileGeneratorContext context) throws IOException {
+  public void generateFile(@Nonnull GeneratedFileDescriptor descriptor) throws IOException {
     JavaFileObject jfo = processingEnv.getFiler().createSourceFile(
-        sourceGenerator.fileName(context),
+        descriptor.getType().getQualifiedName().getName(),
         contextElement
     );
     processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "generating " + jfo.toUri());
 
-    sourceGenerator.writeFile(new BufferedWriter(jfo.openWriter()), context);
+    descriptor.getSourceGenerator().writeFile(new BufferedWriter(jfo.openWriter()), descriptor);
   }
 }

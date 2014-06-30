@@ -17,6 +17,7 @@ package fr.javatronic.damapping.processor.sourcegenerator;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import javax.annotation.Nonnull;
 
 /**
  * SourceGenerator -
@@ -24,7 +25,5 @@ import java.io.IOException;
  * @author Sébastien Lesaint
  */
 public interface SourceGenerator {
-  String fileName(FileGeneratorContext context);
-
-  void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException;
+  void writeFile(@Nonnull BufferedWriter bw, @Nonnull GeneratedFileDescriptor descriptor) throws IOException;
 }

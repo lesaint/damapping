@@ -19,7 +19,9 @@ import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.processor.impl.javaxparsing.JavaxParsingService;
 import fr.javatronic.damapping.processor.impl.javaxparsing.JavaxParsingServiceImpl;
 import fr.javatronic.damapping.processor.model.DASourceClass;
-import fr.javatronic.damapping.processor.sourcegenerator.DefaultFileGeneratorContext;
+import fr.javatronic.damapping.processor.sourcegenerator.GenerationContext;
+import fr.javatronic.damapping.processor.sourcegenerator.GenerationContextComputer;
+import fr.javatronic.damapping.processor.sourcegenerator.GenerationContextComputerImpl;
 import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerationService;
 import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerationServiceImpl;
 import fr.javatronic.damapping.processor.validator.DASourceClassValidator;
@@ -78,9 +80,11 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
       return;
     }
 
+    GenerationContextComputer generationContextComputer = new GenerationContextComputerImpl();
     SourceGenerationService sourceGenerationService = new SourceGenerationServiceImpl();
-    sourceGenerationService.generateSourceFiles(
-        new DefaultFileGeneratorContext(daSourceClass),
+    GenerationContext generationContext = generationContextComputer.compute(daSourceClass);
+    sourceGenerationService.generateAll(
+        generationContext,
         new JavaxSourceWriterDelegate(processingEnv, classElement)
     );
   }

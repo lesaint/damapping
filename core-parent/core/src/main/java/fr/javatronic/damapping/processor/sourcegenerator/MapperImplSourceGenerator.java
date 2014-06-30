@@ -31,6 +31,8 @@ import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -54,28 +56,25 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
   private static final DAType SPRING_COMPONENT_DATYPE = DATypeFactory.declared(SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME);
 
   @Override
-  public String fileName(FileGeneratorContext context) {
-    return context.getSourceClass().getType().getQualifiedName().getName() + "MapperImpl";
-  }
+  public void writeFile(@Nonnull BufferedWriter bw, @Nonnull GeneratedFileDescriptor descriptor) throws IOException {
+    GeneratedFileDescriptor factoryClassdescriptor = descriptor.getContext().getDescriptor(GenerationContext.MAPPER_FACTORY_CLASS_KEY);
 
-  @Override
-  public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
     // générer l'implémentation du Mapper
     //     -> nom de package
     //     -> nom de la classe (infère nom du Mapper, nom de la factory, nom de l'implémentation)
     //     -> liste des méthodes mapper
     //     -> compute liste des imports à réaliser
-    DASourceClass sourceClass = context.getSourceClass();
+    DASourceClass sourceClass = descriptor.getContext().getSourceClass();
 
     // package + imports + comment
     DAFileWriter fileWriter = new DAFileWriter(bw)
         .appendPackage(sourceClass.getPackageName())
-        .appendImports(computeMapperImplImports(context, sourceClass))
+        .appendImports(computeMapperImplImports(descriptor, sourceClass))
         .appendWarningComment();
 
     // declaration de la class
     DAClassWriter<DAFileWriter> classWriter = fileWriter
-        .newClass(context.getMapperImplDAType())
+        .newClass(descriptor.getType())
         .withAnnotations(computeAnnotations(sourceClass))
         .withImplemented(computeImplemented(sourceClass))
         .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
@@ -105,7 +104,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     methodWriter.newStatement()
                 .start()
                 .append("return ")
-                .append(computeInstanceObject(context))
+                .append(computeInstanceObject(factoryClassdescriptor, sourceClass))
                 .append(".")
                 .append(guavaMethod.getName())
                 .appendParamValues(guavaMethod.getParameters())
@@ -121,15 +120,11 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     fileWriter.end();
   }
 
-  private String computeInstanceObject(FileGeneratorContext context) {
-    String instance;
-    if (context.getSourceClass().getInstantiationType() == InstantiationType.SPRING_COMPONENT) {
-      instance = "instance";
+  private String computeInstanceObject(@Nullable GeneratedFileDescriptor factoryClassDescriptor, DASourceClass sourceClass) {
+    if (factoryClassDescriptor == null) {
+      return "instance";
     }
-    else {
-      instance = context.getMapperFactoryClassDAType().getSimpleName() + ".instance()";
-    }
-    return instance;
+    return factoryClassDescriptor.getType().getSimpleName() + ".instance()";
   }
 
   private List<DAType> computeImplemented(DASourceClass daSourceClass) {
@@ -145,10 +140,10 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     ) : null;
   }
 
-  private List<DAName> computeMapperImplImports(FileGeneratorContext context, DASourceClass daSourceClass) {
+  private List<DAName> computeMapperImplImports(GeneratedFileDescriptor descriptor, DASourceClass daSourceClass) {
     return daSourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT ? ImmutableList.copyOf(
-        Iterables.concat(context.getMapperImplImports(), SPRING_COMPONENT_IMPORTS)
-    ) : context.getMapperImplImports();
+        Iterables.concat(descriptor.getImports(), SPRING_COMPONENT_IMPORTS)
+    ) : descriptor.getImports();
   }
 
 }

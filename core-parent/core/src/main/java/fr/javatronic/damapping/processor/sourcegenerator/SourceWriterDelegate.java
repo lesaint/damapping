@@ -1,6 +1,7 @@
 package fr.javatronic.damapping.processor.sourcegenerator;
 
 import java.io.IOException;
+import javax.annotation.Nonnull;
 
 /**
  * SourceWriterDelegate -
@@ -8,5 +9,5 @@ import java.io.IOException;
  * @author Sébastien Lesaint
  */
 public interface SourceWriterDelegate {
-  void generateFile(SourceGenerator sourceGenerator, FileGeneratorContext context) throws IOException;
+  void generateFile(@Nonnull GeneratedFileDescriptor descriptor) throws IOException;
 }

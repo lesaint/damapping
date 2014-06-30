@@ -3,11 +3,12 @@ package fr.javatronic.damapping.intellij.plugin.integration.psiparsing;
 import fr.javatronic.damapping.intellij.plugin.integration.AbstractIntegrationTestCase;
 import fr.javatronic.damapping.intellij.plugin.integration.psiparsing.impl.PsiParsingServiceImpl;
 import fr.javatronic.damapping.processor.model.DASourceClass;
-import fr.javatronic.damapping.processor.sourcegenerator.DefaultFileGeneratorContext;
-import fr.javatronic.damapping.processor.sourcegenerator.FileGeneratorContext;
+import fr.javatronic.damapping.processor.sourcegenerator.GeneratedFileDescriptor;
+import fr.javatronic.damapping.processor.sourcegenerator.GenerationContext;
+import fr.javatronic.damapping.processor.sourcegenerator.GenerationContextComputer;
+import fr.javatronic.damapping.processor.sourcegenerator.GenerationContextComputerImpl;
 import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerationService;
 import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerationServiceImpl;
-import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerator;
 import fr.javatronic.damapping.processor.sourcegenerator.SourceWriterDelegate;
 import fr.javatronic.damapping.processor.validator.DASourceClassValidator;
 import fr.javatronic.damapping.processor.validator.DASourceClassValidatorImpl;
@@ -16,6 +17,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import javax.annotation.Nonnull;
 import com.google.common.collect.Lists;
 
 import com.intellij.openapi.util.io.FileUtil;
@@ -33,6 +35,7 @@ public abstract class AbstractPsiParsingAndGenerateSourceTest extends AbstractIn
   private final File tgtFileDirPath;
 
   private final DASourceClassValidator sourceClassValidator = new DASourceClassValidatorImpl();
+  private final GenerationContextComputer generationContextComputer = new GenerationContextComputerImpl();
   private final SourceGenerationService sourceGenerationService = new SourceGenerationServiceImpl();
   private final PsiParsingService psiParsingService = new PsiParsingServiceImpl();
 
@@ -50,22 +53,23 @@ public abstract class AbstractPsiParsingAndGenerateSourceTest extends AbstractIn
     DASourceClass[] daSourceClasses = parsePsiClasses(javaSourceFileName);
     for (DASourceClass daSourceClass : daSourceClasses) {
       sourceClassValidator.validate(daSourceClass);
-      sourceGenerationService.generateSourceFiles(
-          new DefaultFileGeneratorContext(daSourceClass),
+      GenerationContext generationContext = generationContextComputer.compute(daSourceClass);
+      sourceGenerationService.generateAll(
+          generationContext,
           new SourceWriterDelegate() {
             @Override
-            public void generateFile(SourceGenerator sourceGenerator, FileGeneratorContext context) throws IOException {
-              StringBuffer buffer = new StringBuffer();
-              sourceGenerator.writeFile(new BufferedWriter(new StringBufferWriter(buffer)), context);
+            public void generateFile(@Nonnull GeneratedFileDescriptor descriptor) throws IOException {
+                StringBuffer buffer = new StringBuffer();
+                descriptor.getSourceGenerator().writeFile(new BufferedWriter(new StringBufferWriter(buffer)), descriptor);
 
-              // sourceGenerator.fileName(context) actually returns the qualifiedName of the class...
-              String qualifiedName = sourceGenerator.fileName(context);
-              String tgtFileName = qualifiedName.replace(".", "/") + ".java.tgt";
+                // sourceGenerator.fileName(context) actually returns the qualifiedName of the class...
+                String qualifiedName = descriptor.getType().getSimpleName().getName();
+                String tgtFileName = qualifiedName.replace(".", "/") + ".java.tgt";
 
-              String expected = new String(FileUtil.loadFileText(new File(tgtFileDirPath, tgtFileName), "UTF-8"));
+                String expected = new String(FileUtil.loadFileText(new File(tgtFileDirPath, tgtFileName), "UTF-8"));
 
-              assertEquals("Source does not match for " + qualifiedName, expected, buffer.toString());
-            }
+                assertEquals("Source does not match for " + qualifiedName, expected, buffer.toString());
+          }
           }
       );
     }

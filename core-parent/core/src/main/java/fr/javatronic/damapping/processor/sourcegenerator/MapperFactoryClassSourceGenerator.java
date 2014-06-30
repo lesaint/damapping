@@ -27,6 +27,7 @@ import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
+import javax.annotation.Nonnull;
 import javax.annotation.Resource;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -37,25 +38,21 @@ import com.google.common.collect.ImmutableSet;
  * @author Sébastien Lesaint
  */
 public class MapperFactoryClassSourceGenerator extends AbstractSourceGenerator {
-  @Override
-  public String fileName(FileGeneratorContext context) {
-    return context.getMapperFactoryClassDAType().getQualifiedName().getName();
-  }
 
   @Override
-  public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
-    DASourceClass sourceClass = context.getSourceClass();
+  public void writeFile(@Nonnull BufferedWriter bw, @Nonnull GeneratedFileDescriptor descriptor) throws IOException {
+    DASourceClass sourceClass = descriptor.getContext().getSourceClass();
 
     DAFileWriter fileWriter = new DAFileWriter(bw)
         .appendPackage(sourceClass.getPackageName())
-        .appendImports(context.getMapperFactoryClassImports())
+        .appendImports(descriptor.getImports())
         .appendWarningComment();
 
     // générer la factory
     //     -> nom du package
     //     -> nom de la classe (infère nom de la factory et nom du Mapper)
     //     -> type d'instantiation (si enum, le nom de la valeur d'enum à utiliser)
-    DAClassWriter<DAFileWriter> classWriter = fileWriter.newClass(context.getMapperFactoryClassDAType())
+    DAClassWriter<DAFileWriter> classWriter = fileWriter.newClass(descriptor.getType())
                                                         .start();
     if (sourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT) {
       classWriter.newProperty("instance", DATypeFactory.declared(sourceClass.getType().getQualifiedName().getName()))

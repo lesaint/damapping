@@ -30,6 +30,7 @@ import fr.javatronic.damapping.processor.sourcegenerator.writer.DAStatementWrite
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import javax.annotation.Nonnull;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -44,43 +45,54 @@ import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicat
  * @author Sébastien Lesaint
  */
 public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
-  @Override
-  public String fileName(FileGeneratorContext context) {
-    return context.getMapperFactoryImplDAType().getQualifiedName().getName();
-  }
 
   @Override
-  public void writeFile(BufferedWriter bw, FileGeneratorContext context) throws IOException {
-    DASourceClass sourceClass = context.getSourceClass();
+  public void writeFile(@Nonnull BufferedWriter bw, @Nonnull GeneratedFileDescriptor descriptor) throws IOException {
+    GeneratedFileDescriptor factoryInterfaceDescriptor = descriptor.getContext().getDescriptor(
+        GenerationContext.MAPPER_FACTORY_INTERFACE_KEY
+    );
+    GeneratedFileDescriptor mapperInterfaceDescriptor = descriptor.getContext().getDescriptor(
+        GenerationContext.MAPPER_INTERFACE_KEY
+    );
+    if (factoryInterfaceDescriptor == null || mapperInterfaceDescriptor == null) {
+      return;
+    }
+    DAType mapperImpl = DATypeFactory.declared(descriptor.getContext().getDescriptor(
+        GenerationContext.MAPPER_INTERFACE_KEY
+    ).getType().getQualifiedName().getName() + "Impl"
+    );
+
+    DASourceClass sourceClass = descriptor.getContext().getSourceClass();
     DAFileWriter fileWriter = new DAFileWriter(bw)
         .appendPackage(sourceClass.getPackageName())
-        .appendImports(context.getMapperFactoryImplImports())
+        .appendImports(descriptor.getImports())
         .appendWarningComment();
 
     DAClassWriter<DAFileWriter> classWriter = fileWriter
-        .newClass(context.getMapperFactoryImplDAType())
+        .newClass(descriptor.getType())
         .withImplemented(
-            ImmutableList.of(context.getMapperFactoryInterfaceDAType())
+            ImmutableList.of(factoryInterfaceDescriptor.getType())
         )
         .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
         .start();
 
-    appendFactoryMethods(context, classWriter);
+    appendFactoryMethods(sourceClass, mapperInterfaceDescriptor, mapperImpl, classWriter);
 
-    appendInnerClass(context, classWriter);
+    appendInnerClass(mapperImpl, mapperInterfaceDescriptor, classWriter);
 
     classWriter.end();
 
     fileWriter.end();
   }
 
-  private void appendFactoryMethods(FileGeneratorContext context, DAClassWriter<DAFileWriter> classWriter)
+  private void appendFactoryMethods(DASourceClass sourceClass, GeneratedFileDescriptor mapperInterfaceDescriptor,
+                                    DAType mapperImpl,
+                                    DAClassWriter<DAFileWriter> classWriter)
       throws IOException {
-    DASourceClass sourceClass = context.getSourceClass();
     for (DAMethod method : Iterables.filter(sourceClass.getMethods(), DAMethodPredicates.isMapperFactoryMethod())) {
       String name = isConstructor().apply(method) ? "instanceByConstructor" : method.getName().getName();
       DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter
-          .newMethod(name, context.getMapperInterfaceDAType())
+          .newMethod(name, mapperInterfaceDescriptor.getType())
           .withAnnotations(ImmutableList.of(DATypeFactory.from(Override.class)))
           .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
           .withParams(method.getParameters())
@@ -89,7 +101,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
           .newStatement()
           .start()
           .append("return new ")
-          .append(context.getMapperImplDAType().getSimpleName())
+          .append(mapperImpl.getSimpleName())
           .append("(");
       if (isConstructor().apply(method)) {
         statementWriter.append("new ").append(sourceClass.getType().getSimpleName())
@@ -108,21 +120,26 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
     }
   }
 
-  private void appendInnerClass(FileGeneratorContext context, DAClassWriter<DAFileWriter> factortClassWriter)
+  private void appendInnerClass(DAType mapperImpl,
+                                GeneratedFileDescriptor mapperInterfaceDescriptor,
+                                DAClassWriter<DAFileWriter> factortClassWriter)
       throws IOException {
+    DASourceClass sourceClass = mapperInterfaceDescriptor.getContext().getSourceClass();
     DAClassWriter<DAClassWriter<DAFileWriter>> mapperClassWriter = factortClassWriter
-        .newClass(context.getMapperImplDAType())
+        .newClass(mapperImpl)
         .withModifiers(ImmutableSet.of(DAModifier.PRIVATE, DAModifier.STATIC))
-        .withImplemented(ImmutableList.of(context.getMapperInterfaceDAType()))
+        .withImplemented(ImmutableList.of(mapperInterfaceDescriptor.getType()))
         .start();
 
     // private final [SourceClassType] instance;
-    mapperClassWriter.newProperty("instance", context.getSourceClass().getType())
+    mapperClassWriter.newProperty("instance", sourceClass.getType())
                      .withModifier(ImmutableSet.of(DAModifier.PRIVATE, DAModifier.FINAL))
                      .write();
 
     // constructor with instance parameter
-    DAParameter parameter = DAParameter.builder(DANameFactory.from("instance"), context.getSourceClass().getType())
+    DAParameter parameter = DAParameter.builder(DANameFactory.from("instance"),
+        sourceClass.getType()
+    )
                                        .build();
 
     mapperClassWriter.newConstructor()
@@ -137,7 +154,9 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
 
     // mapper method(s)
     // implémentation de la méthode de mapping (Function.apply tant qu'on ne supporte pas @MapperMethod)
-    DAMethod guavaMethod = from(context.getSourceClass().getMethods()).firstMatch(DAMethodPredicates.isGuavaFunction())
+    DAMethod guavaMethod = from(sourceClass.getMethods()).firstMatch(
+        DAMethodPredicates.isGuavaFunction()
+    )
         .get();
     DAClassMethodWriter<?> methodWriter = mapperClassWriter
         .newMethod(guavaMethod.getName().getName(), guavaMethod.getReturnType())
