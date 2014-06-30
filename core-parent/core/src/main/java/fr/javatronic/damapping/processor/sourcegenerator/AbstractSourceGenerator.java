@@ -24,4 +24,9 @@ abstract class AbstractSourceGenerator implements SourceGenerator {
 
   protected static final String INDENT = "    ";
 
+  protected final GeneratedFileDescriptor descriptor;
+
+  protected AbstractSourceGenerator(GeneratedFileDescriptor descriptor) {
+    this.descriptor = descriptor;
+  }
 }

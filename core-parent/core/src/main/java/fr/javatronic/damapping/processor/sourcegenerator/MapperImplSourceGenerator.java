@@ -55,8 +55,12 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
 
   private static final DAType SPRING_COMPONENT_DATYPE = DATypeFactory.declared(SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME);
 
+  public MapperImplSourceGenerator(GeneratedFileDescriptor descriptor) {
+    super(descriptor);
+  }
+
   @Override
-  public void writeFile(@Nonnull BufferedWriter bw, @Nonnull GeneratedFileDescriptor descriptor) throws IOException {
+  public void writeFile(@Nonnull BufferedWriter bw) throws IOException {
     GeneratedFileDescriptor factoryClassdescriptor = descriptor.getContext().getDescriptor(GenerationContext.MAPPER_FACTORY_CLASS_KEY);
 
     // générer l'implémentation du Mapper

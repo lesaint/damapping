@@ -33,6 +33,6 @@ public class JavaxSourceWriterDelegate implements SourceWriterDelegate {
     );
     processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "generating " + jfo.toUri());
 
-    descriptor.getSourceGenerator().writeFile(new BufferedWriter(jfo.openWriter()), descriptor);
+    descriptor.getSourceGenerator().writeFile(new BufferedWriter(jfo.openWriter()));
   }
 }

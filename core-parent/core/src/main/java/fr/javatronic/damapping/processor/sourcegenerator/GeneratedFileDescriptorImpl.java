@@ -28,12 +28,12 @@ public class GeneratedFileDescriptorImpl implements GeneratedFileDescriptor {
 
   public GeneratedFileDescriptorImpl(@Nonnull String key, @Nonnull DAType type,
                                      @Nonnull List<DAName> imports,
-                                     @Nonnull SourceGenerator sourceGenerator,
+                                     @Nonnull SourceGeneratorFactory sourceGeneratorFactory,
                                      @Nonnull GenerationContext context) {
     this.key = key;
     this.type = checkNotNull(type);
     this.imports = checkNotNull(imports);
-    this.sourceGenerator = checkNotNull(sourceGenerator);
+    this.sourceGenerator = sourceGeneratorFactory.instance(this);
     this.context = checkNotNull(context);
   }
 

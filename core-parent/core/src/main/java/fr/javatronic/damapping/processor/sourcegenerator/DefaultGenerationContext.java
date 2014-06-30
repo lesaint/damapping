@@ -44,13 +44,13 @@ public class DefaultGenerationContext implements GenerationContext {
     private final String key;
     private final DAType daType;
     private final List<DAName> imports;
-    private final SourceGenerator sourceGenerator;
+    private final SourceGeneratorFactory sourceGeneratorFactory;
 
-    public PartialDescriptor(String key, DAType daType, List<DAName> imports, SourceGenerator sourceGenerator) {
+    public PartialDescriptor(String key, DAType daType, List<DAName> imports, SourceGeneratorFactory sourceGeneratorFactory) {
       this.key = key;
       this.daType = daType;
       this.imports = imports;
-      this.sourceGenerator = sourceGenerator;
+      this.sourceGeneratorFactory = sourceGeneratorFactory;
     }
   }
 
@@ -60,7 +60,7 @@ public class DefaultGenerationContext implements GenerationContext {
     for (PartialDescriptor partialDescriptor : partialDescriptors) {
       builder.put(
           partialDescriptor.key,
-          new GeneratedFileDescriptorImpl(partialDescriptor.key, partialDescriptor.daType, partialDescriptor.imports, partialDescriptor.sourceGenerator, this)
+          new GeneratedFileDescriptorImpl(partialDescriptor.key, partialDescriptor.daType, partialDescriptor.imports, partialDescriptor.sourceGeneratorFactory, this)
       );
     }
     this.descriptors = builder.build();

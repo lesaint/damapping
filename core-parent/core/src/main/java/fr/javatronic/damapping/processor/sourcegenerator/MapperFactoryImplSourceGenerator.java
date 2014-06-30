@@ -46,8 +46,12 @@ import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicat
  */
 public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
 
+  public MapperFactoryImplSourceGenerator(GeneratedFileDescriptor descriptor) {
+    super(descriptor);
+  }
+
   @Override
-  public void writeFile(@Nonnull BufferedWriter bw, @Nonnull GeneratedFileDescriptor descriptor) throws IOException {
+  public void writeFile(@Nonnull BufferedWriter bw) throws IOException {
     GeneratedFileDescriptor factoryInterfaceDescriptor = descriptor.getContext().getDescriptor(
         GenerationContext.MAPPER_FACTORY_INTERFACE_KEY
     );

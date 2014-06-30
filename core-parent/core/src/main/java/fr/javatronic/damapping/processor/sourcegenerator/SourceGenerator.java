@@ -25,5 +25,5 @@ import javax.annotation.Nonnull;
  * @author Sébastien Lesaint
  */
 public interface SourceGenerator {
-  void writeFile(@Nonnull BufferedWriter bw, @Nonnull GeneratedFileDescriptor descriptor) throws IOException;
+  void writeFile(@Nonnull BufferedWriter bw) throws IOException;
 }

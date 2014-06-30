@@ -156,7 +156,7 @@ public class ParseAndGenerateManager implements ProjectComponent {
     @Override
     public void generateFile(@Nonnull GeneratedFileDescriptor descriptor) throws IOException {
       StringBuffer buffer = new StringBuffer();
-      descriptor.getSourceGenerator().writeFile(new BufferedWriter(new StringBufferWriter(buffer)), descriptor);
+      descriptor.getSourceGenerator().writeFile(new BufferedWriter(new StringBufferWriter(buffer)));
       // ((PsiJavaFile) PsiFileFactory.getInstance(project).createFileFromText(sourceGenerator.fileName(context),
       // JavaFileType.INSTANCE, buffer.toString(), LocalTimeCounter     .currentTime(), false,
       // false)).getClasses()[0].getImplementsListTypes()

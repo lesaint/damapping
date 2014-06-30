@@ -60,7 +60,7 @@ public abstract class AbstractPsiParsingAndGenerateSourceTest extends AbstractIn
             @Override
             public void generateFile(@Nonnull GeneratedFileDescriptor descriptor) throws IOException {
                 StringBuffer buffer = new StringBuffer();
-                descriptor.getSourceGenerator().writeFile(new BufferedWriter(new StringBufferWriter(buffer)), descriptor);
+                descriptor.getSourceGenerator().writeFile(new BufferedWriter(new StringBufferWriter(buffer)));
 
                 // sourceGenerator.fileName(context) actually returns the qualifiedName of the class...
                 String qualifiedName = descriptor.getType().getSimpleName().getName();

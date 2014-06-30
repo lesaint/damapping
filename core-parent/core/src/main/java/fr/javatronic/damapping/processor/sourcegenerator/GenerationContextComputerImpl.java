@@ -49,7 +49,12 @@ public class GenerationContextComputerImpl implements GenerationContextComputer 
             MAPPER_INTERFACE_KEY,
             declared(sourceClass.getType().getQualifiedName() + "Mapper"),
             getMapperInterfaceImports(sourceClass),
-            new MapperSourceGenerator()
+            new SourceGeneratorFactory() {
+              @Override
+              public SourceGenerator instance(GeneratedFileDescriptor descriptor) {
+                return new MapperSourceGenerator(descriptor);
+              }
+            }
         )
     );
     if (shouldGenerateMapperFactoryInterface(sourceClass)) {
@@ -58,7 +63,12 @@ public class GenerationContextComputerImpl implements GenerationContextComputer 
               MAPPER_FACTORY_INTERFACE_KEY,
               declared(sourceClass.getType().getQualifiedName() + "MapperFactory"),
               getMapperFactoryInterfaceImports(sourceClass),
-              new MapperFactoryInterfaceSourceGenerator()
+              new SourceGeneratorFactory() {
+                @Override
+                public SourceGenerator instance(GeneratedFileDescriptor descriptor) {
+                  return new MapperFactoryInterfaceSourceGenerator(descriptor);
+                }
+              }
           )
       );
     }
@@ -68,7 +78,12 @@ public class GenerationContextComputerImpl implements GenerationContextComputer 
               MAPPER_IMPL_KEY,
               declared(sourceClass.getType().getQualifiedName() + "MapperImpl"),
               getMapperImplImports(sourceClass),
-              new MapperImplSourceGenerator()
+              new SourceGeneratorFactory() {
+                @Override
+                public SourceGenerator instance(GeneratedFileDescriptor descriptor) {
+                  return new MapperImplSourceGenerator(descriptor);
+                }
+              }
           )
       );
     }
@@ -78,7 +93,12 @@ public class GenerationContextComputerImpl implements GenerationContextComputer 
               MAPPER_FACTORY_CLASS_KEY,
               declared(sourceClass.getType().getQualifiedName() + "MapperFactory"),
               getMapperFactoryClassImports(sourceClass),
-              new MapperFactoryClassSourceGenerator()
+              new SourceGeneratorFactory() {
+                @Override
+                public SourceGenerator instance(GeneratedFileDescriptor descriptor) {
+                  return new MapperFactoryClassSourceGenerator(descriptor);
+                }
+              }
           )
       );
     }
@@ -88,7 +108,12 @@ public class GenerationContextComputerImpl implements GenerationContextComputer 
               MAPPER_FACTORY_IMPL_KEY,
               declared(sourceClass.getType().getQualifiedName() + "MapperFactoryImpl"),
               getMapperFactoryImplImports(sourceClass),
-              new MapperFactoryImplSourceGenerator()
+              new SourceGeneratorFactory() {
+                @Override
+                public SourceGenerator instance(GeneratedFileDescriptor descriptor) {
+                  return new MapperFactoryImplSourceGenerator(descriptor);
+                }
+              }
           )
       );
     }

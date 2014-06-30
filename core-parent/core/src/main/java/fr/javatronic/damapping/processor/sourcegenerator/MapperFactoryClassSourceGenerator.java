@@ -39,8 +39,12 @@ import com.google.common.collect.ImmutableSet;
  */
 public class MapperFactoryClassSourceGenerator extends AbstractSourceGenerator {
 
+  public MapperFactoryClassSourceGenerator(GeneratedFileDescriptor descriptor) {
+    super(descriptor);
+  }
+
   @Override
-  public void writeFile(@Nonnull BufferedWriter bw, @Nonnull GeneratedFileDescriptor descriptor) throws IOException {
+  public void writeFile(@Nonnull BufferedWriter bw) throws IOException {
     DASourceClass sourceClass = descriptor.getContext().getSourceClass();
 
     DAFileWriter fileWriter = new DAFileWriter(bw)

@@ -41,8 +41,12 @@ import static fr.javatronic.damapping.processor.util.FluentIterableProxy.toSet;
  */
 public class MapperSourceGenerator extends AbstractSourceGenerator {
 
+  public MapperSourceGenerator(GeneratedFileDescriptor descriptor) {
+    super(descriptor);
+  }
+
   @Override
-  public void writeFile(@Nonnull BufferedWriter bw, @Nonnull GeneratedFileDescriptor descriptor) throws IOException {
+  public void writeFile(@Nonnull BufferedWriter bw) throws IOException {
     // générer l'interface du Mapper
     //     -> nom de package
     //     -> nom de la classe (infère nom du Mapper)
