@@ -1,5 +1,6 @@
 package fr.javatronic.damapping.intellij.plugin.integration.component.project;
 
+import fr.javatronic.damapping.intellij.plugin.integration.provider.Common;
 import fr.javatronic.damapping.intellij.plugin.integration.psiparsing.PsiParsingService;
 import fr.javatronic.damapping.intellij.plugin.integration.psiparsing.impl.PsiParsingServiceImpl;
 import fr.javatronic.damapping.processor.model.DASourceClass;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import com.google.common.base.Optional;
 
@@ -26,12 +28,18 @@ import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.ParameterizedCachedValue;
+import com.intellij.psi.util.ParameterizedCachedValueProvider;
 import org.codehaus.groovy.runtime.StringBufferWriter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * DAMappingElementFinder - Project component exposing a method to generate the PSiClass of all classes generated from
@@ -58,7 +66,8 @@ public class ParseAndGenerateManager implements ProjectComponent {
     );
   }
 
-  public ParseAndGenerateManager(PsiParsingService parsingService, DASourceClassValidator sourceClassValidator,
+  public ParseAndGenerateManager(PsiParsingService parsingService,
+                                 DASourceClassValidator sourceClassValidator,
                                  GenerationContextComputer generationContextComputer,
                                  SourceGenerationService sourceGenerationService) {
     this.parsingService = parsingService;
@@ -68,27 +77,27 @@ public class ParseAndGenerateManager implements ProjectComponent {
     LOGGER.debug("ParseAndGenerateManager created");
   }
 
+
+  private static final Key<ParameterizedCachedValue<List<PsiClass>, PsiClass>> CONSTANT_VALUE_WO_OVERFLOW_MAP_KEY = Key.create("DAMAPPIN_GENERATED_CLASSES");
+
   @NotNull
   public List<PsiClass> getGeneratedPsiClasses(@NotNull PsiClass psiClass, @NotNull GlobalSearchScope scope) {
-    Optional<GenerationContext> generationContext = computeGenerationContext(psiClass, scope);
-    if (!generationContext.isPresent()) {
-      return Collections.emptyList();
-    }
+    CachedValuesManager manager = CachedValuesManager.getManager(scope.getProject());
 
-    List<PsiClass> res = new ArrayList<PsiClass>(6);
-    for (String key : generationContext.get().getDescriptorKeys()) {
-      Optional<PsiClass> psiClass1 = getGeneratedPsiClass(generationContext.get(), key, scope.getProject());
-      if (psiClass1.isPresent()) {
-        res.add(psiClass1.get());
-      }
-    }
+//    ParameterizedCachedValue<List<PsiClass>,PsiClass> value = manager.createParameterizedCachedValue(
+//        new GeneratedPsiClassCachedValueProvider(), false
+//    );
+//    return value.getValue(psiClass);
 
+    List<PsiClass> res = manager.getParameterizedCachedValue(psiClass,
+        CONSTANT_VALUE_WO_OVERFLOW_MAP_KEY, new GeneratedPsiClassCachedValueProvider(), false, psiClass
+    );
     return res;
+
   }
 
-
-  public Optional<PsiClass> getGeneratedPsiClass(GenerationContext generationContext, String key, Project project) {
-    PsiClassGeneratorDelegate delegate = new PsiClassGeneratorDelegate(project);
+  private Optional<PsiClass> getGeneratedPsiClass(GenerationContext generationContext, String key, Project project) {
+    PsiClassWriterDelegate delegate = new PsiClassWriterDelegate(project);
     try {
       sourceGenerationService.generate(generationContext, key, delegate);
       PsiClass generatedPsiClass = delegate.getGeneratedPsiClass();
@@ -102,8 +111,11 @@ public class ParseAndGenerateManager implements ProjectComponent {
   }
 
   @NotNull
-  public Optional<GenerationContext> computeGenerationContext(@NotNull PsiClass psiClass,
-                                                              @NotNull GlobalSearchScope scope) {
+  private Optional<GenerationContext> computeGenerationContext(@NotNull PsiClass psiClass) {
+    if (!Common.hasMapperAnnotation(psiClass)) {
+      return Optional.absent();
+    }
+
     DASourceClass daSourceClass = parsingService.parse(psiClass);
     try {
       sourceClassValidator.validate(daSourceClass);
@@ -141,11 +153,11 @@ public class ParseAndGenerateManager implements ProjectComponent {
     return this.getClass().getSimpleName();
   }
 
-  private static class PsiClassGeneratorDelegate implements SourceWriterDelegate {
+  private static class PsiClassWriterDelegate implements SourceWriterDelegate {
     private final Project project;
     private PsiClass generatedPsiClass;
 
-    private PsiClassGeneratorDelegate(Project project) {
+    private PsiClassWriterDelegate(Project project) {
       this.project = project;
     }
 
@@ -170,4 +182,27 @@ public class ParseAndGenerateManager implements ProjectComponent {
 
   }
 
+  private class GeneratedPsiClassCachedValueProvider
+      implements ParameterizedCachedValueProvider<List<PsiClass>, PsiClass> {
+    @Nullable
+    @Override
+    public CachedValueProvider.Result<List<PsiClass>> compute(PsiClass param) {
+      Optional<GenerationContext> generationContext = computeGenerationContext(param);
+      if (!generationContext.isPresent()) {
+        return CachedValueProvider.Result.create(Collections.<PsiClass>emptyList(), param);
+      }
+
+
+      Set<String> keys = generationContext.get().getDescriptorKeys();
+      List<PsiClass> res = new ArrayList<PsiClass>(keys.size());
+      for (String key : keys) {
+        Optional<PsiClass> psiClass1 = getGeneratedPsiClass(generationContext.get(), key, param.getProject());
+        if (psiClass1.isPresent()) {
+          res.add(psiClass1.get());
+        }
+      }
+
+      return CachedValueProvider.Result.create(res, param);
+    }
+  }
 }

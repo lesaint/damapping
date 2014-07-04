@@ -17,11 +17,11 @@ import com.intellij.util.io.KeyDescriptor;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * PsiClassIndex -
+ * AbstractPsiClassIndex -
  *
  * @author Sébastien Lesaint
  */
-public abstract class PsiClassIndex extends ScalarIndexExtension<String> {
+public abstract class AbstractPsiClassIndex extends ScalarIndexExtension<String> {
 
   private static final FileBasedIndex.InputFilter JAVA_SOURCE_FILE_INPUT_FILTER = new FileBasedIndex.InputFilter() {
     @Override
@@ -52,8 +52,15 @@ public abstract class PsiClassIndex extends ScalarIndexExtension<String> {
     };
   }
 
+  /**
+   * Allows filtering which class should be indexed. Typically, only PsiClass annoted with @Mapper.
+   */
   protected abstract boolean filter(PsiClass psiClass);
 
+  /**
+   * Builds the Set of keys for the specified PsiClass (which has first been tested with
+   * {@link #filter(com.intellij.psi.PsiClass)} and returned {@code true}).
+   */
   protected abstract Set<String> getKeys(PsiClass psiClass);
 
   @Override

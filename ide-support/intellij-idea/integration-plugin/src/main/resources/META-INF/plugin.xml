@@ -37,6 +37,8 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <fileBasedIndex
+        implementation="fr.javatronic.damapping.intellij.plugin.integration.index.AnnotedClassQualifiedNameIndex" />
+    <fileBasedIndex
         implementation="fr.javatronic.damapping.intellij.plugin.integration.index.GeneratedClassSimpleNameIndex" />
     <fileBasedIndex
         implementation="fr.javatronic.damapping.intellij.plugin.integration.index.GeneratedClassQualifiedNameIndex" />
