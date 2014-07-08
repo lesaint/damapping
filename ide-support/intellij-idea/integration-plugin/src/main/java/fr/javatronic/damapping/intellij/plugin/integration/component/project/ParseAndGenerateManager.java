@@ -78,7 +78,7 @@ public class ParseAndGenerateManager implements ProjectComponent {
   }
 
 
-  private static final Key<ParameterizedCachedValue<List<PsiClass>, PsiClass>> CONSTANT_VALUE_WO_OVERFLOW_MAP_KEY = Key.create("DAMAPPIN_GENERATED_CLASSES");
+  private static final Key<ParameterizedCachedValue<List<PsiClass>, PsiClass>> DAMAPPING_GENERATED_CLASSES_KEY = Key.create("DAMAPPING_GENERATED_CLASSES");
 
   @NotNull
   public List<PsiClass> getGeneratedPsiClasses(@NotNull PsiClass psiClass, @NotNull GlobalSearchScope scope) {
@@ -90,7 +90,7 @@ public class ParseAndGenerateManager implements ProjectComponent {
 //    return value.getValue(psiClass);
 
     List<PsiClass> res = manager.getParameterizedCachedValue(psiClass,
-        CONSTANT_VALUE_WO_OVERFLOW_MAP_KEY, new GeneratedPsiClassCachedValueProvider(), false, psiClass
+        DAMAPPING_GENERATED_CLASSES_KEY, new GeneratedPsiClassCachedValueProvider(), false, psiClass
     );
     return res;
 
