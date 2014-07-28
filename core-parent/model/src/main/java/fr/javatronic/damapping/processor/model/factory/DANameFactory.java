@@ -20,7 +20,8 @@ import fr.javatronic.damapping.processor.model.DATypeKind;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
-import com.google.common.base.Preconditions;
+
+import static fr.javatronic.damapping.util.Preconditions.checkArgument;
 
 /**
  * DANameFactory - final class exposing static factory methods for DAName class
@@ -62,7 +63,7 @@ public final class DANameFactory {
    */
   @Nonnull
   public static DAName fromPrimitiveKind(@Nonnull DATypeKind kind) {
-    Preconditions.checkArgument(kind.isPrimitive());
+    checkArgument(kind.isPrimitive());
     return from(kind.name().toLowerCase(Locale.US));
   }
 

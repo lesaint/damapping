@@ -18,14 +18,14 @@ package fr.javatronic.damapping.processor.sourcegenerator.imports;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.DATypeKind;
+import fr.javatronic.damapping.util.FluentIterable;
+import fr.javatronic.damapping.util.Function;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
-
-import static com.google.common.collect.ImmutableList.copyOf;
-import static com.google.common.collect.ImmutableList.of;
+import java.util.Set;
 
 /**
  * DATypeImportComputer -
@@ -34,25 +34,27 @@ import static com.google.common.collect.ImmutableList.of;
  */
 public class DATypeImportComputer {
 
+  private static final Function<DAType,Collection<DAName>> COMPUTE_IMPORTS = new Function<DAType, Collection<DAName>>() {
+    @Override
+    public Collection<DAName> apply(DAType daType) {
+      return computeImports(daType);
+    }
+  };
+
   // TODO : cache the list of imports for a specific DAType
-  public static Iterable<DAName> computeImports(DAType daType) {
-    List<DAName> empty = ImmutableList.<DAName>of();
-    List<DAName> qualifiedName = hasNoName(daType.getKind()) || daType.getQualifiedName() == null ? empty : of(daType.getQualifiedName());
-    Iterable<Iterable<DAName>> typesImports = Iterables.transform(
-        daType.getTypeArgs(),
-        new Function<DAType, Iterable<DAName>>() {
-          @Override
-          public Iterable<DAName> apply(DAType daType) {
-            return computeImports(daType);
-          }
-        }
-    );
-    return Iterables.concat(
-        qualifiedName,
-        Iterables.concat(typesImports),
-        daType.getSuperBound() == null ? empty : copyOf(computeImports(daType.getSuperBound())),
-        daType.getExtendsBound() == null ? empty : copyOf(computeImports(daType.getExtendsBound()))
-    );
+  public static Collection<DAName> computeImports(DAType daType) {
+    List<DAName> qualifiedName = hasNoName(daType.getKind()) || daType.getQualifiedName() == null
+        ? Collections.<DAName>emptyList() : Collections.singletonList(daType.getQualifiedName());
+
+    Set<DAName> res = new HashSet<DAName>();
+    res.addAll(qualifiedName);
+    List<Collection<DAName>> argsImportLists = FluentIterable.from(daType.getTypeArgs()).transform(COMPUTE_IMPORTS).toList();
+    for (Collection<DAName> importList : argsImportLists) {
+      res.addAll(importList);
+    }
+    res.addAll(daType.getSuperBound() == null ? Collections.<DAName>emptyList() : computeImports(daType.getSuperBound()));
+    res.addAll(daType.getExtendsBound() == null ? Collections.<DAName>emptyList() : computeImports(daType.getExtendsBound()));
+    return res;
   }
 
   private static boolean hasNoName(DATypeKind kind) {

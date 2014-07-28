@@ -19,9 +19,9 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import com.google.common.collect.ImmutableSet;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static fr.javatronic.damapping.processor.model.util.ImmutabilityHelper.nonNullFrom;
+import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
  * DAParameter - Représente un paramètre de méthode avec son nom, son type et ses éventuels
@@ -42,7 +42,7 @@ public class DAParameter {
   private DAParameter(Builder builder) {
     name = builder.name;
     type = builder.type;
-    modifiers = builder.modifiers == null ? ImmutableSet.<DAModifier>of() : ImmutableSet.copyOf(builder.modifiers);
+    modifiers = nonNullFrom(builder.modifiers);
   }
 
   @Nonnull

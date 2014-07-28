@@ -18,6 +18,8 @@ package fr.javatronic.damapping.processor.sourcegenerator.writer;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.util.Sets;
+import fr.javatronic.damapping.util.Lists;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -25,8 +27,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * DAConstructorWriter - Writer pour les constructeurs d'une classe
@@ -51,12 +51,12 @@ public class DAConstructorWriter<T extends DAWriter> extends AbstractDAWriter<T>
   }
 
   public DAConstructorWriter<T> withModifiers(Set<DAModifier> modifiers) {
-    this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : ImmutableSet.copyOf(modifiers);
+    this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : Sets.copyOf(modifiers);
     return this;
   }
 
   public DAConstructorWriter<T> withParams(List<DAParameter> params) {
-    this.params = params == null ? Collections.<DAParameter>emptyList() : ImmutableList.copyOf(params);
+    this.params = params == null ? Collections.<DAParameter>emptyList() : Lists.copyOf(params);
     return this;
   }
 

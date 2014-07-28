@@ -6,6 +6,8 @@ import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
+import fr.javatronic.damapping.util.Function;
+import fr.javatronic.damapping.util.Predicates;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,10 +22,8 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
 
-import static com.google.common.collect.FluentIterable.from;
+import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
  * JavaxParsingService -

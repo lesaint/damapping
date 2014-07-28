@@ -1,11 +1,11 @@
 package fr.javatronic.damapping.processor.sourcegenerator;
 
 import fr.javatronic.damapping.processor.model.InstantiationType;
+import fr.javatronic.damapping.util.Sets;
 
 import java.io.IOException;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * SourceGenerationService -
@@ -14,9 +14,9 @@ import com.google.common.collect.ImmutableSet;
  */
 public class SourceGenerationServiceImpl implements SourceGenerationService {
   private static final Set<InstantiationType> MAPPER_FACTORY_CLASS_INTANTIATIONTYPES =
-      ImmutableSet.of(InstantiationType.CONSTRUCTOR, InstantiationType.SINGLETON_ENUM);
+      Sets.of(InstantiationType.CONSTRUCTOR, InstantiationType.SINGLETON_ENUM);
   private static final Set<InstantiationType> MAPPER_FACTORY_INTERFACE_INTANTIATIONTYPES =
-      ImmutableSet.of(InstantiationType.CONSTRUCTOR_FACTORY, InstantiationType.STATIC_FACTORY);
+      Sets.of(InstantiationType.CONSTRUCTOR_FACTORY, InstantiationType.STATIC_FACTORY);
 
   @Override
   public void generateAll(@Nonnull GenerationContext generationContext,

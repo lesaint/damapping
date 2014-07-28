@@ -79,7 +79,7 @@ public class DATypeFactoryTest {
     assertThat(daType.getKind()).isEqualTo(DATypeKind.DECLARED);
     assertThat(daType.getSimpleName().getName()).isEqualTo("Toto");
     assertThat(daType.getQualifiedName().getName()).isEqualTo("com.acme.Toto");
-    assertThat(daType.getTypeArgs()).isSameAs(typeArgs);
+    assertThat(daType.getTypeArgs()).isEqualTo(typeArgs);
   }
 
   @Test(expectedExceptions = NullPointerException.class)
@@ -113,7 +113,7 @@ public class DATypeFactoryTest {
     assertThat(daType.getKind()).isEqualTo(DATypeKind.DECLARED);
     assertThat(daType.getSimpleName().getName()).isEqualTo(getClass().getSimpleName());
     assertThat(daType.getQualifiedName().getName()).isEqualTo(getClass().getCanonicalName());
-    assertThat(daType.getTypeArgs()).isSameAs(typeArgs);
+    assertThat(daType.getTypeArgs()).isEqualTo(typeArgs);
   }
 
   @Test

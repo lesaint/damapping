@@ -1,11 +1,12 @@
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
+import fr.javatronic.damapping.util.Optional;
+
 import java.lang.annotation.Annotation;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
-import com.google.common.base.Optional;
 
 /**
  * JavaxUtil -

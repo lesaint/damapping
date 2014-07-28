@@ -3,8 +3,6 @@ package fr.javatronic.damapping.processor.model.util;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * ImmutabilityHelper -
@@ -20,19 +18,13 @@ public final class ImmutabilityHelper {
     if (set == null) {
       return Collections.emptySet();
     }
-    if (set instanceof ImmutableSet) {
-      return set;
-    }
-    return ImmutableSet.copyOf(set);
+    return Collections.unmodifiableSet(set);
   }
 
   public static <T> List<T> nonNullFrom(List<T> list) {
     if (list == null) {
       return Collections.emptyList();
     }
-    if (list instanceof ImmutableList) {
-      return list;
-    }
-    return ImmutableList.copyOf(list);
+    return Collections.unmodifiableList(list);
   }
 }

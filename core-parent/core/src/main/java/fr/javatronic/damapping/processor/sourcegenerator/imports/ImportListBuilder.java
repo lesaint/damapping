@@ -17,11 +17,12 @@ package fr.javatronic.damapping.processor.sourcegenerator.imports;
 
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.util.Lists;
 
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.collect.ImmutableList;
 
 /**
  * ImportListBuilder -
@@ -29,7 +30,7 @@ import com.google.common.collect.ImmutableList;
  * @author Sébastien Lesaint
  */
 public class ImportListBuilder {
-  private final ImmutableList.Builder<DAName> imports = ImmutableList.builder();
+  private final List<DAName> imports = Lists.of();
 
   protected void addImport(@Nullable DAName qualifiedDAName) {
     if (qualifiedDAName != null) {
@@ -51,6 +52,6 @@ public class ImportListBuilder {
 
   @Nonnull
   public List<DAName> getImports() {
-    return imports.build();
+    return Collections.unmodifiableList(imports);
   }
 }

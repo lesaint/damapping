@@ -25,8 +25,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import com.google.common.collect.FluentIterable;
-
 import static fr.javatronic.damapping.processor.model.util.ImmutabilityHelper.nonNullFrom;
 
 /**
@@ -186,8 +184,13 @@ public class DAMethod implements DAModelVisitable {
       return false;
     }
 
-    private static boolean computeMapperFactoryMethodFlag(List<DAAnnotation> daAnnotations) {
-      return FluentIterable.from(daAnnotations).filter(DAAnnotationPredicates.isMapperFactoryMethod()).first().isPresent();
+    private static boolean computeMapperFactoryMethodFlag(@Nonnull List<DAAnnotation> daAnnotations) {
+      for (DAAnnotation daAnnotation : daAnnotations) {
+        if (DAAnnotationPredicates.isMapperFactoryMethod().apply(daAnnotation)) {
+          return true;
+        }
+      }
+      return false;
     }
   }
 }

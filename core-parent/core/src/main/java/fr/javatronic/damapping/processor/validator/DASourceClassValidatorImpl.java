@@ -8,15 +8,12 @@ import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAInterfacePredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
+import fr.javatronic.damapping.util.Optional;
 
 import java.util.List;
 import java.util.Set;
-import com.google.common.base.Optional;
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableList;
 
-import static com.google.common.collect.FluentIterable.from;
-import static fr.javatronic.damapping.processor.util.FluentIterableProxy.toList;
+import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
  * DASourceClassValidator -
@@ -42,7 +39,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
   }
 
   private void validateAnnotations(List<DAAnnotation> annotations) throws ValidationError {
-    ImmutableList<DAAnnotation> mapperAnnotations = toList(from(annotations).filter(DAAnnotationPredicates.isMapper()));
+    List<DAAnnotation> mapperAnnotations = from(annotations).filter(DAAnnotationPredicates.isMapper()).toList();
     if (mapperAnnotations.size() > 1) {
       throw new ValidationError("Mapper with more than one @Mapper annotation is not supported");
     }
@@ -64,14 +61,13 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
   @Override
   public void validateInterfaces(List<DAInterface> interfaces) throws ValidationError {
     // rechercher si la classe Mapper implémente Function
-    List<DAInterface> guavaFunctionInterfaces = toList(
-        from(interfaces).filter(DAInterfacePredicates.isGuavaFunction())
-    );
+    List<DAInterface> guavaFunctionInterfaces =
+        from(interfaces).filter(DAInterfacePredicates.isGuavaFunction()).toList();
     if (guavaFunctionInterfaces.size() > 1) {
       throw new ValidationError("Mapper implementing more than one Function interface is not supported");
     }
     if (guavaFunctionInterfaces.isEmpty()) { // TOIMPROVE cette vérification ne sera plus obligatoire si on introduit
-    // @MapperMethod
+      // @MapperMethod
       throw new ValidationError("Mapper not implementing Function interface is not supported");
     }
   }
@@ -102,10 +98,10 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
   }
 
   private void hasAccessibleConstructor(List<DAMethod> methods) throws ValidationError {
-    Optional<DAMethod> accessibleConstructor = FluentIterable.from(methods)
-                                                             .filter(DAMethodPredicates.isConstructor())
-                                                             .filter(DAMethodPredicates.notPrivate())
-                                                             .first();
+    Optional<DAMethod> accessibleConstructor = from(methods)
+        .filter(DAMethodPredicates.isConstructor())
+        .filter(DAMethodPredicates.notPrivate())
+        .first();
 
     if (!accessibleConstructor.isPresent()) {
       throw new ValidationError("Classe does not exposed an accessible default constructor");
@@ -127,12 +123,12 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     if (methods.isEmpty()) {
       throw new ValidationError("Class annoted with @Mapper must have at least one methode");
     }
-    List<DAMethod> guavaFunctionMethods = toList(from(methods).filter(DAMethodPredicates.isGuavaFunction()));
+    List<DAMethod> guavaFunctionMethods = from(methods).filter(DAMethodPredicates.isGuavaFunction()).toList();
     if (guavaFunctionMethods.size() > 1) {
       throw new ValidationError("Mapper having more than one apply method is not supported");
     }
     if (guavaFunctionMethods.isEmpty()) { // TOIMPROVE cette vérification ne sera plus obligatoire si on introduit
-    // @MapperMethod
+      // @MapperMethod
       throw new ValidationError("Mapper not having a apply method is not supported");
     }
   }

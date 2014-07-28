@@ -20,6 +20,8 @@ import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
+import fr.javatronic.damapping.util.Function;
+import fr.javatronic.damapping.util.Predicates;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -27,12 +29,8 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
-import com.google.common.collect.FluentIterable;
 
-import static fr.javatronic.damapping.processor.util.FluentIterableProxy.toList;
-import static fr.javatronic.damapping.processor.util.FluentIterableProxy.toSet;
+import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
  * MapperSourceGenerator -
@@ -68,31 +66,30 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
   }
 
   private static List<DAType> toDAType(List<DAInterface> interfaces) {
-    return toList(
-        FluentIterable.from(interfaces)
-                      .transform(new Function<DAInterface, DAType>() {
-                        @Nullable
-                        @Override
-                        public DAType apply(@Nullable DAInterface daInterface) {
-                          if (daInterface == null) {
-                            return null;
-                          }
-                          return daInterface.getType();
-                        }
-                      }
-                      ).filter(Predicates.notNull())
-    );
+    return
+        from(interfaces)
+            .transform(new Function<DAInterface, DAType>() {
+              @Nullable
+              @Override
+              public DAType apply(@Nullable DAInterface daInterface) {
+                if (daInterface == null) {
+                  return null;
+                }
+                return daInterface.getType();
+              }
+            }
+            ).filter(Predicates.notNull())
+            .toList();
   }
 
   private static Set<DAModifier> filterModifiers(Set<DAModifier> modifiers) {
-    return toSet(
-        FluentIterable.from(modifiers)
-                      .filter(
-                          Predicates.not(
-                              // an interface can not be final, will not compile
-                              Predicates.equalTo(DAModifier.FINAL)
-                          )
-                      )
-    );
+    return from(modifiers)
+        .filter(
+            Predicates.not(
+                // an interface can not be final, will not compile
+                Predicates.equalTo(DAModifier.FINAL)
+            )
+        )
+        .toSet();
   }
 }

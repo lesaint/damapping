@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * CommonMethods -
@@ -50,7 +51,7 @@ class CommonMethodsImpl implements CommonMethods {
     if (modifiers.isEmpty()) {
       return;
     }
-    Iterator<DAModifier> it = modifiers.iterator();
+    Iterator<DAModifier> it = new TreeSet<DAModifier>(modifiers).iterator();
     while (it.hasNext()) {
       bw.append(it.next().toString()).append(" ");
     }

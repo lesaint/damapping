@@ -16,9 +16,9 @@
 package fr.javatronic.damapping.processor.model.predicate;
 
 import fr.javatronic.damapping.processor.model.DAInterface;
+import fr.javatronic.damapping.util.Predicate;
 
 import javax.annotation.Nullable;
-import com.google.common.base.Predicate;
 
 /**
  * DAInterfacePredicates -

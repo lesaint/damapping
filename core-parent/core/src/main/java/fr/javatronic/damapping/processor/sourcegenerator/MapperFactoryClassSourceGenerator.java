@@ -23,14 +23,14 @@ import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassMethodWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
+import fr.javatronic.damapping.util.Lists;
+import fr.javatronic.damapping.util.Sets;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
 import javax.annotation.Nonnull;
 import javax.annotation.Resource;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * MapperFactoryClassSourceGenerator -
@@ -60,8 +60,8 @@ public class MapperFactoryClassSourceGenerator extends AbstractSourceGenerator {
                                                         .start();
     if (sourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT) {
       classWriter.newProperty("instance", DATypeFactory.declared(sourceClass.getType().getQualifiedName().getName()))
-                 .withModifier(ImmutableSet.of(DAModifier.PRIVATE))
-                 .withAnnotations(ImmutableList.of(DATypeFactory.from(Resource.class)))
+                 .withModifier(Sets.of(DAModifier.PRIVATE))
+                 .withAnnotations(Lists.of(DATypeFactory.from(Resource.class)))
                  .write();
     }
 
@@ -70,7 +70,7 @@ public class MapperFactoryClassSourceGenerator extends AbstractSourceGenerator {
             DATypeFactory.declared(sourceClass.getType().getQualifiedName().getName())
         )
         .withModifiers(
-            ImmutableSet.of(DAModifier.PUBLIC,
+            Sets.of(DAModifier.PUBLIC,
                 DAModifier.STATIC
             )
         )

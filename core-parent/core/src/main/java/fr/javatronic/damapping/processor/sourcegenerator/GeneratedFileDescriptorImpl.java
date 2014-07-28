@@ -7,7 +7,7 @@ import fr.javatronic.damapping.processor.model.DAType;
 import java.util.List;
 import javax.annotation.Nonnull;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
  * GeneratedFileDescriptor -

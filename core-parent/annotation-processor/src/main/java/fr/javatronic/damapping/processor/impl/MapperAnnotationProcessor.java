@@ -27,6 +27,7 @@ import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerationService
 import fr.javatronic.damapping.processor.validator.DASourceClassValidator;
 import fr.javatronic.damapping.processor.validator.DASourceClassValidatorImpl;
 import fr.javatronic.damapping.processor.validator.ValidationError;
+import fr.javatronic.damapping.util.Sets;
 
 import java.io.IOException;
 import java.util.Set;
@@ -36,7 +37,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * MapperAnnotationProcessor -
@@ -45,7 +45,7 @@ import com.google.common.collect.ImmutableSet;
  */
 public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mapper> {
 
-  private static final Set<ElementKind> SUPPORTED_ELEMENTKINDS = ImmutableSet.of(
+  private static final Set<ElementKind> SUPPORTED_ELEMENTKINDS = Sets.of(
       ElementKind.CLASS, ElementKind.ENUM
   );
 

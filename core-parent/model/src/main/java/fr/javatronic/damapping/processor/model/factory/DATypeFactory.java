@@ -22,7 +22,8 @@ import fr.javatronic.damapping.processor.model.DATypeKind;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
-import com.google.common.base.Preconditions;
+
+import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
  * DATypeFactory - final class exposing static Factory methods for DAType class
@@ -126,7 +127,7 @@ public final class DATypeFactory {
   private static DAType instance(DAName simpleName, DAName qualifiedName, List<DAType> typeArgs) {
     return DAType.builder(DATypeKind.DECLARED, simpleName)
                  .withQualifiedName(qualifiedName)
-                 .withTypeArgs(Preconditions.checkNotNull(typeArgs))
+                 .withTypeArgs(checkNotNull(typeArgs))
                  .build();
   }
 }

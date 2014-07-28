@@ -19,7 +19,8 @@
 package fr.javatronic.damapping.processor.model;
 
 import javax.annotation.Nonnull;
-import com.google.common.base.Preconditions;
+
+import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
  * DAEnumValue -
@@ -31,7 +32,7 @@ public class DAEnumValue implements CharSequence {
   private final String name;
 
   public DAEnumValue(@Nonnull String name) {
-    this.name = Preconditions.checkNotNull(name);
+    this.name = checkNotNull(name);
   }
 
   @Nonnull

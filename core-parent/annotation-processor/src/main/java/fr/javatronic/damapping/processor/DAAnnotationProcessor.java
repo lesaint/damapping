@@ -20,6 +20,8 @@ import fr.javatronic.damapping.annotation.MapperFactory;
 import fr.javatronic.damapping.annotation.MapperFactoryMethod;
 import fr.javatronic.damapping.processor.impl.AnnotationProcessor;
 import fr.javatronic.damapping.processor.impl.MapperAnnotationProcessor;
+import fr.javatronic.damapping.util.Maps;
+import fr.javatronic.damapping.util.Sets;
 
 import java.util.Collections;
 import java.util.Map;
@@ -37,8 +39,6 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 
 /**
  * DAAnnotationProcessor
@@ -49,7 +49,7 @@ public class DAAnnotationProcessor implements Processor {
 
   private static final Set<String> SUPPORTED_OPTIONS = Collections.emptySet();
   private static final Set<String> SUPPORTED_ANNOTATION_TYPES =
-      ImmutableSet.of(
+      Sets.of(
           Mapper.class.getCanonicalName(),
           MapperFactory.class.getCanonicalName(),
           MapperFactoryMethod.class.getCanonicalName()

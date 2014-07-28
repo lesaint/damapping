@@ -15,6 +15,7 @@
 
   <modules>
     <module>annotations</module>
+    <module>util</module>
     <module>model</module>
     <module>core</module>
     <module>annotation-processor</module>
@@ -25,10 +26,10 @@
     <!--<groupId>com.squareup.dagger</groupId>-->
     <!--<artifactId>dagger</artifactId>-->
     <!--</dependency>-->
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>com.google.guava</groupId>-->
+      <!--<artifactId>guava</artifactId>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
@@ -45,4 +46,14 @@
     </dependency>
   </dependencies>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>

@@ -15,23 +15,22 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Lists;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.util.Lists;
+import fr.javatronic.damapping.util.Preconditions;
+import fr.javatronic.damapping.util.Predicate;
+import fr.javatronic.damapping.util.Predicates;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import static com.google.common.collect.FluentIterable.from;
-import static fr.javatronic.damapping.processor.util.FluentIterableProxy.toSet;
+import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
  * DAFileWriter -
@@ -92,15 +91,14 @@ public class DAFileWriter implements DAWriter {
       );
     }
 
-    List<DAName> res = Lists.newArrayList(
-      toSet(
+    List<DAName> res = Lists.copyOf(
         from(mapperImports)
-          .filter(
-            Predicates.not(
-              notDisplayed
+            .filter(
+                Predicates.not(
+                    notDisplayed
+                )
             )
-          )
-      )
+            .toSet()
     );
     Collections.sort(res);
     return res;

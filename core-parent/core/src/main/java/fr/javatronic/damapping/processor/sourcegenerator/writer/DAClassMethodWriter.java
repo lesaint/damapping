@@ -18,6 +18,8 @@ package fr.javatronic.damapping.processor.sourcegenerator.writer;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.util.Sets;
+import fr.javatronic.damapping.util.Lists;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -25,8 +27,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * DAClassMethodWriter - Writer pour les méthodes d'une classe ou enum
@@ -47,17 +47,17 @@ public class DAClassMethodWriter<T extends DAWriter> extends AbstractDAWriter<T>
   }
 
   public DAClassMethodWriter<T> withModifiers(Set<DAModifier> modifiers) {
-    this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : ImmutableSet.copyOf(modifiers);
+    this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : Sets.copyOf(modifiers);
     return this;
   }
 
   public DAClassMethodWriter<T> withAnnotations(List<DAType> annotations) {
-    this.annotations = annotations == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(annotations);
+    this.annotations = annotations == null ? Collections.<DAType>emptyList() : Lists.copyOf(annotations);
     return this;
   }
 
   public DAClassMethodWriter<T> withParams(List<DAParameter> params) {
-    this.params = params == null ? Collections.<DAParameter>emptyList() : ImmutableList.copyOf(params);
+    this.params = params == null ? Collections.<DAParameter>emptyList() : Lists.copyOf(params);
     return this;
   }
 

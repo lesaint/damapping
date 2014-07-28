@@ -18,16 +18,17 @@ package fr.javatronic.damapping.processor.sourcegenerator;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.util.Maps;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.collect.ImmutableMap;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
  * DefaultGenerationContext -
@@ -56,14 +57,14 @@ public class DefaultGenerationContext implements GenerationContext {
 
   public DefaultGenerationContext(@Nonnull DASourceClass sourceClass, @Nonnull Collection<PartialDescriptor> partialDescriptors) {
     this.sourceClass = checkNotNull(sourceClass);
-    ImmutableMap.Builder<String, GeneratedFileDescriptor> builder = ImmutableMap.builder();
+    Map<String, GeneratedFileDescriptor> res = Maps.newHashMap();
     for (PartialDescriptor partialDescriptor : partialDescriptors) {
-      builder.put(
+      res.put(
           partialDescriptor.key,
           new GeneratedFileDescriptorImpl(partialDescriptor.key, partialDescriptor.daType, partialDescriptor.imports, partialDescriptor.sourceGeneratorFactory, this)
       );
     }
-    this.descriptors = builder.build();
+    this.descriptors = Collections.unmodifiableMap(res);
   }
 
   @Override

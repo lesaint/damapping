@@ -8,12 +8,12 @@ import fr.javatronic.damapping.processor.sourcegenerator.imports.MapperFactoryIm
 import fr.javatronic.damapping.processor.sourcegenerator.imports.MapperFactoryInterfaceImportsModelVisitor;
 import fr.javatronic.damapping.processor.sourcegenerator.imports.MapperImplImportsModelVisitor;
 import fr.javatronic.damapping.processor.sourcegenerator.imports.MapperInterfaceImportsModelVisitor;
+import fr.javatronic.damapping.util.Lists;
+import fr.javatronic.damapping.util.Sets;
 
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 
 import static fr.javatronic.damapping.processor.model.factory.DATypeFactory.declared;
 import static fr.javatronic.damapping.processor.sourcegenerator.GenerationContext.MAPPER_FACTORY_CLASS_KEY;
@@ -29,9 +29,9 @@ import static fr.javatronic.damapping.processor.sourcegenerator.GenerationContex
  */
 public class GenerationContextComputerImpl implements GenerationContextComputer {
   private static final Set<InstantiationType> MAPPER_FACTORY_CLASS_INTANTIATIONTYPES =
-      ImmutableSet.of(InstantiationType.CONSTRUCTOR, InstantiationType.SINGLETON_ENUM);
+      Sets.of(InstantiationType.CONSTRUCTOR, InstantiationType.SINGLETON_ENUM);
   private static final Set<InstantiationType> MAPPER_FACTORY_INTERFACE_INTANTIATIONTYPES =
-      ImmutableSet.of(InstantiationType.CONSTRUCTOR_FACTORY, InstantiationType.STATIC_FACTORY);
+      Sets.of(InstantiationType.CONSTRUCTOR_FACTORY, InstantiationType.STATIC_FACTORY);
 
   @Override
   @Nonnull
@@ -42,7 +42,7 @@ public class GenerationContextComputerImpl implements GenerationContextComputer 
   }
 
   private List<DefaultGenerationContext.PartialDescriptor> buildDescriptors(DASourceClass sourceClass) {
-    List<DefaultGenerationContext.PartialDescriptor> res = Lists.newArrayList();
+    List<DefaultGenerationContext.PartialDescriptor> res = Lists.of();
 
     res.add(
         new DefaultGenerationContext.PartialDescriptor(

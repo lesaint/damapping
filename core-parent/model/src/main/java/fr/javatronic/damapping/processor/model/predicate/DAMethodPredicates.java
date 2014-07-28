@@ -17,12 +17,10 @@ package fr.javatronic.damapping.processor.model.predicate;
 
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
+import fr.javatronic.damapping.util.Predicate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.FluentIterable;
 
 /**
  * DAMethodPredicates -
@@ -70,9 +68,12 @@ public class DAMethodPredicates {
 
     @Override
     public boolean apply(@Nonnull DAMethod daMethod) {
-      return !FluentIterable.from(daMethod.getModifiers())
-                            .firstMatch(Predicates.equalTo(DAModifier.PRIVATE))
-                            .isPresent();
+      for (DAModifier daModifier : daMethod.getModifiers()) {
+        if (daModifier == DAModifier.PRIVATE) {
+          return false;
+        }
+      }
+      return true;
     }
 
   }

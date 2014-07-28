@@ -23,14 +23,14 @@ import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAInterfaceWriter;
+import fr.javatronic.damapping.util.Sets;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import javax.annotation.Nonnull;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
+import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
  * MapperFactoryInterfaceSourceGenerator - Générateur du fichier source de l'interface MapperFactory générée dans le cas
@@ -54,11 +54,11 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
 
     DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter
         .newInterface(descriptor.getType().getSimpleName().getName())
-        .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
+        .withModifiers(Sets.of(DAModifier.PUBLIC))
         .start();
 
     DAType mapperClass = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "Mapper");
-    for (DAMethod method : Iterables.filter(sourceClass.getMethods(), DAMethodPredicates.isMapperFactoryMethod())) {
+    for (DAMethod method : from(sourceClass.getMethods()).filter(DAMethodPredicates.isMapperFactoryMethod()).toList()) {
       String name = isConstructor().apply(method) ? "instanceByConstructor" : method.getName().getName();
       interfaceWriter.newMethod(name, mapperClass).withParams(method.getParameters()).write();
     }

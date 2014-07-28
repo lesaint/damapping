@@ -15,6 +15,10 @@
  */
 package fr.javatronic.damapping.processor.impl;
 
+import fr.javatronic.damapping.util.FluentIterable;
+import fr.javatronic.damapping.util.Optional;
+import fr.javatronic.damapping.util.Predicate;
+
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.Set;
@@ -25,9 +29,6 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
 
 /**
  * AbstractAnnotationProcessor -

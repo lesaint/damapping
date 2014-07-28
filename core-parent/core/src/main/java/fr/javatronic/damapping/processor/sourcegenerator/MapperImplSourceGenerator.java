@@ -27,6 +27,8 @@ import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassMethodWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
+import fr.javatronic.damapping.util.Lists;
+import fr.javatronic.damapping.util.Sets;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -34,11 +36,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 
-import static com.google.common.collect.FluentIterable.from;
+import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
  * MapperImplSourceGenerator -
@@ -48,7 +47,7 @@ import static com.google.common.collect.FluentIterable.from;
 public class MapperImplSourceGenerator extends AbstractSourceGenerator {
   private static final String SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME = "org.springframework.stereotype.Component";
 
-  private static final List<DAName> SPRING_COMPONENT_IMPORTS = ImmutableList.of(
+  private static final List<DAName> SPRING_COMPONENT_IMPORTS = Lists.of(
       DANameFactory.from(Resource.class.getCanonicalName()),
       DANameFactory.from(SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME)
   );
@@ -81,7 +80,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
         .newClass(descriptor.getType())
         .withAnnotations(computeAnnotations(sourceClass))
         .withImplemented(computeImplemented(sourceClass))
-        .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
+        .withModifiers(Sets.of(DAModifier.PUBLIC))
         .start();
 
     // instance de la class annotée @Mapper injectée via @Resource le cas échéant
@@ -90,8 +89,8 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
           sourceClass.getPackageName().getName() + "." + sourceClass.getType().getSimpleName()
       );
       classWriter.newProperty("instance", mapperType)
-                 .withAnnotations(ImmutableList.of(DATypeFactory.from(Resource.class)))
-                 .withModifier(ImmutableSet.of(DAModifier.PRIVATE))
+                 .withAnnotations(Lists.of(DATypeFactory.from(Resource.class)))
+                 .withModifier(Sets.of(DAModifier.PRIVATE))
                  .write();
     }
 
@@ -99,8 +98,8 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     DAMethod guavaMethod = from(sourceClass.getMethods()).firstMatch(DAMethodPredicates.isGuavaFunction()).get();
     DAClassMethodWriter<?> methodWriter = classWriter
         .newMethod(guavaMethod.getName().getName(), guavaMethod.getReturnType())
-        .withAnnotations(ImmutableList.<DAType>of(DATypeFactory.from(Override.class)))
-        .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
+        .withAnnotations(Lists.<DAType>of(DATypeFactory.from(Override.class)))
+        .withModifiers(Sets.of(DAModifier.PUBLIC))
         .withParams(guavaMethod.getParameters())
         .start();
 
@@ -135,19 +134,22 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     DAType mapperInterface = DATypeFactory.declared(
         daSourceClass.getPackageName().getName() + "." + daSourceClass.getType().getSimpleName() + "Mapper"
     );
-    return ImmutableList.of(mapperInterface);
+    return Lists.of(mapperInterface);
   }
 
-  private ImmutableList<DAType> computeAnnotations(DASourceClass daSourceClass) {
-    return daSourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT ? ImmutableList.<DAType>of(
+  private List<DAType> computeAnnotations(DASourceClass daSourceClass) {
+    return daSourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT ? Lists.<DAType>of(
         SPRING_COMPONENT_DATYPE
     ) : null;
   }
 
   private List<DAName> computeMapperImplImports(GeneratedFileDescriptor descriptor, DASourceClass daSourceClass) {
-    return daSourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT ? ImmutableList.copyOf(
-        Iterables.concat(descriptor.getImports(), SPRING_COMPONENT_IMPORTS)
-    ) : descriptor.getImports();
+    if (daSourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT) {
+      List<DAName> res = Lists.copyOf(descriptor.getImports());
+      res.addAll(SPRING_COMPONENT_IMPORTS);
+      return res;
+    }
+    return descriptor.getImports();
   }
 
 }

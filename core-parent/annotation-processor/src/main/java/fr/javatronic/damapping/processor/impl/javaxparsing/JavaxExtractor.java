@@ -6,6 +6,7 @@ import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.util.Function;
 
 import java.util.List;
 import java.util.Set;
@@ -19,7 +20,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.WildcardType;
-import com.google.common.base.Function;
 
 /**
  * JavaxExtractor - Extracts objects of the DAMapping model from the objects of the Javax model.

@@ -20,7 +20,6 @@ import fr.javatronic.damapping.processor.model.visitor.DAModelVisitor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-import com.google.common.base.Function;
 
 /**
  * DAInterface - Représente un type Interface implémenté par une classe ou étendue par une autre interface.
@@ -43,7 +42,7 @@ public class DAInterface implements DAModelVisitable {
 
   public boolean isGuavaFunction() {
     return type.getQualifiedName() != null
-        && Function.class.getCanonicalName().equals(type.getQualifiedName().getName());
+        && "com.google.common.base.Function".equals(type.getQualifiedName().getName());
   }
 
   @Override

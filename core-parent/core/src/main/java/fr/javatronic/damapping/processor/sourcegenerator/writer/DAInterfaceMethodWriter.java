@@ -17,13 +17,13 @@ package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.util.Lists;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import com.google.common.collect.ImmutableList;
 
 /**
  * DAInterfaceMethodWriter - Writer pour les méthodes d'une interface
@@ -43,12 +43,12 @@ public class DAInterfaceMethodWriter<T extends DAWriter> extends AbstractDAWrite
   }
 
   public DAInterfaceMethodWriter<T> withAnnotations(List<DAType> annotations) {
-    this.annotations = annotations == null ? Collections.<DAType>emptyList() : ImmutableList.copyOf(annotations);
+    this.annotations = annotations == null ? Collections.<DAType>emptyList() : Lists.copyOf(annotations);
     return this;
   }
 
   public DAInterfaceMethodWriter<T> withParams(List<DAParameter> params) {
-    this.params = params == null ? Collections.<DAParameter>emptyList() : ImmutableList.copyOf(params);
+    this.params = params == null ? Collections.<DAParameter>emptyList() : Lists.copyOf(params);
     return this;
   }
 

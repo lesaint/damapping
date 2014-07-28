@@ -1,5 +1,7 @@
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
+import fr.javatronic.damapping.util.Optional;
+
 import java.lang.annotation.Annotation;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -9,7 +11,6 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
-import com.google.common.base.Optional;
 
 /**
  * JavaxUtilImpl -

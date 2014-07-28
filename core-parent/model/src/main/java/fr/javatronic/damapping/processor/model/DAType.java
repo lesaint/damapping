@@ -19,10 +19,9 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static fr.javatronic.damapping.processor.model.util.ImmutabilityHelper.nonNullFrom;
+import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
  * DAType - Représente class, array, enum, type primitif avec support des générics afin de générer du code source
@@ -58,9 +57,9 @@ public class DAType {
 
   private DAType(Builder builder) {
     this.kind = builder.kind;
-    this.simpleName = Preconditions.checkNotNull(builder.simpleName);
+    this.simpleName = checkNotNull(builder.simpleName);
     this.qualifiedName = builder.qualifiedName;
-    this.typeArgs = builder.typeArgs == null ? ImmutableList.<DAType>of() : ImmutableList.copyOf(builder.typeArgs);
+    this.typeArgs = nonNullFrom(builder.typeArgs);
     this.superBound = builder.superBound;
     this.extendsBound = builder.extendsBound;
   }

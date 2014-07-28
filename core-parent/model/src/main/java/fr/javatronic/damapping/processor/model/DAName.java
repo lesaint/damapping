@@ -17,7 +17,8 @@ package fr.javatronic.damapping.processor.model;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-import com.google.common.base.Preconditions;
+
+import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
  * DAName - Représent un nom de class, paramètre, package, ...
@@ -33,7 +34,7 @@ public class DAName implements CharSequence, Comparable<DAName> {
   private final String name;
 
   public DAName(@Nonnull String name) {
-    this.name = Preconditions.checkNotNull(name);
+    this.name = checkNotNull(name);
   }
 
   @Nonnull

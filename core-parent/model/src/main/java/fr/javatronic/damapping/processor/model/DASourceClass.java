@@ -19,17 +19,17 @@ import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitable;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitor;
+import fr.javatronic.damapping.util.Optional;
 
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import com.google.common.base.Optional;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.FluentIterable.from;
 import static fr.javatronic.damapping.processor.model.util.ImmutabilityHelper.nonNullFrom;
+import static fr.javatronic.damapping.util.FluentIterable.from;
+import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
  * DASourceClass - Représente la classe annotée avec @Mapper

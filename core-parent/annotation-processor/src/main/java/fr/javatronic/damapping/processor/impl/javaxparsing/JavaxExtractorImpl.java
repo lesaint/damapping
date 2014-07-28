@@ -9,6 +9,8 @@ import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
+import fr.javatronic.damapping.util.Function;
+import fr.javatronic.damapping.util.Predicates;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,11 +31,10 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Types;
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
 
-import static com.google.common.base.Predicates.notNull;
-import static com.google.common.collect.FluentIterable.from;
+import static fr.javatronic.damapping.util.FluentIterable.from;
+import static fr.javatronic.damapping.util.Predicates.notNull;
+
 
 /**
  * JavaxExtractor -

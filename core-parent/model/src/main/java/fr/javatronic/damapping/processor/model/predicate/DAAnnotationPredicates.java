@@ -4,10 +4,10 @@ import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.annotation.MapperFactoryMethod;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAName;
+import fr.javatronic.damapping.util.Optional;
+import fr.javatronic.damapping.util.Predicate;
 
 import javax.annotation.Nullable;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 
 /**
  * DAAnnotationPredicates - Predicate factory for class DAAnnotation
