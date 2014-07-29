@@ -7,14 +7,13 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
 import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
 
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.indexing.ID;
 import org.jetbrains.annotations.NotNull;
 
-import static fr.javatronic.damapping.processor.util.FluentIterableProxy.toSet;
+import static com.google.common.collect.FluentIterable.from;
 
 /**
  * GeneratedClassQualifiedNameIndex - Index VirtualFile of classes annoted with @Mapper by the qualified name of the
@@ -50,7 +49,7 @@ public class GeneratedClassQualifiedNameIndex extends AbstractPsiClassIndex {
     List<PsiClass> generatedPsiClasses = parseAndGenerateManager
         .getGeneratedPsiClasses(psiClass, GlobalSearchScope.allScope(psiClass.getProject()));
 
-    return toSet(FluentIterable.from(generatedPsiClasses).transform(PsiClassToQualifiedName.INSTANCE));
+    return from(generatedPsiClasses).transform(PsiClassToQualifiedName.INSTANCE).toImmutableSet();
   }
 
   private static enum PsiClassToQualifiedName implements Function<PsiClass, String> {
