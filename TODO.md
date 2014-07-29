@@ -48,7 +48,7 @@ ROADMAP
   MapperImplFileGenerator et MapperFactoryImplFileGenerator ?
 [X] ajouter les @Override manquant dans les classes générées Mapper*Impl
 [ ] traiter les TODO et FIXME qui trainent dans les sources
-[ ] supprimer les propriétés publiques dans les beans utilisés dans la genération de fichiers sources
+[X] supprimer les propriétés publiques dans les beans utilisés dans la genération de fichiers sources
 [ ] ajouter test U pour les méthodes de DAMethod
 [ ] ajouter test U pour DAMethodPredicates
 [ ] passe de refacto : sortir code de lecture de API javac des annotation processors, predicates singleton si applicable, ajouter des tests U
