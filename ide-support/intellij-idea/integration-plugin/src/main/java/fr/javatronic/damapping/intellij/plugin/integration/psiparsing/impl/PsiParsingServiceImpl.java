@@ -12,7 +12,6 @@ import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
-import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,6 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -181,7 +181,7 @@ public class PsiParsingServiceImpl implements PsiParsingService {
           }
         }
         ).toImmutableList();
-    if (!Iterables.any(daMethods, DAMethodPredicates.isConstructor())) {
+    if (!Iterables.any(daMethods, DAMethodConstructor.INSTANCE)) {
       return ImmutableList.copyOf(
           Iterables.concat(Collections.singletonList(instanceDefaultConstructor(psiClass)), daMethods)
       );
@@ -230,6 +230,15 @@ public class PsiParsingServiceImpl implements PsiParsingService {
         return null;
       }
       return new DAEnumValue(psiEnumConstant.getName());
+    }
+  }
+
+  private static enum DAMethodConstructor implements Predicate<DAMethod> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nullable DAMethod daMethod) {
+      return daMethod != null && daMethod.isConstructor();
     }
   }
 }
