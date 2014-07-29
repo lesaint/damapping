@@ -33,9 +33,13 @@ public final class DAInterfacePredicates {
   private static enum GuavaFunction implements Predicate<DAInterface> {
     INSTANCE;
 
+    private static final String GUAVA_FUNCTION_QUALIFIED_NAME = "com.google.common.base.Function";
+
     @Override
     public boolean apply(@Nullable DAInterface daInterface) {
-      return daInterface != null && daInterface.isGuavaFunction();
+      return daInterface != null
+          && daInterface.getType().getQualifiedName() != null
+          && GUAVA_FUNCTION_QUALIFIED_NAME.equals(daInterface.getType().getQualifiedName().getName());
     }
   }
 

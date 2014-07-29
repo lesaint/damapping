@@ -40,11 +40,6 @@ public class DAInterface implements DAModelVisitable {
     return type;
   }
 
-  public boolean isGuavaFunction() {
-    return type.getQualifiedName() != null
-        && "com.google.common.base.Function".equals(type.getQualifiedName().getName());
-  }
-
   @Override
   public void accept(DAModelVisitor visitor) {
     visitor.visit(this);
