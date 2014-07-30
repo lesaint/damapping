@@ -32,17 +32,17 @@ public abstract class AbstractMapperTest {
 
   @Test
   public void check_generated_mapper_file() throws Exception {
-    testUtil.checkGeneratedFile("Mapper");
+    testUtil.checkGeneratedFile(getClass(), "Mapper");
   }
 
   @Test
   public void check_generated_mapperImpl_file() throws Exception {
-    testUtil.checkGeneratedFile("MapperImpl");
+    testUtil.checkGeneratedFile(getClass(), "MapperImpl");
   }
 
   @Test
   public void check_generated_mapperFactory_file() throws Exception {
-    testUtil.checkGeneratedFile("MapperFactory");
+    testUtil.checkGeneratedFile(getClass(), "MapperFactory");
   }
 
 }

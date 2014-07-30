@@ -36,23 +36,28 @@ class TestUtil {
     this.classUnderTest = classUnderTest;
   }
 
-  void checkGeneratedFile(String suffix) throws URISyntaxException, IOException {
+  void checkGeneratedFile(Class<?> testcaseClass, String suffix) throws URISyntaxException, IOException {
     String tgtName = buildTargetFilename(suffix);
 
-    File tgtFile = new File(getClass().getResource(tgtName).toURI());
-    // assuming tgtFile is in the form [path_to_clone_of_dozer-annihilation]/test/test-mapper-enum/target/test
-    // -classes/fr/javatronic/damapping/test/ConstructorInstancedGuavaFunctionMapper.java.tgt
-    File mavenTargetDir = tgtFile.getParentFile()
-                                 .getParentFile()
-                                 .getParentFile()
-                                 .getParentFile()
-                                 .getParentFile()
-                                 .getParentFile();
+    File tgtFile = new File(testcaseClass.getResource(tgtName).toURI());
+    // assuming tgtFile is in the form [path_to_clone_of_dozer-annihilation]/test/test-mapper-enum/target/test-classes/[package]/ConstructorInstancedGuavaFunctionMapper.java.tgt
+    File mavenTargetDir = getParentFile(tgtFile, packageDepth(testcaseClass) + 1);
     File srcFile = new File(mavenTargetDir,
         "generated-sources/annotations/" + classUnderTest.getCanonicalName().replaceAll("\\.", "/") + suffix + ".java"
     );
 
     assertThat(srcFile).usingCharset(CHARSET_NAME).hasContent(FileUtils.readFileToString(tgtFile, "UTF-8"));
+  }
+
+  private int packageDepth(Class<?> testcaseClass) {
+    return testcaseClass.getName().split("\\.").length;
+  }
+
+  private File getParentFile(File file, int depth) {
+    if (depth <= 1) {
+      return file.getParentFile();
+    }
+    return getParentFile(file.getParentFile(), depth -1);
   }
 
   String buildTargetFilename(String suffix) {
