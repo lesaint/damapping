@@ -103,6 +103,16 @@ public class FluentIterable<Q> {
     return Optional.absent();
   }
 
+  public int size() {
+    int res = 0;
+    Iterator<Q> it = this.source.iterator();
+    while (it.hasNext()) {
+      it.next();
+      res++;
+    }
+    return res;
+  }
+
   private class PredicateIterable<R> implements Iterable<R> {
     @Nonnull
     private final Iterable<R> source;
