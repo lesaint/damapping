@@ -68,12 +68,7 @@ public class DAMethodPredicates {
 
     @Override
     public boolean apply(@Nonnull DAMethod daMethod) {
-      for (DAModifier daModifier : daMethod.getModifiers()) {
-        if (daModifier == DAModifier.PRIVATE) {
-          return false;
-        }
-      }
-      return true;
+      return !daMethod.getModifiers().contains(DAModifier.PRIVATE);
     }
 
   }
