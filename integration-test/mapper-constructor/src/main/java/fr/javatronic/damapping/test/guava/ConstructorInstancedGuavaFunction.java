@@ -13,35 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.guava;
 
 import fr.javatronic.damapping.annotation.Mapper;
-import fr.javatronic.damapping.test.subpackage.OutOfPackage;
 
 import javax.annotation.Nullable;
 import com.google.common.base.Function;
 
 @Mapper
-public class NonPublicMethods implements Function<Integer, String> {
+public class ConstructorInstancedGuavaFunction implements Function<Integer, String> {
 
   @Override
   public String apply(@Nullable Integer input) {
     return input.toString();
-  }
-
-  private OutOfPackage method_a(String a_param) {
-    return null; // implementation doesn't matter
-  }
-
-  protected OutOfPackage method_b(String b_param) {
-    return null; // implementation doesn't matter
-  }
-
-  OutOfPackage method_c(String c_param) {
-    return null; // implementation doesn't matter
-  }
-
-  private void method_d(OutOfPackage bru) {
-    // implementation doesn't matter
   }
 }

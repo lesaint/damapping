@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.guava;
+
+import fr.javatronic.damapping.test.AbstractMapperTest;
+import fr.javatronic.damapping.test.guava.HandleCustomTypes;
 
 /**
- * ConstructorInstancedGuavaFunctionTest -
+ * HandleCustomTypesTest -
  *
  * @author lesaint
  */
-public class ConstructorInstancedGuavaFunctionTest extends AbstractMapperTest {
+public class HandleCustomTypesTest extends AbstractMapperTest {
 
-  public ConstructorInstancedGuavaFunctionTest() {
-    super(ConstructorInstancedGuavaFunction.class);
+  public HandleCustomTypesTest() {
+    super(HandleCustomTypes.class);
   }
 
 }

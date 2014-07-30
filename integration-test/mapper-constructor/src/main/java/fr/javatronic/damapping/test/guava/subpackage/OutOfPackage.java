@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.guava.subpackage;
 
 /**
- * InPackage - Juste une classe qui se trouve dans le même package que la classe annotée avec @Mapper
+ * OutOfPackage - Juste une classe qui n'est pas dans le package de la classe annotée avec @Mapper
  *
  * @author Sébastien Lesaint
  */
-class InPackage {
+public class OutOfPackage {
 }

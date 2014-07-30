@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.guava;
 
 import fr.javatronic.damapping.annotation.Mapper;
+import fr.javatronic.damapping.test.guava.subpackage.OutOfPackage;
 
 import javax.annotation.Nullable;
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 
+/**
+ * WildcardGenerics -
+ *
+ * @author Sébastien Lesaint
+ */
 @Mapper
-public class ConstructorInstancedGuavaFunction implements Function<Integer, String> {
-
+public class WildcardGenerics implements Function<Optional<? extends OutOfPackage>, String> {
+  @Nullable
   @Override
-  public String apply(@Nullable Integer input) {
-    return input.toString();
+  public String apply(@Nullable Optional<? extends OutOfPackage> optional) {
+    return "resultDoesNotMatter";
   }
 }

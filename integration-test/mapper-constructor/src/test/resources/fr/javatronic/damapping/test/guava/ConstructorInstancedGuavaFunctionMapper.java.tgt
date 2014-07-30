@@ -1,4 +1,4 @@
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.guava;
 
 import com.google.common.base.Function;
 

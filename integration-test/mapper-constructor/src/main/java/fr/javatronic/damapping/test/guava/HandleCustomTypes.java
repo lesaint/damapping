@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.guava;
 
-/**
- * ConstructorInstancedGuavaFunctionTest -
- *
- * @author lesaint
- */
-public class NonPublicMethodsTest extends AbstractMapperTest {
+import fr.javatronic.damapping.annotation.Mapper;
+import fr.javatronic.damapping.test.guava.subpackage.OutOfPackage;
 
-  public NonPublicMethodsTest() {
-    super(NonPublicMethods.class);
+import javax.annotation.Nullable;
+import com.google.common.base.Function;
+
+@Mapper
+public class HandleCustomTypes implements Function<OutOfPackage, InPackage> {
+
+  @Override
+  public InPackage apply(@Nullable OutOfPackage input) {
+    return new InPackage();
   }
-
 }

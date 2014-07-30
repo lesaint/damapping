@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.guava;
+
+import fr.javatronic.damapping.test.AbstractMapperTest;
+import fr.javatronic.damapping.test.guava.NonPublicMethods;
 
 /**
- * WildcardGenericsTest -
+ * ConstructorInstancedGuavaFunctionTest -
  *
  * @author lesaint
  */
-public class WildcardGenericsTest extends AbstractMapperTest {
+public class NonPublicMethodsTest extends AbstractMapperTest {
 
-  public WildcardGenericsTest() {
-    super(WildcardGenerics.class);
+  public NonPublicMethodsTest() {
+    super(NonPublicMethods.class);
   }
 
 }

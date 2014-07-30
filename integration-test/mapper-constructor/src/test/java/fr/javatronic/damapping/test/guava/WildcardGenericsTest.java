@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.guava;
+
+import fr.javatronic.damapping.test.AbstractMapperTest;
+import fr.javatronic.damapping.test.guava.WildcardGenerics;
 
 /**
- * HandleCustomTypesTest -
+ * WildcardGenericsTest -
  *
  * @author lesaint
  */
-public class HandleCustomTypesTest extends AbstractMapperTest {
+public class WildcardGenericsTest extends AbstractMapperTest {
 
-  public HandleCustomTypesTest() {
-    super(HandleCustomTypes.class);
+  public WildcardGenericsTest() {
+    super(WildcardGenerics.class);
   }
 
 }
