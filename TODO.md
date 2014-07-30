@@ -26,6 +26,8 @@ ROADMAP
 [X] séparation en modules spécifiques des annotations et du processor
 [X] toute exception doit indiquer la classe @Mapper pour laquelle ça a pété
 [X] supprimer usage de FluentIterable.toImmutableList() et toImmutableSet() ou de toList() et toSet()
+[ ] les annotations sur méthodes Fuction.apply, @MapperMethod et @MapperFactoryMethod sont perdues dans les codes généré
+    (exemple: manque le @Nullable hérité de Function.apply dans toutes les classes MapperImpl sur le paramètre et le type de retour)
 [ ] optimiser les classes annonymes (Function, Predicate, ...)
 [ ] mettre en place un système d'exception internes pour ne pas faire des getMessager().[...] un peu partout, afficher
   ces exceptions avec un getMessager() mais ne pas remonter à javac
