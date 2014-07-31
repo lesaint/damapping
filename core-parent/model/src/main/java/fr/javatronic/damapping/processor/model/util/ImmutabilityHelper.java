@@ -15,14 +15,14 @@ public final class ImmutabilityHelper {
   }
 
   public static <T> Set<T> nonNullFrom(Set<T> set) {
-    if (set == null) {
+    if (set == null || set.isEmpty()) {
       return Collections.emptySet();
     }
     return Collections.unmodifiableSet(set);
   }
 
   public static <T> List<T> nonNullFrom(List<T> list) {
-    if (list == null) {
+    if (list == null || list.isEmpty()) {
       return Collections.emptyList();
     }
     return Collections.unmodifiableList(list);
