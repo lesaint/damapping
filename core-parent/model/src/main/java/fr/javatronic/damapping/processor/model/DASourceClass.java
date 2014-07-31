@@ -16,11 +16,14 @@
 package fr.javatronic.damapping.processor.model;
 
 import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
+import fr.javatronic.damapping.processor.model.predicate.DAInterfacePredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitable;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitor;
+import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Optional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -55,13 +58,13 @@ public class DASourceClass implements DAModelVisitable {
   @Nonnull
   private final InstantiationType instantiationType;
 
-  private DASourceClass(Builder<?> builder, InstantiationType instantiationType) {
+  private DASourceClass(Builder<?> builder, List<DAMethod> daMethods, InstantiationType instantiationType) {
     this.type = builder.getType();
     this.packageName = builder.getPackageName();
     this.annotations = nonNullFrom(builder.getAnnotations());
     this.modifiers = nonNullFrom(builder.getModifiers());
     this.interfaces = nonNullFrom(builder.getInterfaces());
-    this.methods = nonNullFrom(builder.getMethods());
+    this.methods = nonNullFrom(daMethods);
     this.enumValues = nonNullFrom(builder.getEnumValues());
     this.instantiationType = instantiationType;
   }
@@ -198,10 +201,70 @@ public class DASourceClass implements DAModelVisitable {
     }
 
     public DASourceClass build() {
+      List<DAMethod> daMethods = setMethodFlags(this.methods, this.interfaces);
       return new DASourceClass(
           this,
-          computeInstantiationType(nonNullFrom(this.annotations), nonNullFrom(this.methods), this.isEnum)
+          daMethods,
+          computeInstantiationType(nonNullFrom(this.annotations), daMethods, this.isEnum)
       );
+    }
+
+    private List<DAMethod> setMethodFlags(List<DAMethod> methods, List<DAInterface> interfaces) {
+      if (methods == null || methods.isEmpty()) {
+        return Collections.emptyList();
+      }
+
+      Optional<DAInterface> guavaFunctionInterface = from(nonNullFrom(interfaces))
+          .filter(DAInterfacePredicates.isGuavaFunction())
+          .first();
+      if (guavaFunctionInterface.isPresent()) {
+        return setGuavaFunctionFlag(methods);
+      }
+
+      if (from(methods).filter(DAMethodPredicates.isMapperFactoryMethod()).first().isPresent()) {
+        return methods;
+      }
+      return setImpliciteMapperMethodFlag(methods);
+    }
+
+    private List<DAMethod> setImpliciteMapperMethodFlag(List<DAMethod> methods) {
+      List<DAMethod> nonPrivateMethods = from(methods).filter(DAMethodPredicates.isNotConstructor())
+          .filter(DAMethodPredicates.isNotPrivate())
+          .toList();
+      if (nonPrivateMethods.size() == 1) {
+        final DAMethod impliciteMapperMethod = nonPrivateMethods.iterator().next();
+        return from(methods).transform(new Function<DAMethod, DAMethod>() {
+          @Nullable
+          @Override
+          public DAMethod apply(@Nullable DAMethod daMethod) {
+            if (daMethod == impliciteMapperMethod) {
+              return DAMethod.makeImpliciteMapperMethod(daMethod);
+            }
+            return daMethod;
+          }
+        }
+        ).toList();
+      }
+      return methods;
+    }
+
+    private List<DAMethod> setGuavaFunctionFlag(List<DAMethod> methods) {
+      List<DAMethod> applyMethods = from(methods).filter(DAMethodPredicates.isApplyWithSingleParam()).toList();
+
+      if (applyMethods.size() == 1) {
+        final DAMethod applyMethod = applyMethods.iterator().next();
+        return from(methods).transform(new Function<DAMethod, DAMethod>() {
+          @Nullable
+          @Override
+          public DAMethod apply(@Nullable DAMethod daMethod) {
+            if (daMethod == applyMethod) {
+              return DAMethod.makeGuavaFunctionApplyMethod(daMethod);
+            }
+            return daMethod;
+          }
+        }).toList();
+      }
+      return methods;
     }
 
     private static InstantiationType computeInstantiationType(@Nonnull List<DAAnnotation> daAnnotations,

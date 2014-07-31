@@ -1,18 +1,19 @@
 package fr.javatronic.damapping.processor.validator;
 
 import fr.javatronic.damapping.processor.model.DAAnnotation;
-import fr.javatronic.damapping.processor.model.DAInterface;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
-import fr.javatronic.damapping.processor.model.predicate.DAInterfacePredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.util.Optional;
+import fr.javatronic.damapping.util.Predicates;
 
 import java.util.List;
 import java.util.Set;
 
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isImpliciteMapperMethod;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
@@ -27,7 +28,6 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
   public void validate(DASourceClass sourceClass) throws ValidationError {
     validateAnnotations(sourceClass.getAnnotations());
     validateModifiers(sourceClass.getModifiers());
-    validateInterfaces(sourceClass.getInterfaces());
     validateMethods(sourceClass.getMethods());
 
     // retrieve instantiation type from @Mapper annotation
@@ -54,21 +54,6 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     // compilation
     if (modifiers.contains(DAModifier.PRIVATE)) {
       throw new ValidationError("Class annoted with @Mapper can not be private");
-    }
-  }
-
-  // TODO make interface validate for Guava Function optional when supported @MapperFunction
-  @Override
-  public void validateInterfaces(List<DAInterface> interfaces) throws ValidationError {
-    // rechercher si la classe Mapper implémente Function
-    List<DAInterface> guavaFunctionInterfaces =
-        from(interfaces).filter(DAInterfacePredicates.isGuavaFunction()).toList();
-    if (guavaFunctionInterfaces.size() > 1) {
-      throw new ValidationError("Mapper implementing more than one Function interface is not supported");
-    }
-    if (guavaFunctionInterfaces.isEmpty()) { // TOIMPROVE cette vérification ne sera plus obligatoire si on introduit
-      // @MapperMethod
-      throw new ValidationError("Mapper not implementing Function interface is not supported");
     }
   }
 
@@ -100,7 +85,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
   private void hasAccessibleConstructor(List<DAMethod> methods) throws ValidationError {
     Optional<DAMethod> accessibleConstructor = from(methods)
         .filter(DAMethodPredicates.isConstructor())
-        .filter(DAMethodPredicates.notPrivate())
+        .filter(DAMethodPredicates.isNotPrivate())
         .first();
 
     if (!accessibleConstructor.isPresent()) {
@@ -121,15 +106,18 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     // si aucune méthode trouvée => erreur  de compilation
     // TOIMPROVE : la récupération et les contrôles sur la méthode apply sont faibles
     if (methods.isEmpty()) {
-      throw new ValidationError("Class annoted with @Mapper must have at least one methode");
+      throw new ValidationError("Class annoted with @Mapper must have at least one method");
     }
-    List<DAMethod> guavaFunctionMethods = from(methods).filter(DAMethodPredicates.isGuavaFunction()).toList();
-    if (guavaFunctionMethods.size() > 1) {
-      throw new ValidationError("Mapper having more than one apply method is not supported");
+
+    int mapperMethodCount = from(methods)
+        .filter(Predicates.or(isGuavaFunctionApply(), isImpliciteMapperMethod()))
+        .size();
+    // until we support @MapperMethod, this first case can not happen because of how the DAMethod flags are set
+    if (mapperMethodCount > 1) {
+      throw new ValidationError("Mapper having more than one method qualifying as mapper method is not supported");
     }
-    if (guavaFunctionMethods.isEmpty()) { // TOIMPROVE cette vérification ne sera plus obligatoire si on introduit
-      // @MapperMethod
-      throw new ValidationError("Mapper not having a apply method is not supported");
+    if (mapperMethodCount == 0) {
+      throw new ValidationError("Mapper must have at least one mapping method (either implemente Guava's Function interface or define a single non private method)");
     }
   }
 }

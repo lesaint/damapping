@@ -41,8 +41,34 @@ public class DAMethodPredicates {
     INSTANCE;
 
     @Override
-    public boolean apply(@Nonnull DAMethod daMethod) {
-      return daMethod.isConstructor();
+    public boolean apply(@Nullable DAMethod daMethod) {
+      return daMethod != null && daMethod.isConstructor();
+    }
+  }
+
+  public static Predicate<DAMethod> isNotConstructor() {
+    return NotConstructorPredicate.INSTANCE;
+  }
+
+  private static enum NotConstructorPredicate implements Predicate<DAMethod> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nullable DAMethod daMethod) {
+      return daMethod != null && !daMethod.isConstructor();
+    }
+  }
+
+  public static Predicate<DAMethod> isGuavaFunctionApply() {
+    return GuavaFunctionApplyMethod.INSTANCE;
+  }
+
+  private static enum GuavaFunctionApplyMethod implements Predicate<DAMethod> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nullable DAMethod daMethod) {
+      return daMethod != null && daMethod.isGuavaFunctionApplyMethod();
     }
   }
 
@@ -59,7 +85,7 @@ public class DAMethodPredicates {
     }
   }
 
-  public static Predicate<DAMethod> notPrivate() {
+  public static Predicate<DAMethod> isNotPrivate() {
     return NotPrivatePredicate.INSTANCE;
   }
 
@@ -69,6 +95,20 @@ public class DAMethodPredicates {
     @Override
     public boolean apply(@Nonnull DAMethod daMethod) {
       return !daMethod.getModifiers().contains(DAModifier.PRIVATE);
+    }
+
+  }
+
+  public static Predicate<DAMethod> isMapperMethod() {
+    return MapperMethod.INSTANCE;
+  }
+
+  private static enum MapperMethod implements Predicate<DAMethod> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nullable DAMethod daMethod) {
+      return daMethod != null && daMethod.isMapperMethod();
     }
 
   }
@@ -87,19 +127,21 @@ public class DAMethodPredicates {
 
   }
 
-  public static Predicate<DAMethod> isGuavaFunction() {
-    return GuavaFunction.INSTANCE;
+  public static Predicate<DAMethod> isApplyWithSingleParam() {
+    return ApplyWithSingleParam.INSTANCE;
   }
 
-  private static enum GuavaFunction implements Predicate<DAMethod> {
+  private static enum ApplyWithSingleParam implements Predicate<DAMethod> {
     INSTANCE;
 
     @Override
-    public boolean apply(@Nonnull DAMethod daMethod) {
+    public boolean apply(@Nullable DAMethod daMethod) {
       // TOIMPROVE, check more specific info in the model, can we know if method override from an interface ? we
       // should check the parameter type and the return type
-      return !daMethod.isConstructor()
-          && daMethod.getName() != null && "apply".equals(daMethod.getName().getName());
+      return daMethod != null
+          && !daMethod.isConstructor()
+          && daMethod.getName() != null && "apply".equals(daMethod.getName().getName())
+          && daMethod.getParameters().size() == 1;
     }
   }
 
@@ -112,4 +154,16 @@ public class DAMethodPredicates {
     };
   }
 
+  public static Predicate<DAMethod> isImpliciteMapperMethod() {
+    return ImpliciteMapperMethod.INSTANCE;
+  }
+
+  private static enum ImpliciteMapperMethod implements Predicate<DAMethod> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nullable DAMethod daMethod) {
+      return daMethod != null && daMethod.isImplicitMapperMethod();
+    }
+  }
 }

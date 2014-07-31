@@ -17,13 +17,15 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static com.google.common.collect.ImmutableSet.of;
+import static fr.javatronic.damapping.processor.model.DAMethod.methodBuilder;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isDefaultConstructor;
-import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunction;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isApplyWithSingleParam;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperFactoryMethod;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isStatic;
-import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.notPrivate;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isNotPrivate;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -34,9 +36,17 @@ import static org.mockito.Mockito.when;
  * @author Sébastien Lesaint
  */
 public class DAMethodPredicatesTest {
-  @Test(expectedExceptions = NullPointerException.class)
-  public void isConstructor_does_not_support_null() throws Exception {
-    isConstructor().apply(null);
+
+  private static final DAParameter PARAM_2 = DAParameter.builder(DANameFactory.from("param2"),
+      DATypeFactory.from(String.class)
+  ).build();
+  private static final DAParameter PARAM_1 = DAParameter.builder(DANameFactory.from("param1"),
+      DATypeFactory.from(String.class)
+  ).build();
+
+  @Test
+  public void isConstructor_fails_if_null() throws Exception {
+    assertThat(isConstructor().apply(null)).isFalse();
   }
 
   @Test(dataProvider = "isConstructor_uses_ElementKind_DP")
@@ -57,9 +67,9 @@ public class DAMethodPredicatesTest {
     };
   }
 
-  @Test(expectedExceptions = NullPointerException.class)
-  public void isDefaultConstructor_does_not_support_null() throws Exception {
-    isDefaultConstructor().apply(null);
+  @Test
+  public void isDefaultConstructor_fails_if_null() throws Exception {
+    assertThat(isDefaultConstructor().apply(null)).isFalse();
   }
 
   @Test
@@ -81,13 +91,13 @@ public class DAMethodPredicatesTest {
 
   @Test
   public void isStatic_returns_false_for_empty_modifier_set() throws Exception {
-    DAMethod daMethod = DAMethod.methodBuilder().build();
+    DAMethod daMethod = methodBuilder().build();
     assertThat(isStatic().apply(daMethod)).isFalse();
   }
 
   @Test
   public void isStatic_returns_true_for_modifier_set_contains_STATIC() throws Exception {
-    DAMethod.Builder builder = DAMethod.methodBuilder();
+    DAMethod.Builder builder = methodBuilder();
     assertThat(
         isStatic().apply(builder.withModifiers(of(DAModifier.STATIC)).build())
     ).isTrue();
@@ -99,18 +109,18 @@ public class DAMethodPredicatesTest {
 
   @Test(expectedExceptions = NullPointerException.class)
   public void notPrivate_does_not_support_null() throws Exception {
-    notPrivate().apply(null);
+    isNotPrivate().apply(null);
   }
 
   @Test
   public void notPrivate_returns_true_for_empty_modifier_set() throws Exception {
-    DAMethod daMethod = DAMethod.methodBuilder().build();
-    assertThat(notPrivate().apply(daMethod)).isTrue();
+    DAMethod daMethod = methodBuilder().build();
+    assertThat(isNotPrivate().apply(daMethod)).isTrue();
   }
 
   @Test
   public void notPrivate_returns_false_for_modifier_set_contains_STATIC() throws Exception {
-    DAMethod.Builder builder = DAMethod.methodBuilder();
+    DAMethod.Builder builder = methodBuilder();
     assertThat(
         isStatic().apply(builder.withModifiers(of(DAModifier.PRIVATE)).build())
     ).isFalse();
@@ -127,7 +137,7 @@ public class DAMethodPredicatesTest {
 
   @Test
   public void isMapperFactoryMethod_uses_mapperFactoryProperty() throws Exception {
-    DAMethod.Builder builder = DAMethod.methodBuilder();
+    DAMethod.Builder builder = methodBuilder();
     assertThat(
         isMapperFactoryMethod().apply(
           builder.withAnnotations(ImmutableList.of(new DAAnnotation(DATypeFactory.declared("com.acme.Foo")))).build()
@@ -135,22 +145,136 @@ public class DAMethodPredicatesTest {
     ).isFalse();
     assertThat(
         isMapperFactoryMethod().apply(
-            builder.withAnnotations(ImmutableList.of(new DAAnnotation(DATypeFactory.declared(MapperFactoryMethod.class.getName())))).build()
+            builder.withAnnotations(
+                ImmutableList.of(new DAAnnotation(DATypeFactory.declared(MapperFactoryMethod.class.getName())))
+            ).build()
         )
     ).isTrue();
   }
 
-  @Test(expectedExceptions = NullPointerException.class)
-  public void isGuavaFunction_does_not_support_null() throws Exception {
-    isGuavaFunction().apply(null);
+  @Test
+  public void isApplyWithSingleParam_fails_if_null() throws Exception {
+    assertThat(isApplyWithSingleParam().apply(null)).isFalse();
   }
 
   @Test
-  public void isGuavaFunction_uses_name_and_kind_properties() throws Exception {
-    DAMethod.Builder builder = DAMethod.methodBuilder();
-    assertThat(isGuavaFunction().apply(builder.build())).isFalse();
-    assertThat(isGuavaFunction().apply(builder.withName(DANameFactory.from("toto")).build())).isFalse();
-    assertThat(isGuavaFunction().apply(builder.withName(DANameFactory.from("apply")).build())).isTrue();
+  public void isApplyWithSingleParam_fails_if_no_name() throws Exception {
+    assertThat(isApplyWithSingleParam().apply(mockDAMethod(""))).isFalse();
   }
 
+  @Test
+  public void isApplyWithSingleParam_fails_if_name_is_not_apply() throws Exception {
+    assertThat(isApplyWithSingleParam().apply(mockDAMethod("toto"))).isFalse();
+  }
+
+  @Test
+  public void isApplyWithSingleParam_fails_if_name_is_apply_nut_no_param() throws Exception {
+    assertThat(isApplyWithSingleParam().apply(mockDAMethod("apply"))).isFalse();
+  }
+
+  @Test
+  public void isApplyWithSingleParam_fails_if_name_is_apply_but_more_than_one_param() throws Exception {
+    DAMethod method = mockDAMethod("apply");
+    when(method.getParameters()).thenReturn(ImmutableList.of(mock(DAParameter.class), mock(DAParameter.class)));
+
+    assertThat(isApplyWithSingleParam().apply(method)).isFalse();
+  }
+
+  @Test
+  public void isApplyWithSingleParam_success_if_name_is_apply_and_one_param() throws Exception {
+    DAMethod method = mockDAMethod("apply");
+    when(method.getParameters()).thenReturn(ImmutableList.of(mock(DAParameter.class)));
+
+    assertThat(isApplyWithSingleParam().apply(method)).isTrue();
+  }
+
+  private static DAMethod mockDAMethod(String name) {
+    DAMethod method = mock(DAMethod.class);
+    when(method.getName()).thenReturn(DANameFactory.from(name));
+    return method;
+  }
+
+  @Test
+  public void isNotConstructor_fails_if_null() throws Exception {
+    assertThat(DAMethodPredicates.isNotConstructor().apply(null)).isFalse();
+  }
+
+  @Test
+  public void isNotConstructor_fails_if_flag_constructor_is_true() throws Exception {
+    DAMethod method = mockDAMethod("");
+    when(method.isConstructor()).thenReturn(true);
+
+    assertThat(DAMethodPredicates.isNotConstructor().apply(method)).isFalse();
+  }
+
+  @Test
+  public void isNotConstructor_succedd_if_flag_constructor_is_false() throws Exception {
+    DAMethod method = mockDAMethod("");
+    when(method.isConstructor()).thenReturn(false);
+
+    assertThat(DAMethodPredicates.isNotConstructor().apply(method)).isTrue();
+  }
+
+  @Test
+  public void isGuavaFunctionApply_fails_if_null() throws Exception {
+    assertThat(DAMethodPredicates.isGuavaFunctionApply().apply(null)).isFalse();
+  }
+
+  @Test
+  public void isGuavaFunctionApply_fails_if_flag_isGuavaFunctionApply_is_false() throws Exception {
+    DAMethod daMethod = mockDAMethod("");
+    when(daMethod.isGuavaFunctionApplyMethod()).thenReturn(false);
+
+    assertThat(DAMethodPredicates.isGuavaFunctionApply().apply(daMethod)).isFalse();
+  }
+
+  @Test
+  public void isGuavaFunctionApply_succeeds_if_flag_isGuavaFunctionApply_is_true() throws Exception {
+    DAMethod daMethod = mockDAMethod("");
+    when(daMethod.isGuavaFunctionApplyMethod()).thenReturn(true);
+
+    assertThat(DAMethodPredicates.isGuavaFunctionApply().apply(daMethod)).isTrue();
+  }
+
+  @Test
+  public void isMapperMethod_fails_if_null() throws Exception {
+    assertThat(DAMethodPredicates.isMapperMethod().apply(null)).isFalse();
+  }
+
+  @Test
+  public void isMapperMethod_fails_if_flag_mapperMethod_is_false() throws Exception {
+    DAMethod daMethod = mockDAMethod("");
+    when(daMethod.isMapperMethod()).thenReturn(false);
+
+    assertThat(DAMethodPredicates.isMapperMethod().apply(daMethod)).isFalse();
+  }
+
+  @Test
+  public void isMapperMethod_succeeds_if_flag_mapperMethod_is_true() throws Exception {
+    DAMethod daMethod = mockDAMethod("");
+    when(daMethod.isMapperMethod()).thenReturn(true);
+
+    assertThat(DAMethodPredicates.isMapperMethod().apply(daMethod)).isTrue();
+  }
+
+  @Test
+  public void isImpliciteMapperMethod_fails_if_null() throws Exception {
+    assertThat(DAMethodPredicates.isImpliciteMapperMethod().apply(null)).isFalse();
+  }
+
+  @Test
+  public void isImpliciteMapperMethod_fails_if_flag_false() throws Exception {
+    DAMethod daMethod = mockDAMethod("");
+    when(daMethod.isImplicitMapperMethod()).thenReturn(false);
+
+    assertThat(DAMethodPredicates.isImpliciteMapperMethod().apply(daMethod)).isFalse();
+  }
+
+  @Test
+  public void isImpliciteMapperMethod_succeeds_if_flag_true() throws Exception {
+    DAMethod daMethod = mockDAMethod("");
+    when(daMethod.isImplicitMapperMethod()).thenReturn(true);
+
+    assertThat(DAMethodPredicates.isImpliciteMapperMethod().apply(daMethod)).isTrue();
+  }
 }

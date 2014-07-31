@@ -22,7 +22,7 @@ import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitor;
 
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
-import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunction;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isApplyWithSingleParam;
 
 /**
  * MapperFactoryImplImportsModelVisitor - Visitor building the list of imports for the MapperFactoryImpl class
@@ -43,13 +43,13 @@ public class MapperFactoryImplImportsModelVisitor extends ImportListBuilder impl
   @Override
   public void visit(DAMethod daMethod) {
     // mapperFactoryMethod are exposed as methods of the MapperFactory
-    if (isConstructor().apply(daMethod) || isGuavaFunction().apply(daMethod)) {
+    if (isConstructor().apply(daMethod) || isApplyWithSingleParam().apply(daMethod)) {
       for (DAParameter parameter : daMethod.getParameters()) {
         addImports(parameter.getType());
       }
     }
 
-    if (isGuavaFunction().apply(daMethod)) { // remplacer par isMapperMethod
+    if (isApplyWithSingleParam().apply(daMethod)) { // remplacer par isMapperMethod
       for (DAParameter parameter : daMethod.getParameters()) {
         addImports(parameter.getType());
       }

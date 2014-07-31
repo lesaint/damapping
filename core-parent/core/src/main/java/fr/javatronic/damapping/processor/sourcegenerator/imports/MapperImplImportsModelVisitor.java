@@ -19,10 +19,11 @@ import fr.javatronic.damapping.processor.model.DAInterface;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
-import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitor;
 
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isDefaultConstructor;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isImpliciteMapperMethod;
 
 /**
  * MapperImplImportsModelVisitor - Visitor building the list of imports for the MapperImpl class.
@@ -48,9 +49,9 @@ public class MapperImplImportsModelVisitor extends ImportListBuilder implements 
       // constructor is not generated in MapperImpl class
       return;
     }
-    if (!DAMethodPredicates.isGuavaFunction().apply(daMethod)) {
-      // mapper interface does not define any method of it own, only the one
-      // inherited from Guava's Function interface which imports are added via the DAInterface
+    if (!isGuavaFunctionApply().apply(daMethod) && !isImpliciteMapperMethod().apply(daMethod)) {
+      // mapper interface does not define any method of it own, only the implicite mapper method
+      // or the apply from Guava's Function interface which imports are added via the DAInterface
       // TOIMPROVE : when supporting @MapperMethod, we will need to add imports from this method
       return;
     }

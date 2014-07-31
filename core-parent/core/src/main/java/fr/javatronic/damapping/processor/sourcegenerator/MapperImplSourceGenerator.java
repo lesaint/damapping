@@ -28,6 +28,7 @@ import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassMethodWri
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.util.Lists;
+import fr.javatronic.damapping.util.Predicates;
 import fr.javatronic.damapping.util.Sets;
 
 import java.io.BufferedWriter;
@@ -94,23 +95,23 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
                  .write();
     }
 
-    // implémentation de la méthode de mapping (Function.apply tant qu'on ne supporte pas @MapperMethod)
-    DAMethod guavaMethod = from(sourceClass.getMethods()).firstMatch(DAMethodPredicates.isGuavaFunction()).get();
+    // déclaration de la méthode mapper
+    DAMethod mapperMethod = findMapperMethod(sourceClass);
     DAClassMethodWriter<?> methodWriter = classWriter
-        .newMethod(guavaMethod.getName().getName(), guavaMethod.getReturnType())
+        .newMethod(mapperMethod.getName().getName(), mapperMethod.getReturnType())
         .withAnnotations(Lists.<DAType>of(DATypeFactory.from(Override.class)))
         .withModifiers(Sets.of(DAModifier.PUBLIC))
-        .withParams(guavaMethod.getParameters())
+        .withParams(mapperMethod.getParameters())
         .start();
 
-    // retourne le résultat de la méhode apply de l'instance de la classe @Mapper
+    // retourne le résultat de la méthode apply de l'instance de la classe @Mapper
     methodWriter.newStatement()
                 .start()
                 .append("return ")
                 .append(computeInstanceObject(factoryClassdescriptor, sourceClass))
                 .append(".")
-                .append(guavaMethod.getName())
-                .appendParamValues(guavaMethod.getParameters())
+                .append(mapperMethod.getName())
+                .appendParamValues(mapperMethod.getParameters())
                 .end();
 
     // clos la méthode
@@ -121,6 +122,13 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
 
     // clos le fichier
     fileWriter.end();
+  }
+
+  private DAMethod findMapperMethod(DASourceClass sourceClass) {
+    return from(sourceClass.getMethods())
+        .filter(Predicates.or(DAMethodPredicates.isGuavaFunctionApply(), DAMethodPredicates.isImpliciteMapperMethod()))
+        .first()
+        .get();
   }
 
   private String computeInstanceObject(@Nullable GeneratedFileDescriptor factoryClassDescriptor, DASourceClass sourceClass) {
