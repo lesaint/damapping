@@ -33,18 +33,15 @@ import static fr.javatronic.damapping.util.FluentIterable.from;
 public class JavaxParsingServiceImpl implements JavaxParsingService {
   private final ProcessingEnvironment processingEnv;
   private final JavaxExtractor javaxExtractor;
-  private final JavaxUtil javaxUtil;
 
   public JavaxParsingServiceImpl(ProcessingEnvironment processingEnv,
-                                 JavaxExtractor javaxExtractor,
-                                 JavaxUtil javaxUtil) {
+                                 JavaxExtractor javaxExtractor) {
     this.processingEnv = processingEnv;
     this.javaxExtractor = javaxExtractor;
-    this.javaxUtil = javaxUtil;
   }
 
   public JavaxParsingServiceImpl(ProcessingEnvironment processingEnv) {
-    this(processingEnv, new JavaxExtractorImpl(processingEnv.getTypeUtils()), new JavaxUtilImpl());
+    this(processingEnv, new JavaxExtractorImpl(processingEnv.getTypeUtils()));
   }
 
   @Nonnull
