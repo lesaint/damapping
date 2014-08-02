@@ -16,11 +16,15 @@
 package fr.javatronic.damapping.processor.sourcegenerator;
 
 import fr.javatronic.damapping.processor.model.DAInterface;
+import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
+import fr.javatronic.damapping.processor.sourcegenerator.writer.DAInterfaceWriter;
 import fr.javatronic.damapping.util.Function;
+import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicates;
 
 import java.io.BufferedWriter;
@@ -57,12 +61,29 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
         .appendImports(descriptor.getImports())
         .appendWarningComment();
 
-    fileWriter.newInterface(descriptor.getType().getSimpleName().getName())
-              .withModifiers(filterModifiers(sourceClass.getModifiers()))
-              .withExtended(toDAType(sourceClass.getInterfaces())).start().end();
+    DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter
+        .newInterface(descriptor.getType().getSimpleName().getName())
+        .withModifiers(filterModifiers(sourceClass.getModifiers()))
+        .withExtended(toDAType(sourceClass.getInterfaces())).start();
+
+    // déclaration de la méthode mapper (si pas héritée de l'interface Function)
+    Optional<DAMethod> mapperMethodO = findMapperMethod(sourceClass);
+    if (mapperMethodO.isPresent()) {
+      DAMethod mapperMethod = mapperMethodO.get();
+      interfaceWriter
+          .newMethod(mapperMethod.getName().getName(), mapperMethod.getReturnType())
+          .withParams(mapperMethod.getParameters())
+          .write();
+    }
+
+    interfaceWriter.end();
 
     bw.flush();
     bw.close();
+  }
+
+  private Optional<DAMethod> findMapperMethod(DASourceClass sourceClass) {
+    return from(sourceClass.getMethods()).filter(DAMethodPredicates.isImpliciteMapperMethod()).first();
   }
 
   private static List<DAType> toDAType(List<DAInterface> interfaces) {
