@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test.noguava;
+package fr.javatronic.damapping.test.implicitemappermethod;
 
 import fr.javatronic.damapping.annotation.Mapper;
-import fr.javatronic.damapping.test.noguava.subpackage.OutOfPackage;
+import fr.javatronic.damapping.test.implicitemappermethod.subpackage.OutOfPackage;
 
 import javax.annotation.Nullable;
 
 @Mapper
-public class DefaultProtectedImpliciteMapperMethod {
+public class DefaultProtected {
 
   String apply(@Nullable OutOfPackage input) {
     return input.toString();

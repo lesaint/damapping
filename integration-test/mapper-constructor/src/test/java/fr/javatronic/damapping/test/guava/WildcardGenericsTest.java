@@ -16,7 +16,6 @@
 package fr.javatronic.damapping.test.guava;
 
 import fr.javatronic.damapping.test.AbstractMapperTest;
-import fr.javatronic.damapping.test.guava.WildcardGenerics;
 
 /**
  * WildcardGenericsTest -

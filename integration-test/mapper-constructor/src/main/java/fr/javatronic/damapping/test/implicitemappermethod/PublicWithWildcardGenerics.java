@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test.noguava;
+package fr.javatronic.damapping.test.implicitemappermethod;
 
-import fr.javatronic.damapping.test.AbstractMapperTest;
+import fr.javatronic.damapping.annotation.Mapper;
+import fr.javatronic.damapping.test.implicitemappermethod.subpackage.OutOfPackage;
+
+import java.util.List;
+import javax.annotation.Nullable;
 
 /**
- * WildcardGenericsTest -
+ * PublicWithWildcardGenerics -
  *
- * @author lesaint
+ * @author Sébastien Lesaint
  */
-public class WildcardGenericsTest extends AbstractMapperTest {
-
-  public WildcardGenericsTest() {
-    super(WildcardGenerics.class);
+@Mapper
+public class PublicWithWildcardGenerics {
+  @Nullable
+  public String transform(@Nullable List<? extends OutOfPackage> entities) {
+    return "resultDoesNotMatter";
   }
-
 }

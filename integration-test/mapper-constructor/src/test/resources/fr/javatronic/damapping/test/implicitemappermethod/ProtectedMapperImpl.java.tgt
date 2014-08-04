@@ -1,0 +1,14 @@
+package fr.javatronic.damapping.test.implicitemappermethod;
+
+import fr.javatronic.damapping.test.implicitemappermethod.subpackage.OutOfPackage;
+import fr.javatronic.damapping.util.Optional;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public class ProtectedMapperImpl implements ProtectedMapper {
+
+    @Override
+    public InPackage fooBarDonut(Optional<? extends OutOfPackage> optional) {
+        return ProtectedMapperFactory.instance().fooBarDonut(optional);
+    }
+
+}

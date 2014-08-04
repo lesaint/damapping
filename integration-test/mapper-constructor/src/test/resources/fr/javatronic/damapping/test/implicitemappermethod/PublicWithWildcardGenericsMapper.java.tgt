@@ -1,0 +1,11 @@
+package fr.javatronic.damapping.test.implicitemappermethod;
+
+import fr.javatronic.damapping.test.implicitemappermethod.subpackage.OutOfPackage;
+import java.util.List;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public interface PublicWithWildcardGenericsMapper {
+
+    String transform(List<? extends OutOfPackage> entities);
+
+}

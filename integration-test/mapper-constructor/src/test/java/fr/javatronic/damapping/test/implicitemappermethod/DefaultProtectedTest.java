@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test.noguava;
+package fr.javatronic.damapping.test.implicitemappermethod;
+
+import fr.javatronic.damapping.test.AbstractMapperTest;
 
 /**
- * InPackage - Juste une classe qui se trouve dans le même package que la classe annotée avec @Mapper
+ * DefaultProtectedTest -
  *
- * @author Sébastien Lesaint
+ * @author lesaint
  */
-class InPackage {
+public class DefaultProtectedTest extends AbstractMapperTest {
+
+  public DefaultProtectedTest() {
+    super(DefaultProtected.class);
+  }
+
 }

@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test.noguava;
+package fr.javatronic.damapping.test.implicitemappermethod;
 
 import fr.javatronic.damapping.annotation.Mapper;
-import fr.javatronic.damapping.test.noguava.subpackage.OutOfPackage;
+import fr.javatronic.damapping.test.implicitemappermethod.subpackage.OutOfPackage;
 import fr.javatronic.damapping.util.Optional;
 
 @Mapper
-public class ProtectedImpliciteMapperMethod {
+public class Protected {
 
   protected InPackage fooBarDonut(Optional<? extends OutOfPackage> optional) {
     return null; // content doesn't matter
