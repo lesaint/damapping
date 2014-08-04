@@ -1,0 +1,14 @@
+package fr.javatronic.damapping.test.noguava;
+
+import fr.javatronic.damapping.test.noguava.subpackage.OutOfPackage;
+import fr.javatronic.damapping.util.Optional;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public class ProtectedImpliciteMapperMethodMapperImpl implements ProtectedImpliciteMapperMethodMapper {
+
+    @Override
+    public InPackage fooBarDonut(Optional<? extends OutOfPackage> optional) {
+        return ProtectedImpliciteMapperMethodMapperFactory.instance().fooBarDonut(optional);
+    }
+
+}
