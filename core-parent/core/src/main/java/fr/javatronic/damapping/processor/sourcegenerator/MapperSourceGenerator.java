@@ -25,6 +25,7 @@ import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAInterfaceWriter;
 import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Optional;
+import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Predicates;
 
 import java.io.BufferedWriter;
@@ -42,6 +43,8 @@ import static fr.javatronic.damapping.util.FluentIterable.from;
  * @author Sébastien Lesaint
  */
 public class MapperSourceGenerator extends AbstractSourceGenerator {
+
+  private static final Predicate<DAModifier> NOT_FINAL = Predicates.not(Predicates.equalTo(DAModifier.FINAL));
 
   public MapperSourceGenerator(GeneratedFileDescriptor descriptor) {
     super(descriptor);
@@ -104,13 +107,7 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
   }
 
   private static Set<DAModifier> filterModifiers(Set<DAModifier> modifiers) {
-    return from(modifiers)
-        .filter(
-            Predicates.not(
-                // an interface can not be final, will not compile
-                Predicates.equalTo(DAModifier.FINAL)
-            )
-        )
-        .toSet();
+    // an interface can not be final, will not compile
+    return from(modifiers).filter(NOT_FINAL).toSet();
   }
 }
