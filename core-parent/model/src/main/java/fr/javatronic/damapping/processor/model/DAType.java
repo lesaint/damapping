@@ -98,6 +98,50 @@ public class DAType {
     return kind == DATypeKind.ARRAY;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    DAType daType = (DAType) o;
+
+    if (!simpleName.equals(daType.simpleName)) {
+      return false;
+    }
+    if (kind != daType.kind) {
+      return false;
+    }
+    if (qualifiedName == null ? daType.qualifiedName != null : !qualifiedName.equals(daType.qualifiedName)) {
+      return false;
+    }
+    if (extendsBound == null ? daType.extendsBound != null : !extendsBound.equals(daType.extendsBound)) {
+      return false;
+    }
+    if (superBound == null ? daType.superBound != null : !superBound.equals(daType.superBound)) {
+      return false;
+    }
+    if (!typeArgs.equals(daType.typeArgs)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = kind.hashCode();
+    result = 31 * result + simpleName.hashCode();
+    result = 31 * result + (qualifiedName != null ? qualifiedName.hashCode() : 0);
+    result = 31 * result + typeArgs.hashCode();
+    result = 31 * result + (superBound != null ? superBound.hashCode() : 0);
+    result = 31 * result + (extendsBound != null ? extendsBound.hashCode() : 0);
+    return result;
+  }
+
   public static Builder builder(@Nonnull DATypeKind kind, @Nonnull DAName simpleName) {
     return new Builder(kind, simpleName);
   }

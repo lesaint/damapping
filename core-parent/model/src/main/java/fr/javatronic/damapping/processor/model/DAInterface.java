@@ -45,4 +45,26 @@ public class DAInterface implements DAModelVisitable {
     visitor.visit(this);
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    DAInterface that = (DAInterface) o;
+
+    if (!type.equals(that.type)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    return type.hashCode();
+  }
 }

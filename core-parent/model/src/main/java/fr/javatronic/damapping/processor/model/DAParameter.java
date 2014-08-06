@@ -65,6 +65,38 @@ public class DAParameter {
     return modifiers;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    DAParameter that = (DAParameter) o;
+
+    if (!modifiers.equals(that.modifiers)) {
+      return false;
+    }
+    if (!name.equals(that.name)) {
+      return false;
+    }
+    if (!type.equals(that.type)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = name.hashCode();
+    result = 31 * result + type.hashCode();
+    result = 31 * result + modifiers.hashCode();
+    return result;
+  }
+
   public static class Builder {
     @Nonnull
     private final DAName name;

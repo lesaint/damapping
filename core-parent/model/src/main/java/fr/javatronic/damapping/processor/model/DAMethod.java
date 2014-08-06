@@ -172,6 +172,65 @@ public class DAMethod implements DAModelVisitable {
     visitor.visit(this);
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    DAMethod daMethod = (DAMethod) o;
+    if (!name.equals(daMethod.name)) {
+      return false;
+    }
+    if (constructor != daMethod.constructor) {
+      return false;
+    }
+    if (guavaFunctionApplyMethod != daMethod.guavaFunctionApplyMethod) {
+      return false;
+    }
+    if (implicitMapperMethod != daMethod.implicitMapperMethod) {
+      return false;
+    }
+    if (mapperFactoryMethod != daMethod.mapperFactoryMethod) {
+      return false;
+    }
+    if (mapperMethod != daMethod.mapperMethod) {
+      return false;
+    }
+    if (!modifiers.equals(daMethod.modifiers)) {
+      return false;
+    }
+    if (returnType == null ? daMethod.returnType != null : !returnType.equals(daMethod.returnType)) {
+      return false;
+    }
+    if (!annotations.equals(daMethod.annotations)) {
+      return false;
+    }
+    if (!parameters.equals(daMethod.parameters)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = (constructor ? 1 : 0);
+    result = 31 * result + name.hashCode();
+    result = 31 * result + annotations.hashCode();
+    result = 31 * result + modifiers.hashCode();
+    result = 31 * result + (returnType != null ? returnType.hashCode() : 0);
+    result = 31 * result + parameters.hashCode();
+    result = 31 * result + (mapperMethod ? 1 : 0);
+    result = 31 * result + (mapperFactoryMethod ? 1 : 0);
+    result = 31 * result + (guavaFunctionApplyMethod ? 1 : 0);
+    result = 31 * result + (implicitMapperMethod ? 1 : 0);
+    return result;
+  }
+
   public static class Builder {
     @Nonnull
     private final boolean constructor;
