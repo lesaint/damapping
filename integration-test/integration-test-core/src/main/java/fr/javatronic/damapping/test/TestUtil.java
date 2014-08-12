@@ -18,6 +18,7 @@ package fr.javatronic.damapping.test;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import org.apache.commons.io.FileUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,7 +40,10 @@ class TestUtil {
   void checkGeneratedFile(Class<?> testcaseClass, String suffix) throws URISyntaxException, IOException {
     String tgtName = buildTargetFilename(suffix);
 
-    File tgtFile = new File(testcaseClass.getResource(tgtName).toURI());
+    URL resource = testcaseClass.getResource(tgtName);
+    assertThat(resource).as("Can not find file %s", tgtName).isNotNull();
+
+    File tgtFile = new File(resource.toURI());
     // assuming tgtFile is in the form [path_to_clone_of_dozer-annihilation]/test/test-mapper-enum/target/test-classes/[package]/ConstructorInstancedGuavaFunctionMapper.java.tgt
     File mavenTargetDir = getParentFile(tgtFile, packageDepth(testcaseClass) + 1);
     File srcFile = new File(mavenTargetDir,
