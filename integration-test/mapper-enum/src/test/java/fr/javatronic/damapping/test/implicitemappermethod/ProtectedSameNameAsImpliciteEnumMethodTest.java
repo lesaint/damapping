@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.implicitemappermethod;
 
-import fr.javatronic.damapping.annotation.Mapper;
+import fr.javatronic.damapping.test.AbstractMapperTest;
 
-import javax.annotation.Nullable;
-import com.google.common.base.Function;
+/**
+ * ProtectedSameNameAsImpliciteEnumMethod -
+ *
+ * @author lesaint
+ */
+public class ProtectedSameNameAsImpliciteEnumMethodTest extends AbstractMapperTest {
 
-@Mapper
-public enum ReturnArray implements Function<Integer, String    []> {
-  INSTANCE;
-
-  @Override
-  public String[] apply(@Nullable Integer input) {
-    return new String[]{input.toString()};
+  public ProtectedSameNameAsImpliciteEnumMethodTest() {
+    super(ProtectedSameNameAsImpliciteEnumMethod.class);
   }
+
 }

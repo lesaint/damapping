@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.guava;
+
+import fr.javatronic.damapping.test.AbstractMapperTest;
+import fr.javatronic.damapping.test.guava.GenericsEverywhere;
 
 /**
- * ReturnArrayTest -
+ * GenericsEverywhereTest -
  *
  * @author lesaint
  */
-public class ReturnArrayTest extends AbstractMapperTest {
+public class GenericsEverywhereTest extends AbstractMapperTest {
 
-  public ReturnArrayTest() {
-    super(ReturnArray.class);
+  public GenericsEverywhereTest() {
+    super(GenericsEverywhere.class);
   }
 
 }

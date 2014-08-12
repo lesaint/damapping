@@ -17,7 +17,14 @@ package fr.javatronic.damapping.processor.model.predicate;
 
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
+import fr.javatronic.damapping.processor.model.DAParameter;
+import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.DATypeKind;
+import fr.javatronic.damapping.processor.model.factory.DANameFactory;
+import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
+import fr.javatronic.damapping.util.Lists;
 import fr.javatronic.damapping.util.Predicate;
+import fr.javatronic.damapping.util.Sets;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -164,6 +171,43 @@ public class DAMethodPredicates {
     @Override
     public boolean apply(@Nullable DAMethod daMethod) {
       return daMethod != null && daMethod.isImplicitMapperMethod();
+    }
+  }
+
+  public static Predicate<DAMethod> isCompilerGeneratedForEnum(DAType enumType) {
+    return new CompilerGeneratedEnumMethods(enumType);
+  }
+
+  private static class CompilerGeneratedEnumMethods implements Predicate<DAMethod> {
+    private final DAType enumType;
+    private final DAMethod valuesMethod;
+    private final DAMethod valueOfMethod;
+
+    private CompilerGeneratedEnumMethods(DAType enumType) {
+      this.enumType = enumType;
+      this.valuesMethod = DAMethod.methodBuilder()
+                                  .withName(DANameFactory.from("values"))
+                                  .withModifiers(Sets.of(DAModifier.PUBLIC, DAModifier.STATIC))
+                                  .withReturnType(
+                                      DAType.builder(DATypeKind.ARRAY, enumType.getSimpleName())
+                                            .withQualifiedName(enumType.getQualifiedName())
+                                            .build()
+                                  ).build();
+      this.valueOfMethod = DAMethod.methodBuilder()
+          .withName(DANameFactory.from("valueOf"))
+          .withModifiers(Sets.of(DAModifier.PUBLIC, DAModifier.STATIC))
+          .withReturnType(enumType)
+          .withParameters(Lists.of(DAParameter.builder(DANameFactory.from("name"), DATypeFactory.from(String.class)).build()))
+          .build();
+    }
+
+    @Override
+    public boolean apply(@Nullable DAMethod daMethod) {
+      if (daMethod == null) {
+        return false;
+      }
+
+      return this.valuesMethod.equals(daMethod) || this.valueOfMethod.equals(daMethod);
     }
   }
 }

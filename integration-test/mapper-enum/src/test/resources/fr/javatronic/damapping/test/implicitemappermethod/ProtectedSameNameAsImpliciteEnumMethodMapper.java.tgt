@@ -1,0 +1,8 @@
+package fr.javatronic.damapping.test.implicitemappermethod;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public interface ProtectedSameNameAsImpliciteEnumMethodMapper {
+
+    String valueOf(Integer input);
+
+}

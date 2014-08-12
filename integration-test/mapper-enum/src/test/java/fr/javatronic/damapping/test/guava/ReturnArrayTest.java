@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.guava;
+
+import fr.javatronic.damapping.test.AbstractMapperTest;
+import fr.javatronic.damapping.test.guava.ReturnArray;
 
 /**
- * EnumInstancedGuavaFunctionTest -
+ * ReturnArrayTest -
  *
  * @author lesaint
  */
-public class EnumInstancedGuavaFunctionTest extends AbstractMapperTest {
+public class ReturnArrayTest extends AbstractMapperTest {
 
-  public EnumInstancedGuavaFunctionTest() {
-    super(EnumInstancedGuavaFunction.class);
+  public ReturnArrayTest() {
+    super(ReturnArray.class);
   }
 
 }

@@ -13,25 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.implicitemappermethod;
 
 import fr.javatronic.damapping.annotation.Mapper;
+import fr.javatronic.damapping.util.Optional;
+import fr.javatronic.damapping.util.Predicate;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import javax.annotation.Nullable;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 
+/**
+ * This mapper is designed to test:
+ * <ul>
+ *   <li>support for generics and array in mapper method</li>
+ *   <li>support for implicite mapper method with keyword public</li>
+ *   <li>support for implicite mapper method with the same name as one of the implicite methds of the Enum type (values)</li>
+ * </ul>
+ */
 @Mapper
-public enum GenericsEverywhere implements Function<Optional<Integer[]>, Collection<Predicate<Map<Long, File>>>> {
+public enum PublicWithGenericsEverywhere {
   INSTANCE;
 
-  @Override
-  public Collection<Predicate<Map<Long, File>>> apply(@Nullable Optional<Integer[]> input) {
+  public Collection<Predicate<Map<Long, File>>> values(@Nullable Optional<Integer[]> input) {
     return Collections.emptyList();
   }
 }

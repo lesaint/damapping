@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.guava;
+
+import fr.javatronic.damapping.test.AbstractMapperTest;
+import fr.javatronic.damapping.test.guava.EnumInstancedGuavaFunction;
 
 /**
- * GenericsEverywhereTest -
+ * EnumInstancedGuavaFunctionTest -
  *
  * @author lesaint
  */
-public class GenericsEverywhereTest extends AbstractMapperTest {
+public class EnumInstancedGuavaFunctionTest extends AbstractMapperTest {
 
-  public GenericsEverywhereTest() {
-    super(GenericsEverywhere.class);
+  public EnumInstancedGuavaFunctionTest() {
+    super(EnumInstancedGuavaFunction.class);
   }
 
 }

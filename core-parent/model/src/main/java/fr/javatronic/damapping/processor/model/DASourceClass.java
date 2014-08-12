@@ -22,6 +22,7 @@ import fr.javatronic.damapping.processor.model.visitor.DAModelVisitable;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitor;
 import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Optional;
+import fr.javatronic.damapping.util.Predicates;
 
 import java.util.Collections;
 import java.util.List;
@@ -159,6 +160,7 @@ public class DASourceClass implements DAModelVisitable {
   }
 
   public static abstract class AbstractBuilder<T extends Builder> implements Builder<T> {
+
     private final boolean isEnum;
     private final Class<T> clazz;
     private final DAType type;
@@ -201,7 +203,7 @@ public class DASourceClass implements DAModelVisitable {
     }
 
     public DASourceClass build() {
-      List<DAMethod> daMethods = setMethodFlags(this.methods, this.interfaces);
+      List<DAMethod> daMethods = setMethodFlags(this.methods, this.interfaces, this.type, this.isEnum);
       return new DASourceClass(
           this,
           daMethods,
@@ -209,25 +211,31 @@ public class DASourceClass implements DAModelVisitable {
       );
     }
 
-    private List<DAMethod> setMethodFlags(List<DAMethod> methods, List<DAInterface> interfaces) {
+    private static List<DAMethod> setMethodFlags(@Nullable List<DAMethod> methods,
+                                                 @Nullable List<DAInterface> interfaces,
+                                                 @Nonnull DAType daType,
+                                                 boolean isEnum) {
       if (methods == null || methods.isEmpty()) {
         return Collections.emptyList();
       }
 
+      List<DAMethod> filterdMethods = isEnum ? from(methods)
+          .filter(Predicates.not(DAMethodPredicates.isCompilerGeneratedForEnum(daType)))
+          .toList() : methods;
       Optional<DAInterface> guavaFunctionInterface = from(nonNullFrom(interfaces))
           .filter(DAInterfacePredicates.isGuavaFunction())
           .first();
       if (guavaFunctionInterface.isPresent()) {
-        return setGuavaFunctionFlag(methods);
+        return setGuavaFunctionFlag(filterdMethods);
       }
 
-      if (from(methods).filter(DAMethodPredicates.isMapperFactoryMethod()).first().isPresent()) {
-        return methods;
+      if (from(filterdMethods).filter(DAMethodPredicates.isMapperFactoryMethod()).first().isPresent()) {
+        return filterdMethods;
       }
-      return setImpliciteMapperMethodFlag(methods);
+      return setImpliciteMapperMethodFlag(filterdMethods);
     }
 
-    private List<DAMethod> setImpliciteMapperMethodFlag(List<DAMethod> methods) {
+    private static List<DAMethod> setImpliciteMapperMethodFlag(List<DAMethod> methods) {
       List<DAMethod> nonPrivateMethods = from(methods).filter(DAMethodPredicates.isNotConstructor())
           .filter(DAMethodPredicates.isNotPrivate())
           .toList();
@@ -248,7 +256,7 @@ public class DASourceClass implements DAModelVisitable {
       return methods;
     }
 
-    private List<DAMethod> setGuavaFunctionFlag(List<DAMethod> methods) {
+    private static List<DAMethod> setGuavaFunctionFlag(List<DAMethod> methods) {
       List<DAMethod> applyMethods = from(methods).filter(DAMethodPredicates.isApplyWithSingleParam()).toList();
 
       if (applyMethods.size() == 1) {
@@ -262,7 +270,8 @@ public class DASourceClass implements DAModelVisitable {
             }
             return daMethod;
           }
-        }).toList();
+        }
+        ).toList();
       }
       return methods;
     }
@@ -291,7 +300,8 @@ public class DASourceClass implements DAModelVisitable {
       }
 
       Optional<DAAnnotation> springComponentAnnotation = from(daAnnotations).filter(
-          DAAnnotationPredicates.isSpringComponent()).first();
+          DAAnnotationPredicates.isSpringComponent()
+      ).first();
       if (springComponentAnnotation.isPresent()) {
         return InstantiationType.SPRING_COMPONENT;
       }

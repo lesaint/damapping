@@ -1,0 +1,10 @@
+package fr.javatronic.damapping.test.implicitemappermethod;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+class PublicWithGenericsEverywhereMapperFactory {
+
+    public static PublicWithGenericsEverywhere instance() {
+        return PublicWithGenericsEverywhere.INSTANCE;
+    }
+
+}

@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.implicitemappermethod;
 
-import fr.javatronic.damapping.annotation.Mapper;
+import fr.javatronic.damapping.test.AbstractMapperTest;
 
-import javax.annotation.Nullable;
-import com.google.common.base.Function;
+/**
+ * GenericsEverywhereTest -
+ *
+ * @author lesaint
+ */
+public class PublicWithGenericsEverywhereTest extends AbstractMapperTest {
 
-@Mapper
-public enum EnumInstancedGuavaFunction implements Function<Integer, String> {
-  INSTANCE;
-
-  @Override
-  public String apply(@Nullable Integer input) {
-    return input.toString();
+  public PublicWithGenericsEverywhereTest() {
+    super(PublicWithGenericsEverywhere.class);
   }
+
 }
