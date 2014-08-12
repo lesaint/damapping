@@ -22,7 +22,7 @@ import com.google.common.base.Function;
 
 @Mapper
 public enum EnumInstancedGuavaFunction implements Function<Integer, String> {
-  INSTANCE;
+  THE_ONE;
 
   @Override
   public String apply(@Nullable Integer input) {

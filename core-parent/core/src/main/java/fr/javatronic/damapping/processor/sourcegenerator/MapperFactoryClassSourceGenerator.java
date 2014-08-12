@@ -80,7 +80,10 @@ public class MapperFactoryClassSourceGenerator extends AbstractSourceGenerator {
         // TOIMPROVE générer le code de la factory dans le cas enum avec un nom d'enum dynamique
         methodWriter.newStatement()
                     .start()
-                    .append("return ").append(sourceClass.getType().getSimpleName()).append(".INSTANCE")
+                    .append("return ")
+                      .append(sourceClass.getType().getSimpleName())
+                      .append(".")
+                      .append(sourceClass.getEnumValues().iterator().next())
                     .end();
         break;
       case CONSTRUCTOR:
