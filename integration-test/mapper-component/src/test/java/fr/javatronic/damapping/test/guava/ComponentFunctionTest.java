@@ -13,26 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.guava;
 
-import fr.javatronic.damapping.annotation.Mapper;
+import fr.javatronic.damapping.test.AbstractMapperTest;
+import fr.javatronic.damapping.test.guava.ComponentFunction;
 
-import javax.annotation.Nullable;
-import com.google.common.base.Function;
+import org.testng.annotations.Test;
 
-import org.springframework.stereotype.Component;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * ComponentFunction -
+ * ComponentFunctionTest -
  *
  * @author Sébastien Lesaint
  */
-@Mapper
-@Component
-public class ComponentFunction implements Function<A, String> {
-  @Nullable
+public class ComponentFunctionTest extends AbstractMapperTest {
+  public ComponentFunctionTest() {
+    super(ComponentFunction.class);
+  }
+
+  @Test
   @Override
-  public String apply(@Nullable A a) {
-    return a.toString();
+  public void check_generated_mapperFactory_file() throws Exception {
+    String tgtFilename = testUtil.buildTargetFilename("MapperFactory");
+
+    assertThat(getClass().getResource(tgtFilename)).isNull();
   }
 }

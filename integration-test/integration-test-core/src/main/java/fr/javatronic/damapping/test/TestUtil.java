@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Sébastien Lesaint
  */
-class TestUtil {
+public class TestUtil {
   private static final String CHARSET_NAME = "UTF-8";
 
   private final Class<?> classUnderTest;
@@ -64,7 +64,7 @@ class TestUtil {
     return getParentFile(file.getParentFile(), depth -1);
   }
 
-  String buildTargetFilename(String suffix) {
+  public String buildTargetFilename(String suffix) {
     return classUnderTest.getSimpleName() + suffix + ".java.tgt";
   }
 }

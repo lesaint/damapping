@@ -13,12 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.implicitemappermethod;
+
+import fr.javatronic.damapping.annotation.Mapper;
+
+import javax.annotation.Nullable;
+
+import org.springframework.stereotype.Component;
 
 /**
- * A - Some class
+ * ProtectedMapperMethodComponent -
  *
  * @author Sébastien Lesaint
  */
-public class A {
+@Mapper
+@Component
+public class ProtectedMapperMethodComponent {
+  @Nullable
+  protected String transform(@Nullable B b) {
+    return b.toString();
+  }
 }

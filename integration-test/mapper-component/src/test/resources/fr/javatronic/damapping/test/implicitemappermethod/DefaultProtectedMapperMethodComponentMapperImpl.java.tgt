@@ -1,0 +1,18 @@
+package fr.javatronic.damapping.test.implicitemappermethod;
+
+import javax.annotation.Resource;
+import org.springframework.stereotype.Component;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+@Component
+public class DefaultProtectedMapperMethodComponentMapperImpl implements DefaultProtectedMapperMethodComponentMapper {
+
+    @Resource
+    private DefaultProtectedMapperMethodComponent instance;
+
+    @Override
+    public String map(B b) {
+        return instance.map(b);
+    }
+
+}

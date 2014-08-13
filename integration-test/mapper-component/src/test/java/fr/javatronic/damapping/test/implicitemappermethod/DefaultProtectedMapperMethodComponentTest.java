@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test;
+package fr.javatronic.damapping.test.implicitemappermethod;
+
+import fr.javatronic.damapping.test.AbstractMapperTest;
 
 import org.testng.annotations.Test;
 
@@ -24,9 +26,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Sébastien Lesaint
  */
-public class ComponentFunctionTest extends AbstractMapperTest {
-  public ComponentFunctionTest() {
-    super(ComponentFunction.class);
+public class DefaultProtectedMapperMethodComponentTest extends AbstractMapperTest {
+  public DefaultProtectedMapperMethodComponentTest() {
+    super(DefaultProtectedMapperMethodComponent.class);
   }
 
   @Test
