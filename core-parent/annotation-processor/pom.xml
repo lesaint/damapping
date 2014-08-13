@@ -9,13 +9,13 @@
     <version>0.2.3-SNAPSHOT</version>
   </parent>
 
-  <artifactId>annotation-processor</artifactId>
+  <artifactId>damapping-annotation-processor</artifactId>
   <name>Core - Annotation Processor</name>
 
   <dependencies>
     <dependency>
       <groupId>fr.javatronic.damapping</groupId>
-      <artifactId>annotations</artifactId>
+      <artifactId>damapping-annotations</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

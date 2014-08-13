@@ -16,7 +16,7 @@
   <dependencies>
     <dependency>
       <groupId>fr.javatronic.damapping</groupId>
-      <artifactId>annotations</artifactId>
+      <artifactId>damapping-annotations</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

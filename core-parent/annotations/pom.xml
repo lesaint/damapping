@@ -9,7 +9,7 @@
     <version>0.2.3-SNAPSHOT</version>
   </parent>
 
-  <artifactId>annotations</artifactId>
+  <artifactId>damapping-annotations</artifactId>
   <name>Core - Annotations</name>
 
 </project>
