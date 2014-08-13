@@ -20,20 +20,18 @@ import fr.javatronic.damapping.test.fullhardcoded.dto.HotelDto;
 import fr.javatronic.damapping.test.fullhardcoded.service.Hotel;
 
 import javax.annotation.Nullable;
-import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
 /**
- * HotelToHotelDto -
+ * HotelToHotelDto - This mappper uses the implicite mapper method functionnnality
  *
  * @author Sébastien Lesaint
  */
 @Mapper
-public class HotelToHotelDto implements Function<Hotel, HotelDto> {
+public class HotelToHotelDto {
   private FloorToFloorDtoMapper floorToFloorDtoMapper = new FloorToFloorDtoMapperImpl();
 
   @Nullable
-  @Override
   public HotelDto apply(@Nullable Hotel hotel) {
     return new HotelDto(
         FluentIterable.from(hotel.getFloors()).transform(floorToFloorDtoMapper).toList()
