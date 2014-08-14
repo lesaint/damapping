@@ -34,7 +34,7 @@ ROADMAP
 [ ] disposer d'une liste de String pour y coller les simples warnings pour ne pas faire de getMessager() un peu partout,
   afficher ces warnings avant de traiter l'exception interne
 [X] tester MapperFactory avec des Objets non java.lang, des génériques, ...
-[ ] test U pour les méthodes appendType, appendParams, ... de DAStatementWriter ?
+[X] test U pour les méthodes appendType, appendParams, ... de DAStatementWriter ?
 [ ] ajouter un contrôle : les MapperFactoryMethods doivent retourner le type de l'objet annotée avec @Mapper
 [ ] ajouter une méthode appendReturn à DAStatementWriter ?
 [ ] ajouter un test U pour DAType.superBound
