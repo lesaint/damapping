@@ -1,0 +1,11 @@
+package fr.javatronic.damapping.test.implicitemappermethod;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public class StaticMethodsIgnoredMapperImpl implements StaticMethodsIgnoredMapper {
+
+    @Override
+    public String map(Integer input) {
+        return StaticMethodsIgnoredMapperFactory.instance().map(input);
+    }
+
+}

@@ -24,6 +24,7 @@ import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.util.Lists;
 import fr.javatronic.damapping.util.Predicate;
+import fr.javatronic.damapping.util.Predicates;
 import fr.javatronic.damapping.util.Sets;
 
 import javax.annotation.Nonnull;
@@ -91,6 +92,12 @@ public class DAMethodPredicates {
       return daMethod.getModifiers().contains(DAModifier.STATIC);
     }
   }
+
+  public static Predicate<DAMethod> isNotStatic() {
+    return NOT_STATIC;
+  }
+
+  private static final Predicate<DAMethod> NOT_STATIC = Predicates.not(StaticPredicate.INSTANCE);
 
   public static Predicate<DAMethod> isNotPrivate() {
     return NotPrivatePredicate.INSTANCE;

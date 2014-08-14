@@ -236,7 +236,9 @@ public class DASourceClass implements DAModelVisitable {
     }
 
     private static List<DAMethod> setImpliciteMapperMethodFlag(List<DAMethod> methods) {
-      List<DAMethod> nonPrivateMethods = from(methods).filter(DAMethodPredicates.isNotConstructor())
+      List<DAMethod> nonPrivateMethods = from(methods)
+          .filter(DAMethodPredicates.isNotStatic())
+          .filter(DAMethodPredicates.isNotConstructor())
           .filter(DAMethodPredicates.isNotPrivate())
           .toList();
       if (nonPrivateMethods.size() == 1) {
