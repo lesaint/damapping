@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 
-import org.assertj.core.api.Assertions;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
@@ -110,7 +109,7 @@ public class DAStatementWriterTest {
     };
     DAStatementWriter<DAWriter> classWriter = new DAStatementWriter<DAWriter>(testWriters.bw, parent, 1);
 
-    Assertions.assertThat(classWriter.end()).isSameAs(parent);
+    assertThat(classWriter.end()).isSameAs(parent);
   }
 
   @Test
