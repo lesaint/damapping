@@ -141,6 +141,12 @@ public class DAMethodPredicates {
 
   }
 
+  private static final Predicate<DAMethod> NOT_MAPPERFACTORY_METHOD = Predicates.not(MapperFactoryMethodPredicate.INSTANCE);
+
+  public static Predicate<DAMethod> isNotMapperFactoryMethod() {
+    return NOT_MAPPERFACTORY_METHOD;
+  }
+
   public static Predicate<DAMethod> isApplyWithSingleParam() {
     return ApplyWithSingleParam.INSTANCE;
   }

@@ -229,9 +229,6 @@ public class DASourceClass implements DAModelVisitable {
         return setGuavaFunctionFlag(filterdMethods);
       }
 
-      if (from(filterdMethods).filter(DAMethodPredicates.isMapperFactoryMethod()).first().isPresent()) {
-        return filterdMethods;
-      }
       return setImpliciteMapperMethodFlag(filterdMethods);
     }
 
@@ -240,6 +237,7 @@ public class DASourceClass implements DAModelVisitable {
           .filter(DAMethodPredicates.isNotStatic())
           .filter(DAMethodPredicates.isNotConstructor())
           .filter(DAMethodPredicates.isNotPrivate())
+          .filter(DAMethodPredicates.isNotMapperFactoryMethod())
           .toList();
       if (nonPrivateMethods.size() == 1) {
         final DAMethod impliciteMapperMethod = nonPrivateMethods.iterator().next();

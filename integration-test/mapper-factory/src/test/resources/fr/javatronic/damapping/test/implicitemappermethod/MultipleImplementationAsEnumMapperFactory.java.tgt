@@ -1,0 +1,12 @@
+package fr.javatronic.damapping.test.implicitemappermethod;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public interface MultipleImplementationAsEnumMapperFactory {
+
+    MultipleImplementationAsEnumMapper bigDecimal();
+
+    MultipleImplementationAsEnumMapper integer();
+
+    MultipleImplementationAsEnumMapper instance(boolean bigDecimal);
+
+}
