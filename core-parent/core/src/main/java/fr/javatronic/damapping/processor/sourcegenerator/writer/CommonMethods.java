@@ -1,5 +1,6 @@
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
+import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAType;
 
@@ -31,7 +32,7 @@ interface CommonMethods extends Appendable, Closeable, Flushable {
 
   void appendModifiers(Set<DAModifier> modifiers) throws IOException;
 
-  void appendAnnotations(Collection<DAType> annotations) throws IOException;
+  void appendAnnotations(Collection<DAAnnotation> annotations) throws IOException;
 
   void appendType(DAType type) throws IOException;
 

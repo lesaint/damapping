@@ -1,8 +1,11 @@
 package fr.javatronic.damapping.test.implicitemappermethod;
 
+import javax.annotation.Nonnull;
+
 // GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
 public interface DefaultProtectedMapperMethodComponentMapper {
 
+    @Nonnull
     String map(B b);
 
 }

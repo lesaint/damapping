@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAName;
@@ -28,6 +29,7 @@ import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassMethodWri
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.util.Lists;
+import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Predicates;
 import fr.javatronic.damapping.util.Sets;
 
@@ -38,6 +40,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
 
+import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
+import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.RESOURCE_ANNOTATION;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
@@ -53,15 +57,26 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
       DANameFactory.from(SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME)
   );
 
-  private static final DAType SPRING_COMPONENT_DATYPE = DATypeFactory.declared(SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME);
+  private static final DAAnnotation SPRING_COMPONENT_DATYPE = new DAAnnotation(
+      DATypeFactory.declared(SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME)
+  );
 
-  public MapperImplSourceGenerator(GeneratedFileDescriptor descriptor) {
-    super(descriptor);
+  public MapperImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor) {
+    super(descriptor, new SourceGeneratorSupport());
+
+  }
+
+  public MapperImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
+                                   @Nonnull SourceGeneratorSupport support) {
+    super(descriptor, support);
   }
 
   @Override
   public void writeFile(@Nonnull BufferedWriter bw) throws IOException {
-    GeneratedFileDescriptor factoryClassdescriptor = descriptor.getContext().getDescriptor(GenerationContext.MAPPER_FACTORY_CLASS_KEY);
+    GeneratedFileDescriptor factoryClassdescriptor = descriptor.getContext()
+                                                               .getDescriptor(
+                                                                   GenerationContext.MAPPER_FACTORY_CLASS_KEY
+                                                               );
 
     // générer l'implémentation du Mapper
     //     -> nom de package
@@ -90,7 +105,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
           sourceClass.getPackageName().getName() + "." + sourceClass.getType().getSimpleName()
       );
       classWriter.newProperty("instance", mapperType)
-                 .withAnnotations(Lists.of(DATypeFactory.from(Resource.class)))
+                 .withAnnotations(Lists.of(RESOURCE_ANNOTATION))
                  .withModifier(Sets.of(DAModifier.PRIVATE))
                  .write();
     }
@@ -99,7 +114,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     DAMethod mapperMethod = findMapperMethod(sourceClass);
     DAClassMethodWriter<?> methodWriter = classWriter
         .newMethod(mapperMethod.getName().getName(), mapperMethod.getReturnType())
-        .withAnnotations(Lists.<DAType>of(DATypeFactory.from(Override.class)))
+        .withAnnotations(support.computeOverrideMethodAnnotations(mapperMethod))
         .withModifiers(Sets.of(DAModifier.PUBLIC))
         .withParams(mapperMethod.getParameters())
         .start();
@@ -131,7 +146,8 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
         .get();
   }
 
-  private String computeInstanceObject(@Nullable GeneratedFileDescriptor factoryClassDescriptor, DASourceClass sourceClass) {
+  private String computeInstanceObject(@Nullable GeneratedFileDescriptor factoryClassDescriptor,
+                                       DASourceClass sourceClass) {
     if (factoryClassDescriptor == null) {
       return "instance";
     }
@@ -145,10 +161,11 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     return Lists.of(mapperInterface);
   }
 
-  private List<DAType> computeAnnotations(DASourceClass daSourceClass) {
-    return daSourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT ? Lists.<DAType>of(
-        SPRING_COMPONENT_DATYPE
-    ) : null;
+  private List<DAAnnotation> computeAnnotations(DASourceClass daSourceClass) {
+    if (daSourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT) {
+      return Lists.of(SPRING_COMPONENT_DATYPE);
+    }
+    return null;
   }
 
   private List<DAName> computeMapperImplImports(GeneratedFileDescriptor descriptor, DASourceClass daSourceClass) {
@@ -160,4 +177,19 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     return descriptor.getImports();
   }
 
+  private static class OverrideAnnnotationSeeker implements Predicate<DAAnnotation> {
+    private boolean found = false;
+
+    @Override
+    public boolean apply(@Nullable DAAnnotation daAnnotation) {
+      if (OVERRIDE_ANNOTATION.equals(daAnnotation)) {
+        this.found = true;
+      }
+      return true;
+    }
+
+    public boolean isFound() {
+      return found;
+    }
+  }
 }

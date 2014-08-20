@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
+import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.util.Sets;
@@ -26,6 +27,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 /**
  * DAInterfaceWriter -
@@ -34,7 +36,7 @@ import java.util.Set;
  */
 public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
   private final String name;
-  private List<DAType> annotations = Collections.emptyList();
+  private List<DAAnnotation> annotations = Collections.emptyList();
   private Set<DAModifier> modifiers = Collections.emptySet();
   private List<DAType> extended = Collections.emptyList();
 
@@ -43,17 +45,17 @@ public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     this.name = name;
   }
 
-  public DAInterfaceWriter<T> withAnnotations(List<DAType> annotations) {
-    this.annotations = annotations == null ? Collections.<DAType>emptyList() : Lists.copyOf(annotations);
+  public DAInterfaceWriter<T> withAnnotations(@Nullable List<DAAnnotation> annotations) {
+    this.annotations = annotations == null ? Collections.<DAAnnotation>emptyList() : Lists.copyOf(annotations);
     return this;
   }
 
-  public DAInterfaceWriter<T> withModifiers(Set<DAModifier> modifiers) {
+  public DAInterfaceWriter<T> withModifiers(@Nullable Set<DAModifier> modifiers) {
     this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : Sets.copyOf(modifiers);
     return this;
   }
 
-  public DAInterfaceWriter<T> withExtended(List<DAType> extended) {
+  public DAInterfaceWriter<T> withExtended(@Nullable List<DAType> extended) {
     this.extended = extended == null ? Collections.<DAType>emptyList() : Lists.copyOf(extended);
     return this;
   }

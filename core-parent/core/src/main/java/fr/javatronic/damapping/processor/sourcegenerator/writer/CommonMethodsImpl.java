@@ -1,5 +1,6 @@
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
+import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAType;
 
@@ -58,14 +59,14 @@ class CommonMethodsImpl implements CommonMethods {
   }
 
   @Override
-  public void appendAnnotations(Collection<DAType> annotations) throws IOException {
+  public void appendAnnotations(Collection<DAAnnotation> annotations) throws IOException {
     if (annotations.isEmpty()) {
       return;
     }
 
-    for (DAType annotation : annotations) {
+    for (DAAnnotation annotation : annotations) {
       appendIndent();
-      bw.append("@").append(annotation.getSimpleName());
+      bw.append("@").append(annotation.getType().getSimpleName());
       bw.newLine();
     }
   }

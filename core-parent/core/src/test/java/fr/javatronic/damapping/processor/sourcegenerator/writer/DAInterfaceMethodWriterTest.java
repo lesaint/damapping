@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableList;
 
 import org.testng.annotations.Test;
 
+import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.LINE_SEPARATOR;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,7 +83,7 @@ public class DAInterfaceMethodWriterTest {
   public void annoted_method() throws Exception {
     TestWriters testWriters = new TestWriters();
     methodWriter("name", "java.lang.String", testWriters)
-        .withAnnotations(ImmutableList.of(DAWriterTestUtil.OVERRIDE_ANNOTATION))
+        .withAnnotations(ImmutableList.of(OVERRIDE_ANNOTATION))
         .write();
 
     assertThat(testWriters.getRes())

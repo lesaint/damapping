@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAInterface;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
@@ -46,8 +47,13 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
 
   private static final Predicate<DAModifier> NOT_FINAL = Predicates.not(Predicates.equalTo(DAModifier.FINAL));
 
-  public MapperSourceGenerator(GeneratedFileDescriptor descriptor) {
-    super(descriptor);
+  public MapperSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor) {
+    super(descriptor, new SourceGeneratorSupport());
+  }
+
+  public MapperSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
+                               @Nonnull SourceGeneratorSupport support) {
+    super(descriptor, support);
   }
 
   @Override
@@ -73,8 +79,8 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
     Optional<DAMethod> mapperMethodO = findMapperMethod(sourceClass);
     if (mapperMethodO.isPresent()) {
       DAMethod mapperMethod = mapperMethodO.get();
-      interfaceWriter
-          .newMethod(mapperMethod.getName().getName(), mapperMethod.getReturnType())
+      interfaceWriter.newMethod(mapperMethod.getName().getName(), mapperMethod.getReturnType())
+          .withAnnotations(computeMapperMethodAnnotations(mapperMethod))
           .withParams(mapperMethod.getParameters())
           .write();
     }
@@ -83,6 +89,13 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
 
     bw.flush();
     bw.close();
+  }
+
+  private List<DAAnnotation> computeMapperMethodAnnotations(DAMethod mapperMethod) {
+    if (mapperMethod.isGuavaFunctionApplyMethod()) {
+      return support.computeOverrideMethodAnnotations(mapperMethod);
+    }
+    return mapperMethod.getAnnotations();
   }
 
   private Optional<DAMethod> findMapperMethod(DASourceClass sourceClass) {

@@ -19,6 +19,7 @@ import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.InstantiationType;
+import fr.javatronic.damapping.processor.model.constants.JavaxConstants;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassMethodWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassWriter;
@@ -30,7 +31,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
 import javax.annotation.Nonnull;
-import javax.annotation.Resource;
 
 /**
  * MapperFactoryClassSourceGenerator -
@@ -39,8 +39,13 @@ import javax.annotation.Resource;
  */
 public class MapperFactoryClassSourceGenerator extends AbstractSourceGenerator {
 
-  public MapperFactoryClassSourceGenerator(GeneratedFileDescriptor descriptor) {
-    super(descriptor);
+  public MapperFactoryClassSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor) {
+    super(descriptor, new SourceGeneratorSupport());
+  }
+
+  public MapperFactoryClassSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
+                                           @Nonnull SourceGeneratorSupport support) {
+    super(descriptor, support);
   }
 
   @Override
@@ -61,7 +66,7 @@ public class MapperFactoryClassSourceGenerator extends AbstractSourceGenerator {
     if (sourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT) {
       classWriter.newProperty("instance", DATypeFactory.declared(sourceClass.getType().getQualifiedName().getName()))
                  .withModifier(Sets.of(DAModifier.PRIVATE))
-                 .withAnnotations(Lists.of(DATypeFactory.from(Resource.class)))
+                 .withAnnotations(Lists.of(JavaxConstants.RESOURCE_ANNOTATION))
                  .write();
     }
 
@@ -81,9 +86,9 @@ public class MapperFactoryClassSourceGenerator extends AbstractSourceGenerator {
         methodWriter.newStatement()
                     .start()
                     .append("return ")
-                      .append(sourceClass.getType().getSimpleName())
-                      .append(".")
-                      .append(sourceClass.getEnumValues().iterator().next())
+                    .append(sourceClass.getType().getSimpleName())
+                    .append(".")
+                    .append(sourceClass.getEnumValues().iterator().next())
                     .end();
         break;
       case CONSTRUCTOR:

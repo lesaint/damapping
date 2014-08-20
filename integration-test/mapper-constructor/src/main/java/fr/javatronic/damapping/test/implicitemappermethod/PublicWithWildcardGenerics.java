@@ -19,6 +19,7 @@ import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.test.implicitemappermethod.subpackage.OutOfPackage;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -28,7 +29,7 @@ import javax.annotation.Nullable;
  */
 @Mapper
 public class PublicWithWildcardGenerics {
-  @Nullable
+  @Nonnull
   public String transform(@Nullable List<? extends OutOfPackage> entities) {
     return "resultDoesNotMatter";
   }

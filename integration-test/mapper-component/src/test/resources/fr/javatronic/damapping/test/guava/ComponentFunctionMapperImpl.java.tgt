@@ -1,5 +1,6 @@
 package fr.javatronic.damapping.test.guava;
 
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ public class ComponentFunctionMapperImpl implements ComponentFunctionMapper {
     private ComponentFunction instance;
 
     @Override
+    @Nullable
     public String apply(A a) {
         return instance.apply(a);
     }

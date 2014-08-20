@@ -24,8 +24,16 @@ import com.google.common.collect.ImmutableSet;
 
 import org.testng.annotations.Test;
 
+import static fr.javatronic.damapping.processor.model.constants.JavaIOConstants.SERIALIZABLE_TYPE;
+import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
+import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.NULLABLE_ANNOTATION;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
-import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.*;
+import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS;
+import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.DAWRITER_ABSTACT_CLASS;
+import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE;
+import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.LINE_SEPARATOR;
+import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.NAME_DATYPE;
+import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.STRING_TITI_PARAMETER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -108,7 +116,7 @@ public class DAClassWriterTest {
   @Test
   public void empty_class_implements_once() throws Exception {
     TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters).withImplemented(ImmutableList.of(SERIALIZABLE_INTERFACE)).start().end();
+    daClassWriter(testWriters).withImplemented(ImmutableList.of(SERIALIZABLE_TYPE)).start().end();
 
     assertThat(testWriters.getRes())
         .isEqualTo(INDENT + "class Name implements Serializable {" + LINE_SEPARATOR
@@ -121,7 +129,7 @@ public class DAClassWriterTest {
   public void empty_class_implements_twice_one_with_types() throws Exception {
     TestWriters testWriters = new TestWriters();
     daClassWriter(testWriters).withImplemented(
-        ImmutableList.of(SERIALIZABLE_INTERFACE, FUNCTION_INTEGER_TO_STRING_INTERFACE)
+        ImmutableList.of(SERIALIZABLE_TYPE, FUNCTION_INTEGER_TO_STRING_INTERFACE)
     ).start().end();
 
     assertThat(testWriters.getRes())

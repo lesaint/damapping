@@ -22,8 +22,12 @@ import com.google.common.collect.ImmutableSet;
 
 import org.testng.annotations.Test;
 
+import static fr.javatronic.damapping.processor.model.constants.JavaIOConstants.SERIALIZABLE_TYPE;
+import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
+import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.NULLABLE_ANNOTATION;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
-import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.*;
+import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE;
+import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.LINE_SEPARATOR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -90,10 +94,7 @@ public class DAInterfaceWriterTest {
   public void empty_interface_extends_twice() throws Exception {
     TestWriters testWriters = new TestWriters();
     daInterfaceWriter(testWriters, "name")
-        .withExtended(ImmutableList.of(SERIALIZABLE_INTERFACE,
-            FUNCTION_INTEGER_TO_STRING_INTERFACE
-        )
-        )
+        .withExtended(ImmutableList.of(SERIALIZABLE_TYPE, FUNCTION_INTEGER_TO_STRING_INTERFACE))
         .start().end();
 
     assertThat(testWriters.getRes()).isEqualTo(

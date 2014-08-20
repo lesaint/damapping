@@ -25,6 +25,7 @@ import com.google.common.base.Function;
 public class HandleCustomTypes implements Function<OutOfPackage, InPackage> {
 
   @Override
+  @Nullable
   public InPackage apply(@Nullable OutOfPackage input) {
     return new InPackage();
   }

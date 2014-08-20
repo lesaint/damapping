@@ -2,10 +2,12 @@ package fr.javatronic.damapping.test.implicitemappermethod;
 
 import fr.javatronic.damapping.test.implicitemappermethod.subpackage.OutOfPackage;
 import java.util.List;
+import javax.annotation.Nonnull;
 
 // GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
 public interface PublicWithWildcardGenericsMapper {
 
+    @Nonnull
     String transform(List<? extends OutOfPackage> entities);
 
 }

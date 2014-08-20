@@ -19,6 +19,7 @@ import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.annotation.MapperFactoryMethod;
 
 import java.math.BigDecimal;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -63,6 +64,7 @@ public enum MultipleImplementationAsEnum {
     this.bigDecimal = bigDecimal;
   }
 
+  @Nonnull
   public Integer apply(@Nullable String input) {
     if (bigDecimal) {
       return new BigDecimal(input).intValue();

@@ -2,11 +2,13 @@ package fr.javatronic.damapping.test.guava;
 
 import com.google.common.base.Optional;
 import fr.javatronic.damapping.test.guava.subpackage.OutOfPackage;
+import javax.annotation.Nullable;
 
 // GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
 public class WildcardGenericsMapperImpl implements WildcardGenericsMapper {
 
     @Override
+    @Nullable
     public String apply(Optional<? extends OutOfPackage> optional) {
         return WildcardGenericsMapperFactory.instance().apply(optional);
     }

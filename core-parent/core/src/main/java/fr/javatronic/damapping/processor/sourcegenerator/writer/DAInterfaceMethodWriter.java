@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
+import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.util.Lists;
@@ -33,7 +34,7 @@ import java.util.List;
 public class DAInterfaceMethodWriter<T extends DAWriter> extends AbstractDAWriter<T> {
   private final String name;
   private final DAType returnType;
-  private List<DAType> annotations = Collections.emptyList();
+  private List<DAAnnotation> annotations = Collections.emptyList();
   private List<DAParameter> params = Collections.<DAParameter>emptyList();
 
   public DAInterfaceMethodWriter(String name, DAType returnType, BufferedWriter bw, int indentOffset, T parent) {
@@ -42,8 +43,8 @@ public class DAInterfaceMethodWriter<T extends DAWriter> extends AbstractDAWrite
     this.returnType = returnType;
   }
 
-  public DAInterfaceMethodWriter<T> withAnnotations(List<DAType> annotations) {
-    this.annotations = annotations == null ? Collections.<DAType>emptyList() : Lists.copyOf(annotations);
+  public DAInterfaceMethodWriter<T> withAnnotations(List<DAAnnotation> annotations) {
+    this.annotations = annotations == null ? Collections.<DAAnnotation>emptyList() : Lists.copyOf(annotations);
     return this;
   }
 

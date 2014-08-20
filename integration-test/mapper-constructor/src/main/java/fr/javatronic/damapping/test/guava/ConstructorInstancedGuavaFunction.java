@@ -24,6 +24,7 @@ import com.google.common.base.Function;
 public class ConstructorInstancedGuavaFunction implements Function<Integer, String> {
 
   @Override
+  @Nullable
   public String apply(@Nullable Integer input) {
     return input.toString();
   }

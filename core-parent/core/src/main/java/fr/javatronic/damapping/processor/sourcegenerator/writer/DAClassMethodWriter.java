@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
+import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DAType;
@@ -27,6 +28,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 /**
  * DAClassMethodWriter - Writer pour les méthodes d'une classe ou enum
@@ -37,7 +39,7 @@ public class DAClassMethodWriter<T extends DAWriter> extends AbstractDAWriter<T>
   private final String name;
   private final DAType returnType;
   private Set<DAModifier> modifiers = Collections.<DAModifier>emptySet();
-  private List<DAType> annotations = Collections.emptyList();
+  private List<DAAnnotation> annotations = Collections.emptyList();
   private List<DAParameter> params = Collections.<DAParameter>emptyList();
 
   public DAClassMethodWriter(String name, DAType returnType, BufferedWriter bw, int indentOffset, T parent) {
@@ -46,17 +48,17 @@ public class DAClassMethodWriter<T extends DAWriter> extends AbstractDAWriter<T>
     this.returnType = returnType;
   }
 
-  public DAClassMethodWriter<T> withModifiers(Set<DAModifier> modifiers) {
+  public DAClassMethodWriter<T> withModifiers(@Nullable Set<DAModifier> modifiers) {
     this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : Sets.copyOf(modifiers);
     return this;
   }
 
-  public DAClassMethodWriter<T> withAnnotations(List<DAType> annotations) {
-    this.annotations = annotations == null ? Collections.<DAType>emptyList() : Lists.copyOf(annotations);
+  public DAClassMethodWriter<T> withAnnotations(@Nullable List<DAAnnotation> annotations) {
+    this.annotations = annotations == null ? Collections.<DAAnnotation>emptyList() : Lists.copyOf(annotations);
     return this;
   }
 
-  public DAClassMethodWriter<T> withParams(List<DAParameter> params) {
+  public DAClassMethodWriter<T> withParams(@Nullable List<DAParameter> params) {
     this.params = params == null ? Collections.<DAParameter>emptyList() : Lists.copyOf(params);
     return this;
   }

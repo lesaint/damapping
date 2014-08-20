@@ -1,5 +1,6 @@
 package fr.javatronic.damapping.test.implicitemappermethod;
 
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ public class ProtectedMapperMethodComponentMapperImpl implements ProtectedMapper
     private ProtectedMapperMethodComponent instance;
 
     @Override
+    @Nullable
     public String transform(B b) {
         return instance.transform(b);
     }

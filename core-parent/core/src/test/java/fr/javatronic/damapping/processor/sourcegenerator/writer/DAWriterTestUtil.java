@@ -23,7 +23,6 @@ import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 
 import java.io.Serializable;
-import javax.annotation.Nullable;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 
@@ -36,9 +35,7 @@ import static fr.javatronic.damapping.processor.model.factory.DATypeFactory.decl
  */
 final class DAWriterTestUtil {
   static final String LINE_SEPARATOR = System.getProperty("line.separator");
-  static final DAType OVERRIDE_ANNOTATION = DATypeFactory.from(Override.class);
-  static final DAType NULLABLE_ANNOTATION = DATypeFactory.from(Nullable.class);
-  static final DAType SERIALIZABLE_INTERFACE = DATypeFactory.from(Serializable.class);
+
   static final DAType FUNCTION_INTEGER_TO_STRING_INTERFACE = DATypeFactory.from(Function.class,
       ImmutableList.of(DATypeFactory.from(Integer.class), DATypeFactory.from(String.class))
   );

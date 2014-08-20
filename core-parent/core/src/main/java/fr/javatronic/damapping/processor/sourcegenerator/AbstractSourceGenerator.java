@@ -15,6 +15,10 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import javax.annotation.Nonnull;
+
+import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
+
 /**
  * AbstractSourceGenerator -
  *
@@ -24,9 +28,13 @@ abstract class AbstractSourceGenerator implements SourceGenerator {
 
   protected static final String INDENT = "    ";
 
+  @Nonnull
   protected final GeneratedFileDescriptor descriptor;
+  @Nonnull
+  protected final SourceGeneratorSupport support;
 
-  protected AbstractSourceGenerator(GeneratedFileDescriptor descriptor) {
-    this.descriptor = descriptor;
+  protected AbstractSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor, @Nonnull SourceGeneratorSupport support) {
+    this.descriptor = checkNotNull(descriptor);
+    this.support = checkNotNull(support);
   }
 }

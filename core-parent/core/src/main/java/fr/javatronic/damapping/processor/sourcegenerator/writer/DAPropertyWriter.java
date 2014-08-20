@@ -15,15 +15,18 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
+import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.util.Lists;
+import fr.javatronic.damapping.util.Sets;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 /**
  * DAPropertyWriter -
@@ -33,8 +36,8 @@ import java.util.Set;
 public class DAPropertyWriter<T extends DAWriter> extends AbstractDAWriter<T> {
   private final String name;
   private final DAType type;
-  private List<DAType> annotations = Collections.<DAType>emptyList();
-  private Set<DAModifier> modifiers = Collections.<DAModifier>emptySet();
+  private List<DAAnnotation> annotations = Collections.emptyList();
+  private Set<DAModifier> modifiers = Collections.emptySet();
 
   DAPropertyWriter(String name, DAType type, BufferedWriter bw, T parent, int indentOffset) {
     super(bw, parent, indentOffset);
@@ -42,13 +45,13 @@ public class DAPropertyWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     this.type = type;
   }
 
-  public DAPropertyWriter<T> withAnnotations(List<DAType> annotations) {
-    this.annotations = annotations == null ? Collections.<DAType>emptyList() : Lists.copyOf(annotations);
+  public DAPropertyWriter<T> withAnnotations(@Nullable List<DAAnnotation> annotations) {
+    this.annotations = annotations == null ? Collections.<DAAnnotation>emptyList() : Lists.copyOf(annotations);
     return this;
   }
 
-  public DAPropertyWriter<T> withModifier(Set<DAModifier> modifiers) {
-    this.modifiers = modifiers;
+  public DAPropertyWriter<T> withModifier(@Nullable Set<DAModifier> modifiers) {
+    this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : Sets.copyOf(modifiers);
     return this;
   }
 

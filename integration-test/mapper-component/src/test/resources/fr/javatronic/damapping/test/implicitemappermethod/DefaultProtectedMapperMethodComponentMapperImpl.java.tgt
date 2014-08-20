@@ -1,5 +1,6 @@
 package fr.javatronic.damapping.test.implicitemappermethod;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ public class DefaultProtectedMapperMethodComponentMapperImpl implements DefaultP
     private DefaultProtectedMapperMethodComponent instance;
 
     @Override
+    @Nonnull
     public String map(B b) {
         return instance.map(b);
     }

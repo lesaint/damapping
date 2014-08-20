@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
+import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.util.Sets;
@@ -48,7 +49,7 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
   protected final DAType classType;
   private final String name;
   private Set<DAModifier> modifiers = Collections.emptySet();
-  private List<DAType> annotations = Collections.emptyList();
+  private List<DAAnnotation> annotations = Collections.emptyList();
   private List<DAType> implemented = Collections.emptyList();
   private DAType extended;
 
@@ -63,8 +64,8 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     return this;
   }
 
-  public DAClassWriter<T> withAnnotations(List<DAType> annotations) {
-    this.annotations = annotations == null ? Collections.<DAType>emptyList() : Lists.copyOf(annotations);
+  public DAClassWriter<T> withAnnotations(List<DAAnnotation> annotations) {
+    this.annotations = annotations == null ? Collections.<DAAnnotation>emptyList() : Lists.copyOf(annotations);
     return this;
   }
 

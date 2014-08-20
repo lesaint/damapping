@@ -1,6 +1,7 @@
 package fr.javatronic.damapping.test.guava;
 
 import java.math.BigDecimal;
+import javax.annotation.Nullable;
 
 // GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
 public class ConstructorWithParameterMapperFactoryImpl implements ConstructorWithParameterMapperFactory {
@@ -19,6 +20,7 @@ public class ConstructorWithParameterMapperFactoryImpl implements ConstructorWit
         }
 
         @Override
+        @Nullable
         public String apply(BigDecimal bigDecimal) {
             return instance.apply(bigDecimal);
         }

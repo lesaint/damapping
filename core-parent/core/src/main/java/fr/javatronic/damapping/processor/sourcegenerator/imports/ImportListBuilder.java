@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator.imports;
 
+import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAParameter;
@@ -62,6 +63,9 @@ public class ImportListBuilder {
     }
     if (daMethod.getReturnType() != null) {
       addImports(daMethod.getReturnType());
+    }
+    for (DAAnnotation daAnnotation : daMethod.getAnnotations()) {
+      addImport(daAnnotation.getType());
     }
   }
 

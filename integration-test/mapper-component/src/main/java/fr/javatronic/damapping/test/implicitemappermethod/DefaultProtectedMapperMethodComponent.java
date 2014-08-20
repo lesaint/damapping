@@ -17,6 +17,7 @@ package fr.javatronic.damapping.test.implicitemappermethod;
 
 import fr.javatronic.damapping.annotation.Mapper;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ import org.springframework.stereotype.Component;
 @Mapper
 @Component
 public class DefaultProtectedMapperMethodComponent {
-  @Nullable
+  @Nonnull
   protected String map(@Nullable B b) {
     return b.toString();
   }

@@ -24,6 +24,7 @@ import com.google.common.base.Function;
 @Mapper
 public class NonPublicMethods implements Function<Integer, String> {
 
+  @Nullable
   @Override
   public String apply(@Nullable Integer input) {
     return input.toString();

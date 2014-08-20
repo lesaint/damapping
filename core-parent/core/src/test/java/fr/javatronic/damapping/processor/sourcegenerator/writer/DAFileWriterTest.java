@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableSet;
 
 import org.testng.annotations.Test;
 
+import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.LINE_SEPARATOR;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -64,7 +65,7 @@ public class DAFileWriterTest {
         .appendImports(ImmutableSet.<DAName>of(
             DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE.getQualifiedName(),
             DAWriterTestUtil.BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS.getQualifiedName(),
-            DAWriterTestUtil.OVERRIDE_ANNOTATION.getQualifiedName()
+            OVERRIDE_ANNOTATION.getType().getQualifiedName()
         )
         );
 

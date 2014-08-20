@@ -65,6 +65,7 @@ public enum MultipleImplementationAsEnum implements Function<String, Integer> {
   }
 
   @Override
+  @Nullable
   public Integer apply(@Nullable String input) {
     if (bigDecimal) {
       return new BigDecimal(input).intValue();

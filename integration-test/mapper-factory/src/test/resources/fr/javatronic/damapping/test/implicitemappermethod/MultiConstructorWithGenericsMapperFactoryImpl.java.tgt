@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 // GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
 public class MultiConstructorWithGenericsMapperFactoryImpl implements MultiConstructorWithGenericsMapperFactory {
@@ -30,6 +31,7 @@ public class MultiConstructorWithGenericsMapperFactoryImpl implements MultiConst
         }
 
         @Override
+        @Nullable
         public Optional<String> apply(Map<C, Set<BigDecimal>> input) {
             return instance.apply(input);
         }

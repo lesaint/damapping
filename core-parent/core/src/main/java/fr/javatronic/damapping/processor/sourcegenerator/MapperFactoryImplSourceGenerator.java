@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.model.constants.JavaLangConstants;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAParameter;
@@ -45,8 +46,13 @@ import static fr.javatronic.damapping.util.FluentIterable.from;
  */
 public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
 
-  public MapperFactoryImplSourceGenerator(GeneratedFileDescriptor descriptor) {
-    super(descriptor);
+  public MapperFactoryImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor) {
+    super(descriptor, new SourceGeneratorSupport());
+  }
+
+  public MapperFactoryImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
+                                          @Nonnull SourceGeneratorSupport support) {
+    super(descriptor, support);
   }
 
   @Override
@@ -60,9 +66,11 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
     if (factoryInterfaceDescriptor == null || mapperInterfaceDescriptor == null) {
       return;
     }
-    DAType mapperImpl = DATypeFactory.declared(descriptor.getContext().getDescriptor(
-        GenerationContext.MAPPER_INTERFACE_KEY
-    ).getType().getQualifiedName().getName() + "Impl"
+    DAType mapperImpl = DATypeFactory.declared(
+        descriptor.getContext()
+                  .getDescriptor(GenerationContext.MAPPER_INTERFACE_KEY)
+                  .getType()
+                  .getQualifiedName().getName() + "Impl"
     );
 
     DASourceClass sourceClass = descriptor.getContext().getSourceClass();
@@ -96,7 +104,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
       String name = isConstructor().apply(method) ? "instanceByConstructor" : method.getName().getName();
       DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter
           .newMethod(name, mapperInterfaceDescriptor.getType())
-          .withAnnotations(Lists.of(DATypeFactory.from(Override.class)))
+          .withAnnotations(Lists.of(JavaLangConstants.OVERRIDE_ANNOTATION))
           .withModifiers(Sets.of(DAModifier.PUBLIC))
           .withParams(method.getParameters())
           .start();
@@ -140,10 +148,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
                      .write();
 
     // constructor with instance parameter
-    DAParameter parameter = DAParameter.builder(DANameFactory.from("instance"),
-        sourceClass.getType()
-    )
-                                       .build();
+    DAParameter parameter = DAParameter.builder(DANameFactory.from("instance"), sourceClass.getType()).build();
 
     mapperClassWriter.newConstructor()
                      .withModifiers(Sets.of(DAModifier.PUBLIC))
@@ -157,13 +162,12 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
 
     // mapper method(s)
     // implémentation de la méthode de mapping (Function.apply tant qu'on ne supporte pas @MapperMethod)
-    DAMethod guavaMethod = from(sourceClass.getMethods()).firstMatch(
-        DAMethodPredicates.isApplyWithSingleParam()
-    )
+    DAMethod guavaMethod = from(sourceClass.getMethods())
+        .firstMatch(DAMethodPredicates.isApplyWithSingleParam())
         .get();
     DAClassMethodWriter<?> methodWriter = mapperClassWriter
         .newMethod(guavaMethod.getName().getName(), guavaMethod.getReturnType())
-        .withAnnotations(Lists.<DAType>of(DATypeFactory.from(Override.class)))
+        .withAnnotations(support.computeOverrideMethodAnnotations(guavaMethod))
         .withModifiers(Sets.of(DAModifier.PUBLIC))
         .withParams(guavaMethod.getParameters())
         .start();

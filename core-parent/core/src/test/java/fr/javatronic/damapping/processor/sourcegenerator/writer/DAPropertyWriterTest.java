@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableSet;
 
 import org.testng.annotations.Test;
 
+import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.NULLABLE_ANNOTATION;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.LINE_SEPARATOR;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,7 +62,7 @@ public class DAPropertyWriterTest {
   public void annoted_property() throws Exception {
     TestWriters testWriters = new TestWriters();
     daPropertyWriter(testWriters)
-        .withAnnotations(ImmutableList.of(DAWriterTestUtil.NULLABLE_ANNOTATION))
+        .withAnnotations(ImmutableList.of(NULLABLE_ANNOTATION))
         .write();
 
     assertThat(testWriters.getRes()).isEqualTo(INDENT + "@Nullable" + LINE_SEPARATOR

@@ -40,8 +40,13 @@ import static fr.javatronic.damapping.util.FluentIterable.from;
  */
 public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerator {
 
-  public MapperFactoryInterfaceSourceGenerator(GeneratedFileDescriptor descriptor) {
-    super(descriptor);
+  public MapperFactoryInterfaceSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor) {
+    super(descriptor, new SourceGeneratorSupport());
+  }
+
+  public MapperFactoryInterfaceSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
+                                               @Nonnull SourceGeneratorSupport support) {
+    super(descriptor, support);
   }
 
   @Override

@@ -2,6 +2,7 @@ package fr.javatronic.damapping.test.guava;
 
 import fr.javatronic.damapping.test.guava.sub.B;
 import fr.javatronic.damapping.test.guava.sub.C;
+import javax.annotation.Nullable;
 
 // GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
 public class MultiConstructorOnBusinessTypesMapperFactoryImpl implements MultiConstructorOnBusinessTypesMapperFactory {
@@ -25,6 +26,7 @@ public class MultiConstructorOnBusinessTypesMapperFactoryImpl implements MultiCo
         }
 
         @Override
+        @Nullable
         public String apply(C input) {
             return instance.apply(input);
         }

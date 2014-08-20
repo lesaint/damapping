@@ -23,8 +23,12 @@ import com.google.common.collect.ImmutableSet;
 
 import org.testng.annotations.Test;
 
+import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
-import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.*;
+import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.FUNCTION_STRING_INTEGER_ARRAY_PARAMETER;
+import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.LINE_SEPARATOR;
+import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.STRING_TITI_PARAMETER;
+import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.STRING_TOTO_PARAMETER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
