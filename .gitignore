@@ -4,3 +4,7 @@ test-output
 # IDEA files and directories
 .idea
 out
+
+# file generated in source by Maven Shade plugin
+dependency-reduced-pom.xml
+
