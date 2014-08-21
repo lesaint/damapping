@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>fr.javatronic.damapping</groupId>
-            <artifactId>damapping-annotation-processor</artifactId>
+            <artifactId>annotation-processor</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
