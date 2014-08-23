@@ -26,6 +26,8 @@ ROADMAP
 [X] séparation en modules spécifiques des annotations et du processor
 [X] toute exception doit indiquer la classe @Mapper pour laquelle ça a pété
 [X] supprimer usage de FluentIterable.toImmutableList() et toImmutableSet() ou de toList() et toSet()
+[ ] when compiling a @Mapper extending Function and Guava's is not in path, MapperImpl is generated with a "import Function;"
+    statement and file does not compile
 [ ] les annotations sur méthodes Fuction.apply, @MapperMethod et @MapperFactoryMethod sont perdues dans les codes généré
     (exemple: manque le @Nullable hérité de Function.apply dans toutes les classes MapperImpl sur le paramètre et le type de retour)
 [ ] optimiser les classes annonymes (Function, Predicate, ...)
