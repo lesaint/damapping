@@ -108,12 +108,6 @@
                   <include>com.google.code.findbugs:jsr305</include>
                 </includes>
               </artifactSet>
-              <relocations>
-                <relocation>
-                  <pattern>javax.annotation</pattern>
-                  <shadedPattern>fr.javatronic.shaded.javax.annotation</shadedPattern>
-                </relocation>
-              </relocations>
             </configuration>
           </execution>
         </executions>
@@ -187,12 +181,6 @@
                       <include>com.google.code.findbugs:jsr305</include>
                     </includes>
                   </artifactSet>
-                  <relocations>
-                    <relocation>
-                      <pattern>javax.annotation</pattern>
-                      <shadedPattern>fr.javatronic.shaded.javax.annotation</shadedPattern>
-                    </relocation>
-                  </relocations>
                   <createSourcesJar>true</createSourcesJar>
                 </configuration>
               </execution>
