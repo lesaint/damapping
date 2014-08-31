@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="fr">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>DAMapping - Bean Mapping for devs</title>
+
+		<meta name="description" content="DAMapping - presentation of the next Bean Mapping framework for Java">
+		<meta name="author" content="Sébastien Lesaint">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>DAMapping</h1>
+					<h3>Control your bean mapping (really)</h3>
+					<p>
+						<small>Created by Sébastien Lesaint <a href="https://twitter.com/LesaintSeb">@LesaintSeb</a></small><br/>
+						<small><a href="http://www.javatronic.fr">www.javatronic.fr</a></small><br/>
+					    <small>available on GitHub <a href="https://github.com/lesaint/damapping">https://github.com/lesaint/damapping</a></small>
+					</p>
+				</section>
+
+				<section>
+					<h2>What's the point of yet another bean mapping framework?</h2>
+					<p>DAMapping <strong>gives you back</strong> <u>the control</u> of bean mapping code</p>
+					<p>and helps you <u>wire it</u> <strong>the right way</strong> into your application</p>
+				</section>
+
+				<section>
+					<section>
+						<h2>Let's see why we need DAMapping</h2>
+					</section>
+
+					<section>
+						<h3>What existing frameworks do</h3>
+						<ul>
+							<li class="fragment">generate mapping code magically</li>
+							<li class="fragment">use reflection, byte-code manipulation, ... to achieve that</li>
+							<li class="fragment">provide ugly customisation solutions (Xml config, annotations with strings constants, ...)</li>
+						</ul>
+					</section>
+					<section>
+						<h3>What they fail at providing</h3>
+						<ul>
+							<li class="fragment">good testability (especially tree of beans)</li>
+							<li class="fragment">stability (remember last time you upgraded Dozer?)</li>
+							<li class="fragment">type safety and support for refactoring</li>
+							<li class="fragment">performance</li>
+							<li class="fragment">customisation</li>
+						</ul>
+
+						<aside class="notes">
+							<ul>
+								<li>testability: want to test the room mapping alone ? (country -> city -> hotel -> floor -> room)</li>
+								<li>stability:</li>
+								<li>type safety: XML customisation, String parameters</li>
+								<li>everything performs poorer that regular code</li>
+								<li>customisation: stay in the framework's possibilities or die in hell</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<h3>The root of all evil <small><a href="https://www.youtube.com/watch?v=RgAc7ekYmVA" target="_new"><sup>*</sup></a></small></h3>
+
+						<p class="fragment">Bean Mapping code <u><strong>must</strong></u> be part of the application</p>
+
+						<ul>
+							<li class="fragment">yes, such code is sometime trivial</li>
+							<li class="fragment">but, having it in the application solves every problems above</li>
+							<li class="fragment">code can still be generated: once, in your IDE</li>
+							<li class="fragment">that's the part where DAMapping is giving you back the control</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Bonuses from mapping code in source</h3>
+
+						<ul>
+							<li class="fragment">leverage the power of your IDE (debug, search, refactor!)</li>
+							<li class="fragment">get coverage like any other piece of code (test, quality, ...)</li>
+							<li class="fragment">get meaningfull stacktraces</li>
+							<li class="fragment">leverage your SCM: know when and who changed that code! (and maybe even why)</li>
+							<li class="fragment">write it the way you like it !</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>What about the 'wiring' part, then?</h2>
+					</section>
+					<section>
+						<h3>First, how to write good mappers</h3>
+
+						<p class="fragment">We should respect basic principles</p>
+						<ul>
+							<li class="fragment">SOC <span class="fragment">=> need one class per object mapping</span></li>
+							<li class="fragment">easy to test bean mapping code <span class="fragment">=> need to "Keep It Simple"</span></li>
+							<li class="fragment">
+								simple to integrate
+								<span class="fragment">=> mockable</span>
+								<span class="fragment">=> need an interface</span></li>
+						</ul>
+					</section>
+					<section>
+						<h3>1 class + 1 interface for every A to B mapping?</h3>
+
+						<ul>
+							<li class="fragment">quite repetitive and low-value</li>
+							<li class="fragment">but required to integrate mapping code with the rest of the application</li>
+							<li class="fragment">
+								very good candidate for automation, though
+								<span class="fragment"><br/> => here comes DAMapping!</span>
+							</li>
+						</ul>
+
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>let's see how it works</h2>
+					</section>
+					<section>
+						<h3>Basic principle of DAMapping</h3>
+
+						<ul>
+							<li class="fragment">write bean mapping code in a dedicated class</li>
+							<li class="fragment">annotate the class with @Mapper</li>
+							<li class="fragment">1 interface and 1 implementing class are generated at <u>compile time</u> using an annotation processor</li>
+							<li class="fragment">use them (and not the class you wrote) in your application</li>
+						</ul>
+
+					</section>
+
+					<section>
+						<h3>Basic mapper demo</h3>
+
+						<pre class="fragment"><code data-trim class="java">
+@Mapper
+public class FootoBar {
+
+  public Bar convert(Foo input) {
+    [...]
+  }
+
+}
+						</code></pre>
+
+						<p class="fragment">generated interface</p>
+						<pre class="fragment"><code data-trim>
+public interface FootoBarMapper {
+
+  Bar convert(Foo input);
+
+}
+						</code></pre>
+
+						<p class="fragment">generated implementing class</p>
+						<pre class="fragment"><code data-trim>
+public class FootoBarMapperImpl implements FootoBarMapper {
+
+  public Bar convert(Foo input) {
+    return new FootoBar().convert(input);
+  }
+
+}
+						</code></pre>
+
+						<p class="fragment"><small>code is not representative of actual generated code as an intermediate Factory is used</small></p>
+					</section>
+
+					<section>
+						<h3>You would rather write an enum?</h3>
+
+						<p class="fragment">and you should!</p>
+						<p class="fragment">its supported, so save on GC and use it!</p>
+						<pre class="fragment"><code data-trim class="java">
+@Mapper
+public enum FootoBar {
+  INSTANCE;
+
+  public Bar convert(Foo input) {
+    [...]
+  }
+
+}
+						</code></pre>
+
+						<p class="fragment">generated implementing class</p>
+						<pre class="fragment"><code data-trim>
+public class FootoBarMapperImpl implements FootoBarMapper {
+
+  public Bar convert(Foo input) {
+    return FootoBar.INSTANCE.convert(input);
+  }
+
+}
+						</code></pre>
+						<p class="fragment"><small>again, an intermediate Factory is actually used</small></p>
+					</section>
+
+					<section>
+						<h3>Native support for Guava's Function method</h3>
+
+						<p class="fragment">allows seamless use of mapper to transform collections</p>
+						<pre class="fragment"><code data-trim class="java">
+@Mapper
+public enum FootoBar implements Function&lt;Foo, Bar&gt; {
+  INSTANCE;
+
+  @Override
+  @Nullable
+  public Bar apply(@Nullable Foo input) {
+    [...]
+  }
+
+}
+						</code></pre>
+
+						<p class="fragment">generated interface</p>
+						<pre class="fragment"><code data-trim>
+public interface FootoBarMapper extends Function&lt;Foo, Bar&gt; {
+
+}
+						</code></pre>
+					</section>
+
+					<section>
+						<h3>Java 8 functional interface support</h3>
+
+						<p class="fragment">it's coming!</p>
+					</section>
+
+					<section>
+						<h3>To sum up</h3>
+
+						 <p>any non private method in class annotated with @Mapper will be exposed in a generated interface</p>
+						 <p>&nbsp;</p>
+						 <p>DAMapping will generate a class implementating this interface which will delegate the mapping code implementation to the dedicated class</p>
+					</section>
+
+				</section>
+
+				<section>
+					<section>
+						<h2>How to use DAMapping</h2>
+					</section>
+
+					<section>
+						<h3>Using Maven</h3>
+
+						<p>Add a single dependency to your project</p>
+						<pre><code data-trim>
+&lt;dependency&gt;
+    &lt;groupId&gt;fr.javatronic.damapping&lt;/groupId&gt;
+    &lt;artifactId&gt;annotation-processor&lt;/artifactId&gt;
+    &lt;version&gt;0.2.3&lt;/version&gt;
+&lt;/dependency&gt;
+						</code></pre>
+						<p><small>no public version exists yet</small></p>
+						<p>as long as the dependency has the default or compile scope, DAMapping annotation processor is picked up by the compiler and invoked</p>
+
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Let's dive in deeper</h2>
+					</section>
+
+					<section>
+						<h3>Bean mapping is not always one-to-one</h3>
+
+						<ol>
+							<li class="fragment">
+								can be many-to-one
+								<ul>
+									<li class="fragment">
+										=> DAMapping does not enforce any method signature, just write a method with multiple parameters
+									</li>
+									<li class="fragment">
+										but you can't do that with Guava's Function or Java 8
+										<span class="fragment"><br/>=> use a MapperFactory</span>
+									</li>
+								</ul>
+							</li>
+							<li class="fragment">
+								can be externally parametrized (feature flipping, locale, ...)
+								<ul>
+									<li class="fragment">=> use a MapperFactory</li>
+								</ul>
+							</li>
+							<li class="fragment">
+								stateful or you just can't share a single instance
+								<ul>
+									<li class="fragment">=> use a MapperFactory</li>
+								</ul>
+							</li>
+						</ol>
+					</section>
+
+					<section>
+						<h3>What is a MapperFactory?</h3>
+
+						<p class="fragment">basicaly, a @Mapper class with at least one method annotated with @MapperFactoryMethod</h3>
+
+						<pre class="fragment"><code data-trim class="java">
+@Mapper
+public class FooToBar {
+  private final boolean enableCrazyCode;
+
+  @MapperFactoryMethod
+  public FooToBar(boolean enableCrazyCode) {
+    this.enableCrazyCode = enableCrazyCode;
+  }
+
+  public Bar tranform(Foo foo) {
+    [...]
+  }
+}
+						</code></pre>
+
+						<span class="fragment">
+							<p>Can be annotated with @MapperFactoryMethod:</p>
+							<ul>
+								<li>constructor(s) with parameter(s)</li>
+								<li>static method(s) (with ou without parameter)</li>
+							</ul>
+						</span>
+
+					</section>
+
+					<section>
+						<h3>2 interfaces and 1 class are generated</h3>
+
+						<span class="fragment">
+							<p>a Mapper interface</p>
+							<pre><code data-trim>
+public interface FooToBarMapper {
+  Bar tranform(Foo foo);
+}
+							</code></pre>
+						</span>
+
+						<span class="fragment">
+							<p>a MapperFactory interface</p>
+							<pre><code data-trim>
+public interface FooToBarMapperFactory {
+  FooToBarMapper instance(boolean enableCrazyCode);
+}
+							</code></pre>
+						</span>
+
+						<p class="fragment">this is the interface to reference in your code</p>
+
+					</section>
+
+					<section>
+						<h3>2 interfaces and 1 class are generated</h3>
+
+						<span class="fragment">
+							<p>a MapperFactory implementation</p>
+							<pre><code data-trim>
+public class FooTorBaMapperFactoryImpl implements FooToBarFactory {
+
+    @Override public FooToBarMapper instance(boolean enableCrazyCode) {
+        return new FooToBarMapperImpl(new FooToBar(enableCrazyCode));
+    }
+
+    private static class FooToBarMapperImpl implements FooToBarMapper {
+        private final FooToBar instance;
+
+        public FooToBarMapperImpl(FooToBar instance) {
+            this.instance = instance;
+        }
+
+        @Override Bar tranform(Foo foo) { return instance.tranform(foo); }
+    }
+}
+							</code></pre>
+						</span>
+					</section>
+
+					<section>
+						<h3>Mapping trees of types</h3>
+
+
+						<span class="fragment">
+							<p>Example: one-to-one mapping from Beans to DTOs</p>
+							<img src="img/hotel_floor_room.png"/>
+						</span>
+
+						<span class="fragment">
+							<p>mapping Room to RoomDto is a basic mapper</p>
+							<pre><code data-trim class="java">
+public class RoomToRoomDto {
+  [...]
+}
+							</code></pre>
+						</span>
+
+						<span class="fragment">
+							<p>dedicated class should use Mapper interface as any other type</p>
+							<pre><code data-trim class="java">
+public class FloorToFloorDto {
+  private RoomToRoomDtoMapper roomMapper = new RoomToRoomDtoMapperImpl();
+  [...]
+}
+							</code></pre>
+
+							<pre><code data-trim class="java">
+public class HotelToHotelDto {
+  private FloorToFloorDtoMapper floorMapper = new FloorToFloorDtoMapperImpl();
+  [...]
+}
+							</code></pre>
+						</span>
+
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Support for DI frameworks</h2>
+					</section>
+
+					<section>
+						<h3>DI frameworks do wiring too and better</h3>
+
+						<p class="fragment">By default, DAMapping will do all the wiring by itself</p>
+						<p class="fragment">But it can be integrated with DI frameworks because they do wiring at a larger scale</p>
+						<p class="fragment">support is currently limited Spring DI @Component</p>
+					</section>
+
+					<section>
+						<h3>How to integrate with Spring DI</h3>
+
+						<p class="fragment">add @Component next to @Mapper</p>
+						<pre class="fragment"><code data-trim class="java">
+@Mapper
+@Component
+public class FootoBar {
+
+  public Bar convert(Foo input) {
+    [...]
+  }
+
+}
+						</code></pre>
+					</section>
+
+					<section>
+						<h3>How to integrate with Spring DI</h3>
+
+						<p class="fragment">Interface implementation is a @Component</p>
+						<pre class="fragment"><code data-trim>
+@Component
+public class FootoBarMapperImpl implements FootoBarMapper {
+  @Resource
+  private FooToBar instance;
+
+  public Bar convert(Foo input) {
+    return instance.convert(input);
+  }
+
+}
+						</code></pre>
+						<p class="fragment">add the @Mapper class's package to package-scan</p>
+
+						<p class="fragment">get injected</p>
+						<pre class="fragment"><code data-trim>
+@Component
+public class SomeClass {
+  @Resource
+  private FooToBarMapper fooToBarMapper;
+
+}
+						</code></pre>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Generating mapping code</h2>
+					</section>
+
+					<section>
+						<h3>Generating mapping code</h3>
+
+						<ul>
+							<li class="fragment">mapping code must be part of the application code</li>
+							<li class="fragment">but some code is trivial, we DO need to automate that as others Mapping Frameworks do</li>
+							<li class="fragment">the place to do that is in the IDE => we need plugins</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>DAMapping IDE support</h3>
+
+						<ul>
+							<li class="fragment">
+								IntelliJ IDEA
+								<ul>
+									<li class="fragment">annotation processor integration in progress</li>
+									<li class="fragment">mapping code generation will come next</li>
+								</ul>
+							</li>
+							<li class="fragment">
+								Eclipse
+								<ul>
+									<li class="fragment">no annotation processor support needed</li>
+									<li class="fragment">but must be created to provide mapping code generation</li>
+								</ul>
+							</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<h3>Status of the project</h3>
+
+					<ul>
+						<li class="fragment">first release of the Annotation Processor in under way</li>
+						<li class="fragment">IDE plugin will come soon after</li>
+						<li class="fragment">lots of room for contribution and feedback</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Questions</h3>
+				</section>
+
+				<section>
+					<h3>Thank you</h3>
+				</section>
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				width: 1056,
+				height: 770,
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
