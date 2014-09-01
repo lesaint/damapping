@@ -1,5 +1,8 @@
+[![Build Status](https://travis-ci.org/lesaint/damapping.svg?branch=master)](https://travis-ci.org/lesaint/damapping)
+
 DAMapping Framework
 ====================
+
 
 DAMapping is a mapping framework that takes a deeply different approach to bean mapping from existing frameworks.
 
