@@ -59,9 +59,17 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     this.typeUtils = typeUtils;
   }
 
+  private void checkKind(TypeMirror o) {
+    if (o.getKind() == TypeKind.ERROR) {
+      throw new SourceHasErrorException(o);
+    }
+  }
+
   @Override
   @Nonnull
   public DAType extractType(TypeMirror type) {
+    checkKind(type);
+
     Element element = typeUtils.asElement(type);
     if (type.getKind() == TypeKind.ARRAY) {
       element = typeUtils.asElement(((ArrayType) type).getComponentType());
@@ -73,6 +81,8 @@ public class JavaxExtractorImpl implements JavaxExtractor {
   @Override
   @Nonnull
   public DAType extractType(TypeMirror type, Element element) {
+    checkKind(type);
+
     if (type.getKind() == TypeKind.VOID) {
       return DATypeFactory.voidDaType();
     }
@@ -216,6 +226,8 @@ public class JavaxExtractorImpl implements JavaxExtractor {
   @Override
   @Nullable
   public DAName extractQualifiedName(TypeMirror type, Element element) {
+    checkKind(type);
+
     if (type.getKind().isPrimitive()) {
       // primitive types do not have a qualifiedName by definition
       return null;

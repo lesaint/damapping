@@ -27,6 +27,7 @@ import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerationService
 import fr.javatronic.damapping.processor.validator.DASourceClassValidator;
 import fr.javatronic.damapping.processor.validator.DASourceClassValidatorImpl;
 import fr.javatronic.damapping.processor.validator.ValidationError;
+import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Sets;
 
 import java.io.IOException;
@@ -70,11 +71,18 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
 //        System.out.println("Processing " + classElement.getQualifiedName() + " in " + getClass().getCanonicalName());
 
     JavaxParsingService javaxParsingService = new JavaxParsingServiceImpl(processingEnv);
-    DASourceClass daSourceClass = javaxParsingService.parse(classElement);
+    Optional<DASourceClass> daSourceClass = javaxParsingService.parse(classElement);
+    if (!daSourceClass.isPresent()) {
+      processingEnv.getMessager().printMessage(
+          Diagnostic.Kind.NOTE,
+          "Parsing failed. DAMapping won't generate any class/interface"
+      );
+      return;
+    }
 
     try {
       DASourceClassValidator checker = new DASourceClassValidatorImpl();
-      checker.validate(daSourceClass);
+      checker.validate(daSourceClass.get());
     } catch (ValidationError e) {
       processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.getMessage(), classElement);
       return;
@@ -82,7 +90,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
 
     GenerationContextComputer generationContextComputer = new GenerationContextComputerImpl();
     SourceGenerationService sourceGenerationService = new SourceGenerationServiceImpl();
-    GenerationContext generationContext = generationContextComputer.compute(daSourceClass);
+    GenerationContext generationContext = generationContextComputer.compute(daSourceClass.get());
     sourceGenerationService.generateAll(
         generationContext,
         new JavaxSourceWriterDelegate(processingEnv, classElement)

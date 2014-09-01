@@ -7,6 +7,7 @@ import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.util.Function;
+import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicates;
 
 import java.util.Collections;
@@ -45,7 +46,20 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
   }
 
   @Nonnull
-  public DASourceClass parse(TypeElement classElement) {
+  public Optional<DASourceClass> parse(TypeElement classElement) {
+    try {
+      return Optional.of(parseImpl(classElement));
+    }
+    catch (SourceHasErrorException e) {
+      processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
+          "Found one TypeMirror with TypeKind ERROR", classElement
+      );
+      return Optional.absent();
+    }
+  }
+
+  @Nonnull
+  private DASourceClass parseImpl(TypeElement classElement) {
     DAType type = javaxExtractor.extractType(classElement.asType());
 
     DASourceClass.Builder<?> builder;
