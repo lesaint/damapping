@@ -211,9 +211,9 @@ public class PsiParsingServiceImpl implements PsiParsingService {
           public DAParameter apply(@Nullable PsiParameter psiParameter) {
             return DAParameter
                 .builder(
-                    DANameFactory.from(psiParameter.getName()),
-                    daTypeExtractor.forParameter(psiParameter, psiContext)
+                    DANameFactory.from(psiParameter.getName()), daTypeExtractor.forParameter(psiParameter, psiContext)
                 ).withModifiers(daModifierExtractor.extractModifiers(psiParameter))
+                .withAnnotations(extractAnnotations(psiParameter.getModifierList(), psiContext))
                 .build();
           }
         }
