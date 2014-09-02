@@ -192,6 +192,7 @@ public class JavaxExtractorImpl implements JavaxExtractor {
           public DAParameter apply(@Nullable VariableElement o) {
             return DAParameter.builder(JavaxDANameFactory.from(o.getSimpleName()), extractType(o.asType()))
                               .withModifiers(from(o.getModifiers()).transform(toDAModifier()).toSet())
+                              .withAnnotations(extractDAAnnotations(o))
                               .build();
           }
         }
@@ -292,7 +293,7 @@ public class JavaxExtractorImpl implements JavaxExtractor {
 
   @Nullable
   @Override
-  public List<DAAnnotation> extractDAAnnotations(@Nullable ExecutableElement methodElement) {
+  public List<DAAnnotation> extractDAAnnotations(@Nullable Element methodElement) {
     if (methodElement == null || methodElement.getAnnotationMirrors() == null) {
       return null;
     }

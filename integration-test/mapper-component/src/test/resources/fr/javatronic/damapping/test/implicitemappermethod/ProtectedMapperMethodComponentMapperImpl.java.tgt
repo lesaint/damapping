@@ -13,7 +13,7 @@ public class ProtectedMapperMethodComponentMapperImpl implements ProtectedMapper
 
     @Override
     @Nullable
-    public String transform(B b) {
+    public String transform(@Nullable B b) {
         return instance.transform(b);
     }
 

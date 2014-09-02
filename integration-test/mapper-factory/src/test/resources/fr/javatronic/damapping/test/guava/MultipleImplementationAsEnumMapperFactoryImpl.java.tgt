@@ -30,7 +30,7 @@ public class MultipleImplementationAsEnumMapperFactoryImpl implements MultipleIm
 
         @Override
         @Nullable
-        public Integer apply(String input) {
+        public Integer apply(@Nullable String input) {
             return instance.apply(input);
         }
 

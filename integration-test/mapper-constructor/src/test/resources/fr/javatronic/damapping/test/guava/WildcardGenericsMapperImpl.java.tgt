@@ -9,7 +9,7 @@ public class WildcardGenericsMapperImpl implements WildcardGenericsMapper {
 
     @Override
     @Nullable
-    public String apply(Optional<? extends OutOfPackage> optional) {
+    public String apply(@Nullable Optional<? extends OutOfPackage> optional) {
         return WildcardGenericsMapperFactory.instance().apply(optional);
     }
 

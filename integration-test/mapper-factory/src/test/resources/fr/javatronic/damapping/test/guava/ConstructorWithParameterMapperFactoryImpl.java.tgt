@@ -21,7 +21,7 @@ public class ConstructorWithParameterMapperFactoryImpl implements ConstructorWit
 
         @Override
         @Nullable
-        public String apply(BigDecimal bigDecimal) {
+        public String apply(@Nullable BigDecimal bigDecimal) {
             return instance.apply(bigDecimal);
         }
 

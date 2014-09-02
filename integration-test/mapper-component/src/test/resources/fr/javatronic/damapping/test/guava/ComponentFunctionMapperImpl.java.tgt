@@ -13,7 +13,7 @@ public class ComponentFunctionMapperImpl implements ComponentFunctionMapper {
 
     @Override
     @Nullable
-    public String apply(A a) {
+    public String apply(@Nullable A a) {
         return instance.apply(a);
     }
 

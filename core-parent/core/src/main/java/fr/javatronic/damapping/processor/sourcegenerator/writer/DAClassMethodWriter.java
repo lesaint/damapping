@@ -94,6 +94,7 @@ public class DAClassMethodWriter<T extends DAWriter> extends AbstractDAWriter<T>
     Iterator<DAParameter> it = params.iterator();
     while (it.hasNext()) {
       DAParameter parameter = it.next();
+      this.commons.appendInlineAnnotations(parameter.getAnnotations());
       this.commons.appendType(parameter.getType());
       commons.append(" ").append(parameter.getName());
       if (it.hasNext()) {

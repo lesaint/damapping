@@ -59,6 +59,7 @@ public class ImportListBuilder {
     }
 
     for (DAParameter parameter : daMethod.getParameters()) {
+      addImports(parameter.getAnnotations());
       addImports(parameter.getType());
     }
     if (daMethod.getReturnType() != null) {
@@ -66,6 +67,12 @@ public class ImportListBuilder {
     }
     for (DAAnnotation daAnnotation : daMethod.getAnnotations()) {
       addImport(daAnnotation.getType());
+    }
+  }
+
+  protected void addImports(@Nonnull List<DAAnnotation> annotations) {
+    for (DAAnnotation annotation : annotations) {
+      addImports(annotation.getType());
     }
   }
 

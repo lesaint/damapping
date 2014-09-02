@@ -32,7 +32,7 @@ public class MultiConstructorWithGenericsMapperFactoryImpl implements MultiConst
 
         @Override
         @Nullable
-        public Optional<String> apply(Map<C, Set<BigDecimal>> input) {
+        public Optional<String> apply(@Nullable Map<C, Set<BigDecimal>> input) {
             return instance.apply(input);
         }
 

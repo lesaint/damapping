@@ -6,6 +6,6 @@ import javax.annotation.Nullable;
 public interface ProtectedMapperMethodComponentMapper {
 
     @Nullable
-    String transform(B b);
+    String transform(@Nullable B b);
 
 }

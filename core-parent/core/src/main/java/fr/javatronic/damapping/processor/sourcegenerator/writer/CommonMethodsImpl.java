@@ -72,6 +72,22 @@ class CommonMethodsImpl implements CommonMethods {
   }
 
   @Override
+  public void appendInlineAnnotations(Collection<DAAnnotation> annotations) throws IOException {
+    if (annotations.isEmpty()) {
+      return;
+    }
+
+    Iterator<DAAnnotation> iterator = annotations.iterator();
+    while (iterator.hasNext()) {
+      bw.append("@").append(iterator.next().getType().getSimpleName());
+      if (iterator.hasNext()) {
+        bw.append(",");
+      }
+      bw.append(" ");
+    }
+  }
+
+  @Override
   public void appendType(DAType type) throws IOException {
     bw.append(type.getSimpleName());
     if (type.getExtendsBound() != null) {

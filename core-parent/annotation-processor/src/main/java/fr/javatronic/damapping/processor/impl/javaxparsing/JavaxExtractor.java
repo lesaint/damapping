@@ -70,5 +70,5 @@ public interface JavaxExtractor {
   List<DAAnnotation> extractDAAnnotations(@Nullable TypeElement classElement);
 
   @Nullable
-  List<DAAnnotation> extractDAAnnotations(@Nullable ExecutableElement methodElement);
+  List<DAAnnotation> extractDAAnnotations(@Nullable Element methodElement);
 }

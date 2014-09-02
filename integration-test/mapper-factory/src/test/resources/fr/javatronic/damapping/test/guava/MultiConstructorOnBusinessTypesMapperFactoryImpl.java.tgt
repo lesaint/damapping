@@ -27,7 +27,7 @@ public class MultiConstructorOnBusinessTypesMapperFactoryImpl implements MultiCo
 
         @Override
         @Nullable
-        public String apply(C input) {
+        public String apply(@Nullable C input) {
             return instance.apply(input);
         }
 

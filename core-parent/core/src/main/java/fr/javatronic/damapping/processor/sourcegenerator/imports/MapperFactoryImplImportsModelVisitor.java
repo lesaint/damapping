@@ -46,6 +46,7 @@ public class MapperFactoryImplImportsModelVisitor extends ImportListBuilder impl
     // mapperFactoryMethod are exposed as methods of the MapperFactory
     if (isConstructor().apply(daMethod) || isApplyWithSingleParam().apply(daMethod)) {
       for (DAParameter parameter : daMethod.getParameters()) {
+        addImports(parameter.getAnnotations());
         addImports(parameter.getType());
       }
     }

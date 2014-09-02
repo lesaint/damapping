@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.model;
 
+import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,11 +39,14 @@ public class DAParameter {
   private final DAType type;
   @Nonnull
   private final Set<DAModifier> modifiers;
+  @Nonnull
+  private final List<DAAnnotation> annotations;
 
   private DAParameter(Builder builder) {
     name = builder.name;
     type = builder.type;
     modifiers = nonNullFrom(builder.modifiers);
+    annotations = nonNullFrom(builder.annotations);
   }
 
   @Nonnull
@@ -58,6 +62,11 @@ public class DAParameter {
   @Nonnull
   public DAType getType() {
     return type;
+  }
+
+  @Nonnull
+  public List<DAAnnotation> getAnnotations() {
+    return annotations;
   }
 
   @Nonnull
@@ -104,6 +113,8 @@ public class DAParameter {
     private final DAType type;
     @Nullable
     private Set<DAModifier> modifiers;
+    @Nullable
+    private List<DAAnnotation> annotations;
 
     public Builder(@Nonnull DAName name, @Nonnull DAType type) {
       this.name = checkNotNull(name);
@@ -112,6 +123,11 @@ public class DAParameter {
 
     public Builder withModifiers(@Nullable Set<DAModifier> modifiers) {
       this.modifiers = modifiers;
+      return this;
+    }
+
+    public Builder withAnnotations(@Nullable List<DAAnnotation> annotations) {
+      this.annotations = annotations;
       return this;
     }
 

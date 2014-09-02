@@ -34,6 +34,8 @@ interface CommonMethods extends Appendable, Closeable, Flushable {
 
   void appendAnnotations(Collection<DAAnnotation> annotations) throws IOException;
 
+  void appendInlineAnnotations(Collection<DAAnnotation> annotations) throws IOException;
+
   void appendType(DAType type) throws IOException;
 
   void appendTypeArgs(List<DAType> typeArgs) throws IOException;

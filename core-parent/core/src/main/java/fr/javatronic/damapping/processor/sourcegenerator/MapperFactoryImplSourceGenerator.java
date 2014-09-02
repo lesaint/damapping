@@ -148,7 +148,8 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
                      .write();
 
     // constructor with instance parameter
-    DAParameter parameter = DAParameter.builder(DANameFactory.from("instance"), sourceClass.getType()).build();
+    DAParameter parameter = DAParameter.builder(DANameFactory.from("instance"), sourceClass.getType())
+                                       .build();
 
     mapperClassWriter.newConstructor()
                      .withModifiers(Sets.of(DAModifier.PUBLIC))

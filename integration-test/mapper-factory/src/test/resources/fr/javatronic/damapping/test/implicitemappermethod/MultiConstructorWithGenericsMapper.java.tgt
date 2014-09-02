@@ -11,6 +11,6 @@ import javax.annotation.Nullable;
 public interface MultiConstructorWithGenericsMapper {
 
     @Nullable
-    Optional<String> apply(Map<C, Set<BigDecimal>> input);
+    Optional<String> apply(@Nullable Map<C, Set<BigDecimal>> input);
 
 }

@@ -7,7 +7,7 @@ public class NonPublicMethodsMapperImpl implements NonPublicMethodsMapper {
 
     @Override
     @Nullable
-    public String apply(Integer input) {
+    public String apply(@Nullable Integer input) {
         return NonPublicMethodsMapperFactory.instance().apply(input);
     }
 

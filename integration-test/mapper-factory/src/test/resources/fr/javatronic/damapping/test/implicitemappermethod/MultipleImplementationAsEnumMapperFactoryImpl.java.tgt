@@ -1,6 +1,7 @@
 package fr.javatronic.damapping.test.implicitemappermethod;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 // GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
 public class MultipleImplementationAsEnumMapperFactoryImpl implements MultipleImplementationAsEnumMapperFactory {
@@ -30,7 +31,7 @@ public class MultipleImplementationAsEnumMapperFactoryImpl implements MultipleIm
 
         @Override
         @Nonnull
-        public Integer apply(String input) {
+        public Integer apply(@Nullable String input) {
             return instance.apply(input);
         }
 

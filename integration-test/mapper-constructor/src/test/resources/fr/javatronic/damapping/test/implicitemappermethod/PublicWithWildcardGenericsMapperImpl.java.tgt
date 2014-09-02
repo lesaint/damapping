@@ -3,13 +3,14 @@ package fr.javatronic.damapping.test.implicitemappermethod;
 import fr.javatronic.damapping.test.implicitemappermethod.subpackage.OutOfPackage;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 // GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
 public class PublicWithWildcardGenericsMapperImpl implements PublicWithWildcardGenericsMapper {
 
     @Override
     @Nonnull
-    public String transform(List<? extends OutOfPackage> entities) {
+    public String transform(@Nullable List<? extends OutOfPackage> entities) {
         return PublicWithWildcardGenericsMapperFactory.instance().transform(entities);
     }
 

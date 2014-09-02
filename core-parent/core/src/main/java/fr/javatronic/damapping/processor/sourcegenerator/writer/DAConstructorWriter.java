@@ -84,6 +84,7 @@ public class DAConstructorWriter<T extends DAWriter> extends AbstractDAWriter<T>
     Iterator<DAParameter> it = params.iterator();
     while (it.hasNext()) {
       DAParameter parameter = it.next();
+      commons.appendInlineAnnotations(parameter.getAnnotations());
       commons.appendType(parameter.getType());
       commons.append(" ").append(parameter.getName());
       if (it.hasNext()) {
