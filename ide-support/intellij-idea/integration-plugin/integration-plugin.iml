@@ -18,10 +18,12 @@
       <library name="com.google.code.findbugs:jsr305:2.0.1" type="repository">
         <properties maven-id="com.google.code.findbugs:jsr305:2.0.1" />
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../.idea/lib/jsr305-2.0.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jsr305-2.0.1.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/jsr305-2.0.1.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
   </component>
