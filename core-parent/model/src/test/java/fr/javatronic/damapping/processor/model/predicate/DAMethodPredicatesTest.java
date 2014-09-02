@@ -1,6 +1,6 @@
 package fr.javatronic.damapping.processor.model.predicate;
 
-import fr.javatronic.damapping.annotation.MapperFactoryMethod;
+import fr.javatronic.damapping.annotation.MapperFactory;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
@@ -146,7 +146,7 @@ public class DAMethodPredicatesTest {
     assertThat(
         isMapperFactoryMethod().apply(
             builder.withAnnotations(
-                ImmutableList.of(new DAAnnotation(DATypeFactory.declared(MapperFactoryMethod.class.getName())))
+                ImmutableList.of(new DAAnnotation(DATypeFactory.declared(MapperFactory.class.getName())))
             ).build()
         )
     ).isTrue();

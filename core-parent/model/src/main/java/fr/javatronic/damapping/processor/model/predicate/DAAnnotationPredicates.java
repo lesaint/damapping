@@ -1,7 +1,7 @@
 package fr.javatronic.damapping.processor.model.predicate;
 
 import fr.javatronic.damapping.annotation.Mapper;
-import fr.javatronic.damapping.annotation.MapperFactoryMethod;
+import fr.javatronic.damapping.annotation.MapperFactory;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.util.Optional;
@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 public final class DAAnnotationPredicates {
 
   private static final String MAPPER_ANNOTATION_QUALIFIEDNAME = Mapper.class.getName();
-  private static final String MAPPERFACTORYMETHOD_ANNOTATION_QUALIFIEDNAME = MapperFactoryMethod.class.getName();
+  private static final String MAPPERFACTORYMETHOD_ANNOTATION_QUALIFIEDNAME = MapperFactory.class.getName();
   private static final String SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME = "org.springframework.stereotype.Component";
 
   private DAAnnotationPredicates() {

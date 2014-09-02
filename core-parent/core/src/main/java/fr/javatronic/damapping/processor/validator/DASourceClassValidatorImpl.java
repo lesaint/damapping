@@ -59,7 +59,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
 
   @Override
   public void validateInstantiationTypeRequirements(DASourceClass daSourceClass) throws ValidationError {
-    // TODO vérifier qu'il n'y a pas d'usage illegal de @MapperFactoryMethod (ie. sur méthode non statique)
+    // TODO vérifier qu'il n'y a pas d'usage illegal de @MapperFactory (ie. sur méthode non statique)
     switch (daSourceClass.getInstantiationType()) {
       case SPRING_COMPONENT:
         // requirements are enforced by Spring
@@ -72,7 +72,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
         break;
       case CONSTRUCTOR_FACTORY:
         // TODO ajouter checks pour InstantiationType.CONSTRUCTOR_FACTORY (vérifier que pas d'autre méthode annotée
-        // avec @MapperFactoryMethod)
+        // avec @MapperFactory)
         break;
       case STATIC_FACTORY:
         // TODO ajouter checks pour InstantiationType.public_FACTORY (vérifier que pas de constructeur à paramètre)

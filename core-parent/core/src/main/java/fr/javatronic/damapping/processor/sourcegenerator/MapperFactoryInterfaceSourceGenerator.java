@@ -34,7 +34,7 @@ import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
  * MapperFactoryInterfaceSourceGenerator - Générateur du fichier source de l'interface MapperFactory générée dans le cas
- * où il existe au moins une méthode annotée avec @MapperFactoryMethod dans la class annotée avec @Mapper.
+ * où il existe au moins une méthode annotée avec @MapperFactory dans la class annotée avec @Mapper.
  *
  * @author Sébastien Lesaint
  */

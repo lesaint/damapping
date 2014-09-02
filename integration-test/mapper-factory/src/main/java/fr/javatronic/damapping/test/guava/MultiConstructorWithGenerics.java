@@ -1,7 +1,7 @@
 package fr.javatronic.damapping.test.guava;
 
 import fr.javatronic.damapping.annotation.Mapper;
-import fr.javatronic.damapping.annotation.MapperFactoryMethod;
+import fr.javatronic.damapping.annotation.MapperFactory;
 import fr.javatronic.damapping.test.guava.sub.B;
 import fr.javatronic.damapping.test.guava.sub.C;
 
@@ -20,12 +20,12 @@ import com.google.common.base.Optional;
  */
 @Mapper
 public class MultiConstructorWithGenerics implements Function<Map<C, Set<BigDecimal>>, Optional<String>> {
-  @MapperFactoryMethod
+  @MapperFactory
   public MultiConstructorWithGenerics(Set<A> as) {
     // implementation does not matter
   }
 
-  @MapperFactoryMethod
+  @MapperFactory
   public MultiConstructorWithGenerics(List<B> bs) {
     // implementation does not matter
   }

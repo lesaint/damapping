@@ -16,7 +16,7 @@
 package fr.javatronic.damapping.test.guava;
 
 import fr.javatronic.damapping.annotation.Mapper;
-import fr.javatronic.damapping.annotation.MapperFactoryMethod;
+import fr.javatronic.damapping.annotation.MapperFactory;
 
 import java.math.BigDecimal;
 import javax.annotation.Nullable;
@@ -25,7 +25,7 @@ import com.google.common.base.Function;
 /**
  * MultipleImplementationAsEnum - Exemple de mapper nécessitant d'être instancié avec un paramètre
  * (implémenté sous forme d'enum, mais ce n'est pas obligatoire, l'essentiel est que les méthodes annotées avec
- * MapperFactoryMethod soient statiques)
+ * MapperFactory soient statiques)
  *
  * @author Sébastien Lesaint
  */
@@ -36,7 +36,7 @@ public enum MultipleImplementationAsEnum implements Function<String, Integer> {
 
   private final boolean bigDecimal;
 
-  @MapperFactoryMethod
+  @MapperFactory
   public static MultipleImplementationAsEnum bigDecimal() {
     return BIG_DECIMAL;
   }
@@ -44,7 +44,7 @@ public enum MultipleImplementationAsEnum implements Function<String, Integer> {
   /**
    * Factory method
    */
-  @MapperFactoryMethod
+  @MapperFactory
   public static MultipleImplementationAsEnum integer() {
     return INTEGER;
   }
@@ -52,7 +52,7 @@ public enum MultipleImplementationAsEnum implements Function<String, Integer> {
   /**
    * Exemple de factory method à paramètre
    */
-  @MapperFactoryMethod
+  @MapperFactory
   public static MultipleImplementationAsEnum instance(boolean bigDecimal) {
     if (bigDecimal) {
       return BIG_DECIMAL;

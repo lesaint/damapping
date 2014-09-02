@@ -40,7 +40,7 @@ import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
  * MapperFactoryImplSourceGenerator - Générateur du fichier source de la classe MapperFactoryImpl générée dans le cas
- * où il existe au moins une méthode annotée avec @MapperFactoryMethod dans la class annotée avec @Mapper.
+ * où il existe au moins une méthode annotée avec @MapperFactory dans la class annotée avec @Mapper.
  *
  * @author Sébastien Lesaint
  */

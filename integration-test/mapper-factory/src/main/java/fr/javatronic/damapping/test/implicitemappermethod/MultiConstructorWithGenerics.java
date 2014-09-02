@@ -1,7 +1,7 @@
 package fr.javatronic.damapping.test.implicitemappermethod;
 
 import fr.javatronic.damapping.annotation.Mapper;
-import fr.javatronic.damapping.annotation.MapperFactoryMethod;
+import fr.javatronic.damapping.annotation.MapperFactory;
 import fr.javatronic.damapping.test.implicitemappermethod.sub.B;
 import fr.javatronic.damapping.test.implicitemappermethod.sub.C;
 
@@ -19,12 +19,12 @@ import com.google.common.base.Optional;
  */
 @Mapper
 public class MultiConstructorWithGenerics {
-  @MapperFactoryMethod
+  @MapperFactory
   public MultiConstructorWithGenerics(Set<A> as) {
     // implementation does not matter
   }
 
-  @MapperFactoryMethod
+  @MapperFactory
   public MultiConstructorWithGenerics(List<B> bs) {
     // implementation does not matter
   }

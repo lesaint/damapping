@@ -1,7 +1,7 @@
 package fr.javatronic.damapping.test.guava;
 
 import fr.javatronic.damapping.annotation.Mapper;
-import fr.javatronic.damapping.annotation.MapperFactoryMethod;
+import fr.javatronic.damapping.annotation.MapperFactory;
 import fr.javatronic.damapping.test.guava.sub.B;
 import fr.javatronic.damapping.test.guava.sub.C;
 
@@ -15,12 +15,12 @@ import com.google.common.base.Function;
  */
 @Mapper
 public class MultiConstructorOnBusinessTypes implements Function<C, String> {
-  @MapperFactoryMethod
+  @MapperFactory
   public MultiConstructorOnBusinessTypes(A a) {
     // implementation does not matter
   }
 
-  @MapperFactoryMethod
+  @MapperFactory
   public MultiConstructorOnBusinessTypes(B b) {
     // implementation does not matter
   }

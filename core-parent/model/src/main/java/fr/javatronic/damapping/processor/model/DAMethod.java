@@ -66,7 +66,7 @@ public class DAMethod implements DAModelVisitable {
    */
   private final boolean mapperMethod;
   /**
-   * Indique si cette méthode était annotée avec @MapperFactoryMethod
+   * Indique si cette méthode était annotée avec @MapperFactory
    */
   private final boolean mapperFactoryMethod;
   /**

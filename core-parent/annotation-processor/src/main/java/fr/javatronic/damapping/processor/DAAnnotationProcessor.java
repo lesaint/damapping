@@ -17,7 +17,6 @@ package fr.javatronic.damapping.processor;
 
 import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.annotation.MapperFactory;
-import fr.javatronic.damapping.annotation.MapperFactoryMethod;
 import fr.javatronic.damapping.processor.impl.AnnotationProcessor;
 import fr.javatronic.damapping.processor.impl.MapperAnnotationProcessor;
 import fr.javatronic.damapping.util.Maps;
@@ -51,8 +50,7 @@ public class DAAnnotationProcessor implements Processor {
   private static final Set<String> SUPPORTED_ANNOTATION_TYPES =
       Sets.of(
           Mapper.class.getCanonicalName(),
-          MapperFactory.class.getCanonicalName(),
-          MapperFactoryMethod.class.getCanonicalName()
+          MapperFactory.class.getCanonicalName()
       );
   private ProcessingEnvironment processingEnv;
   private Map<String, AnnotationProcessor> annotationProcessors = Maps.newHashMap();

@@ -35,11 +35,11 @@ public enum InstantiationType {
   SINGLETON_ENUM,
   /**
    * Type d'instantiation pour une classe sans constructeur par défaut mais avec un ou plusieurs
-   * constructeurs annotés avec @MapperFactoryMethod
+   * constructeurs annotés avec @MapperFactory
    */
   CONSTRUCTOR_FACTORY,
   /**
-   * Type d'instantiation pour une classe/enum avec des méthodes statiques annotées avec @MapperFactoryMethod
+   * Type d'instantiation pour une classe/enum avec des méthodes statiques annotées avec @MapperFactory
    */
   STATIC_FACTORY;
 }

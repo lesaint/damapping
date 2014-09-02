@@ -16,7 +16,7 @@
 package fr.javatronic.damapping.test.guava;
 
 import fr.javatronic.damapping.annotation.Mapper;
-import fr.javatronic.damapping.annotation.MapperFactoryMethod;
+import fr.javatronic.damapping.annotation.MapperFactory;
 
 import java.math.BigDecimal;
 import javax.annotation.Nullable;
@@ -31,7 +31,7 @@ import com.google.common.base.Function;
 public class ConstructorWithParameter implements Function<BigDecimal, String> {
   private final String salt;
 
-  @MapperFactoryMethod
+  @MapperFactory
   public ConstructorWithParameter(String salt) {
     this.salt = salt;
   }
