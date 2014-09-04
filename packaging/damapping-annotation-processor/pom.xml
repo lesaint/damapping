@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>fr.javatronic.damapping</groupId>
+  <artifactId>damapping-annotation-processor</artifactId>
+  <version>0.3.1-SNAPSHOT</version>
+  <name>DAMapping Annotation Processor</name>
+
+  <scm>
+    <connection>scm:git:https://github.com/lesaint/damapping.git</connection>
+    <developerConnection>scm:git:git@github.com:lesaint/damapping.git</developerConnection>
+    <url>https://github.com/lesaint/damapping.git</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <description>DAMapping Annotation Processor</description>
+  <url>http://damapping.javatronic.fr</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Sébastien Lesaint</name>
+    </developer>
+  </developers>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>fr.javatronic.damapping</groupId>
+      <artifactId>annotation-processor</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>fr.javatronic.damapping</groupId>
+      <artifactId>annotations</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>fr.javatronic.damapping</groupId>
+      <artifactId>model</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>fr.javatronic.damapping</groupId>
+      <artifactId>util</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>fr.javatronic.damapping</groupId>
+      <artifactId>core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>2.0.1</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>package_annotation-processor</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>fr.javatronic.damapping:annotation-processor</include>
+                  <include>fr.javatronic.damapping:annotations</include>
+                  <include>fr.javatronic.damapping:model</include>
+                  <include>fr.javatronic.damapping:core</include>
+                  <include>fr.javatronic.damapping:util</include>
+                </includes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <defaultGoal>clean install</defaultGoal>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.9.1</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <phase>package</phase>
+                <configuration>
+                  <!-- switch on dependency-driven aggregation -->
+                  <includeDependencySources>true</includeDependencySources>
+
+                  <dependencySourceExcludes>
+                    <dependencySourceExclude>com.google.code.findbugs:jsr305</dependencySourceExclude>
+                  </dependencySourceExcludes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>2.3</version>
+            <executions>
+              <!-- overwrite execution from build to also generate shaded source jar -->
+              <execution>
+                <id>package_annotation-processor</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <artifactSet>
+                    <includes>
+                      <include>fr.javatronic.damapping:annotation-processor</include>
+                      <include>fr.javatronic.damapping:annotations</include>
+                      <include>fr.javatronic.damapping:model</include>
+                      <include>fr.javatronic.damapping:core</include>
+                      <include>fr.javatronic.damapping:util</include>
+                    </includes>
+                  </artifactSet>
+                  <!--only difference with plugin config in build is that source jar is also created-->
+                  <createSourcesJar>true</createSourcesJar>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <version>2.7</version>
+            <configuration>
+              <skip>false</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
