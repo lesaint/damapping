@@ -67,8 +67,8 @@ To use DAMapping, the DAMapping annotation-processor has to be a default/compile
 ```xml
 <dependency>
     <groupId>fr.phan.damapping</groupId>
-    <artifactId>annotation-processor</artifactId>
-    <version>0.3.0</version>
+    <artifactId>damapping-annotation-processor</artifactId>
+    <version>0.3.1</version>
     <!-- scope does not need to be explicitly specified, default scope works just fine -->
     <scope>compile</scope>
 </dependency>
