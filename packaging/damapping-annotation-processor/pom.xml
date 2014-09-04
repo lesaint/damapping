@@ -4,14 +4,14 @@
 
   <groupId>fr.javatronic.damapping</groupId>
   <artifactId>damapping-annotation-processor</artifactId>
-  <version>0.3.1-SNAPSHOT</version>
+  <version>0.3.1</version>
   <name>DAMapping Annotation Processor</name>
 
   <scm>
     <connection>scm:git:https://github.com/lesaint/damapping.git</connection>
     <developerConnection>scm:git:git@github.com:lesaint/damapping.git</developerConnection>
     <url>https://github.com/lesaint/damapping.git</url>
-    <tag>HEAD</tag>
+    <tag>0.3.1</tag>
   </scm>
 
   <description>DAMapping Annotation Processor</description>
