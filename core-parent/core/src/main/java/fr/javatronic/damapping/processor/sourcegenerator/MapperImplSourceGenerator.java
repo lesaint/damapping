@@ -19,6 +19,7 @@ import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAName;
+import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.InstantiationType;
@@ -27,10 +28,11 @@ import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassMethodWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassWriter;
+import fr.javatronic.damapping.processor.sourcegenerator.writer.DAConstructorWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAStatementWriter;
 import fr.javatronic.damapping.util.Lists;
-import fr.javatronic.damapping.util.Predicate;
+import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicates;
 import fr.javatronic.damapping.util.Sets;
 
@@ -38,10 +40,10 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.Resource;
 
-import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
+import static fr.javatronic.damapping.processor.model.InstantiationType.CONSTRUCTOR;
+import static fr.javatronic.damapping.processor.model.InstantiationType.SPRING_COMPONENT;
 import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.RESOURCE_ANNOTATION;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 
@@ -63,8 +65,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
   );
 
   public MapperImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor) {
-    super(descriptor, new SourceGeneratorSupport());
-
+    this(descriptor, new SourceGeneratorSupport());
   }
 
   public MapperImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
@@ -82,30 +83,97 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     DASourceClass sourceClass = descriptor.getContext().getSourceClass();
 
     // package + imports + comment
-    DAFileWriter fileWriter = new DAFileWriter(bw)
+    DAFileWriter fileWriter = packageImportAndComment(bw, sourceClass);
+
+    // declaration de la class
+    DAClassWriter<DAFileWriter> classWriter = classDeclaration(fileWriter, sourceClass);
+
+    Optional<DAMethod> sourceClassConstructor = findSourceClassConstructor(sourceClass);
+    if (sourceClass.getInstantiationType() == CONSTRUCTOR
+        && sourceClassConstructor.isPresent() && !sourceClassConstructor.get().getParameters().isEmpty()) {
+       writeMapperWithConstructor(classWriter, sourceClass, sourceClassConstructor.get());
+    }
+    else if (sourceClass.getInstantiationType() == SPRING_COMPONENT) {
+      writeSpringComponentMapper(classWriter, sourceClass);
+    }
+    else {
+      writeSimpleMapper(classWriter, sourceClass);
+    }
+
+    // clos la classe
+    classWriter.end();
+
+    // clos le fichier
+    fileWriter.end();
+  }
+
+  private DAFileWriter packageImportAndComment(BufferedWriter bw, DASourceClass sourceClass) throws IOException {
+    return new DAFileWriter(bw)
         .appendPackage(sourceClass.getPackageName())
         .appendImports(computeMapperImplImports(descriptor, sourceClass))
         .appendWarningComment();
+  }
 
-    // declaration de la class
-    DAClassWriter<DAFileWriter> classWriter = fileWriter
+  private DAClassWriter<DAFileWriter> classDeclaration(DAFileWriter fileWriter, DASourceClass sourceClass)
+      throws IOException {
+    return fileWriter
         .newClass(descriptor.getType())
         .withAnnotations(computeAnnotations(sourceClass))
         .withImplemented(computeImplemented(sourceClass))
         .withModifiers(Sets.of(DAModifier.PUBLIC))
         .start();
+  }
 
-    // instance de la class annotée @Mapper injectée via @Resource le cas échéant
-    if (sourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT) {
-      DAType mapperType = DATypeFactory.declared(
-          sourceClass.getPackageName().getName() + "." + sourceClass.getType().getSimpleName()
-      );
-      classWriter.newProperty("instance", mapperType)
-                 .withAnnotations(Lists.of(RESOURCE_ANNOTATION))
-                 .withModifier(Sets.of(DAModifier.PRIVATE))
+  private void writeMapperWithConstructor(DAClassWriter<DAFileWriter> classWriter, DASourceClass sourceClass,
+                                          DAMethod sourceClassConstructor) throws IOException {
+    List<DAParameter> parameters = sourceClassConstructor.getParameters();
+
+    // create a final property for each parameter of the source class constructor
+    for (DAParameter daParameter : parameters) {
+      classWriter.newProperty(daParameter.getName().getName(), daParameter.getType())
+                 .withModifier(Sets.of(DAModifier.PRIVATE, DAModifier.FINAL))
                  .write();
     }
 
+    // constructor with the same parameters as the source class constructor
+    DAConstructorWriter<?> constructorWriter = classWriter.newConstructor()
+                                                          .withModifiers(Sets.of(DAModifier.PUBLIC))
+                                                          .withParams(parameters)
+                                                          .start();
+    for (DAParameter daParameter : parameters) {
+      constructorWriter.newStatement().start()
+                       .append("this.").append(daParameter.getName()).append(" = ").append(daParameter.getName()).end();
+    }
+    constructorWriter.end();
+
+
+    // mapper method
+    appendMapperMethod(sourceClass, classWriter);
+  }
+
+  private void writeSpringComponentMapper(DAClassWriter<DAFileWriter> classWriter, DASourceClass sourceClass)
+      throws IOException {
+    // instance de la class annotée @Mapper injectée via @Resource le cas échéant
+    DAType mapperType = DATypeFactory.declared(
+        sourceClass.getPackageName().getName() + "." + sourceClass.getType().getSimpleName()
+    );
+    classWriter.newProperty("instance", mapperType)
+               .withAnnotations(Lists.of(RESOURCE_ANNOTATION))
+               .withModifier(Sets.of(DAModifier.PRIVATE))
+               .write();
+
+    // mapper method
+    appendMapperMethod(sourceClass, classWriter);
+  }
+
+  private void writeSimpleMapper(DAClassWriter<DAFileWriter> classWriter, DASourceClass sourceClass)
+      throws IOException {
+    // class just implements the mapper method
+    appendMapperMethod(sourceClass, classWriter);
+  }
+
+  private void appendMapperMethod(DASourceClass sourceClass, DAClassWriter<DAFileWriter> classWriter)
+      throws IOException {
     // déclaration de la méthode mapper
     DAMethod mapperMethod = findMapperMethod(sourceClass);
     DAClassMethodWriter<?> methodWriter = classWriter
@@ -117,34 +185,14 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
 
     // retourne le résultat de la méthode apply de l'instance de la classe @Mapper
     DAStatementWriter<?> statementWriter = methodWriter.newStatement().start().append("return ");
-    switch (sourceClass.getInstantiationType()) {
-      case SINGLETON_ENUM:
-        statementWriter.append(sourceClass.getType().getSimpleName())
-            .append(".")
-            .append(sourceClass.getEnumValues().iterator().next().getName());
-        break;
-      case CONSTRUCTOR:
-        statementWriter.append("new ").append(sourceClass.getType().getSimpleName()).append("()");
-        break;
-      case SPRING_COMPONENT:
-        statementWriter.append("instance");
-        break;
-      default:
-        throw new IllegalArgumentException("Unsupported instantiation type " + sourceClass.getInstantiationType());
-    }
+    appendSourceClassReference(statementWriter, sourceClass);
     statementWriter.append(".")
-                .append(mapperMethod.getName())
-                .appendParamValues(mapperMethod.getParameters())
-                .end();
+                   .append(mapperMethod.getName())
+                   .appendParamValues(mapperMethod.getParameters())
+                   .end();
 
     // clos la méthode
     methodWriter.end();
-
-    // clos la classe
-    classWriter.end();
-
-    // clos le fichier
-    fileWriter.end();
   }
 
   private DAMethod findMapperMethod(DASourceClass sourceClass) {
@@ -154,12 +202,44 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
         .get();
   }
 
-  private String computeInstanceObject(@Nullable GeneratedFileDescriptor factoryClassDescriptor,
-                                       DASourceClass sourceClass) {
-    if (factoryClassDescriptor == null) {
-      return "instance";
+  private void appendSourceClassReference(DAStatementWriter<?> statementWriter, DASourceClass sourceClass)
+      throws IOException {
+    switch (sourceClass.getInstantiationType()) {
+      case SINGLETON_ENUM:
+        statementWriter.append(sourceClass.getType().getSimpleName())
+                       .append(".")
+                       .append(sourceClass.getEnumValues().iterator().next().getName());
+        break;
+      case CONSTRUCTOR:
+        appendConstructorCall(statementWriter, sourceClass);
+        break;
+      case SPRING_COMPONENT:
+        statementWriter.append("instance");
+        break;
+      default:
+        throw new IllegalArgumentException("Unsupported instantiation type " + sourceClass.getInstantiationType());
     }
-    return factoryClassDescriptor.getType().getSimpleName() + ".instance()";
+  }
+
+  private void appendConstructorCall(DAStatementWriter<?> statementWriter, DASourceClass sourceClass)
+      throws IOException {
+    statementWriter.append("new ");
+    statementWriter.append(sourceClass.getType().getSimpleName());
+    statementWriter.appendParamValues(findSourceClassConstructor(sourceClass).get().getParameters());
+  }
+
+  private Optional<DAMethod> findSourceClassConstructor(DASourceClass sourceClass) {
+    if (sourceClass.getInstantiationType() == InstantiationType.SINGLETON_ENUM) {
+      return Optional.absent();
+    }
+    List<DAMethod> constructors = from(sourceClass.getMethods()).filter(DAMethodPredicates.isConstructor()).toList();
+    if (constructors.size() == 0) {
+      throw new IllegalStateException("DASourceClass has no constructor at all");
+    }
+    if (constructors.size() > 1) {
+      throw new IllegalArgumentException("DASourceClass has more than one constructor");
+    }
+    return Optional.of(constructors.iterator().next());
   }
 
   private List<DAType> computeImplemented(DASourceClass daSourceClass) {
@@ -170,14 +250,14 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
   }
 
   private List<DAAnnotation> computeAnnotations(DASourceClass daSourceClass) {
-    if (daSourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT) {
+    if (daSourceClass.getInstantiationType() == SPRING_COMPONENT) {
       return Lists.of(SPRING_COMPONENT_DATYPE);
     }
     return null;
   }
 
   private List<DAName> computeMapperImplImports(GeneratedFileDescriptor descriptor, DASourceClass daSourceClass) {
-    if (daSourceClass.getInstantiationType() == InstantiationType.SPRING_COMPONENT) {
+    if (daSourceClass.getInstantiationType() == SPRING_COMPONENT) {
       List<DAName> res = Lists.copyOf(descriptor.getImports());
       res.addAll(SPRING_COMPONENT_IMPORTS);
       return res;
@@ -185,19 +265,4 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     return descriptor.getImports();
   }
 
-  private static class OverrideAnnnotationSeeker implements Predicate<DAAnnotation> {
-    private boolean found = false;
-
-    @Override
-    public boolean apply(@Nullable DAAnnotation daAnnotation) {
-      if (OVERRIDE_ANNOTATION.equals(daAnnotation)) {
-        this.found = true;
-      }
-      return true;
-    }
-
-    public boolean isFound() {
-      return found;
-    }
-  }
 }

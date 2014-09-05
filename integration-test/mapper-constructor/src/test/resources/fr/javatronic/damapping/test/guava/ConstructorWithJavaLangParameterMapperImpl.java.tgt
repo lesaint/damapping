@@ -1,0 +1,20 @@
+package fr.javatronic.damapping.test.guava;
+
+import javax.annotation.Nullable;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public class ConstructorWithJavaLangParameterMapperImpl implements ConstructorWithJavaLangParameterMapper {
+
+    private final Boolean someFlag;
+
+    public ConstructorWithJavaLangParameterMapperImpl(Boolean someFlag) {
+        this.someFlag = someFlag;
+    }
+
+    @Override
+    @Nullable
+    public String apply(@Nullable Integer input) {
+        return new ConstructorWithJavaLangParameter(someFlag).apply(input);
+    }
+
+}
