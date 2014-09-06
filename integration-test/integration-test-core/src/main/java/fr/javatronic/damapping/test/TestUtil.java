@@ -37,7 +37,7 @@ public class TestUtil {
     this.classUnderTest = classUnderTest;
   }
 
-  void checkGeneratedFile(Class<?> testcaseClass, String suffix) throws URISyntaxException, IOException {
+  public void checkGeneratedFile(Class<?> testcaseClass, String suffix) throws URISyntaxException, IOException {
     String tgtName = buildTargetFilename(suffix);
 
     URL resource = testcaseClass.getResource(tgtName);

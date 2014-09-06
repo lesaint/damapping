@@ -33,7 +33,6 @@ public interface GenerationContext {
   static final String MAPPER_INTERFACE_KEY = "MapperInterface";
   static final String MAPPER_FACTORY_INTERFACE_KEY = "MapperFactoryInterface";
   static final String MAPPER_IMPL_KEY = "MapperImpl";
-  static final String MAPPER_FACTORY_CLASS_KEY = "MapperFactoryClass";
   static final String MAPPER_FACTORY_IMPL_KEY = "MapperFactoryImpl";
 
   @Nonnull

@@ -11,7 +11,7 @@ public class PublicWithWildcardGenericsMapperImpl implements PublicWithWildcardG
     @Override
     @Nonnull
     public String transform(@Nullable List<? extends OutOfPackage> entities) {
-        return PublicWithWildcardGenericsMapperFactory.instance().transform(entities);
+        return new PublicWithWildcardGenerics().transform(entities);
     }
 
 }

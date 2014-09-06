@@ -8,7 +8,7 @@ public class ProtectedMapperImpl implements ProtectedMapper {
 
     @Override
     public InPackage fooBarDonut(Optional<? extends OutOfPackage> optional) {
-        return ProtectedMapperFactory.instance().fooBarDonut(optional);
+        return new Protected().fooBarDonut(optional);
     }
 
 }

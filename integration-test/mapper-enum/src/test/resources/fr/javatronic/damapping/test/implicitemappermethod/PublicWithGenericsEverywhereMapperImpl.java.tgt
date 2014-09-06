@@ -12,7 +12,7 @@ public class PublicWithGenericsEverywhereMapperImpl implements PublicWithGeneric
 
     @Override
     public Collection<Predicate<Map<Long, File>>> values(@Nullable Optional<Integer[]> input) {
-        return PublicWithGenericsEverywhereMapperFactory.instance().values(input);
+        return PublicWithGenericsEverywhere.INSTANCE.values(input);
     }
 
 }

@@ -7,7 +7,7 @@ public class EnumInstancedGuavaFunctionMapperImpl implements EnumInstancedGuavaF
 
     @Override
     public String apply(@Nullable Integer input) {
-        return EnumInstancedGuavaFunctionMapperFactory.instance().apply(input);
+        return EnumInstancedGuavaFunction.THE_ONE.apply(input);
     }
 
 }

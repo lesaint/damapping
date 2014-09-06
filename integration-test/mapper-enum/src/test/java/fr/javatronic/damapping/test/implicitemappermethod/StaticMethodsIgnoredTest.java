@@ -17,6 +17,8 @@ package fr.javatronic.damapping.test.implicitemappermethod;
 
 import fr.javatronic.damapping.test.AbstractMapperTest;
 
+import org.testng.annotations.Test;
+
 /**
  * GenericsEverywhereTest -
  *
@@ -26,6 +28,16 @@ public class StaticMethodsIgnoredTest extends AbstractMapperTest {
 
   public StaticMethodsIgnoredTest() {
     super(StaticMethodsIgnored.class);
+  }
+
+  @Test
+  public void check_generated_mapper_file() throws Exception {
+    testUtil.checkGeneratedFile(getClass(), "Mapper");
+  }
+
+  @Test
+  public void check_generated_mapperImpl_file() throws Exception {
+    testUtil.checkGeneratedFile(getClass(), "MapperImpl");
   }
 
 }

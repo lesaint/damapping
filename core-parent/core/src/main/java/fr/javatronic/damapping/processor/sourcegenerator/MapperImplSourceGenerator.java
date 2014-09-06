@@ -28,6 +28,7 @@ import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassMethodWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
+import fr.javatronic.damapping.processor.sourcegenerator.writer.DAStatementWriter;
 import fr.javatronic.damapping.util.Lists;
 import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Predicates;
@@ -73,11 +74,6 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
 
   @Override
   public void writeFile(@Nonnull BufferedWriter bw) throws IOException {
-    GeneratedFileDescriptor factoryClassdescriptor = descriptor.getContext()
-                                                               .getDescriptor(
-                                                                   GenerationContext.MAPPER_FACTORY_CLASS_KEY
-                                                               );
-
     // générer l'implémentation du Mapper
     //     -> nom de package
     //     -> nom de la classe (infère nom du Mapper, nom de la factory, nom de l'implémentation)
@@ -120,11 +116,23 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
         .start();
 
     // retourne le résultat de la méthode apply de l'instance de la classe @Mapper
-    methodWriter.newStatement()
-                .start()
-                .append("return ")
-                .append(computeInstanceObject(factoryClassdescriptor, sourceClass))
-                .append(".")
+    DAStatementWriter<?> statementWriter = methodWriter.newStatement().start().append("return ");
+    switch (sourceClass.getInstantiationType()) {
+      case SINGLETON_ENUM:
+        statementWriter.append(sourceClass.getType().getSimpleName())
+            .append(".")
+            .append(sourceClass.getEnumValues().iterator().next().getName());
+        break;
+      case CONSTRUCTOR:
+        statementWriter.append("new ").append(sourceClass.getType().getSimpleName()).append("()");
+        break;
+      case SPRING_COMPONENT:
+        statementWriter.append("instance");
+        break;
+      default:
+        throw new IllegalArgumentException("Unsupported instantiation type " + sourceClass.getInstantiationType());
+    }
+    statementWriter.append(".")
                 .append(mapperMethod.getName())
                 .appendParamValues(mapperMethod.getParameters())
                 .end();

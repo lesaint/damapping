@@ -16,7 +16,8 @@
 package fr.javatronic.damapping.test.guava;
 
 import fr.javatronic.damapping.test.AbstractMapperTest;
-import fr.javatronic.damapping.test.guava.EnumInstancedGuavaFunction;
+
+import org.testng.annotations.Test;
 
 /**
  * EnumInstancedGuavaFunctionTest -
@@ -27,6 +28,16 @@ public class EnumInstancedGuavaFunctionTest extends AbstractMapperTest {
 
   public EnumInstancedGuavaFunctionTest() {
     super(EnumInstancedGuavaFunction.class);
+  }
+
+  @Test
+  public void check_generated_mapper_file() throws Exception {
+    testUtil.checkGeneratedFile(getClass(), "Mapper");
+  }
+
+  @Test
+  public void check_generated_mapperImpl_file() throws Exception {
+    testUtil.checkGeneratedFile(getClass(), "MapperImpl");
   }
 
 }

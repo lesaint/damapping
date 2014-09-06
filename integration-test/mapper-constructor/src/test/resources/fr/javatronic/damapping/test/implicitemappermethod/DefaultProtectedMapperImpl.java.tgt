@@ -8,7 +8,7 @@ public class DefaultProtectedMapperImpl implements DefaultProtectedMapper {
 
     @Override
     public String apply(@Nullable OutOfPackage input) {
-        return DefaultProtectedMapperFactory.instance().apply(input);
+        return new DefaultProtected().apply(input);
     }
 
 }

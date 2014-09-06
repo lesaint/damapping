@@ -12,7 +12,7 @@ public class GenericsEverywhereMapperImpl implements GenericsEverywhereMapper {
 
     @Override
     public Collection<Predicate<Map<Long, File>>> apply(@Nullable Optional<Integer[]> input) {
-        return GenericsEverywhereMapperFactory.instance().apply(input);
+        return GenericsEverywhere.INSTANCE.apply(input);
     }
 
 }

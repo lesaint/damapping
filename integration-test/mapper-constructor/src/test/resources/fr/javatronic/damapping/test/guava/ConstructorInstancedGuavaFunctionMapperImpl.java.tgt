@@ -8,7 +8,7 @@ public class ConstructorInstancedGuavaFunctionMapperImpl implements ConstructorI
     @Override
     @Nullable
     public String apply(@Nullable Integer input) {
-        return ConstructorInstancedGuavaFunctionMapperFactory.instance().apply(input);
+        return new ConstructorInstancedGuavaFunction().apply(input);
     }
 
 }

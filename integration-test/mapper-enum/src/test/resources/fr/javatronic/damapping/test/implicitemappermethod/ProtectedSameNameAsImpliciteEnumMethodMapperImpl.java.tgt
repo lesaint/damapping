@@ -7,7 +7,7 @@ public class ProtectedSameNameAsImpliciteEnumMethodMapperImpl implements Protect
 
     @Override
     public String valueOf(@Nullable Integer input) {
-        return ProtectedSameNameAsImpliciteEnumMethodMapperFactory.instance().valueOf(input);
+        return ProtectedSameNameAsImpliciteEnumMethod.INSTANCE.valueOf(input);
     }
 
 }

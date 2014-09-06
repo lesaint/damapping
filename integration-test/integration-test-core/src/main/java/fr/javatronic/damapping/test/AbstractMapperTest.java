@@ -15,8 +15,6 @@
  */
 package fr.javatronic.damapping.test;
 
-import org.testng.annotations.Test;
-
 /**
  * AbstractMapperTest -
  *
@@ -30,19 +28,19 @@ public abstract class AbstractMapperTest {
     this.testUtil = new TestUtil(classUnderTest);
   }
 
-  @Test
-  public void check_generated_mapper_file() throws Exception {
-    testUtil.checkGeneratedFile(getClass(), "Mapper");
-  }
-
-  @Test
-  public void check_generated_mapperImpl_file() throws Exception {
-    testUtil.checkGeneratedFile(getClass(), "MapperImpl");
-  }
-
-  @Test
-  public void check_generated_mapperFactory_file() throws Exception {
-    testUtil.checkGeneratedFile(getClass(), "MapperFactory");
-  }
+//  @Test
+//  public void check_generated_mapper_file() throws Exception {
+//    testUtil.checkGeneratedFile(getClass(), "Mapper");
+//  }
+//
+//  @Test
+//  public void check_generated_mapperImpl_file() throws Exception {
+//    testUtil.checkGeneratedFile(getClass(), "MapperImpl");
+//  }
+//
+//  @Test
+//  public void check_generated_mapperFactory_file() throws Exception {
+//    testUtil.checkGeneratedFile(getClass(), "MapperFactory");
+//  }
 
 }

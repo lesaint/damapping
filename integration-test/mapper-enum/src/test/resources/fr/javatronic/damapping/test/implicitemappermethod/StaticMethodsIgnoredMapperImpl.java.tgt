@@ -5,7 +5,7 @@ public class StaticMethodsIgnoredMapperImpl implements StaticMethodsIgnoredMappe
 
     @Override
     public String map(Integer input) {
-        return StaticMethodsIgnoredMapperFactory.instance().map(input);
+        return StaticMethodsIgnored.INSTANCE.map(input);
     }
 
 }

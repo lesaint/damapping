@@ -32,10 +32,20 @@ public class DefaultProtectedMapperMethodComponentTest extends AbstractMapperTes
   }
 
   @Test
-  @Override
+  public void check_generated_mapper_file() throws Exception {
+    testUtil.checkGeneratedFile(getClass(), "Mapper");
+  }
+
+  @Test
+  public void check_generated_mapperImpl_file() throws Exception {
+    testUtil.checkGeneratedFile(getClass(), "MapperImpl");
+  }
+
+  @Test
   public void check_generated_mapperFactory_file() throws Exception {
     String tgtFilename = testUtil.buildTargetFilename("MapperFactory");
 
     assertThat(getClass().getResource(tgtFilename)).isNull();
   }
+
 }

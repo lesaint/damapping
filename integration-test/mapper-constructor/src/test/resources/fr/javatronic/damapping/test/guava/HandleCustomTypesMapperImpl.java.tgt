@@ -9,7 +9,7 @@ public class HandleCustomTypesMapperImpl implements HandleCustomTypesMapper {
     @Override
     @Nullable
     public InPackage apply(@Nullable OutOfPackage input) {
-        return HandleCustomTypesMapperFactory.instance().apply(input);
+        return new HandleCustomTypes().apply(input);
     }
 
 }

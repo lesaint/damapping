@@ -3,7 +3,6 @@ package fr.javatronic.damapping.processor.sourcegenerator;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.InstantiationType;
-import fr.javatronic.damapping.processor.sourcegenerator.imports.MapperFactoryClassImportsModelVisitor;
 import fr.javatronic.damapping.processor.sourcegenerator.imports.MapperFactoryImplImportsModelVisitor;
 import fr.javatronic.damapping.processor.sourcegenerator.imports.MapperFactoryInterfaceImportsModelVisitor;
 import fr.javatronic.damapping.processor.sourcegenerator.imports.MapperImplImportsModelVisitor;
@@ -16,7 +15,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import static fr.javatronic.damapping.processor.model.factory.DATypeFactory.declared;
-import static fr.javatronic.damapping.processor.sourcegenerator.GenerationContext.MAPPER_FACTORY_CLASS_KEY;
 import static fr.javatronic.damapping.processor.sourcegenerator.GenerationContext.MAPPER_FACTORY_IMPL_KEY;
 import static fr.javatronic.damapping.processor.sourcegenerator.GenerationContext.MAPPER_FACTORY_INTERFACE_KEY;
 import static fr.javatronic.damapping.processor.sourcegenerator.GenerationContext.MAPPER_IMPL_KEY;
@@ -87,21 +85,6 @@ public class GenerationContextComputerImpl implements GenerationContextComputer 
           )
       );
     }
-    if (shouldGenerateMapperFactoryClass(sourceClass)) {
-      res.add(
-          new DefaultGenerationContext.PartialDescriptor(
-              MAPPER_FACTORY_CLASS_KEY,
-              declared(sourceClass.getType().getQualifiedName() + "MapperFactory"),
-              getMapperFactoryClassImports(sourceClass),
-              new SourceGeneratorFactory() {
-                @Override
-                public SourceGenerator instance(GeneratedFileDescriptor descriptor) {
-                  return new MapperFactoryClassSourceGenerator(descriptor);
-                }
-              }
-          )
-      );
-    }
     if (shouldGenerateMapperFactoryImpl(sourceClass)) {
       res.add(
           new DefaultGenerationContext.PartialDescriptor(
@@ -138,20 +121,10 @@ public class GenerationContextComputerImpl implements GenerationContextComputer 
     return visitor.getImports();
   }
 
-  private static List<DAName> getMapperFactoryClassImports(DASourceClass sourceClass) {
-    MapperFactoryClassImportsModelVisitor visitor = new MapperFactoryClassImportsModelVisitor();
-    sourceClass.accept(visitor);
-    return visitor.getImports();
-  }
-
   private static List<DAName> getMapperFactoryImplImports(DASourceClass sourceClass) {
     MapperFactoryImplImportsModelVisitor visitor = new MapperFactoryImplImportsModelVisitor();
     sourceClass.accept(visitor);
     return visitor.getImports();
-  }
-
-  private boolean shouldGenerateMapperFactoryClass(DASourceClass sourceClass) {
-    return MAPPER_FACTORY_CLASS_INTANTIATIONTYPES.contains(sourceClass.getInstantiationType());
   }
 
   private boolean shouldGenerateMapperFactoryInterface(DASourceClass sourceClass) {

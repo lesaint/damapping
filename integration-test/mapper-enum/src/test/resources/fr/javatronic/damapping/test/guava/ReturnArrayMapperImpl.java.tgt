@@ -7,7 +7,7 @@ public class ReturnArrayMapperImpl implements ReturnArrayMapper {
 
     @Override
     public String[] apply(@Nullable Integer input) {
-        return ReturnArrayMapperFactory.instance().apply(input);
+        return ReturnArray.INSTANCE.apply(input);
     }
 
 }
