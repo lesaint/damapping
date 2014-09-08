@@ -18,12 +18,17 @@ import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
  *
  * @author Sébastien Lesaint
  */
-public class FluentIterable<Q> {
+public class FluentIterable<Q> implements Iterable<Q> {
   @Nonnull
   private final Iterable<Q> source;
 
   private FluentIterable(@Nullable Iterable<Q> source) {
     this.source = source;
+  }
+
+  @Override
+  public Iterator<Q> iterator() {
+    return source.iterator();
   }
 
   public static <T> FluentIterable<T> from(@Nonnull Iterable<T> from) {

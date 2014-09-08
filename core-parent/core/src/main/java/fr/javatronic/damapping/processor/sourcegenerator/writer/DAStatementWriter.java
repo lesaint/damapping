@@ -17,11 +17,18 @@ package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.util.Function;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static fr.javatronic.damapping.processor.model.function.DAParameterFunctions.toName;
+import static fr.javatronic.damapping.util.FluentIterable.from;
+import static fr.javatronic.damapping.util.Predicates.notNull;
 
 /**
  * DAStatementWriter -
@@ -63,23 +70,30 @@ public class DAStatementWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     return this;
   }
 
-  public DAStatementWriter<T> appendParamValues(List<DAParameter> params) throws IOException {
+  public DAStatementWriter<T> appendParamValues(@Nonnull List<DAParameter> params,
+                                                @Nullable Function<DAParameter, String> parameterNameFunction) throws IOException {
     if (params.isEmpty()) {
       commons.append("()");
       return this;
     }
 
+    Function<DAParameter, String> toParameterName = parameterNameFunction == null ? toName() : parameterNameFunction;
+    Iterator<String> it = from(params).transform(toParameterName).filter(notNull()).toList().iterator();
+
     commons.append("(");
-    Iterator<DAParameter> it = params.iterator();
     while (it.hasNext()) {
-      DAParameter parameter = it.next();
-      commons.append(parameter.getName());
+      String parameterName = it.next();
+      commons.append(parameterName);
       if (it.hasNext()) {
         commons.append(", ");
       }
     }
     commons.append(")");
     return this;
+  }
+
+  public DAStatementWriter<T> appendParamValues(@Nonnull List<DAParameter> params) throws IOException {
+    return appendParamValues(params, null);
   }
 
   public T end() throws IOException {

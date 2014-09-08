@@ -14,7 +14,7 @@ public class ConstructorWithJavaLangParameterMapperImpl implements ConstructorWi
     @Override
     @Nullable
     public String apply(@Nullable Integer input) {
-        return new ConstructorWithJavaLangParameter(someFlag).apply(input);
+        return new ConstructorWithJavaLangParameter(this.someFlag).apply(input);
     }
 
 }

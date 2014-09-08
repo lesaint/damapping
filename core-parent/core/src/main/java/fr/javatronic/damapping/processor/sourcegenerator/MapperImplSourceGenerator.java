@@ -45,6 +45,7 @@ import javax.annotation.Resource;
 import static fr.javatronic.damapping.processor.model.InstantiationType.CONSTRUCTOR;
 import static fr.javatronic.damapping.processor.model.InstantiationType.SPRING_COMPONENT;
 import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.RESOURCE_ANNOTATION;
+import static fr.javatronic.damapping.processor.model.function.DAParameterFunctions.toNamePrefixedWithThis;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
@@ -225,7 +226,10 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
       throws IOException {
     statementWriter.append("new ");
     statementWriter.append(sourceClass.getType().getSimpleName());
-    statementWriter.appendParamValues(findSourceClassConstructor(sourceClass).get().getParameters());
+    statementWriter.appendParamValues(
+        findSourceClassConstructor(sourceClass).get().getParameters(),
+        toNamePrefixedWithThis()
+    );
   }
 
   private Optional<DAMethod> findSourceClassConstructor(DASourceClass sourceClass) {
@@ -264,5 +268,4 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     }
     return descriptor.getImports();
   }
-
 }
