@@ -1,0 +1,86 @@
+package fr.javatronic.damapping.processor.impl.javaxparsing;
+
+import fr.javatronic.damapping.processor.model.DASourceClass;
+import fr.javatronic.damapping.processor.model.DAType;
+
+import java.util.Collections;
+import java.util.Set;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.lang.model.element.TypeElement;
+
+import static fr.javatronic.damapping.processor.impl.javaxparsing.ParsingStatus.FAILED;
+import static fr.javatronic.damapping.processor.impl.javaxparsing.ParsingStatus.HAS_UNRESOLVED;
+import static fr.javatronic.damapping.processor.impl.javaxparsing.ParsingStatus.OK;
+import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
+
+/**
+ * ParsingResult -
+ *
+ * @author Sébastien Lesaint
+ */
+public class ParsingResult {
+  @Nonnull
+  private final TypeElement classElement;
+  @Nonnull
+  private final ParsingStatus parsingStatus;
+  @Nonnull
+  private final Set<DAType> unresolved;
+  @Nullable
+  private final DAType type;
+  @Nullable
+  private final DASourceClass sourceClass;
+
+  private ParsingResult(@Nonnull TypeElement classElement,
+                        @Nonnull ParsingStatus parsingStatus,
+                        @Nullable Set<DAType> unresolved,
+                        @Nullable DAType type,
+                        @Nullable DASourceClass sourceClass) {
+    this.classElement = checkNotNull(classElement);
+    this.parsingStatus = checkNotNull(parsingStatus);
+    this.unresolved = unresolved == null ? Collections.<DAType>emptySet() : Collections.unmodifiableSet(unresolved);
+    this.type = type;
+    this.sourceClass = sourceClass;
+  }
+
+  public static ParsingResult failed(TypeElement classElement) {
+    return new ParsingResult(classElement, FAILED, null, null, null);
+  }
+
+  public static ParsingResult failed(TypeElement classElement, @Nullable DAType daType) {
+    return new ParsingResult(classElement, FAILED, null, daType, null);
+  }
+
+  public static ParsingResult ok(TypeElement classElement, DASourceClass sourceClass) {
+    return new ParsingResult(classElement, OK, null, sourceClass.getType(), sourceClass);
+  }
+
+  public static ParsingResult later(TypeElement classElement, DASourceClass sourceClass, Set<DAType> unresolved) {
+    return new ParsingResult(classElement, HAS_UNRESOLVED, unresolved, sourceClass.getType(), null);
+  }
+
+  @Nonnull
+  public TypeElement getClassElement() {
+    return classElement;
+  }
+
+  @Nonnull
+  public ParsingStatus getParsingStatus() {
+    return parsingStatus;
+  }
+
+  @Nonnull
+  public Set<DAType> getUnresolved() {
+    return unresolved;
+  }
+
+  @Nullable
+  public DAType getType() {
+    return type;
+  }
+
+  @Nullable
+  public DASourceClass getSourceClass() {
+    return sourceClass;
+  }
+}

@@ -1,5 +1,6 @@
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
+import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.processor.model.DAInterface;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAName;
@@ -7,11 +8,11 @@ import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.util.Function;
-import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicates;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -32,36 +33,37 @@ import static fr.javatronic.damapping.util.FluentIterable.from;
  * @author Sébastien Lesaint
  */
 public class JavaxParsingServiceImpl implements JavaxParsingService {
-  private final ProcessingEnvironment processingEnv;
-  private final JavaxExtractor javaxExtractor;
+  @Nonnull
+  private final ProcessingEnvironmentWrapper processingEnv;
+  @Nullable
+  private final Map<DAType, DAType> fixedResolutions;
 
-  public JavaxParsingServiceImpl(ProcessingEnvironment processingEnv,
-                                 JavaxExtractor javaxExtractor) {
-    this.processingEnv = processingEnv;
-    this.javaxExtractor = javaxExtractor;
-  }
-
-  public JavaxParsingServiceImpl(ProcessingEnvironment processingEnv) {
-    this(processingEnv, new JavaxExtractorImpl(processingEnv.getTypeUtils()));
+  public JavaxParsingServiceImpl(@Nonnull ProcessingEnvironment processingEnv, @Nullable Map<DAType, DAType> fixedResolutions) {
+    this.processingEnv = new ProcessingEnvironmentWrapper(processingEnv);
+    this.fixedResolutions = fixedResolutions;
   }
 
   @Nonnull
-  public Optional<DASourceClass> parse(TypeElement classElement) {
+  public ParsingResult parse(TypeElement classElement) {
+    JavaxExtractorImpl javaxExtractor = new JavaxExtractorImpl(processingEnv.getTypeUtils(), fixedResolutions);
+    DAType type = null;
     try {
-      return Optional.of(parseImpl(classElement));
+      type = javaxExtractor.extractType(classElement.asType());
+      DASourceClass daSourceClass = parseImpl(classElement, type, javaxExtractor);
+
+      if (javaxExtractor.getUnresolvedTypes().isEmpty()) {
+        return ParsingResult.ok(classElement, daSourceClass);
+      }
+      return ParsingResult.later(classElement, daSourceClass, javaxExtractor.getUnresolvedTypes());
     }
-    catch (SourceHasErrorException e) {
-      processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
-          "Found one TypeMirror with TypeKind ERROR", classElement
-      );
-      return Optional.absent();
+    catch (Exception e) {
+      processingEnv.printMessage(Mapper.class, classElement, e);
+      return ParsingResult.failed(classElement, type);
     }
   }
 
   @Nonnull
-  private DASourceClass parseImpl(TypeElement classElement) {
-    DAType type = javaxExtractor.extractType(classElement.asType());
-
+  private DASourceClass parseImpl(TypeElement classElement, DAType type, JavaxExtractor javaxExtractor) {
     DASourceClass.Builder<?> builder;
     if (classElement.getKind() == ElementKind.ENUM) {
       builder = DASourceClass.enumBuilder(type, javaxExtractor.extractEnumValues(classElement));
@@ -84,20 +86,20 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
 
     // retrieve interfaces implemented (directly and if any) by the class with @Mapper (+ their generics)
     // chercher si l'une d'elles est Function (Guava)
-    List<DAInterface> interfaces = retrieveInterfaces(classElement);
+    List<DAInterface> interfaces = retrieveInterfaces(classElement, javaxExtractor);
     builder.withInterfaces(interfaces);
 
     // pour le moment, on ne traite pas les classes abstraites implémentées par la class @Mapper ni les interfaces
     // implémentées indirectement
 
-    List<DAMethod> methods = retrieveMethods(classElement);
+    List<DAMethod> methods = retrieveMethods(classElement, javaxExtractor);
     builder.withMethods(methods);
     return builder.build();
   }
 
-  @Override
   @Nonnull
-  public List<DAMethod> retrieveMethods(final TypeElement classElement) {
+  private List<DAMethod> retrieveMethods(final TypeElement classElement,
+                                         final JavaxExtractor javaxExtractor) {
     if (classElement.getEnclosedElements() == null) {
       return Collections.emptyList();
     }
@@ -160,8 +162,8 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
     );
   }
 
-  @Override
-  public List<DAInterface> retrieveInterfaces(final TypeElement classElement) {
+  private List<DAInterface> retrieveInterfaces(final TypeElement classElement,
+                                               final JavaxExtractor javaxExtractor) {
     List<? extends TypeMirror> interfaces = classElement.getInterfaces();
     if (interfaces == null) {
       return Collections.emptyList();
@@ -185,8 +187,7 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
     ).filter(Predicates.notNull()).toList();
   }
 
-  @Override
-  public DAName retrievePackageName(TypeElement classElement) {
+  private DAName retrievePackageName(TypeElement classElement) {
     PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();
     return JavaxDANameFactory.from(packageElement.getQualifiedName());
   }

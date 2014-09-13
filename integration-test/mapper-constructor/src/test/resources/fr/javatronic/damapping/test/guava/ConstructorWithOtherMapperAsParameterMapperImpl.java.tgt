@@ -1,0 +1,20 @@
+package fr.javatronic.damapping.test.guava;
+
+import javax.annotation.Nullable;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public class ConstructorWithOtherMapperAsParameterMapperImpl implements ConstructorWithOtherMapperAsParameterMapper {
+
+    private final NonPublicMethodsMapper nonPublicMethodsMapper;
+
+    public ConstructorWithOtherMapperAsParameterMapperImpl(@Nullable NonPublicMethodsMapper nonPublicMethodsMapper) {
+        this.nonPublicMethodsMapper = nonPublicMethodsMapper;
+    }
+
+    @Override
+    @Nullable
+    public String apply(@Nullable Integer input) {
+        return new ConstructorWithOtherMapperAsParameter(this.nonPublicMethodsMapper).apply(input);
+    }
+
+}

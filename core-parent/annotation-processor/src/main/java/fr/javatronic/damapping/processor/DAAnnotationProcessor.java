@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.Completion;
-import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
@@ -36,7 +35,6 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
 /**
@@ -78,25 +76,28 @@ public class DAAnnotationProcessor implements Processor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-//        investigatingLogging(annotations, roundEnv);
 
-    if (roundEnv.processingOver()) {
-      return false;
-    }
+    processNewElements(annotations, roundEnv);
+    processPostponed(roundEnv.processingOver());
 
-    Filer filer = processingEnv.getFiler();
-    Messager messager = processingEnv.getMessager();
-    Elements elementUtils = processingEnv.getElementUtils();
+    return true;
+  }
 
+  private void processNewElements(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
     for (TypeElement annotation : annotations) {
       AnnotationProcessor annotationProcessor = annotationProcessors.get(annotation.getQualifiedName().toString());
 //            System.out.println("looking up AnnotationProcessor for " + annotation.getQualifiedName() + " in " +
 // annotationProcessors + " found=" + annotationProcessor);
       if (annotationProcessor != null) {
-        annotationProcessor.processAll(annotation, roundEnv);
+        annotationProcessor.processNewElements(annotation, roundEnv);
       }
     }
-    return true;
+  }
+
+  private void processPostponed(boolean lastRound) {
+    for (AnnotationProcessor annotationProcessor : annotationProcessors.values()) {
+      annotationProcessor.processPostponed(lastRound);
+    }
   }
 
   private void investigatingLogging(Set<? extends TypeElement> typeElements, RoundEnvironment roundEnv) {

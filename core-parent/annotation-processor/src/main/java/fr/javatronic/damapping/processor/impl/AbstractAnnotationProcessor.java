@@ -15,20 +15,15 @@
  */
 package fr.javatronic.damapping.processor.impl;
 
-import fr.javatronic.damapping.util.FluentIterable;
-import fr.javatronic.damapping.util.Optional;
-import fr.javatronic.damapping.util.Predicate;
+import fr.javatronic.damapping.processor.impl.javaxparsing.ProcessingEnvironmentWrapper;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.Set;
-import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
 
 /**
  * AbstractAnnotationProcessor -
@@ -36,28 +31,22 @@ import javax.tools.Diagnostic;
  * @author lesaint
  */
 public abstract class AbstractAnnotationProcessor<T extends Annotation> implements AnnotationProcessor {
-  protected final ProcessingEnvironment processingEnv;
+  protected final ProcessingEnvironmentWrapper processingEnv;
   private final Class<T> annotationType;
 
   protected AbstractAnnotationProcessor(ProcessingEnvironment processingEnv, Class<T> annotationType) {
-    this.processingEnv = processingEnv;
+    this.processingEnv = new ProcessingEnvironmentWrapper(processingEnv);
     this.annotationType = annotationType;
   }
 
   @Override
-  public void processAll(final TypeElement annotation, RoundEnvironment roundEnv) {
+  public void processNewElements(final TypeElement annotation, RoundEnvironment roundEnv) {
     Set<? extends Element> elementsAnnotatedWith = roundEnv.getElementsAnnotatedWith(annotationType);
     for (Element element : elementsAnnotatedWith) {
       try {
-        process(element, roundEnv);
+        processNewElement(element, roundEnv);
       } catch (Exception e) {
-        // In Maven, this message is actually not visible, I don't know yet about Oracle javac or Open JDK
-        processingEnv.getMessager().printMessage(
-            Diagnostic.Kind.ERROR,
-            buildErrorMessage(e, annotation),
-            element,
-            getAnnotationMirror(annotation, element)
-        );
+        processingEnv.printMessage(annotation, element, e);
         throw new RuntimeException(
             String.format(
                 "Exception occured while processing annotation @%s on %s",
@@ -70,56 +59,6 @@ public abstract class AbstractAnnotationProcessor<T extends Annotation> implemen
     }
   }
 
-  /**
-   * Produit un message d'erreur indiquant que le traitement de l'annoation {@code annotation} a échoué avec
-   * l'exception indiquée et précise la première ligne de la stacktrace si l'information est disponible.
-   *
-   * @param e          l'{@link Exception} capturée
-   * @param annotation un {@link TypeElement} représentation la classe d'une annotation
-   *
-   * @return une {@link String}
-   */
-  private static String buildErrorMessage(Exception e, TypeElement annotation) {
-    StackTraceElement[] stackTrace = e.getStackTrace();
-    StringBuilder builder = new StringBuilder()
-        .append("Processing of annotation ")
-        .append(annotation.getSimpleName())
-        .append(" : ")
-        .append(e);
-    if (stackTrace.length > 0) {
-      builder.append(" at ").append(stackTrace[0]);
-    }
-    return builder.toString();
-  }
+  protected abstract void processNewElement(Element element, RoundEnvironment roundEnv) throws IOException;
 
-  /**
-   * Récupère l'AnnotationMirror sur l'Element spécifié qui correspond à l'annotation traitée par
-   * l'AnnotationProcessor dont le TypeElement est spécifié.
-   * </p>
-   * Cela permet de connaitre la ligne dans les sources où se trouver l'annotation traitée et de contextualiser
-   * encore plus finement le message d'erreur à la compilation.
-   *
-   * @param annotation un {@link TypeElement} représentation la classe d'une annotation
-   * @param element    un {@link Element} sur lequel est posé l'annotation
-   *
-   * @return un {@link AnnotationMirror} ou {@code null}
-   */
-  @Nullable
-  private AnnotationMirror getAnnotationMirror(final TypeElement annotation, final Element element) {
-    Optional<? extends AnnotationMirror> annotationMirror = FluentIterable
-        .from(element.getAnnotationMirrors())
-        .filter(new Predicate<AnnotationMirror>() {
-          @Override
-          public boolean apply(@Nullable AnnotationMirror o) {
-            return processingEnv.getTypeUtils().isSameType(o.getAnnotationType(), annotation.asType());
-          }
-        }
-        ).first();
-    if (annotationMirror.isPresent()) {
-      return annotationMirror.get();
-    }
-    return null;
-  }
-
-  protected abstract void process(Element element, RoundEnvironment roundEnv) throws IOException;
 }

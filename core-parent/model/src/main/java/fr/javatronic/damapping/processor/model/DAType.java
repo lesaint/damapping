@@ -80,6 +80,15 @@ public class DAType {
   }
 
   @Nonnull
+  public String getPackageName() {
+    if (qualifiedName == null) {
+      return "";
+    }
+    String str = qualifiedName.getName();
+    return str.substring(0, str.length() - (simpleName.length() + 1));
+  }
+
+  @Nonnull
   public List<DAType> getTypeArgs() {
     return typeArgs;
   }

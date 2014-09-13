@@ -24,5 +24,7 @@ import javax.lang.model.element.TypeElement;
  * @author lesaint
  */
 public interface AnnotationProcessor {
-  void processAll(TypeElement annotation, RoundEnvironment roundEnv);
+  void processNewElements(TypeElement annotation, RoundEnvironment roundEnv);
+
+  void processPostponed(boolean lastRound);
 }

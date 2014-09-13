@@ -17,7 +17,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.WildcardType;
 
@@ -29,9 +28,6 @@ import javax.lang.model.type.WildcardType;
 public interface JavaxExtractor {
   @Nonnull
   DAType extractType(TypeMirror type);
-
-  @Nonnull
-  DAType extractType(TypeMirror type, Element element);
 
   @Nonnull
   DAType extractWildcardType(WildcardType wildcardType);
@@ -58,12 +54,6 @@ public interface JavaxExtractor {
   DAName extractSimpleName(TypeMirror type, Element element);
 
   @Nullable
-  DAName extractQualifiedName(TypeMirror type, Element element);
-
-  @Nullable
-  DAName extractQualifiedName(DeclaredType o);
-
-  @Nullable
   List<DAEnumValue> extractEnumValues(@Nonnull TypeElement classElement);
 
   @Nullable
@@ -71,4 +61,7 @@ public interface JavaxExtractor {
 
   @Nullable
   List<DAAnnotation> extractDAAnnotations(@Nullable Element methodElement);
+
+  @Nonnull
+  Set<DAType> getUnresolvedTypes();
 }

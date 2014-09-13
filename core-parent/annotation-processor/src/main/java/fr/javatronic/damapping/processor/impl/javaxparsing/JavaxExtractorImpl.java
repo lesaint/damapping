@@ -10,10 +10,14 @@ import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.util.Function;
+import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicates;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,6 +37,7 @@ import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Types;
 
 import static fr.javatronic.damapping.util.FluentIterable.from;
+import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 import static fr.javatronic.damapping.util.Predicates.notNull;
 
 
@@ -42,7 +47,12 @@ import static fr.javatronic.damapping.util.Predicates.notNull;
  * @author Sébastien Lesaint
  */
 public class JavaxExtractorImpl implements JavaxExtractor {
+  @Nonnull
   private final Types typeUtils;
+  @Nonnull
+  private final Map<DAType, DAType> fixedResolutions;
+  @Nonnull
+  private final Set<DAType> unresolved = new HashSet<DAType>();
 
   private final Function<AnnotationMirror, DAAnnotation> annotationMirrorToDAAnnotation = new Function<AnnotationMirror, DAAnnotation>() {
     @Nullable
@@ -55,34 +65,44 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     }
   };
 
-  public JavaxExtractorImpl(Types typeUtils) {
-    this.typeUtils = typeUtils;
-  }
-
-  private void checkKind(TypeMirror o) {
-    if (o.getKind() == TypeKind.ERROR) {
-      throw new SourceHasErrorException(o);
-    }
+  public JavaxExtractorImpl(@Nonnull Types typeUtils, @Nullable Map<DAType, DAType> fixedResolutions) {
+    this.typeUtils = checkNotNull(typeUtils);
+    this.fixedResolutions = fixedResolutions == null ? Collections.<DAType, DAType>emptyMap() : new HashMap<DAType, DAType>(fixedResolutions);
   }
 
   @Override
   @Nonnull
   public DAType extractType(TypeMirror type) {
-    checkKind(type);
-
     Element element = typeUtils.asElement(type);
     if (type.getKind() == TypeKind.ARRAY) {
       element = typeUtils.asElement(((ArrayType) type).getComponentType());
     }
 
-    return extractType(type, element);
+    DAType res = extractType(type, element);
+    if (res.getKind() == DATypeKind.ERROR) {
+      Optional<DAType> fixedResolution = findFixedResolutionBySimpleName(res);
+      if (fixedResolution.isPresent()) {
+        // FIXME here can not just return the type from the fixedResolutions map
+        // current DAType may have specific typeArguments, bounds
+        // we must take only the kind and qualified name from the DAType found in fixedResolution
+        return fixedResolution.get();
+      }
+      unresolved.add(res);
+    }
+    return res;
   }
 
-  @Override
   @Nonnull
-  public DAType extractType(TypeMirror type, Element element) {
-    checkKind(type);
+  private Optional<DAType> findFixedResolutionBySimpleName(DAType unresolvedType) {
+    if (fixedResolutions.isEmpty()) {
+      return Optional.absent();
+    }
 
+    return Optional.fromNullable(fixedResolutions.get(unresolvedType));
+  }
+
+  @Nonnull
+  private DAType extractType(TypeMirror type, Element element) {
     if (type.getKind() == TypeKind.VOID) {
       return DATypeFactory.voidDaType();
     }
@@ -224,26 +244,14 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     return JavaxDANameFactory.from(element.getSimpleName());
   }
 
-  @Override
   @Nullable
-  public DAName extractQualifiedName(TypeMirror type, Element element) {
-    checkKind(type);
-
+  private DAName extractQualifiedName(TypeMirror type, Element element) {
     if (type.getKind().isPrimitive()) {
       // primitive types do not have a qualifiedName by definition
       return null;
     }
     if (element instanceof QualifiedNameable) {
       return JavaxDANameFactory.from(((QualifiedNameable) element).getQualifiedName());
-    }
-    return null;
-  }
-
-  @Override
-  @Nullable
-  public DAName extractQualifiedName(DeclaredType o) {
-    if (o.asElement() instanceof QualifiedNameable) {
-      return JavaxDANameFactory.from(((QualifiedNameable) o.asElement()).getQualifiedName());
     }
     return null;
   }
@@ -298,5 +306,11 @@ public class JavaxExtractorImpl implements JavaxExtractor {
       return null;
     }
     return from(methodElement.getAnnotationMirrors()).transform(toDAAnnotation()).filter(notNull()).toList();
+  }
+
+  @Nonnull
+  @Override
+  public Set<DAType> getUnresolvedTypes() {
+    return unresolved;
   }
 }
