@@ -19,7 +19,7 @@ DAMapping is implemented in three complementary components:
 
 To find out more about how and why we got to the DAMapping manifesto and get more details on how to use DAMapping, see the [why and how presentation](http://www.javatronic.fr/damapping/presentations/damapping_why_and_how.html).
 
-## Super quick how-to-use
+## How to use
 
 Write a class dedicated to implementing the mapping from one type to another. Add the DAMapping `@Mapper` annotation to it:
 
@@ -35,28 +35,32 @@ public class BarToBundy {
 
 DAMapping generates for you a `BarToBundyMapper` interface and a `BarToBundyMapperImpl` class implementing `BarToBundyMapper`.
 
-Now use the `BarToBundyMapper` type wherever you need to convert a `Bar` object to new `Bundy` object, with the benefits of excellent testability:
+Now use the `BarToBundyMapper` type wherever you need to convert a `Bar` object to new `Bundy` object, especially in
+another class annotated with ```@Mapper```, with the benefits of excellent testability.
+
+Note that Guavas's ```Function``` interface is natively supported.
 
 ```java
-public class MyService {
-    private final BarProvider barProvider;
+@Mapper
+public class FooToAcme implements Function<Foo, Acme> {
     private final BarToBundyMapper barToBundyMapper;
 
-    public MyService(BarProvider barProvider, BarToBundyMapper barToBundyMapper) {
-        this.barProvider = barProvider;
+    public FooToAcme(BarToBundyMapper barToBundyMapper) {
         this.barToBundyMapper = barToBundyMapper;
     }
 
-    public Bundy search(String barId) {
-        Bar bar = barProvider.findById(barId);
-        return barToBundyMapper.apply(bar);
+    @Nullable
+    public Acme apply(@Nullable Foo input) {
+         // implement mapping code using barToBundyMapper somehow here
     }
 }
 ```
 
+### Resources
+
 To find out more on how to use DAMappping and why, see the [why and how presentation](http://www.javatronic.fr/damapping/presentations/damapping_why_and_how.html).
 
-
+You can also check the sample Maven project [here](https://github.com/lesaint/damapping-samples/tree/master/maven-project).
 
 ## Installation
 
