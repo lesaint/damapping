@@ -24,10 +24,10 @@ import org.testng.annotations.Test;
  *
  * @author lesaint
  */
-public class ConstructorWithOtherMapperAsParameterTest extends AbstractMapperTest {
+public class ConstructorWithMapperAsParameterTest extends AbstractMapperTest {
 
-  public ConstructorWithOtherMapperAsParameterTest() {
-    super(ConstructorWithOtherMapperAsParameter.class);
+  public ConstructorWithMapperAsParameterTest() {
+    super(ConstructorWithMapperAsParameter.class);
   }
 
   @Test
