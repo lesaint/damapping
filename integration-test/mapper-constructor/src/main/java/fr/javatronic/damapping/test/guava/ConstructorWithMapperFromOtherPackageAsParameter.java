@@ -16,28 +16,29 @@
 package fr.javatronic.damapping.test.guava;
 
 import fr.javatronic.damapping.annotation.Mapper;
+import fr.javatronic.damapping.test.implicitemappermethod.DefaultProtected;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.google.common.base.Function;
 
 /**
  * WildcardGenerics - Demonstrates support for a class annotated with {@code @Mapper} which declares no default
- * constructor but a constructor with a single parameter which is itself a generate Mapper interface.
+ * constructor but a constructor with a single parameter which is itself a generate Mapper interface from another
+ * package.
  * <p>
  * This coding structure (ie. a dedicated class using a generated Mapper interface) is the basic pattern for mapping
  * trees of beans.
  * </p>
- * This class also demonstrates how annotations(s) on constructor paramters are also present on the generated
- * MapperImpl constructor.
  *
  * @author Sébastien Lesaint
  */
 @Mapper
-public class ConstructorWithOtherMapperAsParameter implements Function<Integer, String> {
-  private final NonPublicMethodsMapper nonPublicMethodsMapper;
+public class ConstructorWithMapperFromOtherPackageAsParameter implements Function<Integer, String> {
+  private final DefaultProtected defaultProtected;
 
-  public ConstructorWithOtherMapperAsParameter(@Nullable NonPublicMethodsMapper nonPublicMethodsMapper) {
-    this.nonPublicMethodsMapper = nonPublicMethodsMapper;
+  public ConstructorWithMapperFromOtherPackageAsParameter(@Nonnull DefaultProtected defaultProtected) {
+    this.defaultProtected = defaultProtected;
   }
 
   @Nullable
