@@ -102,6 +102,18 @@
                   <include>fr.javatronic.damapping:util</include>
                 </includes>
               </artifactSet>
+              <filters>
+                <filter>
+                  <artifact>fr.javatronic.damapping:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/maven/fr.javatronic.damapping/annotation-processor/**</exclude>
+                    <exclude>META-INF/maven/fr.javatronic.damapping/annotations/**</exclude>
+                    <exclude>META-INF/maven/fr.javatronic.damapping/model/**</exclude>
+                    <exclude>META-INF/maven/fr.javatronic.damapping/core/**</exclude>
+                    <exclude>META-INF/maven/fr.javatronic.damapping/util/**</exclude>
+                  </excludes>
+                </filter>
+              </filters>
             </configuration>
           </execution>
         </executions>
@@ -173,6 +185,18 @@
                       <include>fr.javatronic.damapping:util</include>
                     </includes>
                   </artifactSet>
+                  <filters>
+                    <filter>
+                      <artifact>fr.javatronic.damapping:*</artifact>
+                      <excludes>
+                        <exclude>META-INF/maven/fr.javatronic.damapping/annotation-processor/**</exclude>
+                        <exclude>META-INF/maven/fr.javatronic.damapping/annotations/**</exclude>
+                        <exclude>META-INF/maven/fr.javatronic.damapping/model/**</exclude>
+                        <exclude>META-INF/maven/fr.javatronic.damapping/core/**</exclude>
+                        <exclude>META-INF/maven/fr.javatronic.damapping/util/**</exclude>
+                      </excludes>
+                    </filter>
+                  </filters>
                   <!--only difference with plugin config in build is that source jar is also created-->
                   <createSourcesJar>true</createSourcesJar>
                 </configuration>
