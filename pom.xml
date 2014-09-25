@@ -21,6 +21,7 @@
     </developer>
   </developers>
   <url>http://damapping.javatronic.fr</url>
+  <inceptionYear>2013</inceptionYear>
 
   <scm>
     <connection>scm:git:https://github.com/lesaint/damapping.git</connection>
@@ -190,6 +191,31 @@
           <skip>true</skip>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <configuration>
+          <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
+          <properties>
+            <owner>Sébastien Lesaint</owner>
+          </properties>
+          <excludes>
+            <exclude>Resources.txt</exclude>
+            <exclude>licence.txt</exclude>
+            <exclude>**/*.md</exclude>
+            <exclude>**/META-INF/plugin.xml</exclude>
+            <exclude>src/test/resources/**</exclude>
+            <exclude>src/main/resources/**</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
@@ -222,6 +248,32 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
           <version>2.7</version>
+        </plugin>
+        <plugin>
+          <groupId>com.mycila</groupId>
+          <artifactId>license-maven-plugin</artifactId>
+          <version>2.6</version>
+          <configuration>
+            <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
+            <properties>
+              <owner>Sébastien Lesaint</owner>
+              <email>http://www.javatronic.fr/</email>
+            </properties>
+            <excludes>
+              <exclude>**/README</exclude>
+              <exclude>src/test/resources/**</exclude>
+              <exclude>src/main/resources/**</exclude>
+            </excludes>
+          </configuration>
+          <executions>
+            <execution>
+              <id>add_or_update_license_headers</id>
+              <goals>
+                <goal>format</goal>
+              </goals>
+              <phase>process-sources</phase>
+            </execution>
+          </executions>
         </plugin>
         <!--plugin requis pour utiliser APT, ce qui n'est plus nécessaire depuis java 6-->
         <!--<plugin>-->
