@@ -1,43 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>fr.javatronic.damapping</groupId>
-        <artifactId>integration-test</artifactId>
-        <version>0.4.0-SNAPSHOT</version>
-    </parent>
+  <parent>
+    <groupId>fr.javatronic.damapping</groupId>
+    <artifactId>integration-test</artifactId>
+    <version>0.4.0-SNAPSHOT</version>
+  </parent>
 
-    <artifactId>mapper-enum</artifactId>
-    <name>Integration tests - enum @Mapper</name>
-    <description>tests de génération de fichiers java pour une enum annotée avec @Mapper</description>
+  <artifactId>mapper-enum</artifactId>
+  <name>Integration tests - enum @Mapper</name>
+  <description>tests de génération de fichiers java pour une enum annotée avec @Mapper</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>integration-test-core</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
-                    <compilerArgs>
-                        <!--option non standard qui permet d'afficher des informations sur le traitement des annotations par les processeurs-->
-                        <compilerArg>-XprintRounds</compilerArg>
-                        <!--option non standard qui affiche la liste des annotations qui seront traitées par les processeurs d'annotations-->
-                        <compilerArg>-XprintProcessorInfo</compilerArg>
-                    </compilerArgs>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>integration-test-core</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 </project>
