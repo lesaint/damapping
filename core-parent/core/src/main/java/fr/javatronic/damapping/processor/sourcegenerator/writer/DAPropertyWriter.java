@@ -50,7 +50,7 @@ public class DAPropertyWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     return this;
   }
 
-  public DAPropertyWriter<T> withModifier(@Nullable Set<DAModifier> modifiers) {
+  public DAPropertyWriter<T> withModifiers(@Nullable Set<DAModifier> modifiers) {
     this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : Sets.copyOf(modifiers);
     return this;
   }

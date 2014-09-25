@@ -144,7 +144,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
 
     // private final [SourceClassType] instance;
     mapperClassWriter.newProperty("instance", sourceClass.getType())
-                     .withModifier(Sets.of(DAModifier.PRIVATE, DAModifier.FINAL))
+                     .withModifiers(Sets.of(DAModifier.PRIVATE, DAModifier.FINAL))
                      .write();
 
     // constructor with instance parameter

@@ -132,7 +132,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     // create a final property for each parameter of the source class constructor
     for (DAParameter daParameter : parameters) {
       classWriter.newProperty(daParameter.getName().getName(), daParameter.getType())
-                 .withModifier(Sets.of(DAModifier.PRIVATE, DAModifier.FINAL))
+                 .withModifiers(Sets.of(DAModifier.PRIVATE, DAModifier.FINAL))
                  .write();
     }
 
@@ -160,7 +160,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     );
     classWriter.newProperty("instance", mapperType)
                .withAnnotations(Lists.of(RESOURCE_ANNOTATION))
-               .withModifier(Sets.of(DAModifier.PRIVATE))
+               .withModifiers(Sets.of(DAModifier.PRIVATE))
                .write();
 
     // mapper method
