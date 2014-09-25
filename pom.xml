@@ -260,7 +260,9 @@
               <email>http://www.javatronic.fr/</email>
             </properties>
             <excludes>
-              <exclude>**/README</exclude>
+              <exclude>**/*.md</exclude>
+              <exclude>LICENSE</exclude>
+              <exclude>Resources.txt</exclude>
               <exclude>src/test/resources/**</exclude>
               <exclude>src/main/resources/**</exclude>
             </excludes>
