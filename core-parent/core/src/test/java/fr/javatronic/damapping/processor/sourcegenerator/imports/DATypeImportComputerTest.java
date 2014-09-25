@@ -36,59 +36,74 @@ public class DATypeImportComputerTest {
 
   @Test
   public void getImports_no_typeArgs() throws Exception {
-    DAType daType = daType("toto");
-    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("name").containsOnly("toto");
+    DAType daType = daType("test.Toto");
+    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("name").containsOnly("test.Toto");
+  }
+
+  @Test
+  public void getImports_from_default_package_no_typeArgs() throws Exception {
+    DAType daType = daType("Toto");
+    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("name").isEmpty();
   }
 
   @Test
   public void getImports_one_typeArg() throws Exception {
     DAType daType = daType(
-        "toto",
-        ImmutableList.of(daType("titi"))
+        "test.Toto",
+        ImmutableList.of(daType("test.Titi"))
     );
-    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("name").containsOnly("toto", "titi");
+    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("name").containsOnly("test.Toto", "test.Titi");
+  }
+
+  @Test
+  public void getImports_one_typeArg_from_default_package() throws Exception {
+    DAType daType = daType(
+        "test.Toto",
+        ImmutableList.of(daType("Titi"))
+    );
+    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("name").containsOnly("test.Toto");
   }
 
   @Test
   public void getImports_multiple_typeArg() throws Exception {
     DAType daType = daType(
-        "toto",
-        ImmutableList.of(daType("titi"), daType("tutu"))
+        "test.Toto",
+        ImmutableList.of(daType("test.Titi"), daType("test.Tutu"))
     );
     Assertions.assertThat(DATypeImportComputer.computeImports(daType))
               .extracting("name")
-              .containsOnly("toto", "titi", "tutu");
+              .containsOnly("test.Toto", "test.Titi", "test.Tutu");
   }
 
   @Test
   public void getImports_one_typeArg_recursive() throws Exception {
     DAType daType = daType(
-        "toto",
+        "test.Toto",
         ImmutableList.of(
-            daType("titi", ImmutableList.of(daType("tutu")))
+            daType("test.Titi", ImmutableList.of(daType("test.Tutu")))
         )
     );
     Assertions.assertThat(DATypeImportComputer.computeImports(daType))
               .extracting("name")
-              .containsOnly("toto", "titi", "tutu");
+              .containsOnly("test.Toto", "test.Titi", "test.Tutu");
   }
 
   @Test
   public void testGetImports() throws Exception {
-    DAType daType = daType("toto");
-    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("name").containsOnly("toto");
+    DAType daType = daType("test.Toto");
+    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("name").containsOnly("test.Toto");
 
-    daType = daType("toto", ImmutableList.of(daType("titi")));
-    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("name").containsOnly("toto", "titi");
+    daType = daType("test.Toto", ImmutableList.of(daType("test.Titi")));
+    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("name").containsOnly("test.Toto", "test.Titi");
   }
 
   private static DAType daType(String name) {
     return daType(name, Collections.<DAType>emptyList());
   }
 
-  private static DAType daType(String name, List<DAType> typeArgs) {
-    DAName daName = DANameFactory.from(name);
-    return DAType.builder(DATypeKind.DECLARED, daName)
+  private static DAType daType(String qualifiedName, List<DAType> typeArgs) {
+    DAName daName = DANameFactory.from(qualifiedName);
+    return DAType.builder(DATypeKind.DECLARED, DANameFactory.simpleFromQualified(daName))
                  .withQualifiedName(daName)
                  .withTypeArgs(typeArgs)
                  .build();

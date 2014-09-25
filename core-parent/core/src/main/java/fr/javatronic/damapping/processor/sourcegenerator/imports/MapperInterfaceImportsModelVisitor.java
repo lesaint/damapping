@@ -30,7 +30,7 @@ public class MapperInterfaceImportsModelVisitor extends ImportListBuilder implem
 
   @Override
   public void visit(DASourceClass daSourceClass) {
-    addImport(daSourceClass.getType().getQualifiedName());
+    addImport(daSourceClass.getType());
   }
 
   @Override

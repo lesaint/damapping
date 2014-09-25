@@ -29,7 +29,7 @@ import fr.javatronic.damapping.processor.model.visitor.DAModelVisitor;
 public class MapperFactoryInterfaceImportsModelVisitor extends ImportListBuilder implements DAModelVisitor {
   @Override
   public void visit(DASourceClass daSourceClass) {
-    addImport(daSourceClass.getType().getQualifiedName());
+    addImport(daSourceClass.getType());
   }
 
   @Override

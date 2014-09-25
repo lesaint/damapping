@@ -43,7 +43,7 @@ public class DATypeImportComputer {
 
   // TODO : cache the list of imports for a specific DAType
   public static Collection<DAName> computeImports(DAType daType) {
-    List<DAName> qualifiedName = hasNoName(daType.getKind()) || daType.getQualifiedName() == null
+    List<DAName> qualifiedName = hasQualifiedNameToImport(daType)
         ? Collections.<DAName>emptyList() : Collections.singletonList(daType.getQualifiedName());
 
     Set<DAName> res = new HashSet<DAName>();
@@ -55,6 +55,12 @@ public class DATypeImportComputer {
     res.addAll(daType.getSuperBound() == null ? Collections.<DAName>emptyList() : computeImports(daType.getSuperBound()));
     res.addAll(daType.getExtendsBound() == null ? Collections.<DAName>emptyList() : computeImports(daType.getExtendsBound()));
     return res;
+  }
+
+  private static boolean hasQualifiedNameToImport(DAType daType) {
+    return hasNoName(daType.getKind())
+        // importing a type from default package is illegal
+        || daType.getQualifiedName() == null || daType.getSimpleName().equals(daType.getQualifiedName());
   }
 
   private static boolean hasNoName(DATypeKind kind) {

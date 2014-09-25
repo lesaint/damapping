@@ -35,12 +35,6 @@ import javax.annotation.Nullable;
 public class ImportListBuilder {
   private final List<DAName> imports = Lists.of();
 
-  protected void addImport(@Nullable DAName qualifiedDAName) {
-    if (qualifiedDAName != null) {
-      imports.add(qualifiedDAName);
-    }
-  }
-
   protected void addImport(@Nullable DAType daType) {
     if (daType != null) {
       imports.addAll(DATypeImportComputer.computeImports(daType));
