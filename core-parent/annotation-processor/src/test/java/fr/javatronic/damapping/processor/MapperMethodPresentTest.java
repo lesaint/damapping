@@ -18,17 +18,40 @@ import org.truth0.Truth;
 public class MapperMethodPresentTest {
   @Test
   public void compiling_empty_annotated_class_fails_because_there_is_no_mapper_method() throws Exception {
-    JavaFileObject fileObject = JavaFileObjects.forSourceLines(
-        "Empty",
+    JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.Empty",
+        "package test;",
+        "",
         "import fr.javatronic.damapping.annotation.Mapper;",
+        "",
         "@Mapper",
         "public class Empty {}"
     );
+
     assertThat(fileObject)
-         .failsToCompile()
-         .withErrorContaining("Mapper must have at one and only one method qualifying as mapper method")
-         .in(fileObject)
-         .onLine(3);
+        .failsToCompile()
+        .withErrorContaining("Mapper must have at one and only one method qualifying as mapper method")
+        .in(fileObject)
+        .onLine(6);
+  }
+
+  @Test
+  public void compiling_empty_annotated_class_implementing_Function_is_successfull() throws Exception {
+    JavaFileObject fileObject = JavaFileObjects.forSourceLines(
+        "test.EmptyImplementingFunction",
+        "package test;",
+        "",
+        "import fr.javatronic.damapping.annotation.Mapper;",
+        "import com.google.common.base.Function;",
+        "",
+        "@Mapper",
+        "public class EmptyImplementingFunction implements Function<String, Integer> {",
+        "  public Integer apply(String input) {",
+        "    return null;",
+        "  }",
+        "}"
+    );
+
+    assertThat(fileObject).compilesWithoutError();
   }
 
   private CompileTester assertThat(String fullyQualifiedName, String... sourceLines) {
