@@ -16,7 +16,7 @@
 package fr.javatronic.damapping.test.guava;
 
 import fr.javatronic.damapping.annotation.Mapper;
-import fr.javatronic.damapping.test.implicitemappermethod.DefaultProtected;
+import fr.javatronic.damapping.test.implicitemappermethod.DefaultProtectedMapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,10 +35,10 @@ import com.google.common.base.Function;
  */
 @Mapper
 public class ConstructorWithMapperFromOtherPackageAsParameter implements Function<Integer, String> {
-  private final DefaultProtected defaultProtected;
+  private final DefaultProtectedMapper defaultProtectedMapper;
 
-  public ConstructorWithMapperFromOtherPackageAsParameter(@Nonnull DefaultProtected defaultProtected) {
-    this.defaultProtected = defaultProtected;
+  public ConstructorWithMapperFromOtherPackageAsParameter(@Nonnull DefaultProtectedMapper defaultProtectedMapper) {
+    this.defaultProtectedMapper = defaultProtectedMapper;
   }
 
   @Nullable
