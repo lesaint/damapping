@@ -1,0 +1,23 @@
+package fr.javatronic.damapping.test.implicitemappermethod;
+
+import fr.javatronic.damapping.test.guava.SimpleMapper;
+import javax.annotation.Nonnull;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public class ConstructorWithMultipleMapperParametersMapperImpl implements ConstructorWithMultipleMapperParametersMapper {
+
+    private final Dummy_1Mapper dummy_1Mapper;
+
+    private final SimpleMapper simpleMapper;
+
+    public ConstructorWithMultipleMapperParametersMapperImpl(Dummy_1Mapper dummy_1Mapper, @Nonnull SimpleMapper simpleMapper) {
+        this.dummy_1Mapper = dummy_1Mapper;
+        this.simpleMapper = simpleMapper;
+    }
+
+    @Override
+    public String fooBarDonut(Integer input) {
+        return new ConstructorWithMultipleMapperParameters(this.dummy_1Mapper, this.simpleMapper).fooBarDonut(input);
+    }
+
+}

@@ -5,16 +5,16 @@ import javax.annotation.Nullable;
 // GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
 public class ConstructorWithMapperAsParameterMapperImpl implements ConstructorWithMapperAsParameterMapper {
 
-    private final NonPublicMethodsMapper nonPublicMethodsMapper;
+    private final SimpleMapper simpleMapper;
 
-    public ConstructorWithMapperAsParameterMapperImpl(@Nullable NonPublicMethodsMapper nonPublicMethodsMapper) {
-        this.nonPublicMethodsMapper = nonPublicMethodsMapper;
+    public ConstructorWithMapperAsParameterMapperImpl(@Nullable SimpleMapper simpleMapper) {
+        this.simpleMapper = simpleMapper;
     }
 
     @Override
     @Nullable
     public String apply(@Nullable Integer input) {
-        return new ConstructorWithMapperAsParameter(this.nonPublicMethodsMapper).apply(input);
+        return new ConstructorWithMapperAsParameter(this.simpleMapper).apply(input);
     }
 
 }

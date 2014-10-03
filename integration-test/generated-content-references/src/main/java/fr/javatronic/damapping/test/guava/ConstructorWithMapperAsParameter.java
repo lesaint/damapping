@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Function;
 
 /**
- * WildcardGenerics - Demonstrates support for a class annotated with {@code @Mapper} which declares no default
+ * ConstructorWithMapperAsParameter - Demonstrates support for a class annotated with {@code @Mapper} which declares no default
  * constructor but a constructor with a single parameter which is itself a generate Mapper interface.
  * <p>
  * This coding structure (ie. a dedicated class using a generated Mapper interface) is the basic pattern for mapping
@@ -34,10 +34,10 @@ import com.google.common.base.Function;
  */
 @Mapper
 public class ConstructorWithMapperAsParameter implements Function<Integer, String> {
-  private final NonPublicMethodsMapper nonPublicMethodsMapper;
+  private final SimpleMapper simpleMapper;
 
-  public ConstructorWithMapperAsParameter(@Nullable NonPublicMethodsMapper nonPublicMethodsMapper) {
-    this.nonPublicMethodsMapper = nonPublicMethodsMapper;
+  public ConstructorWithMapperAsParameter(@Nullable SimpleMapper simpleMapper) {
+    this.simpleMapper = simpleMapper;
   }
 
   @Nullable

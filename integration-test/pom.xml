@@ -35,8 +35,9 @@
     <module>mapper-enum</module>
     <module>mapper-constructor</module>
     <module>mapper-component</module>
-    <module>use-mapper</module>
     <module>mapper-factory</module>
+    <module>generated-content-references</module>
+    <module>use-mapper</module>
   </modules>
 
   <dependencies>
