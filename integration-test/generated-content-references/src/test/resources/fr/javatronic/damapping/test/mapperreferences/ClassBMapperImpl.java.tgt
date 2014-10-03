@@ -1,0 +1,11 @@
+package fr.javatronic.damapping.test.mapperreferences;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public class ClassBMapperImpl implements ClassBMapper {
+
+    @Override
+    public String map(Integer input) {
+        return new ClassB().map(input);
+    }
+
+}

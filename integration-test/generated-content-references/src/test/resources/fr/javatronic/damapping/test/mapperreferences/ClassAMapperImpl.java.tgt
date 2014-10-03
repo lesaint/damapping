@@ -1,0 +1,17 @@
+package fr.javatronic.damapping.test.mapperreferences;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public class ClassAMapperImpl implements ClassAMapper {
+
+    private final ClassDMapper classDMapper;
+
+    public ClassAMapperImpl(ClassDMapper classDMapper) {
+        this.classDMapper = classDMapper;
+    }
+
+    @Override
+    public String map(Integer input) {
+        return new ClassA(this.classDMapper).map(input);
+    }
+
+}
