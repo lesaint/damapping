@@ -29,10 +29,7 @@ import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicates;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,17 +54,17 @@ import static fr.javatronic.damapping.util.Predicates.notNull;
 
 
 /**
- * JavaxExtractor -
+ * JavaxExtractorImpl - This implementation of {@link JavaxExtractor} supports replacing {@link DAType} created
+ * from {@link TypeMirror} with type {@link TypeKind#ERROR} with {@link DAType} object from
+ * {@link UnresolvedTypeScanResult#fixed}.
  *
  * @author Sébastien Lesaint
  */
 public class JavaxExtractorImpl implements JavaxExtractor {
   @Nonnull
   private final Types typeUtils;
-  @Nonnull
-  private final Map<DAType, DAType> fixedResolutions;
-  @Nonnull
-  private final Set<DAType> unresolved = new HashSet<DAType>();
+  @Nullable
+  private final UnresolvedTypeScanResult scanResult;
 
   private final Function<AnnotationMirror, DAAnnotation> annotationMirrorToDAAnnotation = new Function<AnnotationMirror, DAAnnotation>() {
     @Nullable
@@ -80,9 +77,9 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     }
   };
 
-  public JavaxExtractorImpl(@Nonnull Types typeUtils, @Nullable Map<DAType, DAType> fixedResolutions) {
+  public JavaxExtractorImpl(@Nonnull Types typeUtils, @Nullable UnresolvedTypeScanResult scanResult) {
     this.typeUtils = checkNotNull(typeUtils);
-    this.fixedResolutions = fixedResolutions == null ? Collections.<DAType, DAType>emptyMap() : new HashMap<DAType, DAType>(fixedResolutions);
+    this.scanResult = scanResult;
   }
 
   @Override
@@ -95,25 +92,24 @@ public class JavaxExtractorImpl implements JavaxExtractor {
 
     DAType res = extractType(type, element);
     if (res.getKind() == DATypeKind.ERROR) {
-      Optional<DAType> fixedResolution = findFixedResolutionBySimpleName(res);
+      Optional<DAType> fixedResolution = findFixedResolutionBySimpleName(element);
       if (fixedResolution.isPresent()) {
         // FIXME here can not just return the type from the fixedResolutions map
         // current DAType may have specific typeArguments, bounds
         // we must take only the kind and qualified name from the DAType found in fixedResolution
         return fixedResolution.get();
       }
-      unresolved.add(res);
     }
     return res;
   }
 
   @Nonnull
-  private Optional<DAType> findFixedResolutionBySimpleName(DAType unresolvedType) {
-    if (fixedResolutions.isEmpty()) {
+  private Optional<DAType> findFixedResolutionBySimpleName(Element element) {
+    if (scanResult == null) {
       return Optional.absent();
     }
 
-    return Optional.fromNullable(fixedResolutions.get(unresolvedType));
+    return Optional.fromNullable(scanResult.getFixed().get(element.getSimpleName().toString()));
   }
 
   @Nonnull
@@ -323,9 +319,4 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     return from(methodElement.getAnnotationMirrors()).transform(toDAAnnotation()).filter(notNull()).toList();
   }
 
-  @Nonnull
-  @Override
-  public Set<DAType> getUnresolvedTypes() {
-    return unresolved;
-  }
 }

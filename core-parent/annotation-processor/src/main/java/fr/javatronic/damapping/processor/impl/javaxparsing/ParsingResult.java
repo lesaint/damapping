@@ -70,8 +70,8 @@ public class ParsingResult {
     return new ParsingResult(classElement, OK, null, sourceClass.getType(), sourceClass);
   }
 
-  public static ParsingResult later(TypeElement classElement, DASourceClass sourceClass, Set<DAType> unresolved) {
-    return new ParsingResult(classElement, HAS_UNRESOLVED, unresolved, sourceClass.getType(), null);
+  public static ParsingResult later(TypeElement classElement, @Nullable DAType daType, Set<DAType> unresolved) {
+    return new ParsingResult(classElement, HAS_UNRESOLVED, unresolved, daType, null);
   }
 
   @Nonnull

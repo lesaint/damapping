@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static fr.javatronic.damapping.util.FluentIterable.from;
+import static fr.javatronic.damapping.util.Preconditions.checkArgument;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
@@ -58,14 +59,19 @@ public class ProcessingContext {
     failed.add(parsingResult.getType());
   }
 
-  public void setSuccessful(@Nonnull ParsingResult parsingResult) {
-    postponed.remove(checkNotNull(parsingResult));
-    successful.add(parsingResult.getType());
+  public void setSuccessful(@Nonnull ParsingResult parsingResult, @Nonnull ParsingResult newParsingResult) {
+    checkArgument(parsingResult.getClassElement() == newParsingResult.getClassElement());
+    postponed.remove(parsingResult);
+    successful.add(newParsingResult.getType());
   }
 
   @Nonnull
   public Set<ParsingResult> getPostponed() {
     return postponed.isEmpty() ? Collections.<ParsingResult>emptySet() : Sets.copyOf(postponed);
+  }
+
+  public Set<DAType> getSuccessful() {
+    return this.successful;
   }
 
   public Set<DAType> findSuccessfullBySimpleName(@Nullable String simpleName) {

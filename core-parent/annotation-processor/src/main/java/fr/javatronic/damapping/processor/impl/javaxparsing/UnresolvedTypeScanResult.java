@@ -16,19 +16,30 @@
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.util.Maps;
 
-import java.util.Collection;
+import java.util.Map;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.Element;
 
 /**
- * JavaxParsingService -
- *
- * @author Sébastien Lesaint
- */
-public interface JavaxParsingService {
+* UnresolvedTypeScanResult -
+*
+* @author Sébastien Lesaint
+*/
+class UnresolvedTypeScanResult {
   @Nonnull
-  ParsingResult parse(@Nonnull TypeElement classElement, @Nullable Collection<DAType> generatedTypes);
+  private final Map<Element, DAType> unresolved = Maps.newHashMap();
+  @Nonnull
+  private final Map<String, DAType> fixed = Maps.newHashMap();
 
+  @Nonnull
+  public Map<Element, DAType> getUnresolved() {
+    return unresolved;
+  }
+
+  @Nonnull
+  public Map<String, DAType> getFixed() {
+    return fixed;
+  }
 }

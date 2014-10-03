@@ -77,6 +77,4 @@ public interface JavaxExtractor {
   @Nullable
   List<DAAnnotation> extractDAAnnotations(@Nullable Element methodElement);
 
-  @Nonnull
-  Set<DAType> getUnresolvedTypes();
 }

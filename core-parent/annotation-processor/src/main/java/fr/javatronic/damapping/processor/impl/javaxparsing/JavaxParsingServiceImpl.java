@@ -24,10 +24,11 @@ import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Predicates;
+import fr.javatronic.damapping.util.Sets;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -50,31 +51,36 @@ import static fr.javatronic.damapping.util.FluentIterable.from;
 public class JavaxParsingServiceImpl implements JavaxParsingService {
   @Nonnull
   private final ProcessingEnvironmentWrapper processingEnv;
-  @Nullable
-  private final Map<DAType, DAType> fixedResolutions;
 
-  public JavaxParsingServiceImpl(@Nonnull ProcessingEnvironment processingEnv, @Nullable Map<DAType, DAType> fixedResolutions) {
+  public JavaxParsingServiceImpl(@Nonnull ProcessingEnvironment processingEnv) {
     this.processingEnv = new ProcessingEnvironmentWrapper(processingEnv);
-    this.fixedResolutions = fixedResolutions;
   }
 
   @Nonnull
-  public ParsingResult parse(TypeElement classElement) {
-    JavaxExtractorImpl javaxExtractor = new JavaxExtractorImpl(processingEnv.getTypeUtils(), fixedResolutions);
+  @Override
+  public ParsingResult parse(TypeElement classElement, Collection<DAType> generatedTypes) {
+    UnresolvedTypeScanResult scanResult = scanUnresolvedTypes(classElement, generatedTypes);
+
+    if (!scanResult.getUnresolved().isEmpty()) {
+      return ParsingResult.later(classElement, null, Sets.copyOf(scanResult.getUnresolved().values()));
+    }
+
     DAType type = null;
     try {
+      JavaxExtractorImpl javaxExtractor = new JavaxExtractorImpl(processingEnv.getTypeUtils(), scanResult);
       type = javaxExtractor.extractType(classElement.asType());
       DASourceClass daSourceClass = parseImpl(classElement, type, javaxExtractor);
 
-      if (javaxExtractor.getUnresolvedTypes().isEmpty()) {
-        return ParsingResult.ok(classElement, daSourceClass);
-      }
-      return ParsingResult.later(classElement, daSourceClass, javaxExtractor.getUnresolvedTypes());
-    }
-    catch (Exception e) {
+      return ParsingResult.ok(classElement, daSourceClass);
+    } catch (Exception e) {
       processingEnv.printMessage(Mapper.class, classElement, e);
       return ParsingResult.failed(classElement, type);
     }
+  }
+
+  private UnresolvedTypeScanResult scanUnresolvedTypes(TypeElement classElement, Collection<DAType> generatedTypes) {
+    UnresolvedReferencesScanner scanner = new UnresolvedReferencesScanner(new JavaxExtractorImpl(processingEnv.getTypeUtils(), null), generatedTypes);
+    return scanner.scan(classElement);
   }
 
   @Nonnull
@@ -152,6 +158,7 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
         .filter(Predicates.notNull())
         .toList();
   }
+
   public static String uncapitalize(String str) {
     if (str == null || str.length() == 0) {
       return str;
