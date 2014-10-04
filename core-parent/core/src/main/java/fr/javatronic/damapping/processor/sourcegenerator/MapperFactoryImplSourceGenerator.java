@@ -29,6 +29,7 @@ import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAStatementWriter;
 import fr.javatronic.damapping.util.Lists;
+import fr.javatronic.damapping.util.Predicates;
 import fr.javatronic.damapping.util.Sets;
 
 import java.io.BufferedWriter;
@@ -163,14 +164,15 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
 
     // mapper method(s)
     // implémentation de la méthode de mapping (Function.apply tant qu'on ne supporte pas @MapperMethod)
-    DAMethod guavaMethod = from(sourceClass.getMethods())
-        .firstMatch(DAMethodPredicates.isApplyWithSingleParam())
+    DAMethod mapperMethod = from(sourceClass.getMethods())
+        .firstMatch(
+            Predicates.or(DAMethodPredicates.isGuavaFunctionApply(), DAMethodPredicates.isImpliciteMapperMethod()))
         .get();
     DAClassMethodWriter<?> methodWriter = mapperClassWriter
-        .newMethod(guavaMethod.getName().getName(), guavaMethod.getReturnType())
-        .withAnnotations(support.computeOverrideMethodAnnotations(guavaMethod))
+        .newMethod(mapperMethod.getName().getName(), mapperMethod.getReturnType())
+        .withAnnotations(support.computeOverrideMethodAnnotations(mapperMethod))
         .withModifiers(Sets.of(DAModifier.PUBLIC))
-        .withParams(guavaMethod.getParameters())
+        .withParams(mapperMethod.getParameters())
         .start();
 
     // retourne le résultat de la méhode apply de l'instance de la classe @Mapper
@@ -179,8 +181,8 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
                 .append("return ")
                 .append("instance")
                 .append(".")
-                .append(guavaMethod.getName())
-                .appendParamValues(guavaMethod.getParameters())
+                .append(mapperMethod.getName())
+                .appendParamValues(mapperMethod.getParameters())
                 .end();
 
     methodWriter.end();

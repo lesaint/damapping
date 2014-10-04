@@ -21,11 +21,16 @@ import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.util.Lists;
+import fr.javatronic.damapping.util.Predicate;
+import fr.javatronic.damapping.util.Predicates;
 
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import static fr.javatronic.damapping.util.FluentIterable.from;
+import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
  * ImportListBuilder -
@@ -47,11 +52,34 @@ public class ImportListBuilder {
     }
   }
 
-  protected void addImports(@Nullable DAMethod daMethod) {
+  public static class DAMaethodImportFilters {
+    private static final DAMaethodImportFilters NO_FILTERS = new DAMaethodImportFilters(null);
+
+    @Nullable
+    private final Predicate<DAAnnotation> methodAnnotations;
+
+    private DAMaethodImportFilters(@Nullable Predicate<DAAnnotation> methodAnnotations) {
+      this.methodAnnotations = methodAnnotations;
+    }
+
+    public static DAMaethodImportFilters from(@Nullable Predicate<DAAnnotation> methodAnnotations) {
+      if (methodAnnotations == null) {
+        return NO_FILTERS;
+      }
+      return new DAMaethodImportFilters(methodAnnotations);
+    }
+
+    @Nonnull
+    public Predicate<DAAnnotation> getMethodAnnotations() {
+      return methodAnnotations == null ? Predicates.<DAAnnotation>alwaysTrue() : methodAnnotations;
+    }
+  }
+
+  protected void addImports(@Nullable DAMethod daMethod, @Nonnull DAMaethodImportFilters importFilters) {
+    checkNotNull(importFilters);
     if (daMethod == null) {
       return;
     }
-
     for (DAParameter parameter : daMethod.getParameters()) {
       addImports(parameter.getAnnotations());
       addImports(parameter.getType());
@@ -59,9 +87,13 @@ public class ImportListBuilder {
     if (daMethod.getReturnType() != null) {
       addImports(daMethod.getReturnType());
     }
-    for (DAAnnotation daAnnotation : daMethod.getAnnotations()) {
+    for (DAAnnotation daAnnotation : from(daMethod.getAnnotations()).filter(importFilters.getMethodAnnotations())) {
       addImport(daAnnotation.getType());
     }
+  }
+
+  protected void addImports(@Nullable DAMethod daMethod) {
+    addImports(daMethod, DAMaethodImportFilters.from(null));
   }
 
   protected void addImports(@Nonnull List<DAAnnotation> annotations) {

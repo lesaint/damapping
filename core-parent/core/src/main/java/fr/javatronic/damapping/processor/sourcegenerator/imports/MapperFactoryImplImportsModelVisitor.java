@@ -15,15 +15,19 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator.imports;
 
+import fr.javatronic.damapping.annotation.MapperFactory;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAInterface;
 import fr.javatronic.damapping.processor.model.DAMethod;
-import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitor;
+import fr.javatronic.damapping.util.Predicate;
 
-import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
-import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isApplyWithSingleParam;
+import javax.annotation.Nullable;
+
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isImpliciteMapperMethod;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperFactoryMethod;
 
 /**
  * MapperFactoryImplImportsModelVisitor - Visitor building the list of imports for the MapperFactoryImpl class
@@ -43,22 +47,36 @@ public class MapperFactoryImplImportsModelVisitor extends ImportListBuilder impl
 
   @Override
   public void visit(DAMethod daMethod) {
-    // mapperFactoryMethod are exposed as methods of the MapperFactory
-    if (isConstructor().apply(daMethod) || isApplyWithSingleParam().apply(daMethod)) {
-      for (DAParameter parameter : daMethod.getParameters()) {
-        addImports(parameter.getAnnotations());
-        addImports(parameter.getType());
-      }
+    if (isMapperFactoryMethod().apply(daMethod)) {
+      addImports(daMethod, DAMaethodImportFilters.from(new Predicate<DAAnnotation>() {
+        @Override
+        public boolean apply(@Nullable DAAnnotation daAnnotation) {
+          if (daAnnotation == null) {
+            return false;
+          }
+          return !MapperFactory.class.getName().equals(daAnnotation.getType().getQualifiedName().getName());
+        }
+      }));
     }
-
-    if (isApplyWithSingleParam().apply(daMethod)) { // remplacer par isMapperMethod
-      for (DAParameter parameter : daMethod.getParameters()) {
-        addImports(parameter.getType());
-      }
-      addImport(daMethod.getReturnType());
-      for (DAAnnotation daAnnotation : daMethod.getAnnotations()) {
-        addImport(daAnnotation.getType());
-      }
+    if (isGuavaFunctionApply().apply(daMethod) || isImpliciteMapperMethod().apply(daMethod)) {
+      addImports(daMethod);
     }
+//    // mapperFactoryMethod are exposed as methods of the MapperFactory
+//    if (isConstructor().apply(daMethod) || isApplyWithSingleParam().apply(daMethod)) {
+//      for (DAParameter parameter : daMethod.getParameters()) {
+//        addImports(parameter.getAnnotations());
+//        addImports(parameter.getType());
+//      }
+//    }
+//
+//    if (isApplyWithSingleParam().apply(daMethod)) { // remplacer par isMapperMethod
+//      for (DAParameter parameter : daMethod.getParameters()) {
+//        addImports(parameter.getType());
+//      }
+//      addImport(daMethod.getReturnType());
+//      for (DAAnnotation daAnnotation : daMethod.getAnnotations()) {
+//        addImport(daAnnotation.getType());
+//      }
+//    }
   }
 }

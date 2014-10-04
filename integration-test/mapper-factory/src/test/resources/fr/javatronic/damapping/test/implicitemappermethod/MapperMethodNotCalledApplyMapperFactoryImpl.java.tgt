@@ -1,0 +1,29 @@
+package fr.javatronic.damapping.test.implicitemappermethod;
+
+import java.math.BigDecimal;
+import javax.annotation.Nullable;
+
+// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+public class MapperMethodNotCalledApplyMapperFactoryImpl implements MapperMethodNotCalledApplyMapperFactory {
+
+    @Override
+    public MapperMethodNotCalledApplyMapper instanceByConstructor(boolean flag) {
+        return new MapperMethodNotCalledApplyMapperImpl(new MapperMethodNotCalledApply(flag));
+    }
+
+    private static class MapperMethodNotCalledApplyMapperImpl implements MapperMethodNotCalledApplyMapper {
+
+        private final MapperMethodNotCalledApply instance;
+
+        public MapperMethodNotCalledApplyMapperImpl(MapperMethodNotCalledApply instance) {
+            this.instance = instance;
+        }
+
+        @Override
+        @Nullable
+        public Float fooBar(@Nullable BigDecimal inBigD) {
+            return instance.fooBar(inBigD);
+        }
+
+    }
+}
