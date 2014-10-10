@@ -28,7 +28,7 @@ ROADMAP
 [X] supprimer usage de FluentIterable.toImmutableList() et toImmutableSet() ou de toList() et toSet()
 [ ] when compiling a @Mapper extending Function and Guava's is not in path, MapperImpl is generated with a "import Function;"
     statement and file does not compile
-[ ] les annotations sur méthodes Fuction.apply, @MapperMethod et @MapperFactoryMethod sont perdues dans les codes généré
+[X] les annotations sur méthodes Fuction.apply, @MapperMethod et @MapperFactoryMethod sont perdues dans les codes généré
     (exemple: manque le @Nullable hérité de Function.apply dans toutes les classes MapperImpl sur le paramètre et le type de retour)
 [ ] optimiser les classes annonymes (Function, Predicate, ...)
 [ ] mettre en place un système d'exception internes pour ne pas faire des getMessager().[...] un peu partout, afficher
@@ -55,7 +55,7 @@ ROADMAP
 [X] supprimer les propriétés publiques dans les beans utilisés dans la genération de fichiers sources
 [ ] ajouter test U pour les méthodes de DAMethod
 [ ] ajouter test U pour DAMethodPredicates
-[ ] passe de refacto : sortir code de lecture de API javac des annotation processors, predicates singleton si applicable, ajouter des tests U
+[X] passe de refacto : sortir code de lecture de API javac des annotation processors, predicates singleton si applicable, ajouter des tests U
 [ ] étudier l'intégration avec l'IDE
 [ ] visibilité du mapper généré
 [ ] améliorer le support de l'injection de dépendance
@@ -65,8 +65,8 @@ ROADMAP
     [ ] créer une class @Configuration pour tous les mapper d'un package pour éviter de faire un package-scan ?
     [ ] faire un plugin compatible avec la JSR de Dependency Injection de Java (javax.annotation.Resource & co ?)
     [ ] ajouter une annotation pour définir ou surcharger le comportement par défaut qui ajoute des @Component
-[ ] ajouter une annotation @MapperMethod pour ne pas être dépendant de guava
-[ ] removing model dependency on Javax.lang
+[X] ajouter une annotation @MapperMethod pour ne pas être dépendant de guava
+[X] removing model dependency on Javax.lang
     [X] DASourceClass#classElement
         [X] add enum flag to DASourceClass
         [X] add enum value(s) to DASourceClass
