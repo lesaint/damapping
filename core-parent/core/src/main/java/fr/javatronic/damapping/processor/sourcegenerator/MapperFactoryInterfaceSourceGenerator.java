@@ -55,7 +55,7 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
     DAFileWriter fileWriter = new DAFileWriter(bw)
         .appendPackage(sourceClass.getPackageName())
         .appendImports(descriptor.getImports())
-        .appendWarningComment();
+        .appendGeneratedAnnotation(DAMAPPING_ANNOTATION_PROCESSOR_QUALIFIED_NAME);
 
     DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter
         .newInterface(descriptor.getType().getSimpleName().getName())

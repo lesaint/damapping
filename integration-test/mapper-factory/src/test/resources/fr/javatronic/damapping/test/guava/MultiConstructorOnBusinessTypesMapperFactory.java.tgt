@@ -2,7 +2,7 @@ package fr.javatronic.damapping.test.guava;
 
 import fr.javatronic.damapping.test.guava.sub.B;
 
-// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface MultiConstructorOnBusinessTypesMapperFactory {
 
     MultiConstructorOnBusinessTypesMapper instanceByConstructor(A a);

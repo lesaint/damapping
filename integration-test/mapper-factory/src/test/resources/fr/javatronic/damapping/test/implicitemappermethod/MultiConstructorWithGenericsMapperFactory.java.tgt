@@ -4,7 +4,7 @@ import fr.javatronic.damapping.test.implicitemappermethod.sub.B;
 import java.util.List;
 import java.util.Set;
 
-// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface MultiConstructorWithGenericsMapperFactory {
 
     MultiConstructorWithGenericsMapper instanceByConstructor(Set<A> as);

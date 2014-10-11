@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.processing.Processor;
 
 import static fr.javatronic.damapping.util.FluentIterable.from;
 
@@ -104,8 +105,12 @@ public class DAFileWriter implements DAWriter {
     return res;
   }
 
-  public DAFileWriter appendWarningComment() throws IOException {
-    bw.append("// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE");
+  public DAFileWriter appendGeneratedAnnotation(@Nonnull Class<? extends Processor> processClass) throws IOException {
+    return appendGeneratedAnnotation(processClass.getCanonicalName());
+  }
+
+  public DAFileWriter appendGeneratedAnnotation(@Nonnull String annotationProcessorQualifiedName) throws IOException {
+    bw.append("@javax.annotation.Generated(\"").append(annotationProcessorQualifiedName).append("\")");
     bw.newLine();
     return this;
   }

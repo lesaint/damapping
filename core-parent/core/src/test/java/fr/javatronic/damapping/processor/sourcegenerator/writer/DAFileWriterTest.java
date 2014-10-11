@@ -21,6 +21,16 @@ import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Set;
+import javax.annotation.processing.Completion;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.Processor;
+import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -172,12 +182,56 @@ public class DAFileWriterTest {
   }
 
   @Test
-  public void appendWarningComment_adds_text_and_newLine() throws Exception {
+  public void appendGeneratedAnnotation_from_String_adds_generated_annotation_and_newLine() throws Exception {
     TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.bw).appendWarningComment();
+    new DAFileWriter(testWriters.bw).appendGeneratedAnnotation(MyProcessor.class.getCanonicalName());
 
     assertThat(testWriters.getRes()).isEqualTo(
-        "// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE" + LINE_SEPARATOR
+        "@javax.annotation.Generated(\"" + MyProcessor.class.getCanonicalName() + "\")" + LINE_SEPARATOR
     );
   }
+
+  @Test
+  public void appendGeneratedAnnotation_from_Class_adds_generated_annotation_with_class_qualifiedName_and_newLine() throws Exception {
+    TestWriters testWriters = new TestWriters();
+    new DAFileWriter(testWriters.bw).appendGeneratedAnnotation(MyProcessor.class);
+
+    assertThat(testWriters.getRes()).isEqualTo(
+        "@javax.annotation.Generated(\"" + MyProcessor.class.getCanonicalName() + "\")" + LINE_SEPARATOR
+    );
+  }
+
+  private static class MyProcessor implements Processor {
+    @Override
+    public Set<String> getSupportedOptions() {
+      return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Set<String> getSupportedAnnotationTypes() {
+      return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+      return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void init(ProcessingEnvironment processingEnv) {
+      //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+      return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Iterable<? extends Completion> getCompletions(Element element, AnnotationMirror annotation,
+                                                         ExecutableElement member, String userText) {
+      return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+  }
+
 }

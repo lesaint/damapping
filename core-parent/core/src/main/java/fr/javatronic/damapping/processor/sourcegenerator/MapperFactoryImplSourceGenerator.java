@@ -78,7 +78,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
     DAFileWriter fileWriter = new DAFileWriter(bw)
         .appendPackage(sourceClass.getPackageName())
         .appendImports(descriptor.getImports())
-        .appendWarningComment();
+        .appendGeneratedAnnotation(DAMAPPING_ANNOTATION_PROCESSOR_QUALIFIED_NAME);
 
     DAClassWriter<DAFileWriter> classWriter = fileWriter
         .newClass(descriptor.getType())

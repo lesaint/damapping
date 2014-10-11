@@ -2,7 +2,7 @@ package fr.javatronic.damapping.test.guava;
 
 import javax.annotation.Nullable;
 
-// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class ConstructorWithJavaLangParameterMapperImpl implements ConstructorWithJavaLangParameterMapper {
 
     private final Boolean someFlag;

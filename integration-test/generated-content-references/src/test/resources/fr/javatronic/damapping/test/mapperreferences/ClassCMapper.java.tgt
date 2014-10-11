@@ -1,6 +1,6 @@
 package fr.javatronic.damapping.test.mapperreferences;
 
-// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface ClassCMapper {
 
     String map(Integer input);

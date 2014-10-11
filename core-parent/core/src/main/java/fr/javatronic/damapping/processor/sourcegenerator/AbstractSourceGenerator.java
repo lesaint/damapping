@@ -26,7 +26,7 @@ import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
  */
 abstract class AbstractSourceGenerator implements SourceGenerator {
 
-  protected static final String INDENT = "    ";
+  static final String DAMAPPING_ANNOTATION_PROCESSOR_QUALIFIED_NAME = "fr.javatronic.damapping.processor.DAAnnotationProcessor";
 
   @Nonnull
   protected final GeneratedFileDescriptor descriptor;

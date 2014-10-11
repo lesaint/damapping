@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface PublicWithWildcardGenericsMapper {
 
     @Nonnull

@@ -4,7 +4,7 @@ import fr.javatronic.damapping.test.guava.sub.B;
 import fr.javatronic.damapping.test.guava.sub.C;
 import javax.annotation.Nullable;
 
-// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class MultiConstructorOnBusinessTypesMapperFactoryImpl implements MultiConstructorOnBusinessTypesMapperFactory {
 
     @Override

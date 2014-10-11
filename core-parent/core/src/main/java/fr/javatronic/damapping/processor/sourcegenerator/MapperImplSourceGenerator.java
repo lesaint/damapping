@@ -112,7 +112,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     return new DAFileWriter(bw)
         .appendPackage(sourceClass.getPackageName())
         .appendImports(computeMapperImplImports(descriptor, sourceClass))
-        .appendWarningComment();
+        .appendGeneratedAnnotation(DAMAPPING_ANNOTATION_PROCESSOR_QUALIFIED_NAME);
   }
 
   private DAClassWriter<DAFileWriter> classDeclaration(DAFileWriter fileWriter, DASourceClass sourceClass)

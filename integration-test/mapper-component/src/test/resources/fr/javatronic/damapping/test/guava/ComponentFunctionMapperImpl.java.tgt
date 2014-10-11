@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
-// GENERATED CODE, DO NOT MODIFY, THIS WILL BE OVERRIDE
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 @Component
 public class ComponentFunctionMapperImpl implements ComponentFunctionMapper {
 
