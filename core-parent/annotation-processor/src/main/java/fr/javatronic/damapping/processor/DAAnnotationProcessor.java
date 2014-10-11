@@ -65,7 +65,7 @@ public class DAAnnotationProcessor implements Processor {
 
   @Override
   public SourceVersion getSupportedSourceVersion() {
-    return SourceVersion.RELEASE_7;
+    return SourceVersion.latestSupported();
   }
 
   @Override
