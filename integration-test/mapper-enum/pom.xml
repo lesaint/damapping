@@ -27,7 +27,7 @@
 
   <artifactId>mapper-enum</artifactId>
   <name>Integration tests - enum @Mapper</name>
-  <description>tests de génération de fichiers java pour une enum annotée avec @Mapper</description>
+  <description>testing type generation when dedicated class is an enum</description>
 
   <dependencies>
     <dependency>

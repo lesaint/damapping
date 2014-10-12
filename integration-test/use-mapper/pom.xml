@@ -26,8 +26,8 @@
     </parent>
 
     <artifactId>use-mapper</artifactId>
-    <name>Integration tests - utilisation de @Mapper</name>
-    <description>tests d'usage de classes annotées avec @Mapper</description>
+    <name>Integration tests - using generated types</name>
+    <description>testing use of generated types in other piece of code</description>
 
     <dependencies>
         <dependency>

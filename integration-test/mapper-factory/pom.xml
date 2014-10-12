@@ -26,10 +26,8 @@
   </parent>
 
   <artifactId>mapper-factory</artifactId>
-  <name>Integration tests - class @MapperFactoryMethod</name>
-  <description>tests de génération de fichiers java pour une class annotée avec @Mapper et au moins 1
-    @MapperFactoryMethod
-  </description>
+  <name>Integration tests - @MapperFactory</name>
+  <description>testing type generation when dedicated class has method(s) annotated with @MapperFactory</description>
 
   <dependencies>
     <dependency>

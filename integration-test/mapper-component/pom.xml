@@ -25,8 +25,8 @@
   </parent>
 
   <artifactId>mapper-component</artifactId>
-  <name>Integration tests - class @Mapper par @Component</name>
-  <description>tests de génération de fichiers java pour une classe annotée avec @Mapper et @Component</description>
+  <name>Integration tests - @Component</name>
+  <description>testing type generation when dedicated class is also annotated with @Component</description>
 
   <dependencies>
     <dependency>
