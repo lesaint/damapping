@@ -35,10 +35,10 @@ import java.util.Set;
  * <ul>
  * <li>ajouter un contrôle sur les modifiers autorisés pour une classe</li>
  * <li>ajouter un paramètre "boolean classOfJavaSource" pour refuser le modifier PUBLIC si ce paramètre est false</li>
- * <li>ajouter une vérification d'état, si start() a été appelé, withModifiers, withAnnotations, withImplemented,
+ * <li>ajouter une vérification d'état, si write() a été appelé, withModifiers, withAnnotations, withImplemented,
  * withExtented échouent</li>
  * <li>ajouter le tri automatique des modifiers</li>
- * <li>ajouter vérification d'état : end() must be called after start()</li>
+ * <li>ajouter vérification d'état : end() must be called after write()</li>
  * <li>ajouter vérification d'état : plus de call sur aucune méthode si end() a été appelé</li>
  * <li>ajouter vérification des paramètres de withModifiers, withAnnotations, withImplemented, withExtented</li>
  * </ul>
@@ -94,6 +94,12 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
 
   public DAPropertyWriter<DAClassWriter<T>> newProperty(String name, DAType type) {
     return new DAPropertyWriter<DAClassWriter<T>>(name, type, commons.getBufferedWriter(), this,
+        commons.getIndentOffset() + 1
+    );
+  }
+
+  public DAInitializedPropertyWriter<DAClassWriter<T>> newInitializedProperty(String name, DAType type) {
+    return new DAInitializedPropertyWriter<DAClassWriter<T>>(name, type, commons.getBufferedWriter(), this,
         commons.getIndentOffset() + 1
     );
   }
