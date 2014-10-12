@@ -7,10 +7,12 @@ import javax.annotation.Nullable;
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class WildcardGenericsMapperImpl implements WildcardGenericsMapper {
 
+    private final WildcardGenerics dedicatedInstance = new WildcardGenerics();
+
     @Override
     @Nullable
     public String apply(@Nullable Optional<? extends OutOfPackage> optional) {
-        return new WildcardGenerics().apply(optional);
+        return this.dedicatedInstance.apply(optional);
     }
 
 }

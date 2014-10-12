@@ -22,7 +22,6 @@ import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
-import fr.javatronic.damapping.processor.model.InstantiationType;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
@@ -32,20 +31,18 @@ import fr.javatronic.damapping.processor.sourcegenerator.writer.DAConstructorWri
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAStatementWriter;
 import fr.javatronic.damapping.util.Lists;
-import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicates;
 import fr.javatronic.damapping.util.Sets;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Resource;
 
-import static fr.javatronic.damapping.processor.model.InstantiationType.CONSTRUCTOR;
 import static fr.javatronic.damapping.processor.model.InstantiationType.SPRING_COMPONENT;
 import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.RESOURCE_ANNOTATION;
-import static fr.javatronic.damapping.processor.model.function.DAParameterFunctions.toNamePrefixedWithThis;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
@@ -64,6 +61,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
   private static final DAAnnotation SPRING_COMPONENT_DATYPE = new DAAnnotation(
       DATypeFactory.declared(SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME)
   );
+  private static final String DEDICATED_CLASS_INSTANCE_PROPERTY_NAME = "dedicatedInstance";
 
   public MapperImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor) {
     this(descriptor, new SourceGeneratorSupport());
@@ -89,16 +87,20 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     // declaration de la class
     DAClassWriter<DAFileWriter> classWriter = classDeclaration(fileWriter, sourceClass);
 
-    Optional<DAMethod> sourceClassConstructor = findSourceClassConstructor(sourceClass);
-    if (sourceClass.getInstantiationType() == CONSTRUCTOR
-        && sourceClassConstructor.isPresent() && !sourceClassConstructor.get().getParameters().isEmpty()) {
-       writeMapperWithConstructor(classWriter, sourceClass, sourceClassConstructor.get());
-    }
-    else if (sourceClass.getInstantiationType() == SPRING_COMPONENT) {
-      writeSpringComponentMapper(classWriter, sourceClass);
-    }
-    else {
-      writeSimpleMapper(classWriter, sourceClass);
+    switch (sourceClass.getInstantiationType()) {
+      case SPRING_COMPONENT:
+        writeSpringComponentMapper(classWriter, sourceClass);
+        break;
+      case CONSTRUCTOR:
+        writeMapperWithConstructor(classWriter, sourceClass);
+        break;
+      case SINGLETON_ENUM:
+        writeEnumMapper(classWriter, sourceClass);
+        break;
+      case CONSTRUCTOR_FACTORY:
+      case STATIC_FACTORY:
+      default:
+        throw new IllegalArgumentException("Unsupported instantiationType " + sourceClass.getInstantiationType());
     }
 
     // clos la classe
@@ -125,33 +127,6 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
         .start();
   }
 
-  private void writeMapperWithConstructor(DAClassWriter<DAFileWriter> classWriter, DASourceClass sourceClass,
-                                          DAMethod sourceClassConstructor) throws IOException {
-    List<DAParameter> parameters = sourceClassConstructor.getParameters();
-
-    // create a final property for each parameter of the source class constructor
-    for (DAParameter daParameter : parameters) {
-      classWriter.newProperty(daParameter.getName().getName(), daParameter.getType())
-                 .withModifiers(Sets.of(DAModifier.PRIVATE, DAModifier.FINAL))
-                 .write();
-    }
-
-    // constructor with the same parameters as the source class constructor
-    DAConstructorWriter<?> constructorWriter = classWriter.newConstructor()
-                                                          .withModifiers(Sets.of(DAModifier.PUBLIC))
-                                                          .withParams(parameters)
-                                                          .start();
-    for (DAParameter daParameter : parameters) {
-      constructorWriter.newStatement().start()
-                       .append("this.").append(daParameter.getName()).append(" = ").append(daParameter.getName()).end();
-    }
-    constructorWriter.end();
-
-
-    // mapper method
-    appendMapperMethod(sourceClass, classWriter);
-  }
-
   private void writeSpringComponentMapper(DAClassWriter<DAFileWriter> classWriter, DASourceClass sourceClass)
       throws IOException {
     // instance de la class annotée @Mapper injectée via @Resource le cas échéant
@@ -167,9 +142,76 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     appendMapperMethod(sourceClass, classWriter);
   }
 
-  private void writeSimpleMapper(DAClassWriter<DAFileWriter> classWriter, DASourceClass sourceClass)
+  private void writeMapperWithConstructor(DAClassWriter<DAFileWriter> classWriter,
+                                          DASourceClass sourceClass)
       throws IOException {
-    // class just implements the mapper method
+    DAMethod dedicatedClassConstructor = findSourceClassConstructor(sourceClass);
+
+    appendDedicatedClassProperty(classWriter, sourceClass, dedicatedClassConstructor);
+
+    appendConstructor(classWriter, sourceClass, dedicatedClassConstructor);
+
+    appendMapperMethod(sourceClass, classWriter);
+  }
+
+  /**
+   * Adds a property storing an instance of the dedicated class called {@link #DEDICATED_CLASS_INSTANCE_PROPERTY_NAME}.
+   * If the dedicated class's constructor has no parameter, the property is initialized when it is declared, otherwise
+   * it will be initialized in the MapperImpl's constructor.
+   */
+  private void appendDedicatedClassProperty(DAClassWriter<DAFileWriter> classWriter,
+                                            DASourceClass sourceClass,
+                                            DAMethod dedicatedClassConstructor) throws IOException {
+    List<DAParameter> constructorParameters = dedicatedClassConstructor.getParameters();
+    if (constructorParameters.isEmpty()) {
+      classWriter.newInitializedProperty(DEDICATED_CLASS_INSTANCE_PROPERTY_NAME, sourceClass.getType())
+                 .withModifiers(Sets.of(DAModifier.PRIVATE, DAModifier.FINAL))
+                 .initialize()
+                   .append("new ").appendType(sourceClass.getType())
+                   .appendParamValues(Collections.<DAParameter>emptyList())
+                   .end()
+                 .end();
+    }
+    else {
+      classWriter.newProperty(DEDICATED_CLASS_INSTANCE_PROPERTY_NAME, sourceClass.getType())
+                 .withModifiers(Sets.of(DAModifier.PRIVATE, DAModifier.FINAL))
+                 .write();
+    }
+  }
+
+  /**
+   * Apprends the constructor of the MapperImpl class for a dedicated class of
+   * {@link fr.javatronic.damapping.processor.model.InstantiationType#CONSTRUCTOR} which constructor has at least one
+   * parameter.
+   */
+  private void appendConstructor(DAClassWriter<DAFileWriter> classWriter,
+                                 DASourceClass sourceClass,
+                                 DAMethod dedicatedClassConstructor)
+      throws IOException {
+    if (dedicatedClassConstructor.getParameters().isEmpty()) {
+      return;
+    }
+
+    // constructor with the same parameters as the source class constructor
+    DAConstructorWriter<?> constructorWriter = classWriter.newConstructor()
+                                                          .withModifiers(Sets.of(DAModifier.PUBLIC))
+                                                          .withParams(dedicatedClassConstructor.getParameters())
+                                                          .start();
+
+    constructorWriter.newStatement()
+                     .start()
+                     .append("this.")
+                     .append(DEDICATED_CLASS_INSTANCE_PROPERTY_NAME)
+                     .append(" = ")
+                     .append("new ")
+                     .append(sourceClass.getType().getSimpleName())
+                     .appendParamValues(dedicatedClassConstructor.getParameters())
+                     .end();
+
+    constructorWriter.end();
+  }
+
+  private void writeEnumMapper(DAClassWriter<DAFileWriter> classWriter, DASourceClass sourceClass) throws IOException {
     appendMapperMethod(sourceClass, classWriter);
   }
 
@@ -212,7 +254,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
                        .append(sourceClass.getEnumValues().iterator().next().getName());
         break;
       case CONSTRUCTOR:
-        appendConstructorCall(statementWriter, sourceClass);
+        statementWriter.append("this.").append(DEDICATED_CLASS_INSTANCE_PROPERTY_NAME);
         break;
       case SPRING_COMPONENT:
         statementWriter.append("instance");
@@ -222,20 +264,8 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     }
   }
 
-  private void appendConstructorCall(DAStatementWriter<?> statementWriter, DASourceClass sourceClass)
-      throws IOException {
-    statementWriter.append("new ");
-    statementWriter.append(sourceClass.getType().getSimpleName());
-    statementWriter.appendParamValues(
-        findSourceClassConstructor(sourceClass).get().getParameters(),
-        toNamePrefixedWithThis()
-    );
-  }
-
-  private Optional<DAMethod> findSourceClassConstructor(DASourceClass sourceClass) {
-    if (sourceClass.getInstantiationType() == InstantiationType.SINGLETON_ENUM) {
-      return Optional.absent();
-    }
+  @Nonnull
+  private DAMethod findSourceClassConstructor(DASourceClass sourceClass) {
     List<DAMethod> constructors = from(sourceClass.getMethods()).filter(DAMethodPredicates.isConstructor()).toList();
     if (constructors.size() == 0) {
       throw new IllegalStateException("DASourceClass has no constructor at all");
@@ -243,7 +273,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     if (constructors.size() > 1) {
       throw new IllegalArgumentException("DASourceClass has more than one constructor");
     }
-    return Optional.of(constructors.iterator().next());
+    return constructors.iterator().next();
   }
 
   private List<DAType> computeImplemented(DASourceClass daSourceClass) {

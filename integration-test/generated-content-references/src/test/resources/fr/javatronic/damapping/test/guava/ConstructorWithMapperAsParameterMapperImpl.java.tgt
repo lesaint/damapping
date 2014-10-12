@@ -5,16 +5,16 @@ import javax.annotation.Nullable;
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class ConstructorWithMapperAsParameterMapperImpl implements ConstructorWithMapperAsParameterMapper {
 
-    private final SimpleMapper simpleMapper;
+    private final ConstructorWithMapperAsParameter dedicatedInstance;
 
     public ConstructorWithMapperAsParameterMapperImpl(@Nullable SimpleMapper simpleMapper) {
-        this.simpleMapper = simpleMapper;
+        this.dedicatedInstance = new ConstructorWithMapperAsParameter(simpleMapper);
     }
 
     @Override
     @Nullable
     public String apply(@Nullable Integer input) {
-        return new ConstructorWithMapperAsParameter(this.simpleMapper).apply(input);
+        return this.dedicatedInstance.apply(input);
     }
 
 }

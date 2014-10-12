@@ -47,20 +47,4 @@ public final class DAParameterFunctions {
     }
   }
 
-  public static Function<DAParameter, String> toNamePrefixedWithThis() {
-    return DAParameterToNamePrefixedWithThis.INSTANCE;
-  }
-
-  private static enum DAParameterToNamePrefixedWithThis implements Function<DAParameter, String> {
-    INSTANCE;
-
-    @Nullable
-    @Override
-    public String apply(@Nullable DAParameter daParameter) {
-      if (daParameter == null) {
-        return null;
-      }
-      return "this." + daParameter.getName().getName();
-    }
-  }
 }

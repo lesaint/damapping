@@ -5,10 +5,12 @@ import javax.annotation.Nullable;
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class ConstructorInstancedGuavaFunctionMapperImpl implements ConstructorInstancedGuavaFunctionMapper {
 
+    private final ConstructorInstancedGuavaFunction dedicatedInstance = new ConstructorInstancedGuavaFunction();
+
     @Override
     @Nullable
     public String apply(@Nullable Integer input) {
-        return new ConstructorInstancedGuavaFunction().apply(input);
+        return this.dedicatedInstance.apply(input);
     }
 
 }

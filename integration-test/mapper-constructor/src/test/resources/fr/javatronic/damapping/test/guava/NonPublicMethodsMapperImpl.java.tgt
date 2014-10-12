@@ -5,10 +5,12 @@ import javax.annotation.Nullable;
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class NonPublicMethodsMapperImpl implements NonPublicMethodsMapper {
 
+    private final NonPublicMethods dedicatedInstance = new NonPublicMethods();
+
     @Override
     @Nullable
     public String apply(@Nullable Integer input) {
-        return new NonPublicMethods().apply(input);
+        return this.dedicatedInstance.apply(input);
     }
 
 }

@@ -6,9 +6,11 @@ import fr.javatronic.damapping.util.Optional;
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class ProtectedMapperImpl implements ProtectedMapper {
 
+    private final Protected dedicatedInstance = new Protected();
+
     @Override
     public InPackage fooBarDonut(Optional<? extends OutOfPackage> optional) {
-        return new Protected().fooBarDonut(optional);
+        return this.dedicatedInstance.fooBarDonut(optional);
     }
 
 }

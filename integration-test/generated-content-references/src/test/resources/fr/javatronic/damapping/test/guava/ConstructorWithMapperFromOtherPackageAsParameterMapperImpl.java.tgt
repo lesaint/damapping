@@ -7,16 +7,16 @@ import javax.annotation.Nullable;
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class ConstructorWithMapperFromOtherPackageAsParameterMapperImpl implements ConstructorWithMapperFromOtherPackageAsParameterMapper {
 
-    private final Dummy_1Mapper dummy_1;
+    private final ConstructorWithMapperFromOtherPackageAsParameter dedicatedInstance;
 
     public ConstructorWithMapperFromOtherPackageAsParameterMapperImpl(@Nonnull Dummy_1Mapper dummy_1) {
-        this.dummy_1 = dummy_1;
+        this.dedicatedInstance = new ConstructorWithMapperFromOtherPackageAsParameter(dummy_1);
     }
 
     @Override
     @Nullable
     public String apply(@Nullable Integer input) {
-        return new ConstructorWithMapperFromOtherPackageAsParameter(this.dummy_1).apply(input);
+        return this.dedicatedInstance.apply(input);
     }
 
 }

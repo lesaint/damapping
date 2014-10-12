@@ -6,9 +6,11 @@ import javax.annotation.Nullable;
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class DefaultProtectedMapperImpl implements DefaultProtectedMapper {
 
+    private final DefaultProtected dedicatedInstance = new DefaultProtected();
+
     @Override
     public String apply(@Nullable OutOfPackage input) {
-        return new DefaultProtected().apply(input);
+        return this.dedicatedInstance.apply(input);
     }
 
 }

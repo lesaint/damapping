@@ -6,18 +6,15 @@ import javax.annotation.Nonnull;
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class ConstructorWithMultipleMapperParametersMapperImpl implements ConstructorWithMultipleMapperParametersMapper {
 
-    private final Dummy_1Mapper dummy_1Mapper;
-
-    private final SimpleMapper simpleMapper;
+    private final ConstructorWithMultipleMapperParameters dedicatedInstance;
 
     public ConstructorWithMultipleMapperParametersMapperImpl(Dummy_1Mapper dummy_1Mapper, @Nonnull SimpleMapper simpleMapper) {
-        this.dummy_1Mapper = dummy_1Mapper;
-        this.simpleMapper = simpleMapper;
+        this.dedicatedInstance = new ConstructorWithMultipleMapperParameters(dummy_1Mapper, simpleMapper);
     }
 
     @Override
     public String fooBarDonut(Integer input) {
-        return new ConstructorWithMultipleMapperParameters(this.dummy_1Mapper, this.simpleMapper).fooBarDonut(input);
+        return this.dedicatedInstance.fooBarDonut(input);
     }
 
 }

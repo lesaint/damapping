@@ -6,10 +6,12 @@ import javax.annotation.Nullable;
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class HandleCustomTypesMapperImpl implements HandleCustomTypesMapper {
 
+    private final HandleCustomTypes dedicatedInstance = new HandleCustomTypes();
+
     @Override
     @Nullable
     public InPackage apply(@Nullable OutOfPackage input) {
-        return new HandleCustomTypes().apply(input);
+        return this.dedicatedInstance.apply(input);
     }
 
 }

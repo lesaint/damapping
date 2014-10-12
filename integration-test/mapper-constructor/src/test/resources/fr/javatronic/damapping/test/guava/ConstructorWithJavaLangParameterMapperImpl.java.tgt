@@ -5,16 +5,16 @@ import javax.annotation.Nullable;
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class ConstructorWithJavaLangParameterMapperImpl implements ConstructorWithJavaLangParameterMapper {
 
-    private final Boolean someFlag;
+    private final ConstructorWithJavaLangParameter dedicatedInstance;
 
     public ConstructorWithJavaLangParameterMapperImpl(Boolean someFlag) {
-        this.someFlag = someFlag;
+        this.dedicatedInstance = new ConstructorWithJavaLangParameter(someFlag);
     }
 
     @Override
     @Nullable
     public String apply(@Nullable Integer input) {
-        return new ConstructorWithJavaLangParameter(this.someFlag).apply(input);
+        return this.dedicatedInstance.apply(input);
     }
 
 }
