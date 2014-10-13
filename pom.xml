@@ -217,7 +217,7 @@
           </properties>
           <excludes>
             <exclude>Resources.txt</exclude>
-            <exclude>licence.txt</exclude>
+            <exclude>license.txt</exclude>
             <exclude>**/*.md</exclude>
             <exclude>**/META-INF/plugin.xml</exclude>
             <exclude>src/test/resources/**</exclude>
