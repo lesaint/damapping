@@ -35,5 +35,4 @@ public interface DASourceClassValidator {
 
   void validateInstantiationTypeRequirements(DASourceClass daSourceClass) throws ValidationError;
 
-  void validateMethods(List<DAMethod> methods) throws ValidationError;
 }

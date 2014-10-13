@@ -29,6 +29,7 @@ import java.util.Set;
 
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isImpliciteMapperMethod;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperFactoryMethod;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
@@ -43,7 +44,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
   public void validate(DASourceClass sourceClass) throws ValidationError {
     validateAnnotations(sourceClass.getAnnotations());
     validateModifiers(sourceClass.getModifiers());
-    validateMethods(sourceClass.getMethods());
+    validateMethods(sourceClass);
 
     // retrieve instantiation type from @Mapper annotation
     //  - CONSTRUCTOR : validate public/protected default constructor exists sinon erreur de compilation
@@ -114,8 +115,8 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     }
   }
 
-  @Override
-  public void validateMethods(List<DAMethod> methods) throws ValidationError {
+  public void validateMethods(DASourceClass sourceClass) throws ValidationError {
+    List<DAMethod> methods = sourceClass.getMethods();
     // rechercher une ou plusieurs méthodes annotées avec @MapperFunction
     // si classe @Mapper implémente Function, la rechercher en commençant par les méthodes annotées avec @MapperFunction
     // si aucune méthode trouvée => erreur  de compilation
@@ -133,6 +134,13 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     }
     if (mapperMethodCount == 0) {
       throw new ValidationError("Mapper must have at one and only one method qualifying as mapper method (either implemente Guava's Function interface or define a single non private method)");
+    }
+
+    for (DAMethod daMethod : from(methods).filter(isMapperFactoryMethod())) {
+      if (daMethod.getReturnType() == null || daMethod.getReturnType().getQualifiedName() == null
+          || !daMethod.getReturnType().getQualifiedName().equals(sourceClass.getType().getQualifiedName())) {
+        throw new ValidationError("Method annotated with @MapperFactory must return type of the class annotated with @Mapper");
+      }
     }
   }
 }
