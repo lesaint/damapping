@@ -30,12 +30,14 @@ import fr.javatronic.damapping.processor.validator.DASourceClassValidator;
 import fr.javatronic.damapping.processor.validator.DASourceClassValidatorImpl;
 import fr.javatronic.damapping.processor.validator.ValidationError;
 import fr.javatronic.damapping.util.Maps;
+import fr.javatronic.damapping.util.Preconditions;
 import fr.javatronic.damapping.util.Sets;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -43,6 +45,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
+
+import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
  * MapperAnnotationProcessor -
@@ -55,10 +59,12 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
       ElementKind.CLASS, ElementKind.ENUM
   );
 
-  private final ProcessingContext processingContext = new ProcessingContext();
+  @Nonnull
+  private final ProcessingContext processingContext;
 
-  public MapperAnnotationProcessor(ProcessingEnvironment processingEnv) {
+  public MapperAnnotationProcessor(ProcessingEnvironment processingEnv, @Nonnull ProcessingContext processingContext) {
     super(processingEnv, Mapper.class);
+    this.processingContext = checkNotNull(processingContext);
   }
 
   @Override

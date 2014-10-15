@@ -21,6 +21,7 @@ import fr.javatronic.damapping.processor.impl.javaxparsing.ProcessingContext;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Optional;
+import fr.javatronic.damapping.util.Preconditions;
 import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Predicates;
 import fr.javatronic.damapping.util.Sets;
@@ -49,6 +50,7 @@ import javax.lang.model.util.SimpleAnnotationValueVisitor6;
 import javax.lang.model.util.SimpleElementVisitor7;
 
 import static fr.javatronic.damapping.util.FluentIterable.from;
+import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 import static fr.javatronic.damapping.util.Predicates.notNull;
 
 /**
@@ -64,10 +66,11 @@ public class GeneratedAnnotationProcessor extends AbstractAnnotationProcessor<Ge
   private static final AnnotationElementValueName VALUE_ANNOTATION_PARAMETER = new AnnotationElementValueName("value");
 
   @Nonnull
-  private final ProcessingContext processingContext = new ProcessingContext();
+  private final ProcessingContext processingContext;
 
-  public GeneratedAnnotationProcessor(ProcessingEnvironment processingEnv) {
+  public GeneratedAnnotationProcessor(ProcessingEnvironment processingEnv, @Nonnull ProcessingContext processingContext) {
     super(processingEnv, Generated.class);
+    this.processingContext = checkNotNull(processingContext);
   }
 
   @Override
