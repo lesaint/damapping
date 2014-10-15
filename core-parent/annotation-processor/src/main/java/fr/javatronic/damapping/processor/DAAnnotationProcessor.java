@@ -18,13 +18,17 @@ package fr.javatronic.damapping.processor;
 import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.annotation.MapperFactory;
 import fr.javatronic.damapping.processor.impl.AnnotationProcessor;
+import fr.javatronic.damapping.processor.impl.GeneratedAnnotationProcessor;
 import fr.javatronic.damapping.processor.impl.MapperAnnotationProcessor;
+import fr.javatronic.damapping.processor.impl.javaxparsing.ProcessingContext;
 import fr.javatronic.damapping.util.Maps;
 import fr.javatronic.damapping.util.Sets;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Generated;
+import javax.annotation.Nonnull;
 import javax.annotation.processing.Completion;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -48,7 +52,7 @@ public class DAAnnotationProcessor implements Processor {
   private static final Set<String> SUPPORTED_ANNOTATION_TYPES =
       Sets.of(
           Mapper.class.getCanonicalName(),
-          MapperFactory.class.getCanonicalName()
+          Generated.class.getCanonicalName()
       );
   private ProcessingEnvironment processingEnv;
   private Map<String, AnnotationProcessor> annotationProcessors = Maps.newHashMap();
@@ -72,6 +76,7 @@ public class DAAnnotationProcessor implements Processor {
   public void init(ProcessingEnvironment processingEnvironment) {
     this.processingEnv = processingEnvironment;
     this.annotationProcessors.put(Mapper.class.getCanonicalName(), new MapperAnnotationProcessor(processingEnv));
+    this.annotationProcessors.put(Generated.class.getCanonicalName(), new GeneratedAnnotationProcessor(processingEnv));
   }
 
   @Override
