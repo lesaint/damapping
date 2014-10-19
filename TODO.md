@@ -26,6 +26,8 @@ ROADMAP
 [X] séparation en modules spécifiques des annotations et du processor
 [X] toute exception doit indiquer la classe @Mapper pour laquelle ça a pété
 [X] supprimer usage de FluentIterable.toImmutableList() et toImmutableSet() ou de toList() et toSet()
+[ ] rewrite Javax parsing using Visitors instead of instanceof and chained getters
+[ ] ProcessingContext should wrap ProcessingEnvironment + expose methods of JavaxParsing
 [ ] when compiling a @Mapper extending Function and Guava's is not in path, MapperImpl is generated with a "import Function;"
     statement and file does not compile
 [X] les annotations sur méthodes Fuction.apply, @MapperMethod et @MapperFactoryMethod sont perdues dans les codes généré
@@ -76,7 +78,6 @@ ROADMAP
 
 
 ==============================
-
 
 
 ### How to use DAMapping with Spring
