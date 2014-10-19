@@ -21,12 +21,15 @@ import fr.javatronic.damapping.processor.impl.GeneratedAnnotationProcessor;
 import fr.javatronic.damapping.processor.impl.MapperAnnotationProcessor;
 import fr.javatronic.damapping.processor.impl.javaxparsing.ProcessingContext;
 import fr.javatronic.damapping.util.Maps;
+import fr.javatronic.damapping.util.Optional;
+import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Sets;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Generated;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Completion;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -38,6 +41,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
+
+import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
  * DAAnnotationProcessor
@@ -54,7 +59,8 @@ public class DAAnnotationProcessor implements Processor {
       );
   private ProcessingEnvironment processingEnv;
   private final ProcessingContext processingContext = new ProcessingContext();
-  private Map<String, AnnotationProcessor> annotationProcessors = Maps.newHashMap();
+  private AnnotationProcessor mapperAnnotation;
+  private AnnotationProcessor generatedAnnotation;
 
   @Override
   public Set<String> getSupportedOptions() {
@@ -74,71 +80,42 @@ public class DAAnnotationProcessor implements Processor {
   @Override
   public void init(ProcessingEnvironment processingEnvironment) {
     this.processingEnv = processingEnvironment;
-    this.annotationProcessors.put(
-        Mapper.class.getCanonicalName(),
-        new MapperAnnotationProcessor(processingEnv, processingContext)
-    );
-    this.annotationProcessors.put
-        (Generated.class.getCanonicalName(),
-        new GeneratedAnnotationProcessor(processingEnv, processingContext)
-    );
+    this.mapperAnnotation = new MapperAnnotationProcessor(processingEnv, processingContext);
+    this.generatedAnnotation = new GeneratedAnnotationProcessor(processingEnv, processingContext);
   }
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
-    processNewElements(annotations, roundEnv);
-    processPostponed(roundEnv.processingOver());
+    Optional<? extends TypeElement> generated = getTypeElement(annotations, Generated.class.getCanonicalName());
+    Optional<? extends TypeElement> mapper = getTypeElement(annotations, Mapper.class.getCanonicalName());
+
+    // process @Generated types
+    if (generated.isPresent()) {
+      generatedAnnotation.processNewElements(generated.get(), roundEnv);
+      mapperAnnotation.processPostponed(roundEnv.processingOver());
+    }
+
+    // process @Mapper types
+    if (mapper.isPresent()) {
+      mapperAnnotation.processNewElements(mapper.get(), roundEnv);
+    }
 
     return true;
   }
 
-  private void processNewElements(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    for (TypeElement annotation : annotations) {
-      AnnotationProcessor annotationProcessor = annotationProcessors.get(annotation.getQualifiedName().toString());
-//            System.out.println("looking up AnnotationProcessor for " + annotation.getQualifiedName() + " in " +
-// annotationProcessors + " found=" + annotationProcessor);
-      if (annotationProcessor != null) {
-        annotationProcessor.processNewElements(annotation, roundEnv);
+  private static <T extends TypeElement> Optional<T> getTypeElement(Set<T> annotations, final String canonicalName) {
+    return from(annotations).firstMatch(new Predicate<T>() {
+      @Override
+      public boolean apply(@Nullable T o) {
+        return o.getQualifiedName().contentEquals(canonicalName);
       }
-    }
-  }
-
-  private void processPostponed(boolean lastRound) {
-    for (AnnotationProcessor annotationProcessor : annotationProcessors.values()) {
-      annotationProcessor.processPostponed(lastRound);
-    }
-  }
-
-  private void investigatingLogging(Set<? extends TypeElement> typeElements, RoundEnvironment roundEnv) {
-    // Diagnostic.Kind.WARNING and NOTE ne sont pas affichés dans la console maven, il faut utiliser
-    // Diagnostic.Kind.MADATORY_WARNING pour être sûr d'afficher un message visible lorsque le compilateur
-    // est lancé avec ses options par défaut. Le message est prefixé d'un "[WARNING] "
-    // D'autre part, System.out.println fonctionne sous maven (et forcément System.err aussi) et affiche un message
-    // lors du lancement du compilateur sans option particulière. Le message n'a pas de prefix.
-    // passer le javac en debug ou verbose ne semble pas permettre l'affichage des Kind.NOTE ou WARNING
-
-    System.out.println("System.out.println message");
-    System.err.println("System.err.println message");
-    Messager messager = processingEnv.getMessager();
-
-    messager.printMessage(Diagnostic.Kind.NOTE, "Note level message");
-    for (TypeElement te : typeElements) {
-//            messager.printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Traitement annotation " + te.getQualifiedName
-// ());
-      System.err.println("Traitement annotation " + te.getQualifiedName());
-
-      for (Element element : roundEnv.getElementsAnnotatedWith(te)) {
-//                messager.printMessage(Diagnostic.Kind.MANDATORY_WARNING, "  Traitement element " + element
-// .getSimpleName());
-        System.err.println("  Traitement element " + element.getSimpleName());
-      }
-    }
+    });
   }
 
   @Override
   public Iterable<? extends Completion> getCompletions(Element element, AnnotationMirror annotationMirror,
                                                        ExecutableElement executableElement, String s) {
-    return null;  //To change body of implemented methods use File | Settings | File Templates.
+    return null;
   }
 }

@@ -30,7 +30,6 @@ import fr.javatronic.damapping.processor.validator.DASourceClassValidator;
 import fr.javatronic.damapping.processor.validator.DASourceClassValidatorImpl;
 import fr.javatronic.damapping.processor.validator.ValidationError;
 import fr.javatronic.damapping.util.Maps;
-import fr.javatronic.damapping.util.Preconditions;
 import fr.javatronic.damapping.util.Sets;
 
 import java.io.IOException;
@@ -86,10 +85,6 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
       case OK:
         if (validate(parsingResult)) {
           generateFiles(parsingResult);
-          processingContext.addSuccessful(parsingResult.getType());
-        }
-        else {
-          processingContext.addFailed(parsingResult.getType());
         }
         break;
       case FAILED:
@@ -97,9 +92,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
             Diagnostic.Kind.NOTE,
             "Parsing failed. DAMapping won't generate any class/interface"
         );
-        if (parsingResult.getType() != null) {
-          processingContext.addFailed(parsingResult.getType());
-        }
+        processingContext.setFailed(parsingResult);
         break;
       case HAS_UNRESOLVED:
         registerPostponedValidationAndGeneration(parsingResult);
@@ -172,7 +165,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
   }
 
   private void processPostponed(ParsingResult parsingResult) throws IOException {
-    ParsingResult newParsingResult = parse(parsingResult.getClassElement(), processingContext.getSuccessful());
+    ParsingResult newParsingResult = parse(parsingResult.getClassElement(), processingContext.getGenerated());
 
     switch (newParsingResult.getParsingStatus()) {
       case OK:

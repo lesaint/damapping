@@ -36,18 +36,12 @@ import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
  */
 public class ProcessingContext {
   @Nonnull
-  private final Set<DAType> successful = new HashSet<DAType>();
-  @Nonnull
-  private final Set<DAType> failed = new HashSet<DAType>();
+  private final Set<DAType> generated = new HashSet<DAType>();
   @Nonnull
   private final Set<ParsingResult> postponed = new HashSet<ParsingResult>();
 
-  public void addSuccessful(@Nonnull DAType daType) {
-    successful.add(checkNotNull(daType));
-  }
-
-  public void addFailed(@Nonnull DAType daType) {
-    failed.add(checkNotNull(daType));
+  public void addGenerated(@Nonnull DAType daType) {
+    generated.add(checkNotNull(daType));
   }
 
   public void addPostponed(@Nonnull ParsingResult parsingResult) {
@@ -56,13 +50,11 @@ public class ProcessingContext {
 
   public void setFailed(@Nonnull ParsingResult parsingResult) {
     postponed.remove(checkNotNull(parsingResult));
-    failed.add(parsingResult.getType());
   }
 
   public void setSuccessful(@Nonnull ParsingResult parsingResult, @Nonnull ParsingResult newParsingResult) {
     checkArgument(parsingResult.getClassElement() == newParsingResult.getClassElement());
     postponed.remove(parsingResult);
-    successful.add(newParsingResult.getType());
   }
 
   @Nonnull
@@ -70,36 +62,9 @@ public class ProcessingContext {
     return postponed.isEmpty() ? Collections.<ParsingResult>emptySet() : Sets.copyOf(postponed);
   }
 
-  public Set<DAType> getSuccessful() {
-    return this.successful;
+  @Nonnull
+  public Set<DAType> getGenerated() {
+    return this.generated;
   }
 
-  public Set<DAType> findSuccessfullBySimpleName(@Nullable String simpleName) {
-    if (simpleName == null || successful.isEmpty()) {
-      return Collections.emptySet();
-    }
-
-    return from(successful).filter(new DATypeSimpleNamePredicate(simpleName)).toSet();
-  }
-
-  public Set<DAType> findFailedBySimpleName(@Nullable String simpleName) {
-    if (simpleName == null || failed.isEmpty()) {
-      return Collections.emptySet();
-    }
-
-    return from(failed).filter(new DATypeSimpleNamePredicate(simpleName)).toSet();
-  }
-
-  private static class DATypeSimpleNamePredicate implements Predicate<DAType> {
-    private final String simpleName;
-
-    public DATypeSimpleNamePredicate(@Nonnull String simpleName) {
-      this.simpleName = checkNotNull(simpleName);
-    }
-
-    @Override
-    public boolean apply(@Nullable DAType daType) {
-      return daType != null && simpleName.equals(daType.getSimpleName().getName());
-    }
-  }
 }

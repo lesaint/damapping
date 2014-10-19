@@ -133,26 +133,13 @@ class UnresolvedReferencesScanner {
     }
   }
 
-  private String extractSourceClassSimpleName(DAType daType) {
-    String simpleName = daType.getSimpleName().getName();
-    if (!simpleName.contains("Mapper")) {
-      return null;
-    }
-    for (String suffix : Sets.of("Mapper", "MapperImpl", "MapperFactory", "MapperFactoryImpl")) {
-      if (simpleName.endsWith(suffix)) {
-        return simpleName.substring(0, simpleName.length() - suffix.length());
-      }
-    }
-    return null;
-  }
-
   @Nonnull
   private Optional<DAType> findGeneratedType(DAType unresolvedType) {
     if (generatedTypesBySimpleName.isEmpty()) {
       return Optional.absent();
     }
 
-    String simpleName = extractSourceClassSimpleName(unresolvedType);
+    String simpleName = unresolvedType.getSimpleName().getName();
     DAType soucrceClassDAType = generatedTypesBySimpleName.get(simpleName);
     if (soucrceClassDAType == null) {
       return Optional.absent();

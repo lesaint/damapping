@@ -40,6 +40,7 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.AnnotationValueVisitor;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
@@ -81,6 +82,17 @@ public class GeneratedAnnotationProcessor extends AbstractAnnotationProcessor<Ge
       return;
     }
 
+    if (!isGeneratedByDAMapping(element)) {
+      return;
+    }
+
+    JavaxExtractorImpl javaxExtractor = new JavaxExtractorImpl(processingEnv.getTypeUtils(), null);
+    DAType type = javaxExtractor.extractType(element.asType());
+
+    processingContext.addGenerated(type);
+  }
+
+  private boolean isGeneratedByDAMapping(Element element) {
     // retrieve the AnnotationMirror of @Generated on the current Element
     Optional<? extends AnnotationMirror> generatedAnnotationMirror = from(element.getAnnotationMirrors()).filter(
         new Predicate<AnnotationMirror>() {
@@ -89,15 +101,14 @@ public class GeneratedAnnotationProcessor extends AbstractAnnotationProcessor<Ge
             if (o == null) {
               return false;
             }
-            SimpleElementVisitor7<Name, Object> v = new ElementQualifiedNameExtractor();
-            Name qualifiedName = v.visit(o.getAnnotationType().asElement());
+            Name qualifiedName = ElementQualifiedNameExtractor.INSTANCE.visit(o.getAnnotationType().asElement());
             return qualifiedName != null && qualifiedName.contentEquals(Generated.class.getCanonicalName());
           }
         }
     ).first();
     if (!generatedAnnotationMirror.isPresent()) {
       // can not happen since process only Element annotated with the @Generated
-      return;
+      return false;
     }
 
     Optional<String> processorName = from(generatedAnnotationMirror.get().getElementValues().entrySet())
@@ -106,15 +117,7 @@ public class GeneratedAnnotationProcessor extends AbstractAnnotationProcessor<Ge
         .filter(notNull())
         .first();
 
-    if (!processorName.isPresent() || !DAAnnotationProcessor.class.getCanonicalName().equals(processorName.get())) {
-      // ignores types annotated with @Generated created by other Annotation Processor
-      return;
-    }
-
-    JavaxExtractorImpl javaxExtractor = new JavaxExtractorImpl(processingEnv.getTypeUtils(), null);
-    DAType type = javaxExtractor.extractType(element.asType());
-
-//    processingContext.addGenerated(type);
+    return processorName.isPresent() && DAAnnotationProcessor.class.getCanonicalName().equals(processorName.get());
   }
 
   @Override
@@ -148,9 +151,15 @@ public class GeneratedAnnotationProcessor extends AbstractAnnotationProcessor<Ge
   }
 
   /**
-   *
+   * Implementation of {@link SimpleElementVisitor7} that visits a {@link Element} to extract its {@code simpleName}.
    */
   private static class ElementSimpleNameExtractor extends SimpleElementVisitor7<Name, Void> {
+    public static final ElementVisitor<Name, Void> INSTANCE = new ElementSimpleNameExtractor();
+
+    private ElementSimpleNameExtractor() {
+      // prevents instantiation
+    }
+
     @Override
     public Name visitVariable(VariableElement e, Void aVoid) {
       return e.getSimpleName();
@@ -177,29 +186,38 @@ public class GeneratedAnnotationProcessor extends AbstractAnnotationProcessor<Ge
     }
   }
 
-  private static class ElementQualifiedNameExtractor extends SimpleElementVisitor7<Name, Object> {
+  /**
+   * Implementation of {@link SimpleElementVisitor7} that visits a {@link Element} to extract its {@code qualifiedName}.
+   */
+  private static class ElementQualifiedNameExtractor extends SimpleElementVisitor7<Name, Void> {
+    private static final ElementVisitor<Name, Void> INSTANCE = new ElementQualifiedNameExtractor();
+
+    private ElementQualifiedNameExtractor() {
+      // prevents instantiation
+    }
+
     @Override
-    public Name visitVariable(VariableElement e, Object o) {
+    public Name visitVariable(VariableElement e, Void o) {
       return null;
     }
 
     @Override
-    public Name visitPackage(PackageElement e, Object o) {
+    public Name visitPackage(PackageElement e, Void o) {
       return e.getQualifiedName();
     }
 
     @Override
-    public Name visitExecutable(ExecutableElement e, Object o) {
+    public Name visitExecutable(ExecutableElement e, Void o) {
       return null;
     }
 
     @Override
-    public Name visitTypeParameter(TypeParameterElement e, Object o) {
+    public Name visitTypeParameter(TypeParameterElement e, Void o) {
       return null;
     }
 
     @Override
-    public Name visitType(TypeElement e, Object o) {
+    public Name visitType(TypeElement e, Void o) {
       return e.getQualifiedName();
     }
   }
@@ -231,7 +249,7 @@ public class GeneratedAnnotationProcessor extends AbstractAnnotationProcessor<Ge
       if (entry == null) {
         return false;
       }
-      Name simpleName = new ElementSimpleNameExtractor().visit(entry.getKey());
+      Name simpleName = ElementSimpleNameExtractor.INSTANCE.visit(entry.getKey());
       return simpleName != null && simpleName.contentEquals(elementName);
     }
   }
