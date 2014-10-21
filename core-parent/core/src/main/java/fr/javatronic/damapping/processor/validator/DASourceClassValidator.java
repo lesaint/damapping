@@ -15,11 +15,9 @@
  */
 package fr.javatronic.damapping.processor.validator;
 
-import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 
-import java.util.List;
 import java.util.Set;
 
 /**

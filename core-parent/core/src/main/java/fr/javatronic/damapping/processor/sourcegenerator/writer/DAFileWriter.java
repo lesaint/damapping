@@ -48,7 +48,7 @@ public class DAFileWriter implements DAWriter {
 
   public DAFileWriter appendPackage(@Nonnull DAName packageName) throws IOException {
     this.packageName = Preconditions.checkNotNull(packageName, "PackageName can not be null");
-    if (packageName != null && packageName.length() > 0) {
+    if (packageName.length() > 0) {
       bw.append("package ").append(packageName).append(";");
       bw.newLine();
       bw.newLine();

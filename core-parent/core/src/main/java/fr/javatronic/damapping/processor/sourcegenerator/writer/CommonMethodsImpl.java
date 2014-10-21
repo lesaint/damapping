@@ -22,11 +22,12 @@ import fr.javatronic.damapping.processor.model.DAType;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
+import javax.annotation.Nullable;
 
 /**
  * CommonMethods -
@@ -62,14 +63,18 @@ class CommonMethodsImpl implements CommonMethods {
   }
 
   @Override
-  public void appendModifiers(Set<DAModifier> modifiers) throws IOException {
-    // TODO add sorting of Modifiers according to best practice
-    if (modifiers.isEmpty()) {
+  public void appendModifiers(@Nullable DAModifier[] modifiers) throws IOException {
+    if (modifiers == null) {
       return;
     }
-    Iterator<DAModifier> it = new TreeSet<DAModifier>(modifiers).iterator();
-    while (it.hasNext()) {
-      bw.append(it.next().toString()).append(" ");
+    for (DAModifier modifier : new TreeSet<DAModifier>(Arrays.asList(modifiers))) {
+      appendModifier(modifier);
+    }
+  }
+
+  private void appendModifier(@Nullable DAModifier modifier) throws IOException {
+    if (modifier != null) {
+      bw.append(modifier.toString()).append(" ");
     }
   }
 

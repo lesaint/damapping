@@ -25,7 +25,7 @@ import java.io.Flushable;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import javax.annotation.Nonnull;
 
 /**
  * CommonMethods -
@@ -45,7 +45,7 @@ interface CommonMethods extends Appendable, Closeable, Flushable {
 
   void appendIndent() throws IOException;
 
-  void appendModifiers(Set<DAModifier> modifiers) throws IOException;
+  void appendModifiers(@Nonnull DAModifier[] modifiers) throws IOException;
 
   void appendAnnotations(Collection<DAAnnotation> annotations) throws IOException;
 

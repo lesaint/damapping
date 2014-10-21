@@ -18,7 +18,6 @@ package fr.javatronic.damapping.processor.sourcegenerator.writer;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAType;
-import fr.javatronic.damapping.util.Sets;
 import fr.javatronic.damapping.util.Lists;
 
 import java.io.BufferedWriter;
@@ -37,7 +36,8 @@ import javax.annotation.Nullable;
 public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
   private final String name;
   private List<DAAnnotation> annotations = Collections.emptyList();
-  private Set<DAModifier> modifiers = Collections.emptySet();
+  @Nullable
+  private DAModifier[] modifiers;
   private List<DAType> extended = Collections.emptyList();
 
   DAInterfaceWriter(String name, BufferedWriter bw, T parent, int indentOffset) {
@@ -51,7 +51,12 @@ public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
   }
 
   public DAInterfaceWriter<T> withModifiers(@Nullable Set<DAModifier> modifiers) {
-    this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : Sets.copyOf(modifiers);
+    this.modifiers = modifiers == null ? null : modifiers.toArray(new DAModifier[modifiers.size()]);
+    return this;
+  }
+
+  public DAInterfaceWriter<T> withModifiers(@Nullable DAModifier... modifiers) {
+    this.modifiers = modifiers;
     return this;
   }
 

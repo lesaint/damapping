@@ -50,7 +50,7 @@ public class DAConstructorWriterTest {
   public void public_empty_constructor() throws Exception {
     TestWriters testWriters = new TestWriters();
     constructorWriter("com.acme.TotoClass", testWriters)
-        .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
+        .withModifiers(DAModifier.PUBLIC)
         .start()
         .end();
 
@@ -66,7 +66,7 @@ public class DAConstructorWriterTest {
   public void private_constructor_with_params() throws Exception {
     TestWriters testWriters = new TestWriters();
     constructorWriter("com.acme.TotoClass", testWriters)
-        .withModifiers(ImmutableSet.of(DAModifier.PRIVATE))
+        .withModifiers(DAModifier.PRIVATE)
         .withParams(ImmutableList.of(DAWriterTestUtil.STRING_TITI_PARAMETER))
         .start()
         .newStatement()

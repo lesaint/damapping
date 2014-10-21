@@ -63,7 +63,7 @@ public class DAClassWriterTest {
   @Test
   public void empty_public_class() throws Exception {
     TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters).withModifiers(ImmutableSet.of(DAModifier.PUBLIC)).start().end();
+    daClassWriter(testWriters).withModifiers(DAModifier.PUBLIC).start().end();
 
     assertThat(testWriters.getRes())
         .isEqualTo(INDENT + "public class Name {" + LINE_SEPARATOR
@@ -75,7 +75,7 @@ public class DAClassWriterTest {
   @Test
   public void empty_public_final_class() throws Exception {
     TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters).withModifiers(ImmutableSet.of(DAModifier.PUBLIC, DAModifier.FINAL)).start().end();
+    daClassWriter(testWriters).withModifiers(DAModifier.PUBLIC, DAModifier.FINAL).start().end();
 
     assertThat(testWriters.getRes())
         .isEqualTo(INDENT + "public final class Name {" + LINE_SEPARATOR
@@ -168,7 +168,7 @@ public class DAClassWriterTest {
   public void empty_public_final_class_annoted_with_extends_and_implements() throws Exception {
     TestWriters testWriters = new TestWriters();
     daClassWriter(testWriters)
-        .withModifiers(ImmutableSet.of(DAModifier.PUBLIC, DAModifier.FINAL))
+        .withModifiers(DAModifier.PUBLIC, DAModifier.FINAL)
         .withAnnotations(ImmutableList.of(OVERRIDE_ANNOTATION))
         .withImplemented(ImmutableList.of(FUNCTION_INTEGER_TO_STRING_INTERFACE))
         .withExtended(BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS)

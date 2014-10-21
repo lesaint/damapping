@@ -93,7 +93,7 @@ public class DAFileWriterTest {
     new DAFileWriter(testWriters.bw)
         .appendPackage(PACKAGE_NAME)
         .newClass(DAWriterTestUtil.NAME_DATYPE)
-        .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
+        .withModifiers(DAModifier.PUBLIC)
         .start()
         .end();
 

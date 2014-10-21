@@ -50,7 +50,7 @@ public class DAInitializedPropertyWriterTest {
   public void private_property_with_coonstructor_call() throws Exception {
     TestWriters testWriters = new TestWriters();
     daPropertyWriter(testWriters)
-        .withModifiers(ImmutableSet.of(DAModifier.PRIVATE))
+        .withModifiers(DAModifier.PRIVATE)
         .initialize()
           .append("new ").appendType(NAME_DATYPE).append("()").end()
         .end();

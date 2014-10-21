@@ -15,12 +15,12 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
-import fr.javatronic.damapping.processor.model.constants.JavaLangConstants;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.constants.JavaLangConstants;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
@@ -30,7 +30,6 @@ import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAStatementWriter;
 import fr.javatronic.damapping.util.Lists;
 import fr.javatronic.damapping.util.Predicates;
-import fr.javatronic.damapping.util.Sets;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -85,7 +84,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
         .withImplemented(
             Lists.of(factoryInterfaceDescriptor.getType())
         )
-        .withModifiers(Sets.of(DAModifier.PUBLIC))
+        .withModifiers(DAModifier.PUBLIC)
         .start();
 
     appendFactoryMethods(sourceClass, mapperInterfaceDescriptor, mapperImpl, classWriter);
@@ -106,7 +105,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
       DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter
           .newMethod(name, mapperInterfaceDescriptor.getType())
           .withAnnotations(Lists.of(JavaLangConstants.OVERRIDE_ANNOTATION))
-          .withModifiers(Sets.of(DAModifier.PUBLIC))
+          .withModifiers(DAModifier.PUBLIC)
           .withParams(method.getParameters())
           .start();
       DAStatementWriter<?> statementWriter = methodWriter
@@ -139,13 +138,13 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
     DASourceClass sourceClass = mapperInterfaceDescriptor.getContext().getSourceClass();
     DAClassWriter<DAClassWriter<DAFileWriter>> mapperClassWriter = factortClassWriter
         .newClass(mapperImpl)
-        .withModifiers(Sets.of(DAModifier.PRIVATE, DAModifier.STATIC))
+        .withModifiers(DAModifier.PRIVATE, DAModifier.STATIC)
         .withImplemented(Lists.of(mapperInterfaceDescriptor.getType()))
         .start();
 
     // private final [SourceClassType] instance;
     mapperClassWriter.newProperty("instance", sourceClass.getType())
-                     .withModifiers(Sets.of(DAModifier.PRIVATE, DAModifier.FINAL))
+                     .withModifiers(DAModifier.PRIVATE, DAModifier.FINAL)
                      .write();
 
     // constructor with instance parameter
@@ -153,7 +152,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
                                        .build();
 
     mapperClassWriter.newConstructor()
-                     .withModifiers(Sets.of(DAModifier.PUBLIC))
+                     .withModifiers(DAModifier.PUBLIC)
                      .withParams(Lists.of(parameter))
                      .start()
                      .newStatement()
@@ -171,7 +170,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
     DAClassMethodWriter<?> methodWriter = mapperClassWriter
         .newMethod(mapperMethod.getName().getName(), mapperMethod.getReturnType())
         .withAnnotations(support.computeOverrideMethodAnnotations(mapperMethod))
-        .withModifiers(Sets.of(DAModifier.PUBLIC))
+        .withModifiers(DAModifier.PUBLIC)
         .withParams(mapperMethod.getParameters())
         .start();
 

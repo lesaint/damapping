@@ -19,13 +19,11 @@ import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.util.Lists;
-import fr.javatronic.damapping.util.Sets;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import javax.annotation.Nullable;
 
 /**
@@ -37,7 +35,8 @@ public class DAInitializedPropertyWriter<T extends DAWriter> extends AbstractDAW
   private final String name;
   private final DAType type;
   private List<DAAnnotation> annotations = Collections.emptyList();
-  private Set<DAModifier> modifiers = Collections.emptySet();
+  @Nullable
+  private DAModifier[] modifiers;
 
   DAInitializedPropertyWriter(String name, DAType type, BufferedWriter bw, T parent, int indentOffset) {
     super(bw, parent, indentOffset);
@@ -50,8 +49,8 @@ public class DAInitializedPropertyWriter<T extends DAWriter> extends AbstractDAW
     return this;
   }
 
-  public DAInitializedPropertyWriter<T> withModifiers(@Nullable Set<DAModifier> modifiers) {
-    this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : Sets.copyOf(modifiers);
+  public DAInitializedPropertyWriter<T> withModifiers(@Nullable DAModifier... modifiers) {
+    this.modifiers = modifiers;
     return this;
   }
 

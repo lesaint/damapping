@@ -49,7 +49,7 @@ public class DAPropertyWriterTest {
   public void private_property() throws Exception {
     TestWriters testWriters = new TestWriters();
     daPropertyWriter(testWriters)
-        .withModifiers(ImmutableSet.of(DAModifier.PRIVATE))
+        .withModifiers(DAModifier.PRIVATE)
         .write();
 
     assertThat(testWriters.getRes()).isEqualTo(

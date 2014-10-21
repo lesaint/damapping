@@ -23,7 +23,6 @@ import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAInterfaceWriter;
-import fr.javatronic.damapping.util.Sets;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -59,7 +58,7 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
 
     DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter
         .newInterface(descriptor.getType().getSimpleName().getName())
-        .withModifiers(Sets.of(DAModifier.PUBLIC))
+        .withModifiers(DAModifier.PUBLIC)
         .start();
 
     DAType mapperClass = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "Mapper");

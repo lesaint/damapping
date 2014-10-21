@@ -59,7 +59,7 @@ public class DAClassMethodWriterTest {
   public void public_static_empty_method() throws Exception {
     TestWriters testWriters = new TestWriters();
     methodWriter("name", "java.lang.String", testWriters)
-        .withModifiers(ImmutableSet.of(DAModifier.PUBLIC, DAModifier.STATIC))
+        .withModifiers(DAModifier.PUBLIC, DAModifier.STATIC)
         .start()
         .end();
 
@@ -108,7 +108,7 @@ public class DAClassMethodWriterTest {
   public void public_static_empty_method_with_parameter() throws Exception {
     TestWriters testWriters = new TestWriters();
     methodWriter("name", "java.lang.String", testWriters)
-        .withModifiers(ImmutableSet.of(DAModifier.PUBLIC, DAModifier.STATIC))
+        .withModifiers(DAModifier.PUBLIC, DAModifier.STATIC)
         .withParams(ImmutableList.of(FUNCTION_STRING_INTEGER_ARRAY_PARAMETER))
         .start()
         .end();

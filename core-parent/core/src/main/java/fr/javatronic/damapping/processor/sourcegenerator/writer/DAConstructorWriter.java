@@ -18,7 +18,6 @@ package fr.javatronic.damapping.processor.sourcegenerator.writer;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DAType;
-import fr.javatronic.damapping.util.Sets;
 import fr.javatronic.damapping.util.Lists;
 
 import java.io.BufferedWriter;
@@ -26,7 +25,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import javax.annotation.Nullable;
 
 /**
  * DAConstructorWriter - Writer pour les constructeurs d'une classe
@@ -42,7 +41,8 @@ import java.util.Set;
  */
 public class DAConstructorWriter<T extends DAWriter> extends AbstractDAWriter<T> {
   private final String name;
-  private Set<DAModifier> modifiers = Collections.<DAModifier>emptySet();
+  @Nullable
+  private DAModifier[] modifiers;
   private List<DAParameter> params = Collections.<DAParameter>emptyList();
 
   public DAConstructorWriter(DAType constructedType, BufferedWriter bw, T parent, int indentOffset) {
@@ -50,8 +50,8 @@ public class DAConstructorWriter<T extends DAWriter> extends AbstractDAWriter<T>
     this.name = constructedType.getSimpleName().getName();
   }
 
-  public DAConstructorWriter<T> withModifiers(Set<DAModifier> modifiers) {
-    this.modifiers = modifiers == null ? Collections.<DAModifier>emptySet() : Sets.copyOf(modifiers);
+  public DAConstructorWriter<T> withModifiers(@Nullable DAModifier... modifiers) {
+    this.modifiers = modifiers;
     return this;
   }
 

@@ -32,7 +32,6 @@ import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAStatementWriter;
 import fr.javatronic.damapping.util.Lists;
 import fr.javatronic.damapping.util.Predicates;
-import fr.javatronic.damapping.util.Sets;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -123,7 +122,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
         .newClass(descriptor.getType())
         .withAnnotations(computeAnnotations(sourceClass))
         .withImplemented(computeImplemented(sourceClass))
-        .withModifiers(Sets.of(DAModifier.PUBLIC))
+        .withModifiers(DAModifier.PUBLIC)
         .start();
   }
 
@@ -135,7 +134,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     );
     classWriter.newProperty("instance", mapperType)
                .withAnnotations(Lists.of(RESOURCE_ANNOTATION))
-               .withModifiers(Sets.of(DAModifier.PRIVATE))
+               .withModifiers(DAModifier.PRIVATE)
                .write();
 
     // mapper method
@@ -165,7 +164,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     List<DAParameter> constructorParameters = dedicatedClassConstructor.getParameters();
     if (constructorParameters.isEmpty()) {
       classWriter.newInitializedProperty(DEDICATED_CLASS_INSTANCE_PROPERTY_NAME, sourceClass.getType())
-                 .withModifiers(Sets.of(DAModifier.PRIVATE, DAModifier.FINAL))
+                 .withModifiers(DAModifier.PRIVATE, DAModifier.FINAL)
                  .initialize()
                    .append("new ").appendType(sourceClass.getType())
                    .appendParamValues(Collections.<DAParameter>emptyList())
@@ -174,7 +173,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     }
     else {
       classWriter.newProperty(DEDICATED_CLASS_INSTANCE_PROPERTY_NAME, sourceClass.getType())
-                 .withModifiers(Sets.of(DAModifier.PRIVATE, DAModifier.FINAL))
+                 .withModifiers(DAModifier.PRIVATE, DAModifier.FINAL)
                  .write();
     }
   }
@@ -194,7 +193,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
 
     // constructor with the same parameters as the source class constructor
     DAConstructorWriter<?> constructorWriter = classWriter.newConstructor()
-                                                          .withModifiers(Sets.of(DAModifier.PUBLIC))
+                                                          .withModifiers(DAModifier.PUBLIC)
                                                           .withParams(dedicatedClassConstructor.getParameters())
                                                           .start();
 
@@ -222,7 +221,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
     DAClassMethodWriter<?> methodWriter = classWriter
         .newMethod(mapperMethod.getName().getName(), mapperMethod.getReturnType())
         .withAnnotations(support.computeOverrideMethodAnnotations(mapperMethod))
-        .withModifiers(Sets.of(DAModifier.PUBLIC))
+        .withModifiers(DAModifier.PUBLIC)
         .withParams(mapperMethod.getParameters())
         .start();
 

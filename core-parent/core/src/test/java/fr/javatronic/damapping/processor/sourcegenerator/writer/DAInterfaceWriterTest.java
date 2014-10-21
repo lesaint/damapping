@@ -52,7 +52,7 @@ public class DAInterfaceWriterTest {
   public void public_empty_interface() throws Exception {
     TestWriters testWriters = new TestWriters();
     daInterfaceWriter(testWriters, "name")
-        .withModifiers(ImmutableSet.of(DAModifier.PUBLIC))
+        .withModifiers(DAModifier.PUBLIC)
         .start().end();
 
     assertThat(testWriters.getRes()).isEqualTo(
