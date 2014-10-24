@@ -32,6 +32,7 @@ ROADMAP
     package mais ce n'est pas une fonctionnalité)
 [ ] rewrite Javax parsing using Visitors instead of instanceof and chained getters
 [ ] ProcessingContext should wrap ProcessingEnvironment + expose methods of JavaxParsing
+[ ] use qualified name when writting annotations added by DAMapping to avoid having to modify the imports ?
 [ ] when compiling a @Mapper extending Function and Guava's is not in path, MapperImpl is generated with a "import Function;"
     statement and file does not compile
 [X] les annotations sur méthodes Fuction.apply, @MapperMethod et @MapperFactoryMethod sont perdues dans les codes généré
