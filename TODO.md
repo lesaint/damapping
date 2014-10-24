@@ -26,6 +26,10 @@ ROADMAP
 [X] séparation en modules spécifiques des annotations et du processor
 [X] toute exception doit indiquer la classe @Mapper pour laquelle ça a pété
 [X] supprimer usage de FluentIterable.toImmutableList() et toImmutableSet() ou de toList() et toSet()
+[ ] supprimer le support des méthodes protected et package protected comme méthodes de mapper
+   (simplification du framework et de toute façon, on génère une interface donc méthode implicitement public)
+   (le support de ces méthodes non public est une possibilité liée au fait que l'on génère nos classes dans le même
+    package mais ce n'est pas une fonctionnalité)
 [ ] rewrite Javax parsing using Visitors instead of instanceof and chained getters
 [ ] ProcessingContext should wrap ProcessingEnvironment + expose methods of JavaxParsing
 [ ] when compiling a @Mapper extending Function and Guava's is not in path, MapperImpl is generated with a "import Function;"
