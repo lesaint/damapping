@@ -1,0 +1,12 @@
+package fr.javatronic.damapping.test.implicitemappermethod;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public interface UsePackageTypeInjectableMapper {
+
+    @Nonnull
+    String map(@Nullable B b);
+
+}

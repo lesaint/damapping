@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.model;
 
+import fr.javatronic.damapping.annotation.Injectable;
 import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAInterfacePredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
@@ -49,6 +50,8 @@ public class DASourceClass implements DAModelVisitable {
   @Nonnull
   private final List<DAAnnotation> annotations;
   @Nonnull
+  private final Optional<DAAnnotation> injectableAnnotation;
+  @Nonnull
   private final Set<DAModifier> modifiers;
   @Nonnull
   private final List<DAInterface> interfaces;
@@ -63,6 +66,7 @@ public class DASourceClass implements DAModelVisitable {
     this.type = builder.getType();
     this.packageName = builder.getPackageName();
     this.annotations = nonNullFrom(builder.getAnnotations());
+    this.injectableAnnotation = from(this.annotations).firstMatch(DAAnnotationPredicates.isInjectable());
     this.modifiers = nonNullFrom(builder.getModifiers());
     this.interfaces = nonNullFrom(builder.getInterfaces());
     this.methods = nonNullFrom(daMethods);
@@ -91,6 +95,16 @@ public class DASourceClass implements DAModelVisitable {
   @Nonnull
   public List<DAAnnotation> getAnnotations() {
     return annotations;
+  }
+
+  /**
+   * The {@link DAAnnotation} from {@link #annotations} which represents the {@link Injectable} annotation on the
+   * dedicated class (if it exists).
+   * @return a {@link Optional} of {@link DAAnnotation}
+   */
+  @Nonnull
+  public Optional<DAAnnotation> getInjectableAnnotation() {
+    return injectableAnnotation;
   }
 
   @Nonnull

@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.model.predicate;
 
+import fr.javatronic.damapping.annotation.Injectable;
 import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.annotation.MapperFactory;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
@@ -101,5 +102,18 @@ public final class DAAnnotationPredicates {
       return Optional.absent();
     }
     return Optional.fromNullable(daAnnotation.getType().getQualifiedName());
+  }
+
+  public static Predicate<DAAnnotation> isInjectable() {
+    return InjectablePredicate.INSTANCE;
+  }
+
+  private static enum InjectablePredicate implements Predicate<DAAnnotation> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nullable DAAnnotation daAnnotation) {
+      return daAnnotation != null && Injectable.class.getCanonicalName().contentEquals(daAnnotation.getType().getQualifiedName());
+    }
   }
 }

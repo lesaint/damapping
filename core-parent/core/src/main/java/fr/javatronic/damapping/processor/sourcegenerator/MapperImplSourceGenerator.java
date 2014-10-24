@@ -50,6 +50,7 @@ import static fr.javatronic.damapping.util.FluentIterable.from;
  * @author Sébastien Lesaint
  */
 public class MapperImplSourceGenerator extends AbstractSourceGenerator {
+
   private static final String SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME = "org.springframework.stereotype.Component";
 
   private static final List<DAName> SPRING_COMPONENT_IMPORTS = Lists.of(
@@ -116,6 +117,15 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
         .appendGeneratedAnnotation(DAMAPPING_ANNOTATION_PROCESSOR_QUALIFIED_NAME);
   }
 
+  private List<DAName> computeMapperImplImports(GeneratedFileDescriptor descriptor, DASourceClass daSourceClass) {
+    if (daSourceClass.getInstantiationType() == SPRING_COMPONENT) {
+      List<DAName> res = Lists.copyOf(descriptor.getImports());
+      res.addAll(SPRING_COMPONENT_IMPORTS);
+      return res;
+    }
+    return descriptor.getImports();
+  }
+
   private DAClassWriter<DAFileWriter> classDeclaration(DAFileWriter fileWriter, DASourceClass sourceClass)
       throws IOException {
     return fileWriter
@@ -124,6 +134,20 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
         .withImplemented(computeImplemented(sourceClass))
         .withModifiers(DAModifier.PUBLIC)
         .start();
+  }
+
+  private List<DAAnnotation> computeAnnotations(DASourceClass daSourceClass) {
+    if (daSourceClass.getInstantiationType() == SPRING_COMPONENT) {
+      return Collections.singletonList(SPRING_COMPONENT_DATYPE);
+    }
+    return null;
+  }
+
+  private List<DAType> computeImplemented(DASourceClass daSourceClass) {
+    DAType mapperInterface = DATypeFactory.declared(
+        daSourceClass.getPackageName().getName() + "." + daSourceClass.getType().getSimpleName() + "Mapper"
+    );
+    return Collections.singletonList(mapperInterface);
   }
 
   private void writeSpringComponentMapper(DAClassWriter<DAFileWriter> classWriter, DASourceClass sourceClass)
@@ -273,28 +297,5 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
       throw new IllegalArgumentException("DASourceClass has more than one constructor");
     }
     return constructors.iterator().next();
-  }
-
-  private List<DAType> computeImplemented(DASourceClass daSourceClass) {
-    DAType mapperInterface = DATypeFactory.declared(
-        daSourceClass.getPackageName().getName() + "." + daSourceClass.getType().getSimpleName() + "Mapper"
-    );
-    return Lists.of(mapperInterface);
-  }
-
-  private List<DAAnnotation> computeAnnotations(DASourceClass daSourceClass) {
-    if (daSourceClass.getInstantiationType() == SPRING_COMPONENT) {
-      return Lists.of(SPRING_COMPONENT_DATYPE);
-    }
-    return null;
-  }
-
-  private List<DAName> computeMapperImplImports(GeneratedFileDescriptor descriptor, DASourceClass daSourceClass) {
-    if (daSourceClass.getInstantiationType() == SPRING_COMPONENT) {
-      List<DAName> res = Lists.copyOf(descriptor.getImports());
-      res.addAll(SPRING_COMPONENT_IMPORTS);
-      return res;
-    }
-    return descriptor.getImports();
   }
 }
