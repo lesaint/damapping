@@ -80,6 +80,33 @@ ROADMAP
     [X] Modifier enum (DASourceClass, DAParameter, DAMethod)
     [X] remove ElementKind and TypeKind dependency
 [ ] fix indent of pom.xml files
+[ ] JSR-330
+    [X] support to JSR-330 only for mapper without @MapperFactory
+        [X] use specific integration test (fork mapper-component ?)
+    [ ] raise compile error and do not process type with @Injectable if @Named or @Inject annotations are not
+        in the classpath
+    [ ] add compile time check that @Injectable is present only on type with @Mapper too
+        (DAMapping annotation processor must register @Injectable too, perform a check at beginning of each round:
+         retrieve all types with @Injectable and verify each of them have @Mapper too)
+    [ ] remove support for InstantiationType.SPRING_COMPONENT
+        [ ] rewrite use-mapper integration test with @Injectable
+    [ ] add element name() to @Injectable to specify the value of @Named on MapperImpl
+        [ ] need to add annotation elements to DAAnnotation to be able to retrieve the value
+    [ ] add unit test for mapper using mapper using mapper... (should work out-of-the-box)
+```java
+ * The value of the generated {@link javax.inject.Named} annotation can optionaly be specified using the
+ * {@link #name()} element.
+
+  /**
+   * When non-empty, defines the value of the generated {@link javax.inject.Named} annotation.
+   * @return a {@link String}
+   */
+  String name() default "";
+```
+    [ ] generate MapperImpl with @Singleton by default (add singleton() method to @Injectable)
+    [ ] add note about qualifiers (just add them to the dedicated class, it works)
+    [ ] support JSR-330 with @MapperFactory methods... there might just be nothing to do...
+
 
 
 ==============================
