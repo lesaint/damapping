@@ -84,7 +84,7 @@ ROADMAP
     [X] support to JSR-330 only for mapper without @MapperFactory
         [X] use specific integration test (fork mapper-component ?)
         [X] support references to generate code by adding @Inject on constructor
-    [ ] raise compile error and do not process type with @Injectable if @Named or @Inject annotations are not
+    [X] raise compile error and do not process type with @Injectable if @Named or @Inject annotations are not
         in the classpath
     [ ] add compile time check that @Injectable is present only on type with @Mapper too
         (DAMapping annotation processor must register @Injectable too, perform a check at beginning of each round:

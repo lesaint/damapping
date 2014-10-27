@@ -43,6 +43,8 @@ import javax.annotation.Resource;
 
 import static fr.javatronic.damapping.processor.model.InstantiationType.SPRING_COMPONENT;
 import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.RESOURCE_ANNOTATION;
+import static fr.javatronic.damapping.processor.model.constants.Jsr330Constants.INJECT_DAANNOTATION;
+import static fr.javatronic.damapping.processor.model.constants.Jsr330Constants.INJECT_DANAME;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
@@ -51,12 +53,6 @@ import static fr.javatronic.damapping.util.FluentIterable.from;
  * @author Sébastien Lesaint
  */
 public class MapperImplSourceGenerator extends AbstractSourceGenerator {
-
-  private static final String JAVAX_INJECT_INJECT_QUALIFIEDNAME = "javax.inject.Inject";
-  private static final DAName JAVAX_INJECT_INJECT_DANAME = DANameFactory.from(JAVAX_INJECT_INJECT_QUALIFIEDNAME);
-  private static final DAAnnotation INJECT_DAANNOTATION = new DAAnnotation(
-      DATypeFactory.declared(JAVAX_INJECT_INJECT_QUALIFIEDNAME)
-  );
 
   private static final String SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME = "org.springframework.stereotype.Component";
 
@@ -129,7 +125,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
       List<DAName> res = Lists.copyOf(descriptor.getImports());
       Optional<DAMethod> constructor = from(daSourceClass.getAccessibleConstructors()).first();
       if (constructor.isPresent() &&  !constructor.get().getParameters().isEmpty()) {
-        res.add(JAVAX_INJECT_INJECT_DANAME);
+        res.add(INJECT_DANAME);
       }
       return res;
     }
