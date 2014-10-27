@@ -60,7 +60,7 @@
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <jdk.version>1.7</jdk.version>
+    <jdk.version>${java.specification.version}</jdk.version>
     <maven.version>3.0.0</maven.version>
   </properties>
 
@@ -178,7 +178,7 @@
             <configuration>
               <rules>
                 <requireJavaVersion>
-                  <version>[${jdk.version},)</version>
+                  <version>[1.7,)</version>
                 </requireJavaVersion>
                 <requireMavenVersion>
                   <version>[${maven.version},)</version>
