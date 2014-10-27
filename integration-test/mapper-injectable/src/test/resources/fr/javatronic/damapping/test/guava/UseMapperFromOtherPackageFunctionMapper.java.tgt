@@ -1,0 +1,8 @@
+package fr.javatronic.damapping.test.guava;
+
+import com.google.common.base.Function;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public interface UseMapperFromOtherPackageFunctionMapper extends Function<Boolean, String> {
+
+}

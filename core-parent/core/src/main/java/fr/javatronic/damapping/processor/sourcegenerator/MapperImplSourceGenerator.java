@@ -31,6 +31,7 @@ import fr.javatronic.damapping.processor.sourcegenerator.writer.DAConstructorWri
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAStatementWriter;
 import fr.javatronic.damapping.util.Lists;
+import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicates;
 
 import java.io.BufferedWriter;
@@ -50,6 +51,12 @@ import static fr.javatronic.damapping.util.FluentIterable.from;
  * @author Sébastien Lesaint
  */
 public class MapperImplSourceGenerator extends AbstractSourceGenerator {
+
+  private static final String JAVAX_INJECT_INJECT_QUALIFIEDNAME = "javax.inject.Inject";
+  private static final DAName JAVAX_INJECT_INJECT_DANAME = DANameFactory.from(JAVAX_INJECT_INJECT_QUALIFIEDNAME);
+  private static final DAAnnotation INJECT_DAANNOTATION = new DAAnnotation(
+      DATypeFactory.declared(JAVAX_INJECT_INJECT_QUALIFIEDNAME)
+  );
 
   private static final String SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME = "org.springframework.stereotype.Component";
 
@@ -118,6 +125,14 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
   }
 
   private List<DAName> computeMapperImplImports(GeneratedFileDescriptor descriptor, DASourceClass daSourceClass) {
+    if (daSourceClass.getInjectableAnnotation().isPresent()) {
+      List<DAName> res = Lists.copyOf(descriptor.getImports());
+      Optional<DAMethod> constructor = from(daSourceClass.getAccessibleConstructors()).first();
+      if (constructor.isPresent() &&  !constructor.get().getParameters().isEmpty()) {
+        res.add(JAVAX_INJECT_INJECT_DANAME);
+      }
+      return res;
+    }
     if (daSourceClass.getInstantiationType() == SPRING_COMPONENT) {
       List<DAName> res = Lists.copyOf(descriptor.getImports());
       res.addAll(SPRING_COMPONENT_IMPORTS);
@@ -217,6 +232,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
 
     // constructor with the same parameters as the source class constructor
     DAConstructorWriter<?> constructorWriter = classWriter.newConstructor()
+                                                          .withAnnotations(computeConstructorAnnotations(sourceClass))
                                                           .withModifiers(DAModifier.PUBLIC)
                                                           .withParams(dedicatedClassConstructor.getParameters())
                                                           .start();
@@ -232,6 +248,13 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
                      .end();
 
     constructorWriter.end();
+  }
+
+  private List<DAAnnotation> computeConstructorAnnotations(DASourceClass sourceClass) {
+    if (sourceClass.getInjectableAnnotation().isPresent()) {
+      return Collections.singletonList(INJECT_DAANNOTATION);
+    }
+    return null;
   }
 
   private void writeEnumMapper(DAClassWriter<DAFileWriter> classWriter, DASourceClass sourceClass) throws IOException {
@@ -289,7 +312,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
 
   @Nonnull
   private DAMethod findSourceClassConstructor(DASourceClass sourceClass) {
-    List<DAMethod> constructors = from(sourceClass.getMethods()).filter(DAMethodPredicates.isConstructor()).toList();
+    List<DAMethod> constructors = sourceClass.getAccessibleConstructors();
     if (constructors.size() == 0) {
       throw new IllegalStateException("DASourceClass has no constructor at all");
     }

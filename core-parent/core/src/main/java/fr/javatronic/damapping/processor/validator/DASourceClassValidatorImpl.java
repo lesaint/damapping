@@ -20,8 +20,6 @@ import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
-import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
-import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicates;
 
 import java.util.List;
@@ -81,7 +79,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
         // requirements are enforced by Spring
         break;
       case CONSTRUCTOR:
-        hasAccessibleConstructor(daSourceClass.getMethods());
+        hasAccessibleConstructor(daSourceClass);
         break;
       case SINGLETON_ENUM:
         hasOnlyOneEnumValue(daSourceClass);
@@ -98,13 +96,8 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     }
   }
 
-  private void hasAccessibleConstructor(List<DAMethod> methods) throws ValidationError {
-    Optional<DAMethod> accessibleConstructor = from(methods)
-        .filter(DAMethodPredicates.isConstructor())
-        .filter(DAMethodPredicates.isNotPrivate())
-        .first();
-
-    if (!accessibleConstructor.isPresent()) {
+  private void hasAccessibleConstructor(DASourceClass sourceClass) throws ValidationError {
+    if (sourceClass.getAccessibleConstructors().isEmpty()) {
       throw new ValidationError("Classe does not exposed an accessible default constructor");
     }
   }

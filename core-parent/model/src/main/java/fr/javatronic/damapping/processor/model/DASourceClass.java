@@ -32,6 +32,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
+import static fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates.isInjectable;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isNotPrivate;
 import static fr.javatronic.damapping.processor.model.util.ImmutabilityHelper.nonNullFrom;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
@@ -58,6 +61,8 @@ public class DASourceClass implements DAModelVisitable {
   @Nonnull
   private final List<DAMethod> methods;
   @Nonnull
+  private final List<DAMethod> accessibleConstructors;
+  @Nonnull
   private final List<DAEnumValue> enumValues;
   @Nonnull
   private final InstantiationType instantiationType;
@@ -66,10 +71,11 @@ public class DASourceClass implements DAModelVisitable {
     this.type = builder.getType();
     this.packageName = builder.getPackageName();
     this.annotations = nonNullFrom(builder.getAnnotations());
-    this.injectableAnnotation = from(this.annotations).firstMatch(DAAnnotationPredicates.isInjectable());
+    this.injectableAnnotation = from(this.annotations).firstMatch(isInjectable());
     this.modifiers = nonNullFrom(builder.getModifiers());
     this.interfaces = nonNullFrom(builder.getInterfaces());
     this.methods = nonNullFrom(daMethods);
+    this.accessibleConstructors = from(this.methods).filter(isConstructor()).filter(isNotPrivate()).toList();
     this.enumValues = nonNullFrom(builder.getEnumValues());
     this.instantiationType = instantiationType;
   }
@@ -120,6 +126,17 @@ public class DASourceClass implements DAModelVisitable {
   @Nonnull
   public List<DAMethod> getMethods() {
     return methods;
+  }
+
+  /**
+   * The {@link DAMethod}(s) from {@link #methods} which represents a non-private constructor in the dedicated class
+   * (if any).
+   *
+   * @return a {@link List} of {@link DAMethod}
+   */
+  @Nonnull
+  public List<DAMethod> getAccessibleConstructors() {
+    return accessibleConstructors;
   }
 
   @Nonnull
@@ -294,7 +311,7 @@ public class DASourceClass implements DAModelVisitable {
                                                               @Nonnull List<DAMethod> daMethods,
                                                               boolean isEnumFlag) {
       Optional<DAMethod> mapperFactoryConstructor = from(daMethods)
-          .filter(DAMethodPredicates.isConstructor())
+          .filter(isConstructor())
           .filter(DAMethodPredicates.isMapperFactoryMethod())
           .first();
       if (mapperFactoryConstructor.isPresent()) {
