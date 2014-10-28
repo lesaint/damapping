@@ -50,7 +50,6 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     //  - CONSTRUCTOR : validate public/protected default constructor exists sinon erreur de compilation
     //  - SINGLETON_ENUM : validate @Mapper class is an enum + validate there is only one value sinon erreur de
     // compilation
-    //  - SPRING_COMPONENT : TOFINISH quelles vérifications sur la class si le InstantiationType est SPRING_COMPONENT ?
     validateInstantiationTypeRequirements(sourceClass);
   }
 
@@ -124,9 +123,6 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
   public void validateInstantiationTypeRequirements(DASourceClass daSourceClass) throws ValidationError {
     // TODO vérifier qu'il n'y a pas d'usage illegal de @MapperFactory (ie. sur méthode non statique)
     switch (daSourceClass.getInstantiationType()) {
-      case SPRING_COMPONENT:
-        // requirements are enforced by Spring
-        break;
       case CONSTRUCTOR:
         hasAccessibleConstructor(daSourceClass);
         break;

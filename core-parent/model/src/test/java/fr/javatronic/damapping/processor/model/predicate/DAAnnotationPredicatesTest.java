@@ -22,7 +22,6 @@ import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import org.testng.annotations.Test;
 
 import static fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates.isMapper;
-import static fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates.isSpringComponent;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -41,12 +40,4 @@ public class DAAnnotationPredicatesTest {
     assertThat(isMapper().apply(new DAAnnotation(DATypeFactory.declared(Mapper.class.getName())))).isTrue();
   }
 
-  @Test
-  public void testIsSpringComponent() throws Exception {
-    assertThat(isSpringComponent().apply(null)).isFalse();
-    assertThat(isSpringComponent().apply(new DAAnnotation(DATypeFactory.declared("com.toto.Component")))).isFalse();
-    assertThat(isSpringComponent().apply(new DAAnnotation(DATypeFactory.declared("org.acme.zoom.Foo")))).isFalse();
-    assertThat(isSpringComponent().apply(new DAAnnotation(DATypeFactory.declared("Bar")))).isFalse();
-    assertThat(isSpringComponent().apply(new DAAnnotation(DATypeFactory.declared("org.springframework.stereotype.Component")))).isTrue();
-  }
 }

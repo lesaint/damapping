@@ -16,7 +16,6 @@
 package fr.javatronic.damapping.processor.model;
 
 import fr.javatronic.damapping.annotation.Injectable;
-import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAInterfacePredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitable;
@@ -330,12 +329,6 @@ public class DASourceClass implements DAModelVisitable {
         return InstantiationType.SINGLETON_ENUM;
       }
 
-      Optional<DAAnnotation> springComponentAnnotation = from(daAnnotations).filter(
-          DAAnnotationPredicates.isSpringComponent()
-      ).first();
-      if (springComponentAnnotation.isPresent()) {
-        return InstantiationType.SPRING_COMPONENT;
-      }
       return InstantiationType.CONSTRUCTOR;
     }
 

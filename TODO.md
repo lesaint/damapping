@@ -89,8 +89,9 @@ ROADMAP
     [X] add compile time check that @Injectable is present only on type with @Mapper too
         (DAMapping annotation processor must register @Injectable too, perform a check at beginning of each round:
          retrieve all types with @Injectable and verify each of them have @Mapper too)
-    [ ] remove support for InstantiationType.SPRING_COMPONENT
-        [ ] rewrite use-mapper integration test with @Injectable
+    [X] remove support for InstantiationType.SPRING_COMPONENT
+        [X] rewrite use-mapper integration test with @Injectable
+    [ ] add integration-test of @Injectable integration with Dagger
     [ ] add element name() to @Injectable to specify the value of @Named on MapperImpl
         [ ] need to add annotation elements to DAAnnotation to be able to retrieve the value
     [ ] add unit test for mapper using mapper using mapper... (should work out-of-the-box)
@@ -107,7 +108,6 @@ ROADMAP
     [ ] generate MapperImpl with @Singleton by default (add singleton() method to @Injectable)
     [ ] add note about qualifiers (just add them to the dedicated class, it works)
     [ ] support JSR-330 with @MapperFactory methods... there might just be nothing to do...
-
 
 
 ==============================

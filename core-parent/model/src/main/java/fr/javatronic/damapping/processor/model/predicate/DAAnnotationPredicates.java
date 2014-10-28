@@ -34,7 +34,6 @@ public final class DAAnnotationPredicates {
 
   private static final String MAPPER_ANNOTATION_QUALIFIEDNAME = Mapper.class.getName();
   private static final String MAPPERFACTORYMETHOD_ANNOTATION_QUALIFIEDNAME = MapperFactory.class.getName();
-  private static final String SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME = "org.springframework.stereotype.Component";
 
   private DAAnnotationPredicates() {
     // prevents instantiation
@@ -75,26 +74,6 @@ public final class DAAnnotationPredicates {
       }
       return false;
     }
-  }
-
-  /**
-   * Predicate to find the @Component annotation of Spring
-   */
-  public static Predicate<DAAnnotation> isSpringComponent() {
-    return SpringComponentPredicate.INSTANCE;
-  }
-
-  private static enum SpringComponentPredicate implements Predicate<DAAnnotation> {
-    INSTANCE;
-    @Override
-    public boolean apply(@Nullable DAAnnotation input) {
-      Optional<DAName> daNameOptional = extractQualifiedName(input);
-      if (daNameOptional.isPresent()) {
-        return SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME.equals(daNameOptional.get().getName());
-      }
-      return false;
-    }
-
   }
 
   private static Optional<DAName> extractQualifiedName(DAAnnotation daAnnotation) {
