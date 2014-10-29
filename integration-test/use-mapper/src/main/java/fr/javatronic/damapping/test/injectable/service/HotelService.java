@@ -16,7 +16,6 @@
 package fr.javatronic.damapping.test.injectable.service;
 
 import java.util.List;
-import javax.inject.Named;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
@@ -25,7 +24,6 @@ import com.google.common.collect.Iterables;
  *
  * @author Sébastien Lesaint
  */
-@Named
 public class HotelService {
   private Hotel hotel = buildHotel();
 

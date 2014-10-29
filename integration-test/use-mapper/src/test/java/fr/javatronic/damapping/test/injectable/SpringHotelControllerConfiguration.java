@@ -23,18 +23,21 @@ import fr.javatronic.damapping.test.injectable.mapping.InjectableRoomToRoomDtoMa
 import fr.javatronic.damapping.test.injectable.mapping.InjectableRoomToRoomDtoMapperImpl;
 import fr.javatronic.damapping.test.injectable.service.HotelService;
 
-import javax.inject.Inject;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
-* HotelControllerConfiguration -
-*
-* @author Sébastien Lesaint
-*/
+ * SpringHotelControllerConfiguration - {@link Configuration} class for {@link SpringHotelControllerTest}.
+ * <p/>
+ * Using only Spring's specific annotations ({@link javax.inject.Inject} could be used in place of {@link Autowired})
+ * to avoid interferences with {@link DaggerHotelControllerTest} which fails because it identifies the objec's methods
+ * annotated with {@link javax.inject.Inject} as injected method and throws a compilation error.
+ *
+ * @author Sébastien Lesaint
+ */
 @Configuration
-public class HotelControllerConfiguration {
+public class SpringHotelControllerConfiguration {
 
   @Bean
   public InjectableRoomToRoomDtoMapper getInjectableRoomToRoomDtoMapper() {
@@ -42,14 +45,14 @@ public class HotelControllerConfiguration {
   }
 
   @Bean
-  @Inject
+  @Autowired
   public InjectableFloorToFloorDtoMapper getInjectableFloorToFloorDtoMapper(
       InjectableRoomToRoomDtoMapper roomToRoomDtoMapper) {
     return new InjectableFloorToFloorDtoMapperImpl(roomToRoomDtoMapper);
   }
 
   @Bean
-  @Inject
+  @Autowired
   public InjectableHotelToHotelDtoMapper getInjectableHotelToHotelDtoMapper(
       InjectableFloorToFloorDtoMapper injectableFloorToFloorDtoMapper) {
     return new InjectableHotelToHotelDtoMapperImpl(injectableFloorToFloorDtoMapper);
@@ -61,7 +64,7 @@ public class HotelControllerConfiguration {
   }
 
   @Bean
-  @Inject
+  @Autowired
   public HotelController getHotelController(InjectableHotelToHotelDtoMapper injectableHotelToHotelDtoMapper,
                                             HotelService hotelService) {
     return new HotelController(injectableHotelToHotelDtoMapper, hotelService);

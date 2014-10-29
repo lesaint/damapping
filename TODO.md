@@ -91,7 +91,7 @@ ROADMAP
          retrieve all types with @Injectable and verify each of them have @Mapper too)
     [X] remove support for InstantiationType.SPRING_COMPONENT
         [X] rewrite use-mapper integration test with @Injectable
-    [ ] add integration-test of @Injectable integration with Dagger
+    [X] add integration-test of @Injectable integration with Dagger
     [ ] add element name() to @Injectable to specify the value of @Named on MapperImpl
         [ ] need to add annotation elements to DAAnnotation to be able to retrieve the value
     [ ] add unit test for mapper using mapper using mapper... (should work out-of-the-box)

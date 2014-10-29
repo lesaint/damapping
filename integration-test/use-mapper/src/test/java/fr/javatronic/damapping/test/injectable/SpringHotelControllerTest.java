@@ -24,18 +24,18 @@ import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * HotelControllerTest -
+ * SpringHotelControllerTest -
  *
  * @author Sébastien Lesaint
  */
-public class HotelControllerTest {
+public class SpringHotelControllerTest {
 
   private HotelController hotelController;
 
   @BeforeClass
   public void setup() {
     AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
-        HotelControllerConfiguration.class
+        SpringHotelControllerConfiguration.class
     );
     this.hotelController = ctx.getAutowireCapableBeanFactory().getBean(HotelController.class);
     ctx.start();
