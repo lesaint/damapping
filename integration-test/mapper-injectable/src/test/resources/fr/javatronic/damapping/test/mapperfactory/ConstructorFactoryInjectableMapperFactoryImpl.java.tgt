@@ -1,0 +1,29 @@
+package fr.javatronic.damapping.test.mapperfactory;
+
+import java.math.BigDecimal;
+import javax.annotation.Nullable;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public class ConstructorFactoryInjectableMapperFactoryImpl implements ConstructorFactoryInjectableMapperFactory {
+
+    @Override
+    public ConstructorFactoryInjectableMapper instanceByConstructor(Boolean flag) {
+        return new ConstructorFactoryInjectableMapperImpl(new ConstructorFactoryInjectable(flag));
+    }
+
+    private static class ConstructorFactoryInjectableMapperImpl implements ConstructorFactoryInjectableMapper {
+
+        private final ConstructorFactoryInjectable instance;
+
+        public ConstructorFactoryInjectableMapperImpl(ConstructorFactoryInjectable instance) {
+            this.instance = instance;
+        }
+
+        @Override
+        @Nullable
+        public String apply(@Nullable BigDecimal input) {
+            return instance.apply(input);
+        }
+
+    }
+}

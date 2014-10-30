@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test.implicitemappermethod;
+package fr.javatronic.damapping.test.mapperfactory;
 
 import fr.javatronic.damapping.test.AbstractMapperTest;
 
 import org.testng.annotations.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
- * UsePackageTypeInjectableTest -
+ * ConstructorFactoryInjectable -
  *
  * @author Sébastien Lesaint
  */
-public class UsePackageTypeInjectableTest extends AbstractMapperTest {
-  public UsePackageTypeInjectableTest() {
-    super(UsePackageTypeInjectable.class);
+public class ConstructorFactoryInjectableTest extends AbstractMapperTest {
+  public ConstructorFactoryInjectableTest() {
+    super(ConstructorFactoryInjectable.class);
   }
 
   @Test
@@ -37,15 +35,13 @@ public class UsePackageTypeInjectableTest extends AbstractMapperTest {
   }
 
   @Test
-  public void check_generated_mapperImpl_file() throws Exception {
-    testUtil.checkGeneratedFile(getClass(), "MapperImpl");
+  public void check_generated_mapperFactory_file() throws Exception {
+    testUtil.checkGeneratedFile(getClass(), "MapperFactory");
   }
 
   @Test
-  public void check_generated_mapperFactory_file() throws Exception {
-    String tgtFilename = testUtil.buildTargetFilename("MapperFactory");
-
-    assertThat(getClass().getResource(tgtFilename)).isNull();
+  public void check_generated_mapperFactoryImpl_file() throws Exception {
+    testUtil.checkGeneratedFile(getClass(), "MapperFactoryImpl");
   }
 
 }
