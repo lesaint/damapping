@@ -100,7 +100,7 @@ public class FluentIterableTest {
             .transform(MULTIPLY_BY_TWO_FUNCTION)
             .transform(APPEND_COLON_FUNCTION)
             .toSet()
-    ).containsExactly("2:", "4:", "6:");
+    ).containsOnly("2:", "4:", "6:");
   }
 
   public void ordering_of_filters_matters() throws Exception {
