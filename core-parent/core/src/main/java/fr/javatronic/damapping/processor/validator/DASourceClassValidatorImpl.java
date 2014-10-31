@@ -19,9 +19,8 @@ import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DASourceClass;
+import fr.javatronic.damapping.processor.model.constants.Jsr330Constants;
 import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
-import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
-import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicates;
 
 import java.util.List;
@@ -45,12 +44,12 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     validateAnnotations(sourceClass.getAnnotations());
     validateModifiers(sourceClass.getModifiers());
     validateMethods(sourceClass);
+    validateJSR330InPath(sourceClass);
 
     // retrieve instantiation type from @Mapper annotation
     //  - CONSTRUCTOR : validate public/protected default constructor exists sinon erreur de compilation
     //  - SINGLETON_ENUM : validate @Mapper class is an enum + validate there is only one value sinon erreur de
     // compilation
-    //  - SPRING_COMPONENT : TOFINISH quelles vérifications sur la class si le InstantiationType est SPRING_COMPONENT ?
     validateInstantiationTypeRequirements(sourceClass);
   }
 
@@ -73,38 +72,8 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     }
   }
 
-  @Override
-  public void validateInstantiationTypeRequirements(DASourceClass daSourceClass) throws ValidationError {
-    // TODO vérifier qu'il n'y a pas d'usage illegal de @MapperFactory (ie. sur méthode non statique)
-    switch (daSourceClass.getInstantiationType()) {
-      case SPRING_COMPONENT:
-        // requirements are enforced by Spring
-        break;
-      case CONSTRUCTOR:
-        hasAccessibleConstructor(daSourceClass.getMethods());
-        break;
-      case SINGLETON_ENUM:
-        hasOnlyOneEnumValue(daSourceClass);
-        break;
-      case CONSTRUCTOR_FACTORY:
-        // TODO ajouter checks pour InstantiationType.CONSTRUCTOR_FACTORY (vérifier que pas d'autre méthode annotée
-        // avec @MapperFactory)
-        break;
-      case STATIC_FACTORY:
-        // TODO ajouter checks pour InstantiationType.public_FACTORY (vérifier que pas de constructeur à paramètre)
-        break;
-      default:
-        throw new IllegalArgumentException("Unsupported instantiationType " + daSourceClass.getInstantiationType());
-    }
-  }
-
-  private void hasAccessibleConstructor(List<DAMethod> methods) throws ValidationError {
-    Optional<DAMethod> accessibleConstructor = from(methods)
-        .filter(DAMethodPredicates.isConstructor())
-        .filter(DAMethodPredicates.isNotPrivate())
-        .first();
-
-    if (!accessibleConstructor.isPresent()) {
+  private void hasAccessibleConstructor(DASourceClass sourceClass) throws ValidationError {
+    if (sourceClass.getAccessibleConstructors().isEmpty()) {
       throw new ValidationError("Classe does not exposed an accessible default constructor");
     }
   }
@@ -141,6 +110,34 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
           || !daMethod.getReturnType().getQualifiedName().equals(sourceClass.getType().getQualifiedName())) {
         throw new ValidationError("Method annotated with @MapperFactory must return type of the class annotated with @Mapper");
       }
+    }
+  }
+
+  private void validateJSR330InPath(DASourceClass sourceClass) throws ValidationError {
+    if (sourceClass.getInjectableAnnotation().isPresent() &&  !Jsr330Constants.isJSR330Present()) {
+      throw new ValidationError("Class annotated with @Mapper and @Injectable requires JSR 330's annotations (@Named, @Inject, ...) to be available in classpath");
+    }
+  }
+
+  @Override
+  public void validateInstantiationTypeRequirements(DASourceClass daSourceClass) throws ValidationError {
+    // TODO vérifier qu'il n'y a pas d'usage illegal de @MapperFactory (ie. sur méthode non statique)
+    switch (daSourceClass.getInstantiationType()) {
+      case CONSTRUCTOR:
+        hasAccessibleConstructor(daSourceClass);
+        break;
+      case SINGLETON_ENUM:
+        hasOnlyOneEnumValue(daSourceClass);
+        break;
+      case CONSTRUCTOR_FACTORY:
+        // TODO ajouter checks pour InstantiationType.CONSTRUCTOR_FACTORY (vérifier que pas d'autre méthode annotée
+        // avec @MapperFactory)
+        break;
+      case STATIC_FACTORY:
+        // TODO ajouter checks pour InstantiationType.public_FACTORY (vérifier que pas de constructeur à paramètre)
+        break;
+      default:
+        throw new IllegalArgumentException("Unsupported instantiationType " + daSourceClass.getInstantiationType());
     }
   }
 }

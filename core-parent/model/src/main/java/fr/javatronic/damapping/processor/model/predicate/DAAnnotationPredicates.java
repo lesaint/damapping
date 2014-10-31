@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.model.predicate;
 
+import fr.javatronic.damapping.annotation.Injectable;
 import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.annotation.MapperFactory;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
@@ -33,7 +34,6 @@ public final class DAAnnotationPredicates {
 
   private static final String MAPPER_ANNOTATION_QUALIFIEDNAME = Mapper.class.getName();
   private static final String MAPPERFACTORYMETHOD_ANNOTATION_QUALIFIEDNAME = MapperFactory.class.getName();
-  private static final String SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME = "org.springframework.stereotype.Component";
 
   private DAAnnotationPredicates() {
     // prevents instantiation
@@ -76,30 +76,23 @@ public final class DAAnnotationPredicates {
     }
   }
 
-  /**
-   * Predicate to find the @Component annotation of Spring
-   */
-  public static Predicate<DAAnnotation> isSpringComponent() {
-    return SpringComponentPredicate.INSTANCE;
-  }
-
-  private static enum SpringComponentPredicate implements Predicate<DAAnnotation> {
-    INSTANCE;
-    @Override
-    public boolean apply(@Nullable DAAnnotation input) {
-      Optional<DAName> daNameOptional = extractQualifiedName(input);
-      if (daNameOptional.isPresent()) {
-        return SPRING_COMPONENT_ANNOTATION_QUALIFIEDNAME.equals(daNameOptional.get().getName());
-      }
-      return false;
-    }
-
-  }
-
   private static Optional<DAName> extractQualifiedName(DAAnnotation daAnnotation) {
     if (daAnnotation == null || daAnnotation.getType() == null) {
       return Optional.absent();
     }
     return Optional.fromNullable(daAnnotation.getType().getQualifiedName());
+  }
+
+  public static Predicate<DAAnnotation> isInjectable() {
+    return InjectablePredicate.INSTANCE;
+  }
+
+  private static enum InjectablePredicate implements Predicate<DAAnnotation> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nullable DAAnnotation daAnnotation) {
+      return daAnnotation != null && Injectable.class.getCanonicalName().contentEquals(daAnnotation.getType().getQualifiedName());
+    }
   }
 }

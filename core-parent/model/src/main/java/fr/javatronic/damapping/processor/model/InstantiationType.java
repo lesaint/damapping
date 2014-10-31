@@ -21,10 +21,6 @@ package fr.javatronic.damapping.processor.model;
  */
 public enum InstantiationType {
   /**
-   * Type d'instantiation pour une classe annotée avec @Mapper et @Component
-   */
-  SPRING_COMPONENT,
-  /**
    * Type d'instantiation par défaut pour une classe annotée avec @Mapper
    */
   CONSTRUCTOR,

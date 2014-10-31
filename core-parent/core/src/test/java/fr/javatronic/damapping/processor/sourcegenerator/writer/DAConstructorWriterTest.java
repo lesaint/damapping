@@ -19,10 +19,10 @@ import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 import org.testng.annotations.Test;
 
+import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.LINE_SEPARATOR;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -93,6 +93,18 @@ public class DAConstructorWriterTest {
 
     assertThat(testWriters.getRes())
         .isEqualTo(INDENT + "TotoClass(String titi, String toto) {" + LINE_SEPARATOR);
+  }
+
+  @Test
+  public void constructor_with_annotations() throws Exception {
+    TestWriters testWriters = new TestWriters();
+    constructorWriter("com.acme.TotoClass", testWriters)
+        .withAnnotations(ImmutableList.of(OVERRIDE_ANNOTATION))
+        .start();
+
+    assertThat(testWriters.getRes())
+        .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR +
+            INDENT + "TotoClass() {" + LINE_SEPARATOR);
   }
 
   private static DAConstructorWriter<DAWriter> constructorWriter(String returnType, TestWriters testWriters) {

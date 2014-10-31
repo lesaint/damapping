@@ -34,8 +34,8 @@
     <module>integration-test-core</module>
     <module>mapper-enum</module>
     <module>mapper-constructor</module>
-    <module>mapper-component</module>
     <module>mapper-factory</module>
+    <module>mapper-injectable</module>
     <module>generated-content-references</module>
     <module>use-mapper</module>
   </modules>

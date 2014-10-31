@@ -1,0 +1,8 @@
+package fr.javatronic.damapping.test.mapperfactory;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public interface EnumMapperFactoryInjectableMapperFactory {
+
+    EnumMapperFactoryInjectableMapper from(Boolean flag);
+
+}

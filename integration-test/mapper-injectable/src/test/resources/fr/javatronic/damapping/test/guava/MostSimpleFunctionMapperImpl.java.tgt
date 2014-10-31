@@ -1,0 +1,16 @@
+package fr.javatronic.damapping.test.guava;
+
+import javax.annotation.Nullable;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public class MostSimpleFunctionMapperImpl implements MostSimpleFunctionMapper {
+
+    private final MostSimpleFunction dedicatedInstance = new MostSimpleFunction();
+
+    @Override
+    @Nullable
+    public String apply(@Nullable Integer a) {
+        return this.dedicatedInstance.apply(a);
+    }
+
+}

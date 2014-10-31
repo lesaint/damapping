@@ -15,7 +15,7 @@
  */
 package fr.javatronic.damapping.processor.model;
 
-import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
+import fr.javatronic.damapping.annotation.Injectable;
 import fr.javatronic.damapping.processor.model.predicate.DAInterfacePredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitable;
@@ -31,6 +31,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
+import static fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates.isInjectable;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isNotPrivate;
 import static fr.javatronic.damapping.processor.model.util.ImmutabilityHelper.nonNullFrom;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
@@ -49,11 +52,15 @@ public class DASourceClass implements DAModelVisitable {
   @Nonnull
   private final List<DAAnnotation> annotations;
   @Nonnull
+  private final Optional<DAAnnotation> injectableAnnotation;
+  @Nonnull
   private final Set<DAModifier> modifiers;
   @Nonnull
   private final List<DAInterface> interfaces;
   @Nonnull
   private final List<DAMethod> methods;
+  @Nonnull
+  private final List<DAMethod> accessibleConstructors;
   @Nonnull
   private final List<DAEnumValue> enumValues;
   @Nonnull
@@ -63,9 +70,11 @@ public class DASourceClass implements DAModelVisitable {
     this.type = builder.getType();
     this.packageName = builder.getPackageName();
     this.annotations = nonNullFrom(builder.getAnnotations());
+    this.injectableAnnotation = from(this.annotations).firstMatch(isInjectable());
     this.modifiers = nonNullFrom(builder.getModifiers());
     this.interfaces = nonNullFrom(builder.getInterfaces());
     this.methods = nonNullFrom(daMethods);
+    this.accessibleConstructors = from(this.methods).filter(isConstructor()).filter(isNotPrivate()).toList();
     this.enumValues = nonNullFrom(builder.getEnumValues());
     this.instantiationType = instantiationType;
   }
@@ -93,6 +102,16 @@ public class DASourceClass implements DAModelVisitable {
     return annotations;
   }
 
+  /**
+   * The {@link DAAnnotation} from {@link #annotations} which represents the {@link Injectable} annotation on the
+   * dedicated class (if it exists).
+   * @return a {@link Optional} of {@link DAAnnotation}
+   */
+  @Nonnull
+  public Optional<DAAnnotation> getInjectableAnnotation() {
+    return injectableAnnotation;
+  }
+
   @Nonnull
   public Set<DAModifier> getModifiers() {
     return modifiers;
@@ -106,6 +125,17 @@ public class DASourceClass implements DAModelVisitable {
   @Nonnull
   public List<DAMethod> getMethods() {
     return methods;
+  }
+
+  /**
+   * The {@link DAMethod}(s) from {@link #methods} which represents a non-private constructor in the dedicated class
+   * (if any).
+   *
+   * @return a {@link List} of {@link DAMethod}
+   */
+  @Nonnull
+  public List<DAMethod> getAccessibleConstructors() {
+    return accessibleConstructors;
   }
 
   @Nonnull
@@ -280,7 +310,7 @@ public class DASourceClass implements DAModelVisitable {
                                                               @Nonnull List<DAMethod> daMethods,
                                                               boolean isEnumFlag) {
       Optional<DAMethod> mapperFactoryConstructor = from(daMethods)
-          .filter(DAMethodPredicates.isConstructor())
+          .filter(isConstructor())
           .filter(DAMethodPredicates.isMapperFactoryMethod())
           .first();
       if (mapperFactoryConstructor.isPresent()) {
@@ -299,12 +329,6 @@ public class DASourceClass implements DAModelVisitable {
         return InstantiationType.SINGLETON_ENUM;
       }
 
-      Optional<DAAnnotation> springComponentAnnotation = from(daAnnotations).filter(
-          DAAnnotationPredicates.isSpringComponent()
-      ).first();
-      if (springComponentAnnotation.isPresent()) {
-        return InstantiationType.SPRING_COMPONENT;
-      }
       return InstantiationType.CONSTRUCTOR;
     }
 

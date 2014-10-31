@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
+import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DAType;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -43,11 +45,18 @@ public class DAConstructorWriter<T extends DAWriter> extends AbstractDAWriter<T>
   private final String name;
   @Nullable
   private DAModifier[] modifiers;
+  @Nonnull
+  private List<DAAnnotation> annotations = Collections.emptyList();
   private List<DAParameter> params = Collections.<DAParameter>emptyList();
 
   public DAConstructorWriter(DAType constructedType, BufferedWriter bw, T parent, int indentOffset) {
     super(bw, parent, indentOffset);
     this.name = constructedType.getSimpleName().getName();
+  }
+
+  public DAConstructorWriter<T> withAnnotations(@Nullable List<DAAnnotation> annotations) {
+    this.annotations = annotations == null ? Collections.<DAAnnotation>emptyList() : Lists.copyOf(annotations);
+    return this;
   }
 
   public DAConstructorWriter<T> withModifiers(@Nullable DAModifier... modifiers) {
@@ -61,6 +70,7 @@ public class DAConstructorWriter<T extends DAWriter> extends AbstractDAWriter<T>
   }
 
   public DAConstructorWriter<T> start() throws IOException {
+    commons.appendAnnotations(annotations);
     commons.appendIndent();
     commons.appendModifiers(modifiers);
     commons.append(name);

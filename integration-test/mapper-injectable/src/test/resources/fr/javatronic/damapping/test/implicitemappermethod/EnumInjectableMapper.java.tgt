@@ -1,0 +1,11 @@
+package fr.javatronic.damapping.test.implicitemappermethod;
+
+import javax.annotation.Nonnull;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public interface EnumInjectableMapper {
+
+    @Nonnull
+    String fooBar(String someParam);
+
+}

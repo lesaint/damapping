@@ -15,23 +15,22 @@
  */
 package fr.javatronic.damapping.processor;
 
+import fr.javatronic.damapping.annotation.Injectable;
 import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.processor.impl.AnnotationProcessor;
 import fr.javatronic.damapping.processor.impl.GeneratedAnnotationProcessor;
+import fr.javatronic.damapping.processor.impl.InjectableAnnotationProcessor;
 import fr.javatronic.damapping.processor.impl.MapperAnnotationProcessor;
 import fr.javatronic.damapping.processor.impl.javaxparsing.ProcessingContext;
-import fr.javatronic.damapping.util.Maps;
 import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Sets;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 import javax.annotation.Generated;
 import javax.annotation.Nullable;
 import javax.annotation.processing.Completion;
-import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
@@ -40,7 +39,6 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
 
 import static fr.javatronic.damapping.util.FluentIterable.from;
 
@@ -55,12 +53,14 @@ public class DAAnnotationProcessor implements Processor {
   private static final Set<String> SUPPORTED_ANNOTATION_TYPES =
       Sets.of(
           Mapper.class.getCanonicalName(),
-          Generated.class.getCanonicalName()
+          Generated.class.getCanonicalName(),
+          Injectable.class.getCanonicalName()
       );
   private ProcessingEnvironment processingEnv;
   private final ProcessingContext processingContext = new ProcessingContext();
-  private AnnotationProcessor mapperAnnotation;
-  private AnnotationProcessor generatedAnnotation;
+  private AnnotationProcessor mapperAnnotationProcessor;
+  private AnnotationProcessor generatedAnnotationProcessor;
+  private AnnotationProcessor injectableAnnotationProcessor;
 
   @Override
   public Set<String> getSupportedOptions() {
@@ -80,8 +80,9 @@ public class DAAnnotationProcessor implements Processor {
   @Override
   public void init(ProcessingEnvironment processingEnvironment) {
     this.processingEnv = processingEnvironment;
-    this.mapperAnnotation = new MapperAnnotationProcessor(processingEnv, processingContext);
-    this.generatedAnnotation = new GeneratedAnnotationProcessor(processingEnv, processingContext);
+    this.mapperAnnotationProcessor = new MapperAnnotationProcessor(processingEnv, processingContext);
+    this.generatedAnnotationProcessor = new GeneratedAnnotationProcessor(processingEnv, processingContext);
+    this.injectableAnnotationProcessor = new InjectableAnnotationProcessor(processingEnv);
   }
 
   @Override
@@ -89,16 +90,21 @@ public class DAAnnotationProcessor implements Processor {
 
     Optional<? extends TypeElement> generated = getTypeElement(annotations, Generated.class.getCanonicalName());
     Optional<? extends TypeElement> mapper = getTypeElement(annotations, Mapper.class.getCanonicalName());
+    Optional<? extends TypeElement> injectable = getTypeElement(annotations, Injectable.class.getCanonicalName());
+
+    if (injectable.isPresent()) {
+      injectableAnnotationProcessor.processNewElements(injectable.get(), roundEnv);
+    }
 
     // process @Generated types
     if (generated.isPresent()) {
-      generatedAnnotation.processNewElements(generated.get(), roundEnv);
-      mapperAnnotation.processPostponed(roundEnv.processingOver());
+      generatedAnnotationProcessor.processNewElements(generated.get(), roundEnv);
+      mapperAnnotationProcessor.processPostponed(roundEnv.processingOver());
     }
 
     // process @Mapper types
     if (mapper.isPresent()) {
-      mapperAnnotation.processNewElements(mapper.get(), roundEnv);
+      mapperAnnotationProcessor.processNewElements(mapper.get(), roundEnv);
     }
 
     return true;
