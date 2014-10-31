@@ -108,7 +108,7 @@ ROADMAP
     [ ] generate MapperImpl with @Singleton by default (add singleton() method to @Injectable)
     [ ] add note about qualifiers (just add them to the dedicated class, it works)
     [ ] support JSR-330 with @MapperFactory methods... there might just be nothing to do...
-
+[ ] it does not make sens to have constructor(s) or static methods with @MapperFactory and other without => raise an error
 
 ==============================
 
