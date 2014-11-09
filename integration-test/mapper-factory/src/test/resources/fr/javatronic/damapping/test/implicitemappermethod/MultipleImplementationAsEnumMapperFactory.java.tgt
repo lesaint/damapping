@@ -8,5 +8,4 @@ public interface MultipleImplementationAsEnumMapperFactory {
     MultipleImplementationAsEnumMapper integer();
 
     MultipleImplementationAsEnumMapper instance(boolean bigDecimal);
-
 }

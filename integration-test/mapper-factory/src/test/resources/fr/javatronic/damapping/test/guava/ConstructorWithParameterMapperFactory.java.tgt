@@ -4,5 +4,4 @@ package fr.javatronic.damapping.test.guava;
 public interface ConstructorWithParameterMapperFactory {
 
     ConstructorWithParameterMapper instanceByConstructor(String salt);
-
 }

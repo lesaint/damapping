@@ -11,5 +11,4 @@ import javax.annotation.Nullable;
 public interface PublicWithGenericsEverywhereMapper {
 
     Collection<Predicate<Map<Long, File>>> values(@Nullable Optional<Integer[]> input);
-
 }

@@ -44,9 +44,7 @@ public class DAInterfaceMethodWriterTest {
     methodWriter("name", "java.lang.String", fileContext).write();
 
     assertThat(fileContext.getRes())
-        .isEqualTo(INDENT + "String name();" + LINE_SEPARATOR
-            + LINE_SEPARATOR
-        );
+        .isEqualTo(INDENT + "String name();" + LINE_SEPARATOR);
   }
 
   @Test
@@ -57,9 +55,7 @@ public class DAInterfaceMethodWriterTest {
         .write();
 
     assertThat(fileContext.getRes())
-        .isEqualTo(INDENT + "String name(String toto);" + LINE_SEPARATOR
-            + LINE_SEPARATOR
-        );
+        .isEqualTo(INDENT + "String name(String toto);" + LINE_SEPARATOR);
   }
 
   @Test
@@ -75,7 +71,6 @@ public class DAInterfaceMethodWriterTest {
     assertThat(fileContext.getRes())
         .isEqualTo(
             INDENT + "String name(String titi, Function<String, Integer>[] complexeParam);" + LINE_SEPARATOR
-                + LINE_SEPARATOR
         );
   }
 
@@ -89,7 +84,6 @@ public class DAInterfaceMethodWriterTest {
     assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR
             + INDENT + "String name();" + LINE_SEPARATOR
-            + LINE_SEPARATOR
         );
   }
 

@@ -117,8 +117,7 @@ public class DAFileWriterTest {
     assertThat(fileContext.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
         + LINE_SEPARATOR
         + "interface name {" + LINE_SEPARATOR
-        + LINE_SEPARATOR
-        + "}" + LINE_SEPARATOR
+        + "}"
     );
   }
 

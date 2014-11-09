@@ -4,5 +4,4 @@ package fr.javatronic.damapping.test.mapperfactory;
 public interface ConstructorFactoryInjectableMapperFactory {
 
     ConstructorFactoryInjectableMapper instanceByConstructor(Boolean flag);
-
 }

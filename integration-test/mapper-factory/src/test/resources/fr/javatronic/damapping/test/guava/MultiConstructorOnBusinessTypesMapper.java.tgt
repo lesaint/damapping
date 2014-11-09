@@ -5,5 +5,4 @@ import fr.javatronic.damapping.test.guava.sub.C;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface MultiConstructorOnBusinessTypesMapper extends Function<C, String> {
-
 }

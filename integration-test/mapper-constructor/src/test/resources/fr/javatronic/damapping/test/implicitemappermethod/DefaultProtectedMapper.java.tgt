@@ -7,5 +7,4 @@ import javax.annotation.Nullable;
 public interface DefaultProtectedMapper {
 
     String apply(@Nullable OutOfPackage input);
-
 }

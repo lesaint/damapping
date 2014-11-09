@@ -4,5 +4,4 @@ package fr.javatronic.damapping.test.implicitemappermethod;
 public interface StaticMethodsIgnoredMapper {
 
     String map(Integer input);
-
 }

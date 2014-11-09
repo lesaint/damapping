@@ -8,5 +8,4 @@ public interface EnumMapperFactoryInjectableMapper {
 
     @Nullable
     String apply(@Nullable BigDecimal input);
-
 }

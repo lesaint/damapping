@@ -4,5 +4,4 @@ package fr.javatronic.damapping.test.qualifier;
 public interface QualifierOnConstructorParametersMapper {
 
     String map(Integer a);
-
 }

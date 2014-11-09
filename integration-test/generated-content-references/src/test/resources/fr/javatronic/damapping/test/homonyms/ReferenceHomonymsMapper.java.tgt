@@ -4,5 +4,4 @@ package fr.javatronic.damapping.test.homonyms;
 public interface ReferenceHomonymsMapper {
 
     String map(Integer input);
-
 }

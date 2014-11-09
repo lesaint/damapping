@@ -8,5 +8,4 @@ public interface ConstructorFactoryInjectableMapper {
 
     @Nullable
     String apply(@Nullable BigDecimal input);
-
 }

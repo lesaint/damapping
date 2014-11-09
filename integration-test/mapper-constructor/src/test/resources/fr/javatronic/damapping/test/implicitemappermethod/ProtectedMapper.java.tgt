@@ -7,5 +7,4 @@ import fr.javatronic.damapping.util.Optional;
 public interface ProtectedMapper {
 
     InPackage fooBarDonut(Optional<? extends OutOfPackage> optional);
-
 }

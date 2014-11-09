@@ -9,5 +9,4 @@ import java.util.Map;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface GenericsEverywhereMapper extends Function<Optional<Integer[]>, Collection<Predicate<Map<Long, File>>>> {
-
 }

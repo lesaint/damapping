@@ -12,5 +12,4 @@ public interface MultiConstructorWithGenericsMapper {
 
     @Nullable
     Optional<String> apply(@Nullable Map<C, Set<BigDecimal>> input);
-
 }

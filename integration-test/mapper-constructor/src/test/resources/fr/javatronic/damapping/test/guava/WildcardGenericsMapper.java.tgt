@@ -6,5 +6,4 @@ import fr.javatronic.damapping.test.guava.subpackage.OutOfPackage;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface WildcardGenericsMapper extends Function<Optional<? extends OutOfPackage>, String> {
-
 }

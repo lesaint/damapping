@@ -4,5 +4,4 @@ package fr.javatronic.damapping.test.mapperreferences;
 public interface ClassDMapper {
 
     String map(Integer input);
-
 }

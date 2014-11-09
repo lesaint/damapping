@@ -10,5 +10,4 @@ public interface MultiConstructorWithGenericsMapperFactory {
     MultiConstructorWithGenericsMapper instanceByConstructor(Set<A> as);
 
     MultiConstructorWithGenericsMapper instanceByConstructor(List<B> bs);
-
 }

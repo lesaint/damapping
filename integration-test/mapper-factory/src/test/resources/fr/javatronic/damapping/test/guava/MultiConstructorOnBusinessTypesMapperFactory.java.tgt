@@ -8,5 +8,4 @@ public interface MultiConstructorOnBusinessTypesMapperFactory {
     MultiConstructorOnBusinessTypesMapper instanceByConstructor(A a);
 
     MultiConstructorOnBusinessTypesMapper instanceByConstructor(B b);
-
 }

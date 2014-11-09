@@ -8,5 +8,4 @@ public interface UsePackageTypeInjectableMapper {
 
     @Nonnull
     String map(@Nullable B b);
-
 }

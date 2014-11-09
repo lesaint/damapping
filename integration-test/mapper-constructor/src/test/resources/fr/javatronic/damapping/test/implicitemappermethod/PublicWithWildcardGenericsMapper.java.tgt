@@ -10,5 +10,4 @@ public interface PublicWithWildcardGenericsMapper {
 
     @Nonnull
     String transform(@Nullable List<? extends OutOfPackage> entities);
-
 }

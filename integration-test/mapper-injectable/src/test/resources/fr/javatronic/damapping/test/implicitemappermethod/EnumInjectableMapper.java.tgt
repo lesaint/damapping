@@ -7,5 +7,4 @@ public interface EnumInjectableMapper {
 
     @Nonnull
     String fooBar(String someParam);
-
 }

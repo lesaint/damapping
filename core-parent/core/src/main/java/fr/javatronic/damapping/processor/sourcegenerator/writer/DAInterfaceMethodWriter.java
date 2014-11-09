@@ -61,7 +61,6 @@ public class DAInterfaceMethodWriter<T extends DAWriter> extends AbstractDAWrite
     appendParams(params);
     commons.append(";");
     commons.newLine();
-    commons.newLine();
     return parent;
   }
 

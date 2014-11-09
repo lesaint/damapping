@@ -8,5 +8,4 @@ public interface MapperMethodNotCalledApplyMapper {
 
     @Nullable
     Float fooBar(@Nullable BigDecimal inBigD);
-
 }

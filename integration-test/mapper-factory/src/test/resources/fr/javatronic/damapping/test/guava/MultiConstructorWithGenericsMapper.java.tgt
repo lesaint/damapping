@@ -9,5 +9,4 @@ import java.util.Set;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface MultiConstructorWithGenericsMapper extends Function<Map<C, Set<BigDecimal>>, Optional<String>> {
-
 }

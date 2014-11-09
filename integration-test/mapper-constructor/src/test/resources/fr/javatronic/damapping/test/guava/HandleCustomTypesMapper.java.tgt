@@ -5,5 +5,4 @@ import fr.javatronic.damapping.test.guava.subpackage.OutOfPackage;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface HandleCustomTypesMapper extends Function<OutOfPackage, InPackage> {
-
 }

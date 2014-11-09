@@ -42,8 +42,7 @@ public class DAInterfaceWriterTest {
 
     assertThat(fileContext.getRes()).isEqualTo(
         INDENT + "interface name {" + LINE_SEPARATOR
-            + LINE_SEPARATOR
-            + INDENT + "}" + LINE_SEPARATOR
+            + INDENT + "}"
     );
   }
 
@@ -56,8 +55,7 @@ public class DAInterfaceWriterTest {
 
     assertThat(fileContext.getRes()).isEqualTo(
         INDENT + "public interface name {" + LINE_SEPARATOR
-            + LINE_SEPARATOR
-            + INDENT + "}" + LINE_SEPARATOR
+            + INDENT + "}"
     );
   }
 
@@ -70,8 +68,7 @@ public class DAInterfaceWriterTest {
 
     assertThat(fileContext.getRes()).isEqualTo(INDENT + "@Nullable" + LINE_SEPARATOR
         + INDENT + "interface name {" + LINE_SEPARATOR
-        + LINE_SEPARATOR
-        + INDENT + "}" + LINE_SEPARATOR
+        + INDENT + "}"
     );
   }
 
@@ -83,9 +80,8 @@ public class DAInterfaceWriterTest {
         .start().end();
 
     assertThat(fileContext.getRes()).isEqualTo(
-        INDENT + "interface name extends Function<Integer, String> {" + LINE_SEPARATOR +
-            LINE_SEPARATOR
-            + INDENT + "}" + LINE_SEPARATOR
+        INDENT + "interface name extends Function<Integer, String> {" + LINE_SEPARATOR
+            + INDENT + "}"
     );
   }
 
@@ -98,8 +94,7 @@ public class DAInterfaceWriterTest {
 
     assertThat(fileContext.getRes()).isEqualTo(
         INDENT + "interface name extends Serializable, Function<Integer, String> {" + LINE_SEPARATOR
-            + LINE_SEPARATOR
-            + INDENT + "}" + LINE_SEPARATOR
+            + INDENT + "}"
     );
   }
 
@@ -117,8 +112,7 @@ public class DAInterfaceWriterTest {
         + LINE_SEPARATOR
         + INDENT + INDENT + "@Override" + LINE_SEPARATOR
         + INDENT + INDENT + "Function<Integer, String> methodName();" + LINE_SEPARATOR
-        + LINE_SEPARATOR
-        + INDENT + "}" + LINE_SEPARATOR
+        + INDENT + "}"
     );
   }
 

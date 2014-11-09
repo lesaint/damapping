@@ -73,7 +73,6 @@ public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     appendExtended();
     commons.append("{");
     commons.newLine();
-    commons.newLine();
     return this;
   }
 
@@ -93,7 +92,8 @@ public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     }
   }
 
-  public DAInterfaceMethodWriter<DAInterfaceWriter<T>> newMethod(String name, DAType returnType) {
+  public DAInterfaceMethodWriter<DAInterfaceWriter<T>> newMethod(String name, DAType returnType) throws IOException {
+    commons.newLine();
     return new DAInterfaceMethodWriter<DAInterfaceWriter<T>>(name, returnType, commons.getFileContext(),
         commons.getIndentOffset() + 1, this
     );
@@ -102,7 +102,6 @@ public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
   public T end() throws IOException {
     commons.appendIndent();
     commons.append("}");
-    commons.newLine();
     return parent;
   }
 }

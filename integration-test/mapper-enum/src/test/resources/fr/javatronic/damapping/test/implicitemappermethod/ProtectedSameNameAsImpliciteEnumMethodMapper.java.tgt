@@ -6,5 +6,4 @@ import javax.annotation.Nullable;
 public interface ProtectedSameNameAsImpliciteEnumMethodMapper {
 
     String valueOf(@Nullable Integer input);
-
 }

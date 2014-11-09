@@ -4,5 +4,4 @@ import com.google.common.base.Function;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface MultipleImplementationAsEnumMapper extends Function<String, Integer> {
-
 }
