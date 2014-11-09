@@ -22,7 +22,6 @@ public class MultipleImplementationAsEnumMapperFactoryImpl implements MultipleIm
     }
 
     private static class MultipleImplementationAsEnumMapperImpl implements MultipleImplementationAsEnumMapper {
-
         private final MultipleImplementationAsEnum instance;
 
         public MultipleImplementationAsEnumMapperImpl(MultipleImplementationAsEnum instance) {
@@ -34,6 +33,5 @@ public class MultipleImplementationAsEnumMapperFactoryImpl implements MultipleIm
         public Integer apply(@Nullable String input) {
             return instance.apply(input);
         }
-
     }
 }

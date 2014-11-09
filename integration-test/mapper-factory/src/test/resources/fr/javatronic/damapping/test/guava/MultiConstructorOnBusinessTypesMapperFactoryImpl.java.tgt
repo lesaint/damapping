@@ -18,7 +18,6 @@ public class MultiConstructorOnBusinessTypesMapperFactoryImpl implements MultiCo
     }
 
     private static class MultiConstructorOnBusinessTypesMapperImpl implements MultiConstructorOnBusinessTypesMapper {
-
         private final MultiConstructorOnBusinessTypes instance;
 
         public MultiConstructorOnBusinessTypesMapperImpl(MultiConstructorOnBusinessTypes instance) {
@@ -30,6 +29,5 @@ public class MultiConstructorOnBusinessTypesMapperFactoryImpl implements MultiCo
         public String apply(@Nullable C input) {
             return instance.apply(input);
         }
-
     }
 }

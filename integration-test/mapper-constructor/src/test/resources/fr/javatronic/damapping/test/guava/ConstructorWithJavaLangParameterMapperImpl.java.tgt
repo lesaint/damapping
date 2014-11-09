@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class ConstructorWithJavaLangParameterMapperImpl implements ConstructorWithJavaLangParameterMapper {
-
     private final ConstructorWithJavaLangParameter dedicatedInstance;
 
     public ConstructorWithJavaLangParameterMapperImpl(Boolean someFlag) {
@@ -16,5 +15,4 @@ public class ConstructorWithJavaLangParameterMapperImpl implements ConstructorWi
     public String apply(@Nullable Integer input) {
         return this.dedicatedInstance.apply(input);
     }
-
 }

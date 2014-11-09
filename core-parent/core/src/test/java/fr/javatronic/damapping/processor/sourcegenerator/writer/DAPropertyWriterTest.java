@@ -40,7 +40,6 @@ public class DAPropertyWriterTest {
 
     assertThat(fileContext.getRes()).isEqualTo(
         INDENT + "Function<Integer, String> name;" + LINE_SEPARATOR
-            + LINE_SEPARATOR
     );
   }
 
@@ -53,7 +52,6 @@ public class DAPropertyWriterTest {
 
     assertThat(fileContext.getRes()).isEqualTo(
         INDENT + "private Function<Integer, String> name;" + LINE_SEPARATOR
-            + LINE_SEPARATOR
     );
   }
 
@@ -66,7 +64,6 @@ public class DAPropertyWriterTest {
 
     assertThat(fileContext.getRes()).isEqualTo(INDENT + "@Nullable" + LINE_SEPARATOR
         + INDENT + "Function<Integer, String> name;" + LINE_SEPARATOR
-        + LINE_SEPARATOR
     );
   }
 

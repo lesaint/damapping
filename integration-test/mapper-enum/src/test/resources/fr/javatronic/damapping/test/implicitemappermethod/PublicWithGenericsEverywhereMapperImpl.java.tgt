@@ -14,5 +14,4 @@ public class PublicWithGenericsEverywhereMapperImpl implements PublicWithGeneric
     public Collection<Predicate<Map<Long, File>>> values(@Nullable Optional<Integer[]> input) {
         return PublicWithGenericsEverywhere.INSTANCE.values(input);
     }
-
 }

@@ -9,5 +9,4 @@ public class EnumInstancedGuavaFunctionMapperImpl implements EnumInstancedGuavaF
     public String apply(@Nullable Integer input) {
         return EnumInstancedGuavaFunction.THE_ONE.apply(input);
     }
-
 }

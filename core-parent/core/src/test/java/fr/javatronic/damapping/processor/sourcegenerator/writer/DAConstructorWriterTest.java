@@ -42,7 +42,6 @@ public class DAConstructorWriterTest {
     assertThat(fileContext.getRes())
         .isEqualTo(
             INDENT + "TotoClass() {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
-                + LINE_SEPARATOR
         );
   }
 
@@ -56,9 +55,7 @@ public class DAConstructorWriterTest {
 
     assertThat(fileContext.getRes())
         .isEqualTo(
-            INDENT + "public TotoClass() {" + LINE_SEPARATOR + INDENT + "}" +
-                LINE_SEPARATOR
-                + LINE_SEPARATOR
+            INDENT + "public TotoClass() {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
         );
   }
 
@@ -79,7 +76,6 @@ public class DAConstructorWriterTest {
         .isEqualTo(INDENT + "private TotoClass(String titi) {" + LINE_SEPARATOR
             + INDENT + INDENT + "Preconditions.checkNotNull(titi);" + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
-            + LINE_SEPARATOR
         );
   }
 

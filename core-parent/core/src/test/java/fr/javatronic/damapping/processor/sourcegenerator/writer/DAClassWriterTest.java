@@ -16,9 +16,11 @@
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
 import fr.javatronic.damapping.processor.model.DAModifier;
+import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 
+import java.util.Collections;
 import com.google.common.collect.ImmutableList;
 
 import org.testng.annotations.Test;
@@ -54,7 +56,6 @@ public class DAClassWriterTest {
 
     assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "class Name {" + LINE_SEPARATOR
-            + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
         );
   }
@@ -66,7 +67,6 @@ public class DAClassWriterTest {
 
     assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "public class Name {" + LINE_SEPARATOR
-            + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
         );
   }
@@ -78,7 +78,6 @@ public class DAClassWriterTest {
 
     assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "public final class Name {" + LINE_SEPARATOR
-            + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
         );
   }
@@ -91,7 +90,6 @@ public class DAClassWriterTest {
     assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR +
             INDENT + "class Name {" + LINE_SEPARATOR
-            + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
         );
   }
@@ -107,7 +105,6 @@ public class DAClassWriterTest {
         .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR +
             INDENT + "@Nullable" + LINE_SEPARATOR +
             INDENT + "class Name {" + LINE_SEPARATOR
-            + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
         );
   }
@@ -119,7 +116,6 @@ public class DAClassWriterTest {
 
     assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "class Name implements Serializable {" + LINE_SEPARATOR
-            + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
         );
   }
@@ -134,7 +130,6 @@ public class DAClassWriterTest {
     assertThat(fileContext.getRes())
         .isEqualTo(
             INDENT + "class Name implements Serializable, Function<Integer, String> {" + LINE_SEPARATOR
-                + LINE_SEPARATOR
                 + INDENT + "}" + LINE_SEPARATOR
         );
   }
@@ -146,7 +141,6 @@ public class DAClassWriterTest {
 
     assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "class Name extends DAWriter {" + LINE_SEPARATOR
-            + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
         );
   }
@@ -158,7 +152,6 @@ public class DAClassWriterTest {
 
     assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "class Name extends Bidon<Integer, String> {" + LINE_SEPARATOR
-            + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
         );
   }
@@ -177,7 +170,6 @@ public class DAClassWriterTest {
         .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR
             + INDENT + "public final class Name extends Bidon<Integer, String> implements Function<Integer, " +
             "String> {" + LINE_SEPARATOR
-            + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
         );
   }
@@ -208,7 +200,6 @@ public class DAClassWriterTest {
             + LINE_SEPARATOR
             + INDENT + INDENT + "String methodName() {" + LINE_SEPARATOR
             + INDENT + INDENT + "}" + LINE_SEPARATOR
-            + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
         );
   }
@@ -226,7 +217,6 @@ public class DAClassWriterTest {
             + LINE_SEPARATOR
             + INDENT + INDENT + "Name() {" + LINE_SEPARATOR
             + INDENT + INDENT + "}" + LINE_SEPARATOR
-            + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
         );
   }
@@ -252,7 +242,6 @@ public class DAClassWriterTest {
             + INDENT + INDENT + "Name(String titi) {" + LINE_SEPARATOR
             + INDENT + INDENT + INDENT + "this.toto = toto;" + LINE_SEPARATOR
             + INDENT + INDENT + "}" + LINE_SEPARATOR
-            + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
         );
   }
@@ -269,10 +258,50 @@ public class DAClassWriterTest {
 
     assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "class Name {" + LINE_SEPARATOR
-            + LINE_SEPARATOR
             + INDENT + INDENT + "@Nullable" + LINE_SEPARATOR
             + INDENT + INDENT + "String variableName;" + LINE_SEPARATOR
+            + INDENT + "}" + LINE_SEPARATOR
+        );
+  }
+
+  @Test
+  public void one_property_one_method_class() throws Exception {
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daClassWriter(fileContext)
+        .start()
+        .newProperty("variableName", DATypeFactory.from(String.class))
+        .write()
+        .newMethod("methodName", DATypeFactory.from(String.class))
+        .withAnnotations(ImmutableList.of(NULLABLE_ANNOTATION)).start().end()
+        .end();
+
+    assertThat(fileContext.getRes())
+        .isEqualTo(INDENT + "class Name {" + LINE_SEPARATOR
+            + INDENT + INDENT + "String variableName;" + LINE_SEPARATOR
             + LINE_SEPARATOR
+            + INDENT + INDENT + "@Nullable" + LINE_SEPARATOR
+            + INDENT + INDENT + "String methodName() {" + LINE_SEPARATOR
+            + INDENT + INDENT + "}" + LINE_SEPARATOR
+            + INDENT + "}" + LINE_SEPARATOR
+        );
+  }
+
+  @Test
+  public void one_initialized_property_class() throws Exception {
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daClassWriter(fileContext)
+        .start()
+        .newInitializedProperty("variableName", NAME_DATYPE)
+        .initialize()
+        .append("new ").appendType(NAME_DATYPE)
+        .appendParamValues(Collections.<DAParameter>emptyList())
+        .end()
+        .end()
+        .end();
+
+    assertThat(fileContext.getRes())
+        .isEqualTo(INDENT + "class Name {" + LINE_SEPARATOR
+            + INDENT + INDENT + "Name variableName = new Name();" + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
         );
   }

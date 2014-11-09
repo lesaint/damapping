@@ -23,7 +23,6 @@ public class MultiConstructorWithGenericsMapperFactoryImpl implements MultiConst
     }
 
     private static class MultiConstructorWithGenericsMapperImpl implements MultiConstructorWithGenericsMapper {
-
         private final MultiConstructorWithGenerics instance;
 
         public MultiConstructorWithGenericsMapperImpl(MultiConstructorWithGenerics instance) {
@@ -35,6 +34,5 @@ public class MultiConstructorWithGenericsMapperFactoryImpl implements MultiConst
         public Optional<String> apply(@Nullable Map<C, Set<BigDecimal>> input) {
             return instance.apply(input);
         }
-
     }
 }

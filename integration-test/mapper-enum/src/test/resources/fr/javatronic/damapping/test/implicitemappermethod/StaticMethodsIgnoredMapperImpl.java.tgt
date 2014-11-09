@@ -7,5 +7,4 @@ public class StaticMethodsIgnoredMapperImpl implements StaticMethodsIgnoredMappe
     public String map(Integer input) {
         return StaticMethodsIgnored.INSTANCE.map(input);
     }
-
 }

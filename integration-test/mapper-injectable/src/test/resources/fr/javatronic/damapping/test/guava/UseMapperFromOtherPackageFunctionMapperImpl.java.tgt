@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class UseMapperFromOtherPackageFunctionMapperImpl implements UseMapperFromOtherPackageFunctionMapper {
-
     private final UseMapperFromOtherPackageFunction dedicatedInstance;
 
     @Inject
@@ -20,5 +19,4 @@ public class UseMapperFromOtherPackageFunctionMapperImpl implements UseMapperFro
     public String apply(@Nullable Boolean aBoolean) {
         return this.dedicatedInstance.apply(aBoolean);
     }
-
 }

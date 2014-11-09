@@ -14,5 +14,4 @@ public class GenericsEverywhereMapperImpl implements GenericsEverywhereMapper {
     public Collection<Predicate<Map<Long, File>>> apply(@Nullable Optional<Integer[]> input) {
         return GenericsEverywhere.INSTANCE.apply(input);
     }
-
 }

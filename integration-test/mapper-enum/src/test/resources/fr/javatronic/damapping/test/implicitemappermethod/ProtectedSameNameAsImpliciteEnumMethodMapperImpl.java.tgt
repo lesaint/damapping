@@ -9,5 +9,4 @@ public class ProtectedSameNameAsImpliciteEnumMethodMapperImpl implements Protect
     public String valueOf(@Nullable Integer input) {
         return ProtectedSameNameAsImpliciteEnumMethod.INSTANCE.valueOf(input);
     }
-
 }

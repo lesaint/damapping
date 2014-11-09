@@ -2,7 +2,6 @@ package fr.javatronic.damapping.test.mapperreferences;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class ClassDMapperImpl implements ClassDMapper {
-
     private final ClassD dedicatedInstance;
 
     public ClassDMapperImpl(ClassBMapper classBMapper) {
@@ -13,5 +12,4 @@ public class ClassDMapperImpl implements ClassDMapper {
     public String map(Integer input) {
         return this.dedicatedInstance.map(input);
     }
-
 }

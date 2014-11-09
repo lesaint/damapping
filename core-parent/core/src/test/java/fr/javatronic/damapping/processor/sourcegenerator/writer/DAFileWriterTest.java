@@ -101,7 +101,6 @@ public class DAFileWriterTest {
     assertThat(fileContext.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
         + LINE_SEPARATOR
         + "public class Name {" + LINE_SEPARATOR
-        + LINE_SEPARATOR
         + "}" + LINE_SEPARATOR
     );
   }

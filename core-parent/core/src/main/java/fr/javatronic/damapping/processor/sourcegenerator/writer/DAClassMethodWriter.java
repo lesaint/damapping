@@ -113,7 +113,6 @@ public class DAClassMethodWriter<T extends DAWriter> extends AbstractDAWriter<T>
     commons.appendIndent();
     commons.append("}");
     commons.newLine();
-    commons.newLine();
     return parent;
   }
 }

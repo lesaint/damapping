@@ -10,5 +10,4 @@ public class EnumInjectableMapperImpl implements EnumInjectableMapper {
     public String fooBar(String someParam) {
         return EnumInjectable.THE_ONLY_INSTANCE.fooBar(someParam);
     }
-
 }

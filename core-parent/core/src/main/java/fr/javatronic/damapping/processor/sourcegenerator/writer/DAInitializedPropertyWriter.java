@@ -66,7 +66,6 @@ public class DAInitializedPropertyWriter<T extends DAWriter> extends AbstractDAW
 
   public T end() throws IOException {
     // ";" and newLine are written written by the statement
-    commons.newLine();
     return parent;
   }
 }

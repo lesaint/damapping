@@ -2,12 +2,10 @@ package fr.javatronic.damapping.test.mapperreferences;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class ClassBMapperImpl implements ClassBMapper {
-
     private final ClassB dedicatedInstance = new ClassB();
 
     @Override
     public String map(Integer input) {
         return this.dedicatedInstance.map(input);
     }
-
 }

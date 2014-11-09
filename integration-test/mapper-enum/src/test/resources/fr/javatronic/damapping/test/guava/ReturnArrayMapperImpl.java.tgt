@@ -9,5 +9,4 @@ public class ReturnArrayMapperImpl implements ReturnArrayMapper {
     public String[] apply(@Nullable Integer input) {
         return ReturnArray.INSTANCE.apply(input);
     }
-
 }

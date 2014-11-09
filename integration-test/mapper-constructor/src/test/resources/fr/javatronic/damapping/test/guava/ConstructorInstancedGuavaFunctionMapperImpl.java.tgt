@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class ConstructorInstancedGuavaFunctionMapperImpl implements ConstructorInstancedGuavaFunctionMapper {
-
     private final ConstructorInstancedGuavaFunction dedicatedInstance = new ConstructorInstancedGuavaFunction();
 
     @Override
@@ -12,5 +11,4 @@ public class ConstructorInstancedGuavaFunctionMapperImpl implements ConstructorI
     public String apply(@Nullable Integer input) {
         return this.dedicatedInstance.apply(input);
     }
-
 }

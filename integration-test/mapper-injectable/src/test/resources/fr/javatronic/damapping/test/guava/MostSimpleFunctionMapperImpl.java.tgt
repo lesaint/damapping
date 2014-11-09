@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class MostSimpleFunctionMapperImpl implements MostSimpleFunctionMapper {
-
     private final MostSimpleFunction dedicatedInstance = new MostSimpleFunction();
 
     @Override
@@ -12,5 +11,4 @@ public class MostSimpleFunctionMapperImpl implements MostSimpleFunctionMapper {
     public String apply(@Nullable Integer a) {
         return this.dedicatedInstance.apply(a);
     }
-
 }

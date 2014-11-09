@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class NonPublicMethodsMapperImpl implements NonPublicMethodsMapper {
-
     private final NonPublicMethods dedicatedInstance = new NonPublicMethods();
 
     @Override
@@ -12,5 +11,4 @@ public class NonPublicMethodsMapperImpl implements NonPublicMethodsMapper {
     public String apply(@Nullable Integer input) {
         return this.dedicatedInstance.apply(input);
     }
-
 }

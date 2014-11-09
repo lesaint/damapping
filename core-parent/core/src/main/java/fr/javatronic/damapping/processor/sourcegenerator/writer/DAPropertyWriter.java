@@ -61,7 +61,6 @@ public class DAPropertyWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     commons.appendType(type);
     commons.append(" ").append(name).append(";");
     commons.newLine();
-    commons.newLine();
     return parent;
   }
 }

@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class UsePackageTypeInjectableMapperImpl implements UsePackageTypeInjectableMapper {
-
     private final UsePackageTypeInjectable dedicatedInstance = new UsePackageTypeInjectable();
 
     @Override
@@ -13,5 +12,4 @@ public class UsePackageTypeInjectableMapperImpl implements UsePackageTypeInjecta
     public String map(@Nullable B b) {
         return this.dedicatedInstance.map(b);
     }
-
 }

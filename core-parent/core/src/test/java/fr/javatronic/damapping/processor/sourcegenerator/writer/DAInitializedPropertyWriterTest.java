@@ -41,7 +41,6 @@ public class DAInitializedPropertyWriterTest {
 
     assertThat(fileContext.getRes()).isEqualTo(
         INDENT + "Name name = ;" + LINE_SEPARATOR
-            + LINE_SEPARATOR
     );
   }
 
@@ -56,7 +55,6 @@ public class DAInitializedPropertyWriterTest {
 
     assertThat(fileContext.getRes()).isEqualTo(
         INDENT + "private Name name = new Name();" + LINE_SEPARATOR
-            + LINE_SEPARATOR
     );
   }
 
@@ -71,7 +69,6 @@ public class DAInitializedPropertyWriterTest {
 
     assertThat(fileContext.getRes()).isEqualTo(INDENT + "@Nullable" + LINE_SEPARATOR
         + INDENT + "Name name = new Name();" + LINE_SEPARATOR
-        + LINE_SEPARATOR
     );
   }
 

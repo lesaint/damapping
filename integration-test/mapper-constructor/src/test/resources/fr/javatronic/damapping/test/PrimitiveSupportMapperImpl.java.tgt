@@ -2,7 +2,6 @@ package fr.javatronic.damapping.test;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class PrimitiveSupportMapperImpl implements PrimitiveSupportMapper {
-
     private final PrimitiveSupport dedicatedInstance;
 
     public PrimitiveSupportMapperImpl(boolean flag, int[] intArray) {
@@ -13,5 +12,4 @@ public class PrimitiveSupportMapperImpl implements PrimitiveSupportMapper {
     public float[] map(double[] doubles) {
         return this.dedicatedInstance.map(doubles);
     }
-
 }

@@ -12,7 +12,6 @@ public class MapperMethodNotCalledApplyMapperFactoryImpl implements MapperMethod
     }
 
     private static class MapperMethodNotCalledApplyMapperImpl implements MapperMethodNotCalledApplyMapper {
-
         private final MapperMethodNotCalledApply instance;
 
         public MapperMethodNotCalledApplyMapperImpl(MapperMethodNotCalledApply instance) {
@@ -24,6 +23,5 @@ public class MapperMethodNotCalledApplyMapperFactoryImpl implements MapperMethod
         public Float fooBar(@Nullable BigDecimal inBigD) {
             return instance.fooBar(inBigD);
         }
-
     }
 }

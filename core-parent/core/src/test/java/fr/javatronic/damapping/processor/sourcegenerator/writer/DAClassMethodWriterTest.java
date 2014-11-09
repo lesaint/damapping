@@ -50,7 +50,6 @@ public class DAClassMethodWriterTest {
     assertThat(fileContext.getRes())
         .isEqualTo(
             INDENT + "String name() {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
-                + LINE_SEPARATOR
         );
   }
 
@@ -65,7 +64,6 @@ public class DAClassMethodWriterTest {
     assertThat(fileContext.getRes())
         .isEqualTo(
             INDENT + "public static String name() {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
-                + LINE_SEPARATOR
         );
   }
 
@@ -80,7 +78,6 @@ public class DAClassMethodWriterTest {
     assertThat(fileContext.getRes())
         .isEqualTo(
             INDENT + "String name(String toto) {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
-                + LINE_SEPARATOR
         );
   }
 
@@ -99,7 +96,6 @@ public class DAClassMethodWriterTest {
         .isEqualTo(
             INDENT + "String name(String titi, Function<String, Integer>[] complexeParam) {" +
                 LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
-                + LINE_SEPARATOR
         );
   }
 
@@ -116,7 +112,6 @@ public class DAClassMethodWriterTest {
         .isEqualTo(
             INDENT + "public static String name(Function<String, Integer>[] complexeParam) {" + LINE_SEPARATOR
                 + INDENT + "}" + LINE_SEPARATOR
-                + LINE_SEPARATOR
         );
   }
 
@@ -131,7 +126,6 @@ public class DAClassMethodWriterTest {
     assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR
             + INDENT + "String name() {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
-            + LINE_SEPARATOR
         );
   }
 
@@ -146,7 +140,7 @@ public class DAClassMethodWriterTest {
     assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "String name() {" + LINE_SEPARATOR
             + INDENT + INDENT + "return this;" + LINE_SEPARATOR
-            + INDENT + "}" + LINE_SEPARATOR + LINE_SEPARATOR
+            + INDENT + "}" + LINE_SEPARATOR
         );
   }
 

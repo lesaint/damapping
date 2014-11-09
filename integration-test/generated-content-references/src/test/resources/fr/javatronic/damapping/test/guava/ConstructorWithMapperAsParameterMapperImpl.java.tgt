@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class ConstructorWithMapperAsParameterMapperImpl implements ConstructorWithMapperAsParameterMapper {
-
     private final ConstructorWithMapperAsParameter dedicatedInstance;
 
     public ConstructorWithMapperAsParameterMapperImpl(@Nullable SimpleMapper simpleMapper) {
@@ -16,5 +15,4 @@ public class ConstructorWithMapperAsParameterMapperImpl implements ConstructorWi
     public String apply(@Nullable Integer input) {
         return this.dedicatedInstance.apply(input);
     }
-
 }
