@@ -15,7 +15,12 @@
  */
 package fr.javatronic.damapping.processor.model;
 
+import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
+
+import static fr.javatronic.damapping.processor.model.util.ImmutabilityHelper.nonNullFrom;
 
 /**
  * DAAnnotation -
@@ -24,14 +29,28 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 public class DAAnnotation {
+  @Nonnull
   private final DAType type;
+  @Nonnull
+  private final List<DAAnnotation> annotations;
 
-  public DAAnnotation(DAType type) {
-    this.type = type;
+  public DAAnnotation(@Nonnull DAType type) {
+    this(type, null);
   }
 
+  public DAAnnotation(@Nonnull DAType type, @Nullable List<DAAnnotation> annotations) {
+    this.type = type;
+    this.annotations = nonNullFrom(annotations);
+  }
+
+  @Nonnull
   public DAType getType() {
     return type;
+  }
+
+  @Nonnull
+  public List<DAAnnotation> getAnnotations() {
+    return annotations;
   }
 
   @Override
@@ -44,15 +63,11 @@ public class DAAnnotation {
     }
 
     DAAnnotation that = (DAAnnotation) o;
-    if (type == null ? that.type != null : !type.equals(that.type)) {
-      return false;
-    }
-
-    return true;
+    return type.equals(that.type);
   }
 
   @Override
   public int hashCode() {
-    return type != null ? type.hashCode() : 0;
+    return type.hashCode();
   }
 }

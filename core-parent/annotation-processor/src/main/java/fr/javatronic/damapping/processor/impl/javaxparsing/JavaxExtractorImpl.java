@@ -80,7 +80,25 @@ public class JavaxExtractorImpl implements JavaxExtractor {
           if (input == null) {
             return null;
           }
-          return new DAAnnotation(extractType(input.getAnnotationType()));
+          DeclaredType annotationType = input.getAnnotationType();
+          DAType daType = extractType(annotationType);
+          return new DAAnnotation(daType, toDAAnnotations(daType, annotationType.asElement().getAnnotationMirrors()));
+        }
+
+        @Nullable
+        private List<DAAnnotation> toDAAnnotations(@Nonnull DAType daType,
+                                                   @Nullable List<? extends AnnotationMirror> annotationMirrors) {
+          if (annotationMirrors == null || annotationMirrors.isEmpty()) {
+            return null;
+          }
+          // no need to return the annotations on the Java language annotations, especially because some of them (e.g.
+          // Documented, are recursive.
+          if (daType.getQualifiedName() != null && daType.getQualifiedName()
+                                                         .getName()
+                                                         .startsWith("java.lang.annotation.")) {
+            return null;
+          }
+          return from(annotationMirrors).transform(annotationMirrorToDAAnnotation).toList();
         }
       };
 
