@@ -1,0 +1,16 @@
+package fr.javatronic.damapping.test.qualifier;
+
+import javax.inject.Singleton;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+@Singleton
+public class QualifierOnClassMapperImpl implements QualifierOnClassMapper {
+
+    private final QualifierOnClass dedicatedInstance = new QualifierOnClass();
+
+    @Override
+    public String map(Integer integer) {
+        return this.dedicatedInstance.map(integer);
+    }
+
+}

@@ -79,7 +79,7 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
     return this;
   }
 
-  public DAClassWriter<T> start() throws IOException {
+  public DAClassWriter<T>start() throws IOException {
     commons.appendAnnotations(annotations);
     commons.appendIndent();
     commons.appendModifiers(modifiers);

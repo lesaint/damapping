@@ -20,10 +20,13 @@ import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.annotation.MapperFactory;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAName;
+import fr.javatronic.damapping.processor.model.constants.Jsr330Constants;
 import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicate;
 
 import javax.annotation.Nullable;
+
+import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
  * DAAnnotationPredicates - Predicate factory for class DAAnnotation
@@ -93,6 +96,50 @@ public final class DAAnnotationPredicates {
     @Override
     public boolean apply(@Nullable DAAnnotation daAnnotation) {
       return daAnnotation != null && Injectable.class.getCanonicalName().contentEquals(daAnnotation.getType().getQualifiedName());
+    }
+  }
+
+  /**
+   * Precicate to find annotations with annotated with {@link Jsr330Constants#QUALIFIER_QUALIFIED_NAME} directly or
+   * indirectly.
+   */
+  public static Predicate<DAAnnotation> isQualifier() {
+    return IsQualifierPredicate.INSTANCE;
+  }
+
+  private static enum IsQualifierPredicate implements Predicate<DAAnnotation> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nullable DAAnnotation daAnnotation) {
+      return isQualifier(daAnnotation) || from(daAnnotation.getAnnotations()).firstMatch(INSTANCE).isPresent();
+    }
+
+    private boolean isQualifier(DAAnnotation daAnnotation) {
+      Optional<DAName> qualifiedName = extractQualifiedName(daAnnotation);
+      return qualifiedName.isPresent() && qualifiedName.get().compareTo(Jsr330Constants.QUALIFIER_DANAME) == 0;
+    }
+  }
+
+  /**
+   * Precicate to find annotations with annotated with {@link Jsr330Constants#SCOPE_QUALIFIED_NAME} directly or
+   * indirectly.
+   */
+  public static Predicate<DAAnnotation> isScope() {
+    return IsScopePredicate.INSTANCE;
+  }
+
+  private static enum IsScopePredicate implements Predicate<DAAnnotation> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nullable DAAnnotation daAnnotation) {
+      return isQualifier(daAnnotation) || from(daAnnotation.getAnnotations()).firstMatch(INSTANCE).isPresent();
+    }
+
+    private boolean isQualifier(DAAnnotation daAnnotation) {
+      Optional<DAName> qualifiedName = extractQualifiedName(daAnnotation);
+      return qualifiedName.isPresent() && qualifiedName.get().compareTo(Jsr330Constants.SCOPE_DANAME) == 0;
     }
   }
 }

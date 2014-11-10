@@ -24,6 +24,7 @@ import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
+import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassMethodWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassWriter;
@@ -123,7 +124,16 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
         .newClass(descriptor.getType())
         .withImplemented(computeImplemented(sourceClass))
         .withModifiers(DAModifier.PUBLIC)
+        .withAnnotations(computeClassAnnotations(sourceClass))
         .start();
+  }
+
+  private List<DAAnnotation> computeClassAnnotations(@Nonnull DASourceClass sourceClass) {
+    if (sourceClass.getAnnotations().isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    return from(sourceClass.getAnnotations()).filter(DAAnnotationPredicates.isScope()).toList();
   }
 
   private List<DAType> computeImplemented(DASourceClass daSourceClass) {

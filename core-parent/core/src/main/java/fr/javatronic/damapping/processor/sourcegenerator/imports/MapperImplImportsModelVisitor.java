@@ -18,12 +18,14 @@ package fr.javatronic.damapping.processor.sourcegenerator.imports;
 import fr.javatronic.damapping.processor.model.DAInterface;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DASourceClass;
+import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitor;
 
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isDefaultConstructor;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isImpliciteMapperMethod;
+import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
  * MapperImplImportsModelVisitor - Visitor building the list of imports for the MapperImpl class.
@@ -35,6 +37,7 @@ public class MapperImplImportsModelVisitor extends ImportListBuilder implements 
   @Override
   public void visit(DASourceClass daSourceClass) {
     addImports(daSourceClass.getType());
+    addImports(from(daSourceClass.getAnnotations()).filter(DAAnnotationPredicates.isScope()));
   }
 
   @Override

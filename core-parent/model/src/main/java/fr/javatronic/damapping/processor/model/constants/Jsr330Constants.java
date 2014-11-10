@@ -45,6 +45,18 @@ public final class Jsr330Constants {
   );
   public static final DAImport INJECT_DAIMPORT = DAImport.from(INJECT_DANAME);
 
+  public static final String QUALIFIER_QUALIFIED_NAME = "javax.inject.Qualifier";
+  public static final DAName QUALIFIER_DANAME = DANameFactory.from(QUALIFIER_QUALIFIED_NAME);
+  public static final DAAnnotation QUALIFIER_DAANNOTATION = new DAAnnotation(
+      DATypeFactory.declared(QUALIFIER_QUALIFIED_NAME)
+  );
+
+  public static final String SCOPE_QUALIFIED_NAME = "javax.inject.Scope";
+  public static final DAName SCOPE_DANAME = DANameFactory.from(SCOPE_QUALIFIED_NAME);
+  public static final DAAnnotation SCOPE_DAANNOTATION = new DAAnnotation(
+      DATypeFactory.declared(SCOPE_QUALIFIED_NAME)
+  );
+
   @Nullable
   private final static Class<?> jsr330NamedClass = loadJSR330InjectClass(NAMED_QUALIFIEDNAME);
   @Nullable

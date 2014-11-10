@@ -99,7 +99,7 @@ public class ImportListBuilder {
     addImports(daMethod, DAMaethodImportFilters.from(null));
   }
 
-  protected void addImports(@Nonnull List<DAAnnotation> annotations) {
+  protected void addImports(@Nonnull Iterable<DAAnnotation> annotations) {
     for (DAAnnotation annotation : annotations) {
       addImports(annotation.getType());
     }
