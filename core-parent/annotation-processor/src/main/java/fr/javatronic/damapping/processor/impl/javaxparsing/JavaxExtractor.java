@@ -76,5 +76,4 @@ public interface JavaxExtractor {
 
   @Nullable
   List<DAAnnotation> extractDAAnnotations(@Nullable Element methodElement);
-
 }

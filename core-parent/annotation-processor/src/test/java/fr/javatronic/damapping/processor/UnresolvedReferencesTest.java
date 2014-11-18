@@ -30,7 +30,7 @@ import org.truth0.Truth;
  */
 public class UnresolvedReferencesTest {
   @Test
-  public void does_not_generate_source_classes_when_property_has_unresovled_type() throws Exception {
+  public void does_not_generate_source_classes_when_property_has_unresolved_type() throws Exception {
     JavaFileObject javaFileObject = JavaFileObjects.forSourceLines("UnresolvedTypeInProperty",
         "import fr.javatronic.damapping.annotation.Mapper;",
         "",
@@ -47,7 +47,7 @@ public class UnresolvedReferencesTest {
         .withErrorContaining("cannot find symbol").in(javaFileObject).onLine(5);
   }
   @Test
-  public void does_not_generate_source_classes_when_variable_has_unresovled_type() throws Exception {
+  public void does_not_generate_source_classes_when_variable_has_unresolved_type() throws Exception {
     JavaFileObject javaFileObject = JavaFileObjects.forSourceLines("UnresolvedTypeInProperty",
         "import fr.javatronic.damapping.annotation.Mapper;",
         "",

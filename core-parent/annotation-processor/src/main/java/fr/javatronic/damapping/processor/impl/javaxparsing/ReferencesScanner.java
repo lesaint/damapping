@@ -25,36 +25,34 @@ import java.util.Collections;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.QualifiedNameable;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementScanner6;
 
-import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
-
 /**
-* UnresolvedReferencesScanner -
+* ReferencesScanner -
 *
 * @author Sébastien Lesaint
 */
-class UnresolvedReferencesScanner {
+public class ReferencesScanner {
   @Nonnull
   private final ProcessingEnvironmentWrapper processingEnvironment;
   @Nonnull
-  private final JavaxExtractorImpl javaxExtractor;
-  @Nonnull
   private final Map<String, DAType> generatedTypesByQualifiedName;
 
-  public UnresolvedReferencesScanner(@Nonnull ProcessingEnvironmentWrapper processingEnvironment,
-                                     @Nonnull JavaxExtractorImpl javaxExtractor,
-                                     @Nullable Collection<DAType> generatedTypes) {
+  public ReferencesScanner(@Nonnull ProcessingEnvironmentWrapper processingEnvironment,
+                           @Nullable Collection<DAType> generatedTypes) {
     this.processingEnvironment = processingEnvironment;
-    this.javaxExtractor = checkNotNull(javaxExtractor);
     this.generatedTypesByQualifiedName = indexByQualifiedName(generatedTypes);
   }
 
@@ -74,84 +72,116 @@ class UnresolvedReferencesScanner {
     return res;
   }
 
-  public UnresolvedTypeScanResult scan(TypeElement typeElement) throws IOException {
-    UnresolvedTypeScanResult scanResult = new UnresolvedTypeScanResult();
+  public ReferenceScanResult scan(TypeElement typeElement) throws IOException {
     ElementImports imports = processingEnvironment.getElementUtils().findImports(typeElement);
-    ElementVisitor<Void, UnresolvedTypeScanResult> visitor = instanceVisitor(imports);
+    ReferenceScanResult scanResult = new ReferenceScanResult(imports);
+    ElementVisitor<Void, ReferenceScanResult> visitor = instanceVisitor(imports);
     typeElement.accept(visitor, scanResult);
     return scanResult;
   }
 
-  private ElementVisitor<Void, UnresolvedTypeScanResult> instanceVisitor(@Nonnull final ElementImports imports) {
-    // TODO : switch Visitor implementation according to source level
-    return new ElementScanner6<Void, UnresolvedTypeScanResult>() {
+  private ElementVisitor<Void, ReferenceScanResult> instanceVisitor(@Nonnull final ElementImports imports) {
+    // FIXME: this visitor does not visit all elements in the class, only those
+    return new ElementScanner6<Void, ReferenceScanResult>() {
       @Override
-      public Void scan(Element e, UnresolvedTypeScanResult scanResult) {
-        processElement(e, imports, scanResult);
+      public Void scan(Element e, ReferenceScanResult scanResult) {
+        visitAnnotations(e, scanResult);
+        e.accept(this, scanResult);
         return null;
       }
 
+      private void visitAnnotations(Element e, ReferenceScanResult scanResult) {
+        for (AnnotationMirror annotationMirror : e.getAnnotationMirrors()) {
+          processingEnvironment.getTypeUtils().asElement(annotationMirror.getAnnotationType()).accept(this, scanResult);
+        }
+      }
+
       @Override
-      public Void visitPackage(PackageElement e, UnresolvedTypeScanResult scanResult) {
+      public Void visitPackage(PackageElement e, ReferenceScanResult scanResult) {
+        visitAnnotations(e, scanResult);
         processElement(e, imports, scanResult);
         return super.visitPackage(e, scanResult);
       }
 
       @Override
-      public Void visitType(TypeElement e, UnresolvedTypeScanResult scanResult) {
+      public Void visitType(TypeElement e, ReferenceScanResult scanResult) {
         processElement(e, imports, scanResult);
         return super.visitType(e, scanResult);
       }
 
       @Override
-      public Void visitVariable(VariableElement e, UnresolvedTypeScanResult scanResult) {
+      public Void visitVariable(VariableElement e, ReferenceScanResult scanResult) {
         processElement(e, imports, scanResult);
         return super.visitVariable(e, scanResult);
       }
 
       @Override
-      public Void visitExecutable(ExecutableElement e, UnresolvedTypeScanResult scanResult) {
+      public Void visitExecutable(ExecutableElement e, ReferenceScanResult scanResult) {
         processElement(e, imports, scanResult);
+        for (VariableElement variableElement : e.getParameters()) {
+          variableElement.accept(this, scanResult);
+        }
         return super.visitExecutable(e, scanResult);
       }
 
       @Override
-      public Void visitTypeParameter(TypeParameterElement e, UnresolvedTypeScanResult scanResult) {
+      public Void visitTypeParameter(TypeParameterElement e, ReferenceScanResult scanResult) {
         processElement(e, imports, scanResult);
+        if (e.getGenericElement() != null) {
+          e.getGenericElement().accept(this, scanResult);
+        }
         return super.visitTypeParameter(e, scanResult);
+      }
+
+      @Override
+      public Void visitUnknown(Element e, ReferenceScanResult scanResult) {
+        processElement(e, imports, scanResult);
+        return super.visitUnknown(e, scanResult);
       }
     };
   }
 
-  private void processElement(@Nonnull Element e, @Nonnull ElementImports imports, @Nonnull UnresolvedTypeScanResult unresolvedTypeScanResult) {
-    if (e.asType().getKind() != TypeKind.ERROR) {
+  private void processElement(@Nonnull Element e, @Nonnull ElementImports imports, @Nonnull ReferenceScanResult referenceScanResult) {
+    TypeMirror typeMirror = e.asType();
+    if (typeMirror.getKind() != TypeKind.ERROR) {
       // only unresolved types are processed
       return;
     }
 
-    DAType errorDaType = javaxExtractor.extractType(e.asType());
+    Element typeElement = processingEnvironment.getTypeUtils().asElement(typeMirror);
+    if (referenceScanResult.isUnresolved(typeElement)) {
+      // if element is already identified as unresolved, skip trying to fix the resolution
+      return;
+    }
 
-    Optional<DAType> fixedResolution = findGeneratedType(errorDaType, imports);
+    Optional<DAType> fixedResolution = findGeneratedType(typeElement, imports);
     if (fixedResolution.isPresent()) {
       // FIXME here can not just return the type from the generatedTypes map
       // current DAType may have specific typeArguments, bounds
       // we must take only the kind and qualified name from the DAType found in fixedResolution
-      unresolvedTypeScanResult.addFixed(fixedResolution.get());
+      referenceScanResult.addFixed(fixedResolution.get());
     }
     else {
-      unresolvedTypeScanResult.getUnresolved().put(e, errorDaType);
+      referenceScanResult.addUnresolved(typeElement);
     }
   }
 
   @Nonnull
-  private Optional<DAType> findGeneratedType(DAType unresolvedType, ElementImports imports) {
+  private Optional<DAType> findGeneratedType(Element element, ElementImports imports) {
     if (generatedTypesByQualifiedName.isEmpty()) {
       return Optional.absent();
     }
 
-    Optional<String> qualifiedName = imports.findBySimpleName(unresolvedType.getSimpleName());
-    if (qualifiedName.isPresent()) {
-       return Optional.fromNullable(generatedTypesByQualifiedName.get(qualifiedName.get()));
+    Name qualifiedName = element instanceof QualifiedNameable ? ((QualifiedNameable) element).getQualifiedName() : null;
+    // qualified reference to Type in code
+    if (qualifiedName != null && !qualifiedName.contentEquals(element.getSimpleName())) {
+      return Optional.fromNullable(generatedTypesByQualifiedName.get(qualifiedName.toString()));
+    }
+
+    // implicit reference in code
+    Optional<String> qualifiedNameFromImport = imports.findBySimpleName(element.getSimpleName().toString());
+    if (qualifiedNameFromImport.isPresent()) {
+       return Optional.fromNullable(generatedTypesByQualifiedName.get(qualifiedNameFromImport.get().toString()));
     }
 
     return Optional.absent();

@@ -38,6 +38,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.QualifiedNameable;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -54,19 +55,25 @@ import static fr.javatronic.damapping.util.Predicates.notNull;
 
 
 /**
- * JavaxExtractorImpl - This implementation of {@link JavaxExtractor} supports replacing {@link DAType} created
- * from {@link TypeMirror} with type {@link TypeKind#ERROR} with "fixed" {@link DAType} objects from
- * {@link UnresolvedTypeScanResult}.
+ * JavaxExtractorImpl - This implementation of {@link JavaxExtractor} supports creating {@DAType} from Element with
+ * unresolved references (ie. {@link TypeMirror} with type {@link TypeKind#ERROR}) using the fixed resolution provided
+ * by a {@link ReferenceScanResult} instance.
+ * <p>
+ * If an unresolved refernces has no fix provided by the {@link ReferenceScanResult} object, an
+ * {@link IllegalStateException} will be raised: <strong>no {@link DAType} is supposed to be built unless all
+ * references are valid or fixed</strong>.
+ * </p>
  *
  * @author Sébastien Lesaint
  */
 public class JavaxExtractorImpl implements JavaxExtractor {
   @Nonnull
   private final ProcessingEnvironmentWrapper processingEnv;
-  @Nullable
-  private final UnresolvedTypeScanResult scanResult;
+  @Nonnull
+  private final ReferenceScanResult scanResult;
 
-  private final Function<AnnotationMirror, DAAnnotation> annotationMirrorToDAAnnotation = new Function<AnnotationMirror, DAAnnotation>() {
+  private final Function<AnnotationMirror, DAAnnotation> annotationMirrorToDAAnnotation = new
+      Function<AnnotationMirror, DAAnnotation>() {
     @Nullable
     @Override
     public DAAnnotation apply(@Nullable AnnotationMirror input) {
@@ -77,9 +84,10 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     }
   };
 
-  public JavaxExtractorImpl(@Nonnull ProcessingEnvironmentWrapper processingEnv, @Nullable UnresolvedTypeScanResult scanResult) {
+  public JavaxExtractorImpl(@Nonnull ProcessingEnvironmentWrapper processingEnv,
+                            @Nonnull ReferenceScanResult scanResult) {
     this.processingEnv = checkNotNull(processingEnv);
-    this.scanResult = scanResult;
+    this.scanResult = checkNotNull(scanResult);
   }
 
   @Override
@@ -91,29 +99,56 @@ public class JavaxExtractorImpl implements JavaxExtractor {
       element = typeUtils.asElement(((ArrayType) type).getComponentType());
     }
 
-    DAType res = extractType(type, element);
-    if (res.getKind() != DATypeKind.ERROR) {
-      return res;
+    if (type.getKind() != TypeKind.ERROR) {
+      return extractType(type, element);
     }
 
-    // FIXME here can not just return the type from the fixedResolutions map
-    // current DAType may have specific typeArguments, bounds
-    // we must take only the kind and qualified name from the DAType found in fixedResolution
-    return findFixedResolution(type, element).or(res);
+    return findFixedResolution(element);
   }
 
+  /**
+   * Look for a DAType for the specified Element of the TypeMirror of kind ERROR.
+   * <p>
+   * <ol>
+   * <li>look for the fixed reference in the current {@link ReferenceScanResult} for the qualified reference in
+   * Element</li>
+   * <li>look for the fixed reference in the current {@link ReferenceScanResult} for the import (explicite or
+   * implicite) with the simpleName of the specified Element</li>
+   * <li>if neither search returned a DAType, throw a {@link IllegalStateException}, this is not supposed to happen</li>
+   * </ol>
+   * </p>
+   *
+   * @param element a {@link Element}
+   *
+   * @return a {@link DAType}
+   *
+   * @throws IllegalStateException if no {@link DAType} can be found
+   */
   @Nonnull
-  private Optional<DAType> findFixedResolution(TypeMirror type, Element element) {
-    if (scanResult == null) {
-      return Optional.absent();
+  private DAType findFixedResolution(Element element) {
+    Name qualifiedName = element instanceof QualifiedNameable ? ((QualifiedNameable) element).getQualifiedName() : null;
+    // qualified reference to Type in code
+    if (qualifiedName != null && !qualifiedName.contentEquals(element.getSimpleName())) {
+      return ensureNonnull(scanResult.findFixedByQualifiedName(qualifiedName.toString()), element);
     }
 
-    DAName daName = extractQualifiedName(type, element);
-    if (daName != null && !daName.getName().equals(element.getSimpleName().toString())) {
-      return scanResult.findFixedByQualifiedName(daName.getName());
+    Optional<String> imporfQualifiedName = scanResult.getImports().findBySimpleName(element.getSimpleName());
+    if (!imporfQualifiedName.isPresent()) {
+      throw new IllegalStateException("Type for Element " + element + " is neither imported nor explicitly qualified");
     }
 
-    return scanResult.findFixedBySimpleName(element.getSimpleName().toString());
+    return ensureNonnull(scanResult.findFixedByQualifiedName(imporfQualifiedName.get()), element);
+  }
+
+  private DAType ensureNonnull(Optional<DAType> fixedByQualifiedName, Element element) {
+    if (!fixedByQualifiedName.isPresent()) {
+      IllegalArgumentException illegalArgumentException = new IllegalArgumentException(
+          "Can not find resolved Element for element " + element
+      );
+      illegalArgumentException.printStackTrace();
+      throw illegalArgumentException;
+    }
+    return fixedByQualifiedName.get();
   }
 
   @Nonnull

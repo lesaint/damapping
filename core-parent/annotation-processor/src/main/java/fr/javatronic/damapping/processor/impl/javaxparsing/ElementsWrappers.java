@@ -21,7 +21,6 @@ import fr.javatronic.damapping.util.Maps;
 import fr.javatronic.damapping.util.Optional;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.Iterator;
@@ -116,23 +115,6 @@ public final class ElementsWrappers {
 
     for (TypeElement typeElement : ElementFilter.typesIn(currentPackage.getEnclosedElements())) {
       elementBySimpleName.put(typeElement.getSimpleName(), typeElement.getQualifiedName().toString());
-    }
-  }
-
-  private static class ElementWriter {
-    private final Elements elements;
-    private final Element e;
-
-    private ElementWriter(Elements elements, Element e) {
-      this.elements = elements;
-      this.e = e;
-    }
-
-    @Override
-    public String toString() {
-      StringWriter stringWriter = new StringWriter();
-      elements.printElements(stringWriter, e);
-      return stringWriter.toString();
     }
   }
 
@@ -289,15 +271,12 @@ public final class ElementsWrappers {
     @Nonnull
     @Override
     public ElementImports findImports(@Nonnull Element e) throws IOException {
-
       Map<Name, String> elementBySimpleName = Maps.newHashMap();
 
       addAllImplicitImports(elements, e, elementBySimpleName);
 
       Pair<JCTree, JCTree.JCCompilationUnit> treeAndTopLevel = elements.getTreeAndTopLevel(e, null, null);
       if (treeAndTopLevel == null || treeAndTopLevel.snd == null) {
-        System.err.println("Failed to retrieve compilationUnit for " + new ElementWriter(elements, e));
-
         addAllFromSourceFile(elementBySimpleName, e);
       }
       else {
@@ -312,7 +291,6 @@ public final class ElementsWrappers {
                                      Element element) {
       com.sun.tools.javac.util.List<JCTree.JCImport> imports = compilationUnit.getImports();
       if (imports == null || imports.isEmpty()) {
-        System.err.println("No imports for " + new ElementWriter(elements, element));
         return;
       }
 

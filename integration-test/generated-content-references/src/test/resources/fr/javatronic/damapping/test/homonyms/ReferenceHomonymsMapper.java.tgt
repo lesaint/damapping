@@ -1,0 +1,8 @@
+package fr.javatronic.damapping.test.homonyms;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public interface ReferenceHomonymsMapper {
+
+    String map(Integer input);
+
+}

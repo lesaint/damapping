@@ -1,0 +1,19 @@
+package fr.javatronic.damapping.test.homonyms;
+
+import fr.javatronic.damapping.test.mapperreferences.ClassBMapper;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public class ReferenceHomonyms2MapperImpl implements ReferenceHomonyms2Mapper {
+
+    private final ReferenceHomonyms2 dedicatedInstance;
+
+    public ReferenceHomonyms2MapperImpl(fr.javatronic.damapping.test.homonyms.ClassBMapper samePackageClassB, ClassBMapper otherPackageClassB) {
+        this.dedicatedInstance = new ReferenceHomonyms2(samePackageClassB, otherPackageClassB);
+    }
+
+    @Override
+    public String map(Integer input) {
+        return this.dedicatedInstance.map(input);
+    }
+
+}

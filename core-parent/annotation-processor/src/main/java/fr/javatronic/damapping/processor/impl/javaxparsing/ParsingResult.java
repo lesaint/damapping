@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 
 import static fr.javatronic.damapping.processor.impl.javaxparsing.ParsingStatus.FAILED;
@@ -40,7 +41,7 @@ public class ParsingResult {
   @Nonnull
   private final ParsingStatus parsingStatus;
   @Nonnull
-  private final Set<DAType> unresolved;
+  private final Set<Element> unresolved;
   @Nullable
   private final DAType type;
   @Nullable
@@ -48,12 +49,12 @@ public class ParsingResult {
 
   private ParsingResult(@Nonnull TypeElement classElement,
                         @Nonnull ParsingStatus parsingStatus,
-                        @Nullable Set<DAType> unresolved,
+                        @Nullable Set<Element> unresolved,
                         @Nullable DAType type,
                         @Nullable DASourceClass sourceClass) {
     this.classElement = checkNotNull(classElement);
     this.parsingStatus = checkNotNull(parsingStatus);
-    this.unresolved = unresolved == null ? Collections.<DAType>emptySet() : Collections.unmodifiableSet(unresolved);
+    this.unresolved = unresolved == null ? Collections.<Element>emptySet() : Collections.unmodifiableSet(unresolved);
     this.type = type;
     this.sourceClass = sourceClass;
   }
@@ -70,7 +71,7 @@ public class ParsingResult {
     return new ParsingResult(classElement, OK, null, sourceClass.getType(), sourceClass);
   }
 
-  public static ParsingResult later(TypeElement classElement, @Nullable DAType daType, Set<DAType> unresolved) {
+  public static ParsingResult later(TypeElement classElement, @Nullable DAType daType, Set<Element> unresolved) {
     return new ParsingResult(classElement, HAS_UNRESOLVED, unresolved, daType, null);
   }
 
@@ -85,7 +86,7 @@ public class ParsingResult {
   }
 
   @Nonnull
-  public Set<DAType> getUnresolved() {
+  public Set<Element> getUnresolved() {
     return unresolved;
   }
 

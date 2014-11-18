@@ -24,7 +24,6 @@ import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Predicates;
-import fr.javatronic.damapping.util.Sets;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -32,17 +31,17 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-         import    javax.   lang.   model.   type  .    DeclaredType    ;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
 import static fr.javatronic.damapping.util.FluentIterable.from;
+import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
  * JavaxParsingService -
@@ -53,17 +52,17 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
   @Nonnull
   private final ProcessingEnvironmentWrapper processingEnv;
 
-  public JavaxParsingServiceImpl(@Nonnull ProcessingEnvironment processingEnv) {
-    this.processingEnv = new ProcessingEnvironmentWrapper(processingEnv);
+  public JavaxParsingServiceImpl(@Nonnull ProcessingEnvironmentWrapper processingEnv) {
+    this.processingEnv = checkNotNull(processingEnv);
   }
 
   @Nonnull
   @Override
-  public ParsingResult parse(TypeElement classElement, Collection<DAType> generatedTypes) throws IOException {
-    UnresolvedTypeScanResult scanResult = scanUnresolvedTypes(classElement, generatedTypes);
-
-    if (!scanResult.getUnresolved().isEmpty()) {
-      return ParsingResult.later(classElement, null, Sets.copyOf(scanResult.getUnresolved().values()));
+  public ParsingResult parse(@Nonnull TypeElement classElement,
+                             @Nullable Collection<DAType> generatedTypes) throws IOException {
+    ReferenceScanResult scanResult = new ReferencesScanner(processingEnv, generatedTypes).scan(classElement);
+    if (scanResult.hasUnresolved()) {
+      return ParsingResult.later(classElement, null, scanResult.getUnresolved());
     }
 
     DAType type = null;
@@ -77,12 +76,6 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
       processingEnv.printMessage(Mapper.class, classElement, e);
       return ParsingResult.failed(classElement, type);
     }
-  }
-
-  private UnresolvedTypeScanResult scanUnresolvedTypes(TypeElement classElement, Collection<DAType> generatedTypes)
-      throws IOException {
-    UnresolvedReferencesScanner scanner = new UnresolvedReferencesScanner(processingEnv, new JavaxExtractorImpl(processingEnv, null), generatedTypes);
-    return scanner.scan(classElement);
   }
 
   @Nonnull

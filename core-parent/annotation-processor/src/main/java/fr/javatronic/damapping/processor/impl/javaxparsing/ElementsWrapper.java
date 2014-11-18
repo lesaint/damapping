@@ -21,12 +21,25 @@ import javax.lang.model.element.Element;
 import javax.lang.model.util.Elements;
 
 /**
- * ElementsWrapper -
+ * ElementsWrapper - This interface extends {@link Elements} to add methods specific to DAMapping.
+ * <p>
+ * These methods may be compiler specific.
+ * </p>
  *
  * @author Sébastien Lesaint
  */
 public interface ElementsWrapper extends Elements {
 
+  /**
+   * Builds up the list of explicite and implicite imports for the specified {@link Element}
+   *
+   * @param e a {@link Element}
+   *
+   * @return a {@link ElementImports}
+   *
+   * @throws IOException implementation of this method may require to perform ressources access operations which may
+   * raise {@link IOException}
+   */
   @Nonnull
   ElementImports findImports(@Nonnull Element e) throws IOException;
 

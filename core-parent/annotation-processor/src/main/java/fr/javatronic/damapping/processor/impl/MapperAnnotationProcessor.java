@@ -29,12 +29,10 @@ import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerationService
 import fr.javatronic.damapping.processor.validator.DASourceClassValidator;
 import fr.javatronic.damapping.processor.validator.DASourceClassValidatorImpl;
 import fr.javatronic.damapping.processor.validator.ValidationError;
-import fr.javatronic.damapping.util.Maps;
 import fr.javatronic.damapping.util.Sets;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -102,7 +100,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
 
   private ParsingResult parse(TypeElement classElement, @Nullable Collection<DAType> generatedTypes)
       throws IOException {
-    JavaxParsingService javaxParsingService = new JavaxParsingServiceImpl(processingEnv.getProcessingEnvironment());
+    JavaxParsingService javaxParsingService = new JavaxParsingServiceImpl(processingEnv);
     return javaxParsingService.parse(classElement, generatedTypes);
   }
 
@@ -191,30 +189,6 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
         // do nothing, keep parsingResult as postponed
         break;
     }
-  }
-
-  private Map<DAType, String> computeSourceClassSimpleNames(ParsingResult parsingResult) {
-    Map<DAType, String> res = Maps.newHashMap();
-    for (DAType unresolved : parsingResult.getUnresolved()) {
-      String sourceClassSimpleName = extractSourceClassSimpleName(unresolved);
-      if (sourceClassSimpleName != null) {
-        res.put(unresolved, sourceClassSimpleName);
-      }
-    }
-    return res;
-  }
-
-  private String extractSourceClassSimpleName(DAType daType) {
-    String simpleName = daType.getSimpleName().getName();
-    if (!simpleName.contains("Mapper")) {
-      return null;
-    }
-    for (String suffix : Sets.of("Mapper", "MapperImpl", "MapperFactory", "MapperFactoryImpl")) {
-      if (simpleName.endsWith(suffix)) {
-        return simpleName.substring(0, simpleName.length() - suffix.length());
-      }
-    }
-    return null;
   }
 
 }
