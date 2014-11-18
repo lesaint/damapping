@@ -50,104 +50,104 @@ public class DAStatementWriterTest {
 
   @Test
   public void start_delegates_to_CommonMethods() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    methodWriterWithMock(testWriters).start();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    methodWriterWithMock(fileContext).start();
 
     verify(commonMethods).appendIndent();
-    verifyNoInteraction(testWriters);
+    verifyNoInteraction(fileContext);
   }
 
   @Test
   public void append_CharSequence_delegates_to_CommonMethods() throws Exception {
-    TestWriters testWriters = new TestWriters();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
     String s = "ss";
 
-    methodWriterWithMock(testWriters).append(s);
+    methodWriterWithMock(fileContext).append(s);
 
     verify(commonMethods).append(s);
-    verifyNoInteraction(testWriters);
+    verifyNoInteraction(fileContext);
   }
 
   @Test
   public void append_Char_delegates_to_CommonMethods() throws Exception {
-    TestWriters testWriters = new TestWriters();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
     char s = 's';
 
-    methodWriterWithMock(testWriters).append(s);
+    methodWriterWithMock(fileContext).append(s);
 
     verify(commonMethods).append(s);
-    verifyNoInteraction(testWriters);
+    verifyNoInteraction(fileContext);
   }
 
   @Test
   public void appendType_delegates_to_CommonMethods() throws Exception {
-    TestWriters testWriters = new TestWriters();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
     DAType daType = DATypeFactory.from(String.class);
 
-    methodWriterWithMock(testWriters).appendType(daType);
+    methodWriterWithMock(fileContext).appendType(daType);
 
     verify(commonMethods).appendType(daType);
-    verifyNoInteraction(testWriters);
+    verifyNoInteraction(fileContext);
   }
 
   @Test
   public void appendTypeArgs_delegates_to_CommonMethods() throws Exception {
-    TestWriters testWriters = new TestWriters();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
     List<DAType> daTypes = ImmutableList.of(DATypeFactory.from(String.class));
 
-    methodWriterWithMock(testWriters).appendTypeArgs(daTypes);
+    methodWriterWithMock(fileContext).appendTypeArgs(daTypes);
 
     verify(commonMethods).appendTypeArgs(daTypes);
-    verifyNoInteraction(testWriters);
+    verifyNoInteraction(fileContext);
   }
 
   @Test
   public void end_returns_parent_writer() throws Exception {
-    TestWriters testWriters = new TestWriters();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
     DAWriter parent = new DAWriter() {
 
     };
-    DAStatementWriter<DAWriter> classWriter = new DAStatementWriter<DAWriter>(testWriters, parent, 1);
+    DAStatementWriter<DAWriter> classWriter = new DAStatementWriter<DAWriter>(fileContext, parent, 1);
 
     assertThat(classWriter.end()).isSameAs(parent);
   }
 
   @Test
   public void end_adds_semicolon_and_newline() throws Exception {
-    TestWriters testWriters = new TestWriters();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
 
-    methodWriterWithMock(testWriters).end();
+    methodWriterWithMock(fileContext).end();
 
     verify(commonMethods).append(";");
     verify(commonMethods).newLine();
-    verifyNoInteraction(testWriters);
+    verifyNoInteraction(fileContext);
   }
 
   @Test
   public void appendParamValues_add_empty_brackets_if_empty() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    methodWriter(testWriters).appendParamValues(Collections.<DAParameter>emptyList());
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    methodWriter(fileContext).appendParamValues(Collections.<DAParameter>emptyList());
 
-    assertThat(testWriters.getRes()).isEqualTo("()");
+    assertThat(fileContext.getRes()).isEqualTo("()");
   }
 
   @Test
   public void appendParamValues_with_only_one_parameter() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    methodWriter(testWriters).appendParamValues(
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    methodWriter(fileContext).appendParamValues(
         Collections.singletonList(
             DAParameter.builder(DANameFactory.from("param"), DATypeFactory.from(String.class))
                        .build()
         )
     );
 
-    assertThat(testWriters.getRes()).isEqualTo("(param)");
+    assertThat(fileContext.getRes()).isEqualTo("(param)");
   }
 
   @Test
   public void appendParamValues_with_multiple_parameters() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    methodWriter(testWriters).appendParamValues(
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    methodWriter(fileContext).appendParamValues(
         ImmutableList.of(
             DAParameter.builder(DANameFactory.from("param1"), DATypeFactory.from(String.class))
                        .build(),
@@ -156,25 +156,25 @@ public class DAStatementWriterTest {
         )
     );
 
-    assertThat(testWriters.getRes()).isEqualTo("(param1, param2)");
+    assertThat(fileContext.getRes()).isEqualTo("(param1, param2)");
   }
 
-  private void verifyNoInteraction(TestWriters testWriters) throws IOException {
+  private void verifyNoInteraction(FileContextTestImpl fileContext) throws IOException {
     verifyNoMoreInteractions(commonMethods);
-    assertThat(testWriters.getRes()).isEmpty();
+    assertThat(fileContext.getRes()).isEmpty();
   }
 
-  private DAStatementWriter<DAWriter> methodWriterWithMock(TestWriters testWriters) {
+  private DAStatementWriter<DAWriter> methodWriterWithMock(FileContextTestImpl fileContext) {
     DAWriter parent = new DAWriter() {
 
     };
     return new DAStatementWriter<DAWriter>(commonMethods, parent);
   }
 
-  private static DAStatementWriter<DAWriter> methodWriter(TestWriters testWriters) {
+  private static DAStatementWriter<DAWriter> methodWriter(FileContextTestImpl fileContext) {
     DAWriter parent = new DAWriter() {
 
     };
-    return new DAStatementWriter<DAWriter>(testWriters, parent, 1);
+    return new DAStatementWriter<DAWriter>(fileContext, parent, 1);
   }
 }

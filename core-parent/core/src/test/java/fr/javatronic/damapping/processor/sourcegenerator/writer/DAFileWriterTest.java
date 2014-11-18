@@ -51,26 +51,26 @@ public class DAFileWriterTest {
 
   @Test
   public void empty_file() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.getWriter());
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    new DAFileWriter(fileContext.getWriter());
 
-    assertThat(testWriters.getRes()).isEqualTo("");
+    assertThat(fileContext.getRes()).isEqualTo("");
   }
 
   @Test
   public void package_only() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.getWriter()).appendPackage(PACKAGE_NAME);
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    new DAFileWriter(fileContext.getWriter()).appendPackage(PACKAGE_NAME);
 
-    assertThat(testWriters.getRes()).isEqualTo(
+    assertThat(fileContext.getRes()).isEqualTo(
         "package com.acme.toto;" + LINE_SEPARATOR + LINE_SEPARATOR
     );
   }
 
   @Test
   public void package_imports_filtered_file() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.getWriter())
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    new DAFileWriter(fileContext.getWriter())
         .appendPackage(PACKAGE_NAME)
         .appendImports(ImmutableSet.<DAName>of(
             DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE.getQualifiedName(),
@@ -79,7 +79,7 @@ public class DAFileWriterTest {
         )
         );
 
-    assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
+    assertThat(fileContext.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
         + LINE_SEPARATOR
         + "import com.acme.Bidon;" + LINE_SEPARATOR
         + "import com.google.common.base.Function;" + LINE_SEPARATOR
@@ -89,15 +89,15 @@ public class DAFileWriterTest {
 
   @Test
   public void empty_class_file() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.getWriter())
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    new DAFileWriter(fileContext.getWriter())
         .appendPackage(PACKAGE_NAME)
         .newClass(DAWriterTestUtil.NAME_DATYPE)
         .withModifiers(DAModifier.PUBLIC)
         .start()
         .end();
 
-    assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
+    assertThat(fileContext.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
         + LINE_SEPARATOR
         + "public class Name {" + LINE_SEPARATOR
         + LINE_SEPARATOR
@@ -107,14 +107,14 @@ public class DAFileWriterTest {
 
   @Test
   public void empty_interface_file() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.getWriter())
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    new DAFileWriter(fileContext.getWriter())
         .appendPackage(PACKAGE_NAME)
         .newInterface("name")
         .start()
         .end();
 
-    assertThat(testWriters.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
+    assertThat(fileContext.getRes()).isEqualTo("package com.acme.toto;" + LINE_SEPARATOR
         + LINE_SEPARATOR
         + "interface name {" + LINE_SEPARATOR
         + LINE_SEPARATOR
@@ -124,57 +124,57 @@ public class DAFileWriterTest {
 
   @Test(expectedExceptions = IOException.class, expectedExceptionsMessageRegExp = "Stream closed")
   public void end_closes_writer() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.getWriter()).end();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    new DAFileWriter(fileContext.getWriter()).end();
 
-    testWriters.getWriter().append("toto"); // raises IOException
+    fileContext.getWriter().append("toto"); // raises IOException
   }
 
   @Test
   public void appendImports_emptyCollection_prints_nothing() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.getWriter()).appendImports(Collections.<DAName>emptyList());
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    new DAFileWriter(fileContext.getWriter()).appendImports(Collections.<DAName>emptyList());
 
-    assertThat(testWriters.getRes()).isEqualTo("");
+    assertThat(fileContext.getRes()).isEqualTo("");
   }
 
   @Test
   public void appendImports_emptyCollection_after_filtering_prints_nothing() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.getWriter()).appendImports(ImmutableList.of(DANameFactory.from(String.class.getName())));
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    new DAFileWriter(fileContext.getWriter()).appendImports(ImmutableList.of(DANameFactory.from(String.class.getName())));
 
-    assertThat(testWriters.getRes()).isEqualTo("");
+    assertThat(fileContext.getRes()).isEqualTo("");
   }
 
   @Test
   public void appendImports_filters_out_null_DAName_when_no_package_is_specified() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.getWriter())
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    new DAFileWriter(fileContext.getWriter())
         .appendImports(Collections.singletonList((DAName) null));
 
-    assertThat(testWriters.getRes()).isEqualTo("");
+    assertThat(fileContext.getRes()).isEqualTo("");
   }
 
   @Test
   public void appendImports_filters_out_null_DAName_when_package_is_specified() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.getWriter())
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    new DAFileWriter(fileContext.getWriter())
         .appendPackage(DANameFactory.from("com.acme"))
         .appendImports(Collections.singletonList((DAName) null));
 
-    assertThat(testWriters.getRes()).isEqualTo(
+    assertThat(fileContext.getRes()).isEqualTo(
         "package com.acme;" + LINE_SEPARATOR + LINE_SEPARATOR
     );
   }
 
   @Test
   public void appendImports_filters_out_same_package_DAName_when_package_is_specified() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.getWriter())
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    new DAFileWriter(fileContext.getWriter())
         .appendPackage(DANameFactory.from("com.acme"))
         .appendImports(ImmutableList.of(DANameFactory.from("com.acme.Some"), DANameFactory.from("Simon")));
 
-    assertThat(testWriters.getRes()).isEqualTo("package com.acme;" + LINE_SEPARATOR
+    assertThat(fileContext.getRes()).isEqualTo("package com.acme;" + LINE_SEPARATOR
         + LINE_SEPARATOR
         + "import Simon;" + LINE_SEPARATOR
         + LINE_SEPARATOR
@@ -183,20 +183,20 @@ public class DAFileWriterTest {
 
   @Test
   public void appendGeneratedAnnotation_from_String_adds_generated_annotation_and_newLine() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.getWriter()).appendGeneratedAnnotation(MyProcessor.class.getCanonicalName());
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    new DAFileWriter(fileContext.getWriter()).appendGeneratedAnnotation(MyProcessor.class.getCanonicalName());
 
-    assertThat(testWriters.getRes()).isEqualTo(
+    assertThat(fileContext.getRes()).isEqualTo(
         "@javax.annotation.Generated(\"" + MyProcessor.class.getCanonicalName() + "\")" + LINE_SEPARATOR
     );
   }
 
   @Test
   public void appendGeneratedAnnotation_from_Class_adds_generated_annotation_with_class_qualifiedName_and_newLine() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.getWriter()).appendGeneratedAnnotation(MyProcessor.class);
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    new DAFileWriter(fileContext.getWriter()).appendGeneratedAnnotation(MyProcessor.class);
 
-    assertThat(testWriters.getRes()).isEqualTo(
+    assertThat(fileContext.getRes()).isEqualTo(
         "@javax.annotation.Generated(\"" + MyProcessor.class.getCanonicalName() + "\")" + LINE_SEPARATOR
     );
   }

@@ -130,7 +130,7 @@ class CommonMethodsImpl implements CommonMethods {
   }
 
   private boolean useQualifiedReference(DAType type) {
-    if (type.getKind() != DATypeKind.DECLARED) {
+    if (type.getKind() != DATypeKind.DECLARED && type.getKind() != DATypeKind.ARRAY) {
       return false;
     }
     if (fileContext.hasExpliciteImport(type)) {

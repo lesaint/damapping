@@ -18,7 +18,6 @@ package fr.javatronic.damapping.processor.sourcegenerator.writer;
 import fr.javatronic.damapping.processor.model.DAModifier;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 import org.testng.annotations.Test;
 
@@ -37,10 +36,10 @@ public class DAInitializedPropertyWriterTest {
 
   @Test
   public void empty_statement_writes_invalide_property_line() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daPropertyWriter(testWriters).initialize().end().end();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daPropertyWriter(fileContext).initialize().end().end();
 
-    assertThat(testWriters.getRes()).isEqualTo(
+    assertThat(fileContext.getRes()).isEqualTo(
         INDENT + "Name name = ;" + LINE_SEPARATOR
             + LINE_SEPARATOR
     );
@@ -48,14 +47,14 @@ public class DAInitializedPropertyWriterTest {
 
   @Test
   public void private_property_with_coonstructor_call() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daPropertyWriter(testWriters)
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daPropertyWriter(fileContext)
         .withModifiers(DAModifier.PRIVATE)
         .initialize()
           .append("new ").appendType(NAME_DATYPE).append("()").end()
         .end();
 
-    assertThat(testWriters.getRes()).isEqualTo(
+    assertThat(fileContext.getRes()).isEqualTo(
         INDENT + "private Name name = new Name();" + LINE_SEPARATOR
             + LINE_SEPARATOR
     );
@@ -63,24 +62,24 @@ public class DAInitializedPropertyWriterTest {
 
   @Test
   public void annoted_property_with_constructor_call() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daPropertyWriter(testWriters)
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daPropertyWriter(fileContext)
         .withAnnotations(ImmutableList.of(NULLABLE_ANNOTATION))
         .initialize()
           .append("new ").appendType(NAME_DATYPE).append("()").end()
         .end();
 
-    assertThat(testWriters.getRes()).isEqualTo(INDENT + "@Nullable" + LINE_SEPARATOR
+    assertThat(fileContext.getRes()).isEqualTo(INDENT + "@Nullable" + LINE_SEPARATOR
         + INDENT + "Name name = new Name();" + LINE_SEPARATOR
         + LINE_SEPARATOR
     );
   }
 
-  private static DAInitializedPropertyWriter<DAWriter> daPropertyWriter(TestWriters testWriters) {
+  private static DAInitializedPropertyWriter<DAWriter> daPropertyWriter(FileContextTestImpl fileContext) {
     DAWriter parent = new DAWriter() {
 
     };
-    return new DAInitializedPropertyWriter<DAWriter>("name", NAME_DATYPE, testWriters,
+    return new DAInitializedPropertyWriter<DAWriter>("name", NAME_DATYPE, fileContext,
         parent, 1
     );
   }

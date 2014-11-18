@@ -28,13 +28,31 @@ import javax.annotation.Nullable;
  * @author Sébastien Lesaint
  */
 public interface FileContext {
+  /**
+   * The name of the package in which the file is created.
+   * @return the name of the package, the empty String for the default package.
+   */
   @Nonnull
   String getPackageName();
 
+  /**
+   * Return the writer for the current file.
+   * @return the writer for the current file.
+   */
   @Nonnull
   BufferedWriter getWriter();
 
+  /**
+   *
+   * @param type a {@link DAType} or {@code null}
+   * @return a boolean
+   */
   boolean hasExpliciteImport(@Nullable DAType type);
 
+  /**
+   * Finds out whether the specified type has at least one homonymous class emough the imports.
+   * @param type a {@link DAType} or {@code null}
+   * @return a boolean
+   */
   boolean hasHomonymousImport(@Nullable DAType type);
 }

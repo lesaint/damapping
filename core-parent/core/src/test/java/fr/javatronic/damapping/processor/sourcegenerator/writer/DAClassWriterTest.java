@@ -49,10 +49,10 @@ public class DAClassWriterTest {
 
   @Test
   public void empty_empty_class() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters).start().end();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daClassWriter(fileContext).start().end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "class Name {" + LINE_SEPARATOR
             + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
@@ -61,10 +61,10 @@ public class DAClassWriterTest {
 
   @Test
   public void empty_public_class() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters).withModifiers(DAModifier.PUBLIC).start().end();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daClassWriter(fileContext).withModifiers(DAModifier.PUBLIC).start().end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "public class Name {" + LINE_SEPARATOR
             + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
@@ -73,10 +73,10 @@ public class DAClassWriterTest {
 
   @Test
   public void empty_public_final_class() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters).withModifiers(DAModifier.PUBLIC, DAModifier.FINAL).start().end();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daClassWriter(fileContext).withModifiers(DAModifier.PUBLIC, DAModifier.FINAL).start().end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "public final class Name {" + LINE_SEPARATOR
             + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
@@ -85,10 +85,10 @@ public class DAClassWriterTest {
 
   @Test
   public void empty_class_annoted_class() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters).withAnnotations(ImmutableList.of(OVERRIDE_ANNOTATION)).start().end();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daClassWriter(fileContext).withAnnotations(ImmutableList.of(OVERRIDE_ANNOTATION)).start().end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR +
             INDENT + "class Name {" + LINE_SEPARATOR
             + LINE_SEPARATOR
@@ -98,12 +98,12 @@ public class DAClassWriterTest {
 
   @Test
   public void empty_class_annoted_twice_class() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters)
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daClassWriter(fileContext)
         .withAnnotations(ImmutableList.of(OVERRIDE_ANNOTATION, NULLABLE_ANNOTATION))
         .start().end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR +
             INDENT + "@Nullable" + LINE_SEPARATOR +
             INDENT + "class Name {" + LINE_SEPARATOR
@@ -114,10 +114,10 @@ public class DAClassWriterTest {
 
   @Test
   public void empty_class_implements_once() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters).withImplemented(ImmutableList.of(SERIALIZABLE_TYPE)).start().end();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daClassWriter(fileContext).withImplemented(ImmutableList.of(SERIALIZABLE_TYPE)).start().end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "class Name implements Serializable {" + LINE_SEPARATOR
             + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
@@ -126,12 +126,12 @@ public class DAClassWriterTest {
 
   @Test
   public void empty_class_implements_twice_one_with_types() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters).withImplemented(
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daClassWriter(fileContext).withImplemented(
         ImmutableList.of(SERIALIZABLE_TYPE, FUNCTION_INTEGER_TO_STRING_INTERFACE)
     ).start().end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(
             INDENT + "class Name implements Serializable, Function<Integer, String> {" + LINE_SEPARATOR
                 + LINE_SEPARATOR
@@ -141,10 +141,10 @@ public class DAClassWriterTest {
 
   @Test
   public void empty_class_extends() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters).withExtended(DAWRITER_ABSTACT_CLASS).start().end();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daClassWriter(fileContext).withExtended(DAWRITER_ABSTACT_CLASS).start().end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "class Name extends DAWriter {" + LINE_SEPARATOR
             + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
@@ -153,10 +153,10 @@ public class DAClassWriterTest {
 
   @Test
   public void empty_class_extends_one_with_types() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters).withExtended(BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS).start().end();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daClassWriter(fileContext).withExtended(BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS).start().end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "class Name extends Bidon<Integer, String> {" + LINE_SEPARATOR
             + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
@@ -165,15 +165,15 @@ public class DAClassWriterTest {
 
   @Test
   public void empty_public_final_class_annoted_with_extends_and_implements() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters)
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daClassWriter(fileContext)
         .withModifiers(DAModifier.PUBLIC, DAModifier.FINAL)
         .withAnnotations(ImmutableList.of(OVERRIDE_ANNOTATION))
         .withImplemented(ImmutableList.of(FUNCTION_INTEGER_TO_STRING_INTERFACE))
         .withExtended(BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS)
         .start().end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR
             + INDENT + "public final class Name extends Bidon<Integer, String> implements Function<Integer, " +
             "String> {" + LINE_SEPARATOR
@@ -184,11 +184,11 @@ public class DAClassWriterTest {
 
   @Test
   public void end_returns_parent_writer() throws Exception {
-    TestWriters testWriters = new TestWriters();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
     DAWriter parent = new DAWriter() {
 
     };
-    DAClassWriter<DAWriter> classWriter = new DAClassWriter<DAWriter>(NAME_DATYPE, testWriters,
+    DAClassWriter<DAWriter> classWriter = new DAClassWriter<DAWriter>(NAME_DATYPE, fileContext,
         parent, 1
     );
 
@@ -197,13 +197,13 @@ public class DAClassWriterTest {
 
   @Test
   public void one_method_class() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters)
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daClassWriter(fileContext)
         .start()
         .newMethod("methodName", DATypeFactory.from(String.class)).start().end()
         .end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "class Name {" + LINE_SEPARATOR
             + LINE_SEPARATOR
             + INDENT + INDENT + "String methodName() {" + LINE_SEPARATOR
@@ -215,13 +215,13 @@ public class DAClassWriterTest {
 
   @Test
   public void explicite_default_constructor_class() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters)
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daClassWriter(fileContext)
         .start()
         .newConstructor().start().end()
         .end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "class Name {" + LINE_SEPARATOR
             + LINE_SEPARATOR
             + INDENT + INDENT + "Name() {" + LINE_SEPARATOR
@@ -233,8 +233,8 @@ public class DAClassWriterTest {
 
   @Test
   public void constructor_with_params_class() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters)
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daClassWriter(fileContext)
         .start()
         .newConstructor()
         .withParams(ImmutableList.of(STRING_TITI_PARAMETER))
@@ -246,7 +246,7 @@ public class DAClassWriterTest {
         .end()
         .end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "class Name {" + LINE_SEPARATOR
             + LINE_SEPARATOR
             + INDENT + INDENT + "Name(String titi) {" + LINE_SEPARATOR
@@ -259,15 +259,15 @@ public class DAClassWriterTest {
 
   @Test
   public void one_property_class() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daClassWriter(testWriters)
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daClassWriter(fileContext)
         .start()
         .newProperty("variableName", DATypeFactory.from(String.class))
         .withAnnotations(ImmutableList.of(NULLABLE_ANNOTATION))
         .write()
         .end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "class Name {" + LINE_SEPARATOR
             + LINE_SEPARATOR
             + INDENT + INDENT + "@Nullable" + LINE_SEPARATOR
@@ -279,9 +279,9 @@ public class DAClassWriterTest {
 
   @Test
   public void newClass_create_new_DAClassWriter() throws Exception {
-    TestWriters testWriters = new TestWriters();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
 
-    DAClassWriter<DAWriter> classWriter = daClassWriter(testWriters);
+    DAClassWriter<DAWriter> classWriter = daClassWriter(fileContext);
     DAType classType = DATypeFactory.from(String.class);
 
     DAClassWriter<DAClassWriter<DAWriter>> newClassWriter = classWriter.newClass(classType);
@@ -289,14 +289,14 @@ public class DAClassWriterTest {
     assertThat(newClassWriter.classType).isSameAs(classType);
     assertThat(newClassWriter.parent).isSameAs(classWriter);
     assertThat(newClassWriter.commons.getIndentOffset()).isEqualTo(2);
-    assertThat(newClassWriter.commons.getFileContext()).isSameAs(testWriters);
+    assertThat(newClassWriter.commons.getFileContext()).isSameAs(fileContext);
   }
 
-  private DAClassWriter<DAWriter> daClassWriter(TestWriters testWriters) {
+  private DAClassWriter<DAWriter> daClassWriter(FileContextTestImpl fileContext) {
     DAWriter parent = new DAWriter() {
 
     };
-    return new DAClassWriter<DAWriter>(NAME_DATYPE, testWriters, parent, 1);
+    return new DAClassWriter<DAWriter>(NAME_DATYPE, fileContext, parent, 1);
   }
 
 }

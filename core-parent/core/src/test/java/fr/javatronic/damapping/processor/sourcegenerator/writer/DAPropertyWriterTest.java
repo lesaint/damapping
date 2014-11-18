@@ -18,7 +18,6 @@ package fr.javatronic.damapping.processor.sourcegenerator.writer;
 import fr.javatronic.damapping.processor.model.DAModifier;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 import org.testng.annotations.Test;
 
@@ -36,10 +35,10 @@ public class DAPropertyWriterTest {
 
   @Test
   public void property() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daPropertyWriter(testWriters).write();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daPropertyWriter(fileContext).write();
 
-    assertThat(testWriters.getRes()).isEqualTo(
+    assertThat(fileContext.getRes()).isEqualTo(
         INDENT + "Function<Integer, String> name;" + LINE_SEPARATOR
             + LINE_SEPARATOR
     );
@@ -47,12 +46,12 @@ public class DAPropertyWriterTest {
 
   @Test
   public void private_property() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daPropertyWriter(testWriters)
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daPropertyWriter(fileContext)
         .withModifiers(DAModifier.PRIVATE)
         .write();
 
-    assertThat(testWriters.getRes()).isEqualTo(
+    assertThat(fileContext.getRes()).isEqualTo(
         INDENT + "private Function<Integer, String> name;" + LINE_SEPARATOR
             + LINE_SEPARATOR
     );
@@ -60,22 +59,22 @@ public class DAPropertyWriterTest {
 
   @Test
   public void annoted_property() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daPropertyWriter(testWriters)
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daPropertyWriter(fileContext)
         .withAnnotations(ImmutableList.of(NULLABLE_ANNOTATION))
         .write();
 
-    assertThat(testWriters.getRes()).isEqualTo(INDENT + "@Nullable" + LINE_SEPARATOR
+    assertThat(fileContext.getRes()).isEqualTo(INDENT + "@Nullable" + LINE_SEPARATOR
         + INDENT + "Function<Integer, String> name;" + LINE_SEPARATOR
         + LINE_SEPARATOR
     );
   }
 
-  private static DAPropertyWriter<DAWriter> daPropertyWriter(TestWriters testWriters) {
+  private static DAPropertyWriter<DAWriter> daPropertyWriter(FileContextTestImpl fileContext) {
     DAWriter parent = new DAWriter() {
 
     };
-    return new DAPropertyWriter<DAWriter>("name", DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE, testWriters,
+    return new DAPropertyWriter<DAWriter>("name", DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE, fileContext,
         parent, 1
     );
   }

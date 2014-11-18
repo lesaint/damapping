@@ -24,13 +24,23 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * TestWriters -
+ * FileContextTestImpl -
  *
  * @author Sébastien Lesaint
  */
-class TestWriters implements FileContext {
+class FileContextTestImpl implements FileContext {
   private final StringWriter out = new StringWriter();
   private final BufferedWriter bw = new BufferedWriter(out);
+  @Nonnull
+  private final String packageName;
+
+  FileContextTestImpl() {
+    this(null);
+  }
+
+  FileContextTestImpl(@Nullable String packageName) {
+    this.packageName = packageName == null ? "" : packageName;
+  }
 
   String getRes() throws IOException {
     bw.flush();
@@ -40,7 +50,7 @@ class TestWriters implements FileContext {
   @Nonnull
   @Override
   public String getPackageName() {
-    return "";
+    return packageName;
   }
 
   @Nonnull

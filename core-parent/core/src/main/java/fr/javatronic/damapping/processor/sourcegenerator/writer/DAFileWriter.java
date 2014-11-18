@@ -210,7 +210,7 @@ public class DAFileWriter implements DAWriter {
 
     @Override
     public boolean hasExpliciteImport(@Nullable DAType type) {
-      if (imports == null || type == null|| type.getQualifiedName() == null) {
+      if (type == null || imports == null || type.getQualifiedName() == null) {
         return false;
       }
       return imports.contains(type.getQualifiedName());
@@ -218,10 +218,10 @@ public class DAFileWriter implements DAWriter {
 
     @Override
     public boolean hasHomonymousImport(@Nullable DAType type) {
-      if (importSimpleNames == null || type == null) {
+      if (type == null || importSimpleNames == null) {
         return false;
       }
-      return importSimpleNames.contains(type.getSimpleName().getName());
+      return !hasExpliciteImport(type) && importSimpleNames.contains(type.getSimpleName().getName());
     }
   }
 }

@@ -36,10 +36,10 @@ public class DAConstructorWriterTest {
 
   @Test
   public void empty_constructor() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    constructorWriter("com.acme.TotoClass", testWriters).start().end();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    constructorWriter("com.acme.TotoClass", fileContext).start().end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(
             INDENT + "TotoClass() {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
                 + LINE_SEPARATOR
@@ -48,13 +48,13 @@ public class DAConstructorWriterTest {
 
   @Test
   public void public_empty_constructor() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    constructorWriter("com.acme.TotoClass", testWriters)
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    constructorWriter("com.acme.TotoClass", fileContext)
         .withModifiers(DAModifier.PUBLIC)
         .start()
         .end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(
             INDENT + "public TotoClass() {" + LINE_SEPARATOR + INDENT + "}" +
                 LINE_SEPARATOR
@@ -64,8 +64,8 @@ public class DAConstructorWriterTest {
 
   @Test
   public void private_constructor_with_params() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    constructorWriter("com.acme.TotoClass", testWriters)
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    constructorWriter("com.acme.TotoClass", fileContext)
         .withModifiers(DAModifier.PRIVATE)
         .withParams(ImmutableList.of(DAWriterTestUtil.STRING_TITI_PARAMETER))
         .start()
@@ -75,7 +75,7 @@ public class DAConstructorWriterTest {
         .end()
         .end();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "private TotoClass(String titi) {" + LINE_SEPARATOR
             + INDENT + INDENT + "Preconditions.checkNotNull(titi);" + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
@@ -85,32 +85,32 @@ public class DAConstructorWriterTest {
 
   @Test
   public void constructor_with_multiple_params() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    constructorWriter("com.acme.TotoClass", testWriters)
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    constructorWriter("com.acme.TotoClass", fileContext)
         .withParams(ImmutableList.of(DAWriterTestUtil.STRING_TITI_PARAMETER, DAWriterTestUtil.STRING_TOTO_PARAMETER))
         .start();
 
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "TotoClass(String titi, String toto) {" + LINE_SEPARATOR);
   }
 
   @Test
   public void constructor_with_annotations() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    constructorWriter("com.acme.TotoClass", testWriters)
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    constructorWriter("com.acme.TotoClass", fileContext)
         .withAnnotations(ImmutableList.of(OVERRIDE_ANNOTATION))
         .start();
 
-    assertThat(testWriters.getRes())
+    assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR +
             INDENT + "TotoClass() {" + LINE_SEPARATOR);
   }
 
-  private static DAConstructorWriter<DAWriter> constructorWriter(String returnType, TestWriters testWriters) {
+  private static DAConstructorWriter<DAWriter> constructorWriter(String returnType, FileContextTestImpl fileContext) {
     DAWriter parent = new DAWriter() {
 
     };
-    return new DAConstructorWriter<DAWriter>(DATypeFactory.declared(returnType), testWriters, parent, 1);
+    return new DAConstructorWriter<DAWriter>(DATypeFactory.declared(returnType), fileContext, parent, 1);
   }
 }

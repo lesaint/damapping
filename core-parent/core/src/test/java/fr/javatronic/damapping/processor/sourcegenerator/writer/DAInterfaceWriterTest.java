@@ -18,7 +18,6 @@ package fr.javatronic.damapping.processor.sourcegenerator.writer;
 import fr.javatronic.damapping.processor.model.DAModifier;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 import org.testng.annotations.Test;
 
@@ -38,10 +37,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DAInterfaceWriterTest {
   @Test
   public void empty_interface() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daInterfaceWriter(testWriters, "name").start().end();
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daInterfaceWriter(fileContext, "name").start().end();
 
-    assertThat(testWriters.getRes()).isEqualTo(
+    assertThat(fileContext.getRes()).isEqualTo(
         INDENT + "interface name {" + LINE_SEPARATOR
             + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
@@ -50,12 +49,12 @@ public class DAInterfaceWriterTest {
 
   @Test
   public void public_empty_interface() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daInterfaceWriter(testWriters, "name")
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daInterfaceWriter(fileContext, "name")
         .withModifiers(DAModifier.PUBLIC)
         .start().end();
 
-    assertThat(testWriters.getRes()).isEqualTo(
+    assertThat(fileContext.getRes()).isEqualTo(
         INDENT + "public interface name {" + LINE_SEPARATOR
             + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
@@ -64,12 +63,12 @@ public class DAInterfaceWriterTest {
 
   @Test
   public void annoted_empty_interface() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daInterfaceWriter(testWriters, "name")
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daInterfaceWriter(fileContext, "name")
         .withAnnotations(ImmutableList.of(NULLABLE_ANNOTATION))
         .start().end();
 
-    assertThat(testWriters.getRes()).isEqualTo(INDENT + "@Nullable" + LINE_SEPARATOR
+    assertThat(fileContext.getRes()).isEqualTo(INDENT + "@Nullable" + LINE_SEPARATOR
         + INDENT + "interface name {" + LINE_SEPARATOR
         + LINE_SEPARATOR
         + INDENT + "}" + LINE_SEPARATOR
@@ -78,12 +77,12 @@ public class DAInterfaceWriterTest {
 
   @Test
   public void empty_interface_extends_once() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daInterfaceWriter(testWriters, "name")
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daInterfaceWriter(fileContext, "name")
         .withExtended(ImmutableList.of(FUNCTION_INTEGER_TO_STRING_INTERFACE))
         .start().end();
 
-    assertThat(testWriters.getRes()).isEqualTo(
+    assertThat(fileContext.getRes()).isEqualTo(
         INDENT + "interface name extends Function<Integer, String> {" + LINE_SEPARATOR +
             LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
@@ -92,12 +91,12 @@ public class DAInterfaceWriterTest {
 
   @Test
   public void empty_interface_extends_twice() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daInterfaceWriter(testWriters, "name")
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daInterfaceWriter(fileContext, "name")
         .withExtended(ImmutableList.of(SERIALIZABLE_TYPE, FUNCTION_INTEGER_TO_STRING_INTERFACE))
         .start().end();
 
-    assertThat(testWriters.getRes()).isEqualTo(
+    assertThat(fileContext.getRes()).isEqualTo(
         INDENT + "interface name extends Serializable, Function<Integer, String> {" + LINE_SEPARATOR
             + LINE_SEPARATOR
             + INDENT + "}" + LINE_SEPARATOR
@@ -106,15 +105,15 @@ public class DAInterfaceWriterTest {
 
   @Test
   public void one_method_interface() throws Exception {
-    TestWriters testWriters = new TestWriters();
-    daInterfaceWriter(testWriters, "name")
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    daInterfaceWriter(fileContext, "name")
         .start()
         .newMethod("methodName", FUNCTION_INTEGER_TO_STRING_INTERFACE)
         .withAnnotations(ImmutableList.of(OVERRIDE_ANNOTATION))
         .write()
         .end();
 
-    assertThat(testWriters.getRes()).isEqualTo(INDENT + "interface name {" + LINE_SEPARATOR
+    assertThat(fileContext.getRes()).isEqualTo(INDENT + "interface name {" + LINE_SEPARATOR
         + LINE_SEPARATOR
         + INDENT + INDENT + "@Override" + LINE_SEPARATOR
         + INDENT + INDENT + "Function<Integer, String> methodName();" + LINE_SEPARATOR
@@ -123,10 +122,10 @@ public class DAInterfaceWriterTest {
     );
   }
 
-  private DAInterfaceWriter<DAWriter> daInterfaceWriter(TestWriters testWriters, String interfaceName) {
+  private DAInterfaceWriter<DAWriter> daInterfaceWriter(FileContextTestImpl fileContext, String interfaceName) {
     DAWriter parent = new DAWriter() {
 
     };
-    return new DAInterfaceWriter<DAWriter>(interfaceName, testWriters, parent, 1);
+    return new DAInterfaceWriter<DAWriter>(interfaceName, fileContext, parent, 1);
   }
 }
