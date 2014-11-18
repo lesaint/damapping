@@ -158,7 +158,7 @@ public class DAClassMethodWriterTest {
 
     };
     DAClassMethodWriter<DAWriter> classWriter = new DAClassMethodWriter<DAWriter>("name",
-        DATypeFactory.from(String.class), testWriters.bw, 1, parent
+        DATypeFactory.from(String.class), testWriters, 1, parent
     );
 
     assertThat(classWriter.end()).isSameAs(parent);
@@ -168,7 +168,7 @@ public class DAClassMethodWriterTest {
     DAWriter parent = new DAWriter() {
 
     };
-    return new DAClassMethodWriter<DAWriter>(name, DATypeFactory.declared(returnType), testWriters.bw, 1, parent);
+    return new DAClassMethodWriter<DAWriter>(name, DATypeFactory.declared(returnType), testWriters, 1, parent);
   }
 
 }

@@ -49,8 +49,8 @@ public class DAConstructorWriter<T extends DAWriter> extends AbstractDAWriter<T>
   private List<DAAnnotation> annotations = Collections.emptyList();
   private List<DAParameter> params = Collections.<DAParameter>emptyList();
 
-  public DAConstructorWriter(DAType constructedType, BufferedWriter bw, T parent, int indentOffset) {
-    super(bw, parent, indentOffset);
+  public DAConstructorWriter(DAType constructedType, FileContext fileContext, T parent, int indentOffset) {
+    super(fileContext, parent, indentOffset);
     this.name = constructedType.getSimpleName().getName();
   }
 
@@ -105,7 +105,7 @@ public class DAConstructorWriter<T extends DAWriter> extends AbstractDAWriter<T>
   }
 
   public DAStatementWriter<DAConstructorWriter<T>> newStatement() {
-    return new DAStatementWriter<DAConstructorWriter<T>>(commons.getBufferedWriter(), this,
+    return new DAStatementWriter<DAConstructorWriter<T>>(commons.getFileContext(), this,
         commons.getIndentOffset() + 1
     );
   }

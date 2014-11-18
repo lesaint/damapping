@@ -52,7 +52,7 @@ public class DAFileWriterTest {
   @Test
   public void empty_file() throws Exception {
     TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.bw);
+    new DAFileWriter(testWriters.getWriter());
 
     assertThat(testWriters.getRes()).isEqualTo("");
   }
@@ -60,7 +60,7 @@ public class DAFileWriterTest {
   @Test
   public void package_only() throws Exception {
     TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.bw).appendPackage(PACKAGE_NAME);
+    new DAFileWriter(testWriters.getWriter()).appendPackage(PACKAGE_NAME);
 
     assertThat(testWriters.getRes()).isEqualTo(
         "package com.acme.toto;" + LINE_SEPARATOR + LINE_SEPARATOR
@@ -70,7 +70,7 @@ public class DAFileWriterTest {
   @Test
   public void package_imports_filtered_file() throws Exception {
     TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.bw)
+    new DAFileWriter(testWriters.getWriter())
         .appendPackage(PACKAGE_NAME)
         .appendImports(ImmutableSet.<DAName>of(
             DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE.getQualifiedName(),
@@ -90,7 +90,7 @@ public class DAFileWriterTest {
   @Test
   public void empty_class_file() throws Exception {
     TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.bw)
+    new DAFileWriter(testWriters.getWriter())
         .appendPackage(PACKAGE_NAME)
         .newClass(DAWriterTestUtil.NAME_DATYPE)
         .withModifiers(DAModifier.PUBLIC)
@@ -108,7 +108,7 @@ public class DAFileWriterTest {
   @Test
   public void empty_interface_file() throws Exception {
     TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.bw)
+    new DAFileWriter(testWriters.getWriter())
         .appendPackage(PACKAGE_NAME)
         .newInterface("name")
         .start()
@@ -125,15 +125,15 @@ public class DAFileWriterTest {
   @Test(expectedExceptions = IOException.class, expectedExceptionsMessageRegExp = "Stream closed")
   public void end_closes_writer() throws Exception {
     TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.bw).end();
+    new DAFileWriter(testWriters.getWriter()).end();
 
-    testWriters.bw.append("toto"); // raises IOException
+    testWriters.getWriter().append("toto"); // raises IOException
   }
 
   @Test
   public void appendImports_emptyCollection_prints_nothing() throws Exception {
     TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.bw).appendImports(Collections.<DAName>emptyList());
+    new DAFileWriter(testWriters.getWriter()).appendImports(Collections.<DAName>emptyList());
 
     assertThat(testWriters.getRes()).isEqualTo("");
   }
@@ -141,7 +141,7 @@ public class DAFileWriterTest {
   @Test
   public void appendImports_emptyCollection_after_filtering_prints_nothing() throws Exception {
     TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.bw).appendImports(ImmutableList.of(DANameFactory.from(String.class.getName())));
+    new DAFileWriter(testWriters.getWriter()).appendImports(ImmutableList.of(DANameFactory.from(String.class.getName())));
 
     assertThat(testWriters.getRes()).isEqualTo("");
   }
@@ -149,7 +149,7 @@ public class DAFileWriterTest {
   @Test
   public void appendImports_filters_out_null_DAName_when_no_package_is_specified() throws Exception {
     TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.bw)
+    new DAFileWriter(testWriters.getWriter())
         .appendImports(Collections.singletonList((DAName) null));
 
     assertThat(testWriters.getRes()).isEqualTo("");
@@ -158,7 +158,7 @@ public class DAFileWriterTest {
   @Test
   public void appendImports_filters_out_null_DAName_when_package_is_specified() throws Exception {
     TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.bw)
+    new DAFileWriter(testWriters.getWriter())
         .appendPackage(DANameFactory.from("com.acme"))
         .appendImports(Collections.singletonList((DAName) null));
 
@@ -170,7 +170,7 @@ public class DAFileWriterTest {
   @Test
   public void appendImports_filters_out_same_package_DAName_when_package_is_specified() throws Exception {
     TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.bw)
+    new DAFileWriter(testWriters.getWriter())
         .appendPackage(DANameFactory.from("com.acme"))
         .appendImports(ImmutableList.of(DANameFactory.from("com.acme.Some"), DANameFactory.from("Simon")));
 
@@ -184,7 +184,7 @@ public class DAFileWriterTest {
   @Test
   public void appendGeneratedAnnotation_from_String_adds_generated_annotation_and_newLine() throws Exception {
     TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.bw).appendGeneratedAnnotation(MyProcessor.class.getCanonicalName());
+    new DAFileWriter(testWriters.getWriter()).appendGeneratedAnnotation(MyProcessor.class.getCanonicalName());
 
     assertThat(testWriters.getRes()).isEqualTo(
         "@javax.annotation.Generated(\"" + MyProcessor.class.getCanonicalName() + "\")" + LINE_SEPARATOR
@@ -194,7 +194,7 @@ public class DAFileWriterTest {
   @Test
   public void appendGeneratedAnnotation_from_Class_adds_generated_annotation_with_class_qualifiedName_and_newLine() throws Exception {
     TestWriters testWriters = new TestWriters();
-    new DAFileWriter(testWriters.bw).appendGeneratedAnnotation(MyProcessor.class);
+    new DAFileWriter(testWriters.getWriter()).appendGeneratedAnnotation(MyProcessor.class);
 
     assertThat(testWriters.getRes()).isEqualTo(
         "@javax.annotation.Generated(\"" + MyProcessor.class.getCanonicalName() + "\")" + LINE_SEPARATOR

@@ -111,6 +111,6 @@ public class DAConstructorWriterTest {
     DAWriter parent = new DAWriter() {
 
     };
-    return new DAConstructorWriter<DAWriter>(DATypeFactory.declared(returnType), testWriters.bw, parent, 1);
+    return new DAConstructorWriter<DAWriter>(DATypeFactory.declared(returnType), testWriters, parent, 1);
   }
 }

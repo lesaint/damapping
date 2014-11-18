@@ -33,7 +33,7 @@ import javax.annotation.Nonnull;
  * @author Sébastien Lesaint
  */
 interface CommonMethods extends Appendable, Closeable, Flushable {
-  BufferedWriter getBufferedWriter();
+  FileContext getFileContext();
 
   /**
    * The indent offset.

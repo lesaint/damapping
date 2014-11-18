@@ -37,8 +37,8 @@ import static fr.javatronic.damapping.util.Predicates.notNull;
  */
 public class DAStatementWriter<T extends DAWriter> extends AbstractDAWriter<T> {
 
-  DAStatementWriter(BufferedWriter bw, T parent, int indentOffset) {
-    super(bw, parent, indentOffset);
+  DAStatementWriter(FileContext fileContext, T parent, int indentOffset) {
+    super(fileContext, parent, indentOffset);
   }
 
   DAStatementWriter(CommonMethods commonMethods, T parent) {

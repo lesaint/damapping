@@ -38,8 +38,8 @@ public class DAPropertyWriter<T extends DAWriter> extends AbstractDAWriter<T> {
   @Nullable
   private DAModifier[] modifiers;
 
-  DAPropertyWriter(String name, DAType type, BufferedWriter bw, T parent, int indentOffset) {
-    super(bw, parent, indentOffset);
+  DAPropertyWriter(String name, DAType type, FileContext fileContext, T parent, int indentOffset) {
+    super(fileContext, parent, indentOffset);
     this.name = name;
     this.type = type;
   }

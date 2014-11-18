@@ -127,6 +127,6 @@ public class DAInterfaceWriterTest {
     DAWriter parent = new DAWriter() {
 
     };
-    return new DAInterfaceWriter<DAWriter>(interfaceName, testWriters.bw, parent, 1);
+    return new DAInterfaceWriter<DAWriter>(interfaceName, testWriters, parent, 1);
   }
 }

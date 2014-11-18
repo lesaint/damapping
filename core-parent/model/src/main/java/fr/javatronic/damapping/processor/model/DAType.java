@@ -81,7 +81,7 @@ public class DAType {
 
   @Nonnull
   public String getPackageName() {
-    if (qualifiedName == null) {
+    if (qualifiedName == null || qualifiedName.compareTo(simpleName) == 0) {
       return "";
     }
     String str = qualifiedName.getName();

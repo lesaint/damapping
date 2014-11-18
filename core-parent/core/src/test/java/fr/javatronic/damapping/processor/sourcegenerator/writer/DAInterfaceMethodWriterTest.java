@@ -100,7 +100,7 @@ public class DAInterfaceMethodWriterTest {
 
     };
     DAInterfaceMethodWriter<DAWriter> classWriter = new DAInterfaceMethodWriter<DAWriter>("name",
-        DATypeFactory.from(String.class), testWriters.bw, 1, parent
+        DATypeFactory.from(String.class), testWriters, 1, parent
     );
 
     assertThat(classWriter.write()).isSameAs(parent);
@@ -111,7 +111,7 @@ public class DAInterfaceMethodWriterTest {
     DAWriter parent = new DAWriter() {
 
     };
-    return new DAInterfaceMethodWriter<DAWriter>(name, DATypeFactory.declared(returnType), testWriters.bw, 1, parent);
+    return new DAInterfaceMethodWriter<DAWriter>(name, DATypeFactory.declared(returnType), testWriters, 1, parent);
   }
 
 

@@ -18,6 +18,8 @@ package fr.javatronic.damapping.processor.sourcegenerator.writer;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.DATypeKind;
+import fr.javatronic.damapping.util.Preconditions;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -27,7 +29,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import static fr.javatronic.damapping.util.Optional.fromNullable;
 
 /**
  * CommonMethods -
@@ -37,17 +42,17 @@ import javax.annotation.Nullable;
 class CommonMethodsImpl implements CommonMethods {
   protected static final String INDENT = "    ";
 
-  private final BufferedWriter bw;
+  private final FileContext fileContext;
   private final int indentOffset;
 
-  public CommonMethodsImpl(BufferedWriter bw, int indentOffset) {
-    this.bw = bw;
+  public CommonMethodsImpl(@Nonnull FileContext fileContext, int indentOffset) {
+    this.fileContext = Preconditions.checkNotNull(fileContext);
     this.indentOffset = indentOffset;
   }
 
   @Override
-  public BufferedWriter getBufferedWriter() {
-    return bw;
+  public FileContext getFileContext() {
+    return fileContext;
   }
 
   @Override
@@ -58,7 +63,7 @@ class CommonMethodsImpl implements CommonMethods {
   @Override
   public void appendIndent() throws IOException {
     for (int i = 0; i < indentOffset; i++) {
-      bw.append(INDENT);
+      append(INDENT);
     }
   }
 
@@ -74,7 +79,7 @@ class CommonMethodsImpl implements CommonMethods {
 
   private void appendModifier(@Nullable DAModifier modifier) throws IOException {
     if (modifier != null) {
-      bw.append(modifier.toString()).append(" ");
+      append(modifier.toString()).append(" ");
     }
   }
 
@@ -86,8 +91,8 @@ class CommonMethodsImpl implements CommonMethods {
 
     for (DAAnnotation annotation : annotations) {
       appendIndent();
-      bw.append("@").append(annotation.getType().getSimpleName());
-      bw.newLine();
+      append("@").append(annotation.getType().getSimpleName());
+      newLine();
     }
   }
 
@@ -99,74 +104,93 @@ class CommonMethodsImpl implements CommonMethods {
 
     Iterator<DAAnnotation> iterator = annotations.iterator();
     while (iterator.hasNext()) {
-      bw.append("@").append(iterator.next().getType().getSimpleName());
+      append("@").append(iterator.next().getType().getSimpleName());
       if (iterator.hasNext()) {
-        bw.append(",");
+        append(",");
       }
-      bw.append(" ");
+      append(" ");
     }
   }
 
   @Override
   public void appendType(DAType type) throws IOException {
-    bw.append(type.getSimpleName());
+    append(useQualifiedReference(type) ? type.getQualifiedName() : type.getSimpleName());
     if (type.getExtendsBound() != null) {
-      bw.append(" extends ");
+      append(" extends ");
       appendType(type.getExtendsBound());
     }
     else if (type.getSuperBound() != null) {
-      bw.append(" super ");
+      append(" super ");
       appendType(type.getExtendsBound());
     }
     appendTypeArgs(type.getTypeArgs());
     if (type.isArray()) {
-      bw.append("[]");
+      append("[]");
     }
+  }
+
+  private boolean useQualifiedReference(DAType type) {
+    if (type.getKind() != DATypeKind.DECLARED) {
+      return false;
+    }
+    if (fileContext.hasExpliciteImport(type)) {
+      return false;
+    }
+    if (fileContext.hasHomonymousImport(type)) {
+      return true;
+    }
+    if (type.getPackageName().equals(fileContext.getPackageName())) {
+      return false;
+    }
+    // unless import are incomplete (and generated class will not compile), this should not happen
+    throw new IllegalArgumentException(
+        fromNullable(type.getQualifiedName()).or(type.getSimpleName()) + " is neither imported nor in the " +
+            "current package. Can not print reference without creating compilation error");
   }
 
   @Override
   public void appendTypeArgs(List<DAType> typeArgs) throws IOException {
     if (!typeArgs.isEmpty()) {
       Iterator<DAType> iterator = typeArgs.iterator();
-      bw.append("<");
+      append("<");
       while (iterator.hasNext()) {
         DAType arg = iterator.next();
         appendType(arg);
         if (iterator.hasNext()) {
-          bw.append(", ");
+          append(", ");
         }
       }
-      bw.append(">");
+      append(">");
     }
   }
 
   @Override
   public void newLine() throws IOException {
-    bw.newLine();
+    fileContext.getWriter().newLine();
   }
 
   @Override
   public void flush() throws IOException {
-    bw.flush();
+    fileContext.getWriter().flush();
   }
 
   @Override
   public void close() throws IOException {
-    bw.close();
+    fileContext.getWriter().close();
   }
 
   @Override
   public Writer append(CharSequence csq) throws IOException {
-    return bw.append(csq);
+    return fileContext.getWriter().append(csq);
   }
 
   @Override
   public Writer append(CharSequence csq, int start, int end) throws IOException {
-    return bw.append(csq, start, end);
+    return fileContext.getWriter().append(csq, start, end);
   }
 
   @Override
   public Writer append(char c) throws IOException {
-    return bw.append(c);
+    return fileContext.getWriter().append(c);
   }
 }

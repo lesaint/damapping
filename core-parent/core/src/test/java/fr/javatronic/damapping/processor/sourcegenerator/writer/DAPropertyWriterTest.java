@@ -75,7 +75,7 @@ public class DAPropertyWriterTest {
     DAWriter parent = new DAWriter() {
 
     };
-    return new DAPropertyWriter<DAWriter>("name", DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE, testWriters.bw,
+    return new DAPropertyWriter<DAWriter>("name", DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE, testWriters,
         parent, 1
     );
   }

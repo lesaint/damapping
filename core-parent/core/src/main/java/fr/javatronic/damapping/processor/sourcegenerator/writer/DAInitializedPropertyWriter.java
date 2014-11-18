@@ -38,8 +38,8 @@ public class DAInitializedPropertyWriter<T extends DAWriter> extends AbstractDAW
   @Nullable
   private DAModifier[] modifiers;
 
-  DAInitializedPropertyWriter(String name, DAType type, BufferedWriter bw, T parent, int indentOffset) {
-    super(bw, parent, indentOffset);
+  DAInitializedPropertyWriter(String name, DAType type, FileContext fileContext, T parent, int indentOffset) {
+    super(fileContext, parent, indentOffset);
     this.name = name;
     this.type = type;
   }
@@ -61,7 +61,7 @@ public class DAInitializedPropertyWriter<T extends DAWriter> extends AbstractDAW
     commons.appendType(type);
     commons.append(" ").append(name);
     commons.append(" = ");
-    return new DAStatementWriter<DAInitializedPropertyWriter<T>>(commons.getBufferedWriter(), this, commons.getIndentOffset());
+    return new DAStatementWriter<DAInitializedPropertyWriter<T>>(commons.getFileContext(), this, commons.getIndentOffset());
   }
 
   public T end() throws IOException {

@@ -16,48 +16,25 @@
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.util.Optional;
 
 import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.StringWriter;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * TestWriters -
+ * FileContext -
  *
  * @author Sébastien Lesaint
  */
-class TestWriters implements FileContext {
-  private final StringWriter out = new StringWriter();
-  private final BufferedWriter bw = new BufferedWriter(out);
-
-  String getRes() throws IOException {
-    bw.flush();
-    return out.getBuffer().toString();
-  }
+public interface FileContext {
+  @Nonnull
+  String getPackageName();
 
   @Nonnull
-  @Override
-  public String getPackageName() {
-    return "";
-  }
+  BufferedWriter getWriter();
 
-  @Nonnull
-  @Override
-  public BufferedWriter getWriter() {
-    return bw;
-  }
+  boolean hasExpliciteImport(@Nullable DAType type);
 
-  @Override
-  public boolean hasExpliciteImport(@Nullable DAType type) {
-    // returning true makes commonMethod.appendType always write references using the simpeName
-    return true;
-  }
-
-  @Override
-  public boolean hasHomonymousImport(@Nullable DAType type) {
-    // we do not test homonymous class imports with this implementation
-    return false;
-  }
+  boolean hasHomonymousImport(@Nullable DAType type);
 }

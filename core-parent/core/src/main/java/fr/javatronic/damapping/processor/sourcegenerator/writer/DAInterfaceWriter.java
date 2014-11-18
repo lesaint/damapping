@@ -40,8 +40,8 @@ public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
   private DAModifier[] modifiers;
   private List<DAType> extended = Collections.emptyList();
 
-  DAInterfaceWriter(String name, BufferedWriter bw, T parent, int indentOffset) {
-    super(bw, parent, indentOffset);
+  DAInterfaceWriter(String name, FileContext fileContext, T parent, int indentOffset) {
+    super(fileContext, parent, indentOffset);
     this.name = name;
   }
 
@@ -94,7 +94,7 @@ public class DAInterfaceWriter<T extends DAWriter> extends AbstractDAWriter<T> {
   }
 
   public DAInterfaceMethodWriter<DAInterfaceWriter<T>> newMethod(String name, DAType returnType) {
-    return new DAInterfaceMethodWriter<DAInterfaceWriter<T>>(name, returnType, commons.getBufferedWriter(),
+    return new DAInterfaceMethodWriter<DAInterfaceWriter<T>>(name, returnType, commons.getFileContext(),
         commons.getIndentOffset() + 1, this
     );
   }

@@ -80,7 +80,7 @@ public class DAInitializedPropertyWriterTest {
     DAWriter parent = new DAWriter() {
 
     };
-    return new DAInitializedPropertyWriter<DAWriter>("name", NAME_DATYPE, testWriters.bw,
+    return new DAInitializedPropertyWriter<DAWriter>("name", NAME_DATYPE, testWriters,
         parent, 1
     );
   }

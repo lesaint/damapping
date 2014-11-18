@@ -20,7 +20,6 @@ import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 import org.testng.annotations.Test;
 
@@ -189,7 +188,7 @@ public class DAClassWriterTest {
     DAWriter parent = new DAWriter() {
 
     };
-    DAClassWriter<DAWriter> classWriter = new DAClassWriter<DAWriter>(NAME_DATYPE, testWriters.bw,
+    DAClassWriter<DAWriter> classWriter = new DAClassWriter<DAWriter>(NAME_DATYPE, testWriters,
         parent, 1
     );
 
@@ -290,14 +289,14 @@ public class DAClassWriterTest {
     assertThat(newClassWriter.classType).isSameAs(classType);
     assertThat(newClassWriter.parent).isSameAs(classWriter);
     assertThat(newClassWriter.commons.getIndentOffset()).isEqualTo(2);
-    assertThat(newClassWriter.commons.getBufferedWriter()).isSameAs(testWriters.bw);
+    assertThat(newClassWriter.commons.getFileContext()).isSameAs(testWriters);
   }
 
   private DAClassWriter<DAWriter> daClassWriter(TestWriters testWriters) {
     DAWriter parent = new DAWriter() {
 
     };
-    return new DAClassWriter<DAWriter>(NAME_DATYPE, testWriters.bw, parent, 1);
+    return new DAClassWriter<DAWriter>(NAME_DATYPE, testWriters, parent, 1);
   }
 
 }

@@ -107,7 +107,7 @@ public class DAStatementWriterTest {
     DAWriter parent = new DAWriter() {
 
     };
-    DAStatementWriter<DAWriter> classWriter = new DAStatementWriter<DAWriter>(testWriters.bw, parent, 1);
+    DAStatementWriter<DAWriter> classWriter = new DAStatementWriter<DAWriter>(testWriters, parent, 1);
 
     assertThat(classWriter.end()).isSameAs(parent);
   }
@@ -175,6 +175,6 @@ public class DAStatementWriterTest {
     DAWriter parent = new DAWriter() {
 
     };
-    return new DAStatementWriter<DAWriter>(testWriters.bw, parent, 1);
+    return new DAStatementWriter<DAWriter>(testWriters, parent, 1);
   }
 }

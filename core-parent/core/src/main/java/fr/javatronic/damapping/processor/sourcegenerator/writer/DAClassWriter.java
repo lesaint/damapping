@@ -53,8 +53,8 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
   private List<DAType> implemented = Collections.emptyList();
   private DAType extended;
 
-  DAClassWriter(DAType classType, BufferedWriter bw, T parent, int indentOffset) {
-    super(bw, parent, indentOffset);
+  DAClassWriter(DAType classType, FileContext fileContext, T parent, int indentOffset) {
+    super(fileContext, parent, indentOffset);
     this.name = classType.getSimpleName().getName();
     this.classType = classType;
   }
@@ -93,25 +93,25 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
   }
 
   public DAPropertyWriter<DAClassWriter<T>> newProperty(String name, DAType type) {
-    return new DAPropertyWriter<DAClassWriter<T>>(name, type, commons.getBufferedWriter(), this,
+    return new DAPropertyWriter<DAClassWriter<T>>(name, type, commons.getFileContext(), this,
         commons.getIndentOffset() + 1
     );
   }
 
   public DAInitializedPropertyWriter<DAClassWriter<T>> newInitializedProperty(String name, DAType type) {
-    return new DAInitializedPropertyWriter<DAClassWriter<T>>(name, type, commons.getBufferedWriter(), this,
+    return new DAInitializedPropertyWriter<DAClassWriter<T>>(name, type, commons.getFileContext(), this,
         commons.getIndentOffset() + 1
     );
   }
 
   public DAConstructorWriter<DAClassWriter<T>> newConstructor() {
-    return new DAConstructorWriter<DAClassWriter<T>>(classType, commons.getBufferedWriter(), this,
+    return new DAConstructorWriter<DAClassWriter<T>>(classType, commons.getFileContext(), this,
         commons.getIndentOffset() + 1
     );
   }
 
   public DAClassMethodWriter<DAClassWriter<T>> newMethod(String name, DAType returnType) {
-    return new DAClassMethodWriter<DAClassWriter<T>>(name, returnType, commons.getBufferedWriter(),
+    return new DAClassMethodWriter<DAClassWriter<T>>(name, returnType, commons.getFileContext(),
         commons.getIndentOffset() + 1, this
     );
   }
@@ -124,7 +124,7 @@ public class DAClassWriter<T extends DAWriter> extends AbstractDAWriter<T> {
   }
 
   public DAClassWriter<DAClassWriter<T>> newClass(DAType classType) {
-    return new DAClassWriter<DAClassWriter<T>>(classType, commons.getBufferedWriter(), this,
+    return new DAClassWriter<DAClassWriter<T>>(classType, commons.getFileContext(), this,
         commons.getIndentOffset() + 1
     );
   }
