@@ -125,7 +125,7 @@ class UnresolvedReferencesScanner {
         // FIXME here can not just return the type from the generatedTypes map
         // current DAType may have specific typeArguments, bounds
         // we must take only the kind and qualified name from the DAType found in fixedResolution
-        unresolvedTypeScanResult.getFixed().put(fixedResolution.get().getSimpleName().getName(), fixedResolution.get());
+        unresolvedTypeScanResult.addFixed(fixedResolution.get());
       }
       else {
         unresolvedTypeScanResult.getUnresolved().put(e, errorDaType);

@@ -55,8 +55,8 @@ import static fr.javatronic.damapping.util.Predicates.notNull;
 
 /**
  * JavaxExtractorImpl - This implementation of {@link JavaxExtractor} supports replacing {@link DAType} created
- * from {@link TypeMirror} with type {@link TypeKind#ERROR} with {@link DAType} object from
- * {@link UnresolvedTypeScanResult#fixed}.
+ * from {@link TypeMirror} with type {@link TypeKind#ERROR} with "fixed" {@link DAType} objects from
+ * {@link UnresolvedTypeScanResult}.
  *
  * @author Sébastien Lesaint
  */
@@ -91,25 +91,28 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     }
 
     DAType res = extractType(type, element);
-    if (res.getKind() == DATypeKind.ERROR) {
-      Optional<DAType> fixedResolution = findFixedResolutionBySimpleName(element);
-      if (fixedResolution.isPresent()) {
-        // FIXME here can not just return the type from the fixedResolutions map
-        // current DAType may have specific typeArguments, bounds
-        // we must take only the kind and qualified name from the DAType found in fixedResolution
-        return fixedResolution.get();
-      }
+    if (res.getKind() != DATypeKind.ERROR) {
+      return res;
     }
-    return res;
+
+    // FIXME here can not just return the type from the fixedResolutions map
+    // current DAType may have specific typeArguments, bounds
+    // we must take only the kind and qualified name from the DAType found in fixedResolution
+    return findFixedResolution(type, element).or(res);
   }
 
   @Nonnull
-  private Optional<DAType> findFixedResolutionBySimpleName(Element element) {
+  private Optional<DAType> findFixedResolution(TypeMirror type, Element element) {
     if (scanResult == null) {
       return Optional.absent();
     }
 
-    return Optional.fromNullable(scanResult.getFixed().get(element.getSimpleName().toString()));
+    DAName daName = extractQualifiedName(type, element);
+    if (daName != null && !daName.getName().equals(element.getSimpleName().toString())) {
+      return scanResult.findFixedByQualifiedName(daName.getName());
+    }
+
+    return scanResult.findFixedBySimpleName(element.getSimpleName().toString());
   }
 
   @Nonnull
