@@ -30,7 +30,7 @@ ROADMAP
    (simplification du framework et de toute façon, on génère une interface donc méthode implicitement public)
    (le support de ces méthodes non public est une possibilité liée au fait que l'on génère nos classes dans le même
     package mais ce n'est pas une fonctionnalité)
-[ ] rewrite Javax parsing using Visitors instead of instanceof and chained getters
+[ ] rewrite Javax parsing using Visitors instead of instanceof and chained getters and also leverage methods of [ElementFilter](https://docs.oracle.com/javase/7/docs/api/javax/lang/model/util/ElementFilter.htm)
 [ ] ProcessingContext should wrap ProcessingEnvironment + expose methods of JavaxParsing
 [ ] use qualified name when writting annotations added by DAMapping to avoid having to modify the imports ?
 [ ] when compiling a @Mapper extending Function and Guava's is not in path, MapperImpl is generated with a "import Function;"
