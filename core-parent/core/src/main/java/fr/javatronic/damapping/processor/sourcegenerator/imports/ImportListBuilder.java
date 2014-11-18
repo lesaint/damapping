@@ -40,12 +40,6 @@ import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 public class ImportListBuilder {
   private final List<DAName> imports = Lists.of();
 
-  protected void addImport(@Nullable DAType daType) {
-    if (daType != null) {
-      imports.addAll(DATypeImportComputer.computeImports(daType));
-    }
-  }
-
   protected void addImports(@Nullable DAType daType) {
     if (daType != null) {
       imports.addAll(DATypeImportComputer.computeImports(daType));
@@ -88,7 +82,7 @@ public class ImportListBuilder {
       addImports(daMethod.getReturnType());
     }
     for (DAAnnotation daAnnotation : from(daMethod.getAnnotations()).filter(importFilters.getMethodAnnotations())) {
-      addImport(daAnnotation.getType());
+      addImports(daAnnotation.getType());
     }
   }
 

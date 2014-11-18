@@ -28,7 +28,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * DATypeImportComputer -
+ * DATypeImportComputer - This class compute the name of Types to import for a specific DAType.
+ * <p>Isolation of this processing is meant for easier testing of this very important piece of code and for futur
+ * implementation of some caching behavior if found necessary</p>
+ *
+ * TODO : cache the list of imports for a specific DAType, remove static method
  *
  * @author Sébastien Lesaint
  */
@@ -41,7 +45,6 @@ public class DATypeImportComputer {
     }
   };
 
-  // TODO : cache the list of imports for a specific DAType
   public static Collection<DAName> computeImports(DAType daType) {
     List<DAName> qualifiedName = hasQualifiedNameToImport(daType)
         ? Collections.<DAName>emptyList() : Collections.singletonList(daType.getQualifiedName());

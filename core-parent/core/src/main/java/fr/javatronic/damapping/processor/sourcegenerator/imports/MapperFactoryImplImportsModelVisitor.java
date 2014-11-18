@@ -37,7 +37,7 @@ import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicat
 public class MapperFactoryImplImportsModelVisitor extends ImportListBuilder implements DAModelVisitor {
   @Override
   public void visit(DASourceClass daSourceClass) {
-    addImport(daSourceClass.getType());
+    addImports(daSourceClass.getType());
   }
 
   @Override
