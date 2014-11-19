@@ -13,33 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.processor.sourcegenerator;
+package fr.javatronic.damapping.processor.model.function;
 
-import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAName;
-import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.util.Function;
 
-import java.util.List;
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
- * GeneratedFileDescriptor -
+ * DANameFunctions -
  *
  * @author Sébastien Lesaint
  */
-public interface GeneratedFileDescriptor {
-  @Nonnull
-  String getKey();
+public final class DANameFunctions {
+  private DANameFunctions() {
+    // prevents instantiation
+  }
 
-  @Nonnull
-  DAType getType();
+  public static Function<DAName, String> toName() {
+    return DANameToName.INSTANCE;
+  }
 
-  @Nonnull
-  List<DAImport> getImports();
+  private static enum DANameToName implements Function<DAName, String> {
+    INSTANCE;
 
-  @Nonnull
-  SourceGenerator getSourceGenerator();
-
-  @Nonnull
-  GenerationContext getContext();
+    @Nullable
+    @Override
+    public String apply(@Nullable DAName daName) {
+      if (daName == null) {
+        return null;
+      }
+      return daName.getName();
+    }
+  }
 }

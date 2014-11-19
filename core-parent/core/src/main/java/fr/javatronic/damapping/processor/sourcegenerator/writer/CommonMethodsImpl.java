@@ -19,9 +19,9 @@ import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.DATypeKind;
+import fr.javatronic.damapping.processor.model.predicate.DATypePredicates;
 import fr.javatronic.damapping.util.Preconditions;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
@@ -129,8 +129,28 @@ class CommonMethodsImpl implements CommonMethods {
     }
   }
 
+  /**
+   * Compute whether a qualified reference should be used for the specified {@link DAType}.
+   * <p>
+   *   Compute uses the following test, in order:
+   *   <ul>
+   *     <li>if the specified type does not represent a declared type or a array of declared types, use simple reference</li>
+   *     <li>if the specified type is a type or an array of type from "java.lang", use simple reference</li>
+   *     <li>if the specified type has an explicite import, use simple reference</li>
+   *     <li>if the specified type has an homonymous amough the explicite imports, use qualified reference</li>
+   *     <li>if the specified type belongs to the current package, use implicite reference</li>
+   *     <li>if the specified type did not match any of the above rules, raise an error, there is something wrong</li>
+   *   </ul>
+   * </p>
+   *
+   * @param type a {@link DAType}
+   * @return a flag indicating to use a qualified reference or not²
+   */
   private boolean useQualifiedReference(DAType type) {
     if (type.getKind() != DATypeKind.DECLARED && type.getKind() != DATypeKind.ARRAY) {
+      return false;
+    }
+    if (DATypePredicates.isJavaLangType().apply(type)) {
       return false;
     }
     if (fileContext.hasExpliciteImport(type)) {

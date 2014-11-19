@@ -13,33 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.processor.sourcegenerator;
+package fr.javatronic.damapping.processor.model.predicate;
 
-import fr.javatronic.damapping.processor.model.DAImport;
-import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.util.Predicate;
 
-import java.util.List;
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
- * GeneratedFileDescriptor -
+ * DATypePredicates -
  *
  * @author Sébastien Lesaint
  */
-public interface GeneratedFileDescriptor {
-  @Nonnull
-  String getKey();
+public final class DATypePredicates {
+  public static Predicate<DAType> isJavaLangType() {
+    return JavaLangType.INSTANCE;
+  }
 
-  @Nonnull
-  DAType getType();
+  private static enum JavaLangType implements Predicate<DAType> {
+    INSTANCE;
 
-  @Nonnull
-  List<DAImport> getImports();
-
-  @Nonnull
-  SourceGenerator getSourceGenerator();
-
-  @Nonnull
-  GenerationContext getContext();
+    @Override
+    public boolean apply(@Nullable DAType daType) {
+      return daType != null && DANamePredicates.isJavaLangType().apply(daType.getQualifiedName());
+    }
+  }
 }

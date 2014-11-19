@@ -16,6 +16,7 @@
 package fr.javatronic.damapping.processor.sourcegenerator;
 
 
+import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAType;
 
@@ -35,14 +36,14 @@ public class GeneratedFileDescriptorImpl implements GeneratedFileDescriptor {
   @Nonnull
   private final DAType type;
   @Nonnull
-  private final List<DAName> imports;
+  private final List<DAImport> imports;
   @Nonnull
   private final SourceGenerator sourceGenerator;
   @Nonnull
   private final GenerationContext context;
 
   public GeneratedFileDescriptorImpl(@Nonnull String key, @Nonnull DAType type,
-                                     @Nonnull List<DAName> imports,
+                                     @Nonnull List<DAImport> imports,
                                      @Nonnull SourceGeneratorFactory sourceGeneratorFactory,
                                      @Nonnull GenerationContext context) {
     this.key = key;
@@ -66,7 +67,7 @@ public class GeneratedFileDescriptorImpl implements GeneratedFileDescriptor {
 
   @Override
   @Nonnull
-  public List<DAName> getImports() {
+  public List<DAImport> getImports() {
     return imports;
   }
 

@@ -15,21 +15,22 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
+import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAName;
+import fr.javatronic.damapping.processor.model.function.DANameFunctions;
+import fr.javatronic.damapping.processor.model.predicate.DANamePredicates;
 import fr.javatronic.damapping.processor.model.DAType;
-import fr.javatronic.damapping.processor.model.factory.DANameFactory;
+import fr.javatronic.damapping.processor.model.function.DAImportFunctions;
 import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Lists;
 import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Predicates;
-import fr.javatronic.damapping.util.Sets;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,11 +46,13 @@ import static fr.javatronic.damapping.util.Predicates.notNull;
  * @author Sébastien Lesaint
  */
 public class DAFileWriter implements DAWriter {
+  private static final Predicate<DAName> NOT_JAVALANG_DANAME = Predicates.not(DANamePredicates.isJavaLangType());
+
   private final BufferedWriter writer;
   @Nullable
   private DAName packageName;
   @Nullable
-  private Set<DAName> imports;
+  private Set<String> importQualifiedNames;
   @Nullable
   private Set<String> importSimpleNames;
 
@@ -67,20 +70,37 @@ public class DAFileWriter implements DAWriter {
     return this;
   }
 
-  public DAFileWriter appendImports(Collection<DAName> mapperImports) throws IOException {
+  /**
+   * Appends import statements for the specified {@link DAImport}, only removing duplicates and imports of "java.lang"
+   * and sorting them (using {@link String}'s comparable implementation on {@link DAImport#getQualifiedName()}) for
+   * reproductive behavior.
+   *
+   * @param mapperImports a {@link Collections} of {@link DAImport}
+   * @return the current {@link DAFileWriter}
+   * @throws IOException if an {@link IOException} occurs writing the imports
+   */
+  public DAFileWriter appendImports(@Nonnull Collection<DAImport> mapperImports) throws IOException {
     checkNotNull(mapperImports, "Collection of imports can not be null");
-    this.imports = Sets.copyOf(mapperImports);
-    this.importSimpleNames = from(mapperImports).transform(DANameToSimpleNameAsString.INSTANCE)
-        .filter(notNull())
-        .toSet();
+
     if (mapperImports.isEmpty()) {
       return this;
     }
 
-    List<DAName> imports = filterAndSortImports(mapperImports, packageName);
+    List<DAName> imports = removeDuplicatesFilterJavaLangAndSortImports(mapperImports);
     if (imports.isEmpty()) {
+      this.importQualifiedNames = Collections.emptySet();
+      this.importSimpleNames = Collections.emptySet();
       return this;
     }
+
+    this.importQualifiedNames = from(mapperImports)
+        .transform(DAImportFunctions.toQualifiedName())
+        .transform(DANameFunctions.toName())
+        .filter(notNull())
+        .toSet();
+    this.importSimpleNames = from(mapperImports).transform(DAImportFunctions.toSimpleName())
+        .filter(notNull())
+        .toSet();
 
     for (DAName name : imports) {
       writer.append("import ").append(name).append(";");
@@ -90,32 +110,13 @@ public class DAFileWriter implements DAWriter {
     return this;
   }
 
-  private List<DAName> filterAndSortImports(Collection<DAName> mapperImports, @Nullable DAName packageName) {
-    Predicate<DAName> notDisplayedBase = Predicates.or(
-        // defense against null values, of null/empty DAName.name
-        InvalidDAName.INSTANCE,
-        // imports from java itself
-        JavaLangDANamePredicate.INSTANCE
-    );
-    Predicate<DAName> notDisplayed;
-    if (packageName == null) {
-      notDisplayed = notDisplayedBase;
-    }
-    else {
-      notDisplayed = Predicates.or(
-          notDisplayedBase,
-          // imports in the same package as the generated class (ie. the package of the Mapper class)
-          new PackagePredicate(packageName)
-      );
-    }
-
+  private List<DAName> removeDuplicatesFilterJavaLangAndSortImports(Collection<DAImport> mapperImports) {
     List<DAName> res = Lists.copyOf(
         from(mapperImports)
-            .filter(
-                Predicates.not(
-                    notDisplayed
-                )
-            )
+            .filter(notNull())
+            .transform(DAImportFunctions.toQualifiedName())
+            .filter(notNull())
+            .filter(NOT_JAVALANG_DANAME)
             .toSet()
     );
     Collections.sort(res);
@@ -145,56 +146,6 @@ public class DAFileWriter implements DAWriter {
     writer.close();
   }
 
-  private static enum InvalidDAName implements Predicate<DAName> {
-    INSTANCE;
-
-    @Override
-    public boolean apply(@Nullable DAName daName) {
-      return daName == null || daName.getName() == null || daName.getName().isEmpty();
-    }
-  }
-
-  private static enum JavaLangDANamePredicate implements Predicate<DAName> {
-    INSTANCE;
-
-    @Override
-    public boolean apply(@Nullable DAName qualifiedName) {
-      return qualifiedName != null && qualifiedName.toString().startsWith("java.lang.");
-    }
-  }
-
-  private static class PackagePredicate implements Predicate<DAName> {
-    @Nonnull
-    private final DAName packageName;
-
-    public PackagePredicate(@Nonnull DAName packageName) {
-      this.packageName = packageName;
-    }
-
-    @Override
-    public boolean apply(DAName qualifiedName) {
-      String name = qualifiedName.toString();
-      int dotIndex = name.lastIndexOf(".");
-      if (dotIndex > -1) {
-        return name.substring(0, dotIndex).equals(packageName.toString());
-      }
-      return false;
-    }
-  }
-
-  private static enum DANameToSimpleNameAsString implements Function<DAName, String> {
-    INSTANCE;
-
-    @Nullable
-    @Override
-    public String apply(@Nullable DAName daName) {
-      if (daName == null) {
-        return null;
-      }
-      return DANameFactory.simpleFromQualified(daName).getName();
-    }
-  }
-
   private class FileContextImpl implements FileContext {
     @Nonnull
     @Override
@@ -210,10 +161,10 @@ public class DAFileWriter implements DAWriter {
 
     @Override
     public boolean hasExpliciteImport(@Nullable DAType type) {
-      if (type == null || imports == null || type.getQualifiedName() == null) {
+      if (type == null || importQualifiedNames == null || type.getQualifiedName() == null) {
         return false;
       }
-      return imports.contains(type.getQualifiedName());
+      return importQualifiedNames.contains(type.getQualifiedName().getName());
     }
 
     @Override

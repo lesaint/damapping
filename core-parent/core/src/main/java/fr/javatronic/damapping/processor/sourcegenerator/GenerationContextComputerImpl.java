@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.InstantiationType;
@@ -118,28 +119,28 @@ public class GenerationContextComputerImpl implements GenerationContextComputer 
     return res;
   }
 
-  private static List<DAName> getMapperInterfaceImports(DASourceClass sourceClass) {
+  private static List<DAImport> getMapperInterfaceImports(DASourceClass sourceClass) {
     MapperInterfaceImportsModelVisitor visitor = new MapperInterfaceImportsModelVisitor();
     sourceClass.accept(visitor);
-    return visitor.getImports();
+    return visitor.getImports(sourceClass.getPackageName().getName());
   }
 
-  private static List<DAName> getMapperFactoryInterfaceImports(DASourceClass sourceClass) {
+  private static List<DAImport> getMapperFactoryInterfaceImports(DASourceClass sourceClass) {
     MapperFactoryInterfaceImportsModelVisitor visitor = new MapperFactoryInterfaceImportsModelVisitor();
     sourceClass.accept(visitor);
-    return visitor.getImports();
+    return visitor.getImports(sourceClass.getPackageName().getName());
   }
 
-  private static List<DAName> getMapperImplImports(DASourceClass sourceClass) {
+  private static List<DAImport> getMapperImplImports(DASourceClass sourceClass) {
     MapperImplImportsModelVisitor visitor = new MapperImplImportsModelVisitor();
     sourceClass.accept(visitor);
-    return visitor.getImports();
+    return visitor.getImports(sourceClass.getPackageName().getName());
   }
 
-  private static List<DAName> getMapperFactoryImplImports(DASourceClass sourceClass) {
+  private static List<DAImport> getMapperFactoryImplImports(DASourceClass sourceClass) {
     MapperFactoryImplImportsModelVisitor visitor = new MapperFactoryImplImportsModelVisitor();
     sourceClass.accept(visitor);
-    return visitor.getImports();
+    return visitor.getImports(sourceClass.getPackageName().getName());
   }
 
   private boolean shouldGenerateMapperFactoryInterface(DASourceClass sourceClass) {

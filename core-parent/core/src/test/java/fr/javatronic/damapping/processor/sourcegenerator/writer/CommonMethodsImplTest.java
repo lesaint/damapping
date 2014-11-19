@@ -33,6 +33,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -122,6 +123,14 @@ public class CommonMethodsImplTest {
     assertThat(fileContext.getRes()).isEqualTo(type.isArray() ? "com.acme.Name[]" : "com.acme.Name");
   }
 
+  @DataProvider
+  public Object[][] array_or_declared_DP() {
+    return new Object[][] {
+        {DAWriterTestUtil.NAME_DATYPE},
+        {DAType.builder(DATypeKind.ARRAY, DAWriterTestUtil.NAME_DATYPE.getSimpleName()).withQualifiedName(DAWriterTestUtil.NAME_DATYPE.getQualifiedName()).build()}
+    };
+  }
+
   @Test(dataProvider = "appendType_non_declared_nor_array_type_always_uses_simple_reference_DP")
   public void appendType_non_declared_nor_array_type_always_uses_simple_reference(DATypeKind kind) throws Exception {
     StringWriter out = new StringWriter();
@@ -142,14 +151,6 @@ public class CommonMethodsImplTest {
   }
 
   @DataProvider
-  public Object[][] array_or_declared_DP() {
-    return new Object[][] {
-        {DAWriterTestUtil.NAME_DATYPE},
-        {DAType.builder(DATypeKind.ARRAY, DAWriterTestUtil.NAME_DATYPE.getSimpleName()).withQualifiedName(DAWriterTestUtil.NAME_DATYPE.getQualifiedName()).build()}
-    };
-  }
-
-  @DataProvider
   public Object[][] appendType_non_declared_nor_array_type_always_uses_simple_reference_DP() {
     Object[][] res = new Object[DATypeKind.values().length - 2][1];
     int i = 0;
@@ -159,5 +160,32 @@ public class CommonMethodsImplTest {
       }
     }
     return res;
+  }
+
+  @Test(dataProvider = "appendType_java_lang_type_uses_simple_reference_DP")
+  public void appendType_java_lang_type_uses_simple_reference(DAType type) throws Exception {
+    StringWriter out = new StringWriter();
+    FileContext fileContext = Mockito.mock(FileContext.class);
+
+    BufferedWriter bufferedWriter = new BufferedWriter(out);
+    when(fileContext.getWriter()).thenReturn(bufferedWriter);
+
+    CommonMethods commonMethods = new CommonMethodsImpl(fileContext, 0);
+
+    commonMethods.appendType(type);
+
+    bufferedWriter.flush();
+    assertThat(out.toString()).isEqualTo(type.isArray() ? "String[]" : "String");
+
+    verify(fileContext, atLeastOnce()).getWriter();
+    verifyNoMoreInteractions(fileContext);
+  }
+
+  @DataProvider
+  public Object[][] appendType_java_lang_type_uses_simple_reference_DP() {
+    return new Object[][] {
+        { DATypeFactory.from(String.class) },
+        { DAType.builder(DATypeKind.ARRAY, DANameFactory.from(String.class.getSimpleName())).withQualifiedName(DANameFactory.from(String.class.getName())).build()}
+    };
   }
 }

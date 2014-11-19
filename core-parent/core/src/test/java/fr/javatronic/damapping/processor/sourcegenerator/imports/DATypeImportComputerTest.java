@@ -19,6 +19,7 @@ import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
+import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,13 +38,13 @@ public class DATypeImportComputerTest {
   @Test
   public void getImports_no_typeArgs() throws Exception {
     DAType daType = daType("test.Toto");
-    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("name").containsOnly("test.Toto");
+    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("qualifiedName.name").containsOnly("test.Toto");
   }
 
   @Test
   public void getImports_from_default_package_no_typeArgs() throws Exception {
     DAType daType = daType("Toto");
-    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("name").isEmpty();
+    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("qualifiedName.name").isEmpty();
   }
 
   @Test
@@ -52,7 +53,9 @@ public class DATypeImportComputerTest {
         "test.Toto",
         ImmutableList.of(daType("test.Titi"))
     );
-    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("name").containsOnly("test.Toto", "test.Titi");
+    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("qualifiedName.name").containsOnly(
+        "test.Toto", "test.Titi"
+    );
   }
 
   @Test
@@ -61,7 +64,7 @@ public class DATypeImportComputerTest {
         "test.Toto",
         ImmutableList.of(daType("Titi"))
     );
-    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("name").containsOnly("test.Toto");
+    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("qualifiedName.name").containsOnly("test.Toto");
   }
 
   @Test
@@ -71,7 +74,7 @@ public class DATypeImportComputerTest {
         ImmutableList.of(daType("test.Titi"), daType("test.Tutu"))
     );
     Assertions.assertThat(DATypeImportComputer.computeImports(daType))
-              .extracting("name")
+              .extracting("qualifiedName.name")
               .containsOnly("test.Toto", "test.Titi", "test.Tutu");
   }
 
@@ -84,17 +87,28 @@ public class DATypeImportComputerTest {
         )
     );
     Assertions.assertThat(DATypeImportComputer.computeImports(daType))
-              .extracting("name")
+              .extracting("qualifiedName.name")
               .containsOnly("test.Toto", "test.Titi", "test.Tutu");
   }
 
   @Test
-  public void testGetImports() throws Exception {
+  public void getImports_retrieve_imports_for_type_arguments() throws Exception {
     DAType daType = daType("test.Toto");
-    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("name").containsOnly("test.Toto");
+    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("qualifiedName.name").containsOnly("test.Toto");
 
     daType = daType("test.Toto", ImmutableList.of(daType("test.Titi")));
-    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("name").containsOnly("test.Toto", "test.Titi");
+    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("qualifiedName.name").containsOnly(
+        "test.Toto", "test.Titi"
+    );
+  }
+
+  @Test
+  public void getImports_does_not_import_classes_from_java_lang() throws Exception {
+    DAType daType = DATypeFactory.from(String.class);
+    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).isEmpty();
+
+    daType = daType("test.Toto", ImmutableList.of(DATypeFactory.from(Integer.class)));
+    Assertions.assertThat(DATypeImportComputer.computeImports(daType)).extracting("qualifiedName.name").containsOnly("test.Toto");
   }
 
   private static DAType daType(String name) {

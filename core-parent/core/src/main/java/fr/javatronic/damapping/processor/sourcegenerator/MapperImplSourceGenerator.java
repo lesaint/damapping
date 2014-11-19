@@ -16,6 +16,7 @@
 package fr.javatronic.damapping.processor.sourcegenerator;
 
 import fr.javatronic.damapping.processor.model.DAAnnotation;
+import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAName;
@@ -40,6 +41,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import static fr.javatronic.damapping.processor.model.constants.Jsr330Constants.INJECT_DAANNOTATION;
+import static fr.javatronic.damapping.processor.model.constants.Jsr330Constants.INJECT_DAIMPORT;
 import static fr.javatronic.damapping.processor.model.constants.Jsr330Constants.INJECT_DANAME;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 
@@ -103,12 +105,12 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
         .appendGeneratedAnnotation(DAMAPPING_ANNOTATION_PROCESSOR_QUALIFIED_NAME);
   }
 
-  private List<DAName> computeMapperImplImports(GeneratedFileDescriptor descriptor, DASourceClass daSourceClass) {
+  private List<DAImport> computeMapperImplImports(GeneratedFileDescriptor descriptor, DASourceClass daSourceClass) {
     if (daSourceClass.getInjectableAnnotation().isPresent()) {
-      List<DAName> res = Lists.copyOf(descriptor.getImports());
+      List<DAImport> res = Lists.copyOf(descriptor.getImports());
       Optional<DAMethod> constructor = from(daSourceClass.getAccessibleConstructors()).first();
       if (constructor.isPresent() &&  !constructor.get().getParameters().isEmpty()) {
-        res.add(INJECT_DANAME);
+        res.add(INJECT_DAIMPORT);
       }
       return res;
     }

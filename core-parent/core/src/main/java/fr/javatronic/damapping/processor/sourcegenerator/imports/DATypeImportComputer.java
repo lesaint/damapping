@@ -15,17 +15,26 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator.imports;
 
+import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.DATypeKind;
+import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.javatronic.damapping.util.FluentIterable;
 import fr.javatronic.damapping.util.Function;
+import fr.javatronic.damapping.util.Predicate;
+import fr.javatronic.damapping.util.Predicates;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
  * DATypeImportComputer - This class compute the name of Types to import for a specific DAType.
@@ -38,26 +47,41 @@ import java.util.Set;
  */
 public class DATypeImportComputer {
 
-  private static final Function<DAType,Collection<DAName>> COMPUTE_IMPORTS = new Function<DAType, Collection<DAName>>() {
+  private static final Function<DAType,Collection<DAImport>> COMPUTE_IMPORTS = new Function<DAType, Collection<DAImport>>() {
     @Override
-    public Collection<DAName> apply(DAType daType) {
+    public Collection<DAImport> apply(DAType daType) {
       return computeImports(daType);
     }
   };
 
-  public static Collection<DAName> computeImports(DAType daType) {
-    List<DAName> qualifiedName = hasQualifiedNameToImport(daType)
-        ? Collections.<DAName>emptyList() : Collections.singletonList(daType.getQualifiedName());
+  public static Collection<DAImport> computeImports(DAType daType) {
+    List<DAImport> qualifiedName = hasQualifiedNameToImport(daType)
+        ? Collections.<DAImport>emptyList() : Collections.singletonList(DAImport.from(daType.getQualifiedName()));
 
-    Set<DAName> res = new HashSet<DAName>();
-    res.addAll(qualifiedName);
-    List<Collection<DAName>> argsImportLists = FluentIterable.from(daType.getTypeArgs()).transform(COMPUTE_IMPORTS).toList();
-    for (Collection<DAName> importList : argsImportLists) {
-      res.addAll(importList);
+    Set<DAImport> res = new HashSet<DAImport>();
+    addAll(res, qualifiedName);
+    List<Collection<DAImport>> argsImportLists = from(daType.getTypeArgs()).transform(COMPUTE_IMPORTS).toList();
+    for (Collection<DAImport> importList : argsImportLists) {
+      addAll(res, importList);
     }
-    res.addAll(daType.getSuperBound() == null ? Collections.<DAName>emptyList() : computeImports(daType.getSuperBound()));
-    res.addAll(daType.getExtendsBound() == null ? Collections.<DAName>emptyList() : computeImports(daType.getExtendsBound()));
+    addAll(res,
+        daType.getSuperBound() == null ? Collections.<DAImport>emptyList() : computeImports(daType.getSuperBound())
+    );
+    addAll(res, daType.getExtendsBound() == null ? Collections.<DAImport>emptyList() : computeImports(daType.getExtendsBound()));
     return res;
+  }
+
+  private static void addAll(Set<DAImport> res, Iterable<DAImport> daImports) {
+    res.addAll(from(daImports).filter(JavaLangDAImportPredicate.INSTANCE).toList());
+  }
+
+  private static enum JavaLangDAImportPredicate implements Predicate<DAImport> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nullable DAImport anImport) {
+      return anImport != null && !anImport.getPackageName().startsWith("java.lang");
+    }
   }
 
   private static boolean hasQualifiedNameToImport(DAType daType) {

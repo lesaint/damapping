@@ -16,16 +16,21 @@
 package fr.javatronic.damapping.processor.sourcegenerator.imports;
 
 import fr.javatronic.damapping.processor.model.DAAnnotation;
+import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAMethod;
-import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Lists;
+import fr.javatronic.damapping.util.Maps;
 import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Predicates;
 
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -38,7 +43,7 @@ import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
  * @author Sébastien Lesaint
  */
 public class ImportListBuilder {
-  private final List<DAName> imports = Lists.of();
+  private final List<DAImport> imports = Lists.of();
 
   protected void addImports(@Nullable DAType daType) {
     if (daType != null) {
@@ -97,7 +102,86 @@ public class ImportListBuilder {
   }
 
   @Nonnull
-  public List<DAName> getImports() {
-    return Collections.unmodifiableList(imports);
+  public List<DAImport> getImports(@Nonnull final String currentPackage) {
+    checkNotNull(currentPackage, "currentPackage can not be null. Use the empty string for the default pacakge");
+
+    HomonymImportsComparator homonymImportsComparator = new HomonymImportsComparator(currentPackage);
+    Map<String, SortedSet<DAImport>> indexBySimpleName = Maps.newHashMap();
+
+    for (DAImport anImport : imports) {
+      SortedSet<DAImport> names = indexBySimpleName.get(anImport.getSimpleName());
+      if (names == null) {
+        names = new TreeSet<DAImport>(homonymImportsComparator);
+        indexBySimpleName.put(anImport.getSimpleName(), names);
+      }
+      names.add(anImport);
+    }
+
+    return from(indexBySimpleName.values())
+        .transform(new ImportSelector(currentPackage))
+        .filter(Predicates.notNull())
+        .toList();
+  }
+
+  /**
+   * This comparator orders DAName objects representing qualified names of types with the same simple name so that we
+   * can then quickly choose which one to import:
+   *
+   */
+  private static class HomonymImportsComparator implements Comparator<DAImport> {
+    @Nonnull
+    private final String currentPackage;
+
+    public HomonymImportsComparator(@Nonnull String currentPackage) {
+      checkNotNull(currentPackage);
+      this.currentPackage = currentPackage;
+    }
+
+    @Override
+    public int compare(@Nullable DAImport o1, @Nullable DAImport o2) {
+      // class from the current package go last
+      // other classes are sorted alphabetically
+
+      boolean currentPckg1 = o1 == null ? false : o1.getPackageName().equals(currentPackage);
+      boolean currentPckg2 = o2 == null ? false : o2.getPackageName().equals(currentPackage);
+
+      if (currentPckg1 && currentPckg2) {
+        return 0;
+      }
+      if (currentPckg1) {
+        return 1;
+      }
+      if (currentPckg2) {
+        return -1;
+      }
+
+      String o1Name = o1 == null ? "" : o1.getQualifiedName().getName();
+      String o2Name = o2 == null ? "" : o2.getQualifiedName().getName();
+      return o1Name.compareTo(o2Name);
+    }
+  }
+
+  private static class ImportSelector implements Function<SortedSet<DAImport>, DAImport> {
+    private final String currentPackage;
+
+    public ImportSelector(String currentPackage) {
+      this.currentPackage = currentPackage;
+    }
+
+    @Nullable
+    @Override
+    public DAImport apply(@Nullable SortedSet<DAImport> daNames) {
+      if (daNames == null || daNames.isEmpty()) {
+        return null;
+      }
+      if (daNames.size() == 1) {
+        DAImport anImport = daNames.iterator().next();
+        if (currentPackage.equals(anImport.getPackageName())) {
+          return null;
+        }
+        return anImport;
+      }
+      return daNames.iterator().next();
+    }
   }
 }

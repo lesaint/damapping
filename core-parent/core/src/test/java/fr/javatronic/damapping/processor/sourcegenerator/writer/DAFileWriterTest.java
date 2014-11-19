@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
+import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
@@ -72,10 +73,10 @@ public class DAFileWriterTest {
     FileContextTestImpl fileContext = new FileContextTestImpl();
     new DAFileWriter(fileContext.getWriter())
         .appendPackage(PACKAGE_NAME)
-        .appendImports(ImmutableSet.<DAName>of(
-            DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE.getQualifiedName(),
-            DAWriterTestUtil.BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS.getQualifiedName(),
-            OVERRIDE_ANNOTATION.getType().getQualifiedName()
+        .appendImports(ImmutableSet.<DAImport>of(
+            DAImport.from(DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE.getQualifiedName()),
+            DAImport.from(DAWriterTestUtil.BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS.getQualifiedName()),
+            DAImport.from(OVERRIDE_ANNOTATION.getType().getQualifiedName())
         )
         );
 
@@ -133,7 +134,7 @@ public class DAFileWriterTest {
   @Test
   public void appendImports_emptyCollection_prints_nothing() throws Exception {
     FileContextTestImpl fileContext = new FileContextTestImpl();
-    new DAFileWriter(fileContext.getWriter()).appendImports(Collections.<DAName>emptyList());
+    new DAFileWriter(fileContext.getWriter()).appendImports(Collections.<DAImport>emptyList());
 
     assertThat(fileContext.getRes()).isEqualTo("");
   }
@@ -141,7 +142,9 @@ public class DAFileWriterTest {
   @Test
   public void appendImports_emptyCollection_after_filtering_prints_nothing() throws Exception {
     FileContextTestImpl fileContext = new FileContextTestImpl();
-    new DAFileWriter(fileContext.getWriter()).appendImports(ImmutableList.of(DANameFactory.from(String.class.getName())));
+    new DAFileWriter(fileContext.getWriter()).appendImports(
+        ImmutableList.of(DAImport.from(DANameFactory.from(String.class.getName())))
+    );
 
     assertThat(fileContext.getRes()).isEqualTo("");
   }
@@ -150,7 +153,7 @@ public class DAFileWriterTest {
   public void appendImports_filters_out_null_DAName_when_no_package_is_specified() throws Exception {
     FileContextTestImpl fileContext = new FileContextTestImpl();
     new DAFileWriter(fileContext.getWriter())
-        .appendImports(Collections.singletonList((DAName) null));
+        .appendImports(Collections.singletonList((DAImport) null));
 
     assertThat(fileContext.getRes()).isEqualTo("");
   }
@@ -160,24 +163,10 @@ public class DAFileWriterTest {
     FileContextTestImpl fileContext = new FileContextTestImpl();
     new DAFileWriter(fileContext.getWriter())
         .appendPackage(DANameFactory.from("com.acme"))
-        .appendImports(Collections.singletonList((DAName) null));
+        .appendImports(Collections.singletonList((DAImport) null));
 
     assertThat(fileContext.getRes()).isEqualTo(
         "package com.acme;" + LINE_SEPARATOR + LINE_SEPARATOR
-    );
-  }
-
-  @Test
-  public void appendImports_filters_out_same_package_DAName_when_package_is_specified() throws Exception {
-    FileContextTestImpl fileContext = new FileContextTestImpl();
-    new DAFileWriter(fileContext.getWriter())
-        .appendPackage(DANameFactory.from("com.acme"))
-        .appendImports(ImmutableList.of(DANameFactory.from("com.acme.Some"), DANameFactory.from("Simon")));
-
-    assertThat(fileContext.getRes()).isEqualTo("package com.acme;" + LINE_SEPARATOR
-        + LINE_SEPARATOR
-        + "import Simon;" + LINE_SEPARATOR
-        + LINE_SEPARATOR
     );
   }
 
@@ -192,7 +181,8 @@ public class DAFileWriterTest {
   }
 
   @Test
-  public void appendGeneratedAnnotation_from_Class_adds_generated_annotation_with_class_qualifiedName_and_newLine() throws Exception {
+  public void appendGeneratedAnnotation_from_Class_adds_generated_annotation_with_class_qualifiedName_and_newLine()
+      throws Exception {
     FileContextTestImpl fileContext = new FileContextTestImpl();
     new DAFileWriter(fileContext.getWriter()).appendGeneratedAnnotation(MyProcessor.class);
 

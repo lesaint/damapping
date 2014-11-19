@@ -16,6 +16,7 @@
 package fr.javatronic.damapping.processor.model.constants;
 
 import fr.javatronic.damapping.processor.model.DAAnnotation;
+import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
@@ -34,6 +35,7 @@ public final class Jsr330Constants {
   public static final DAAnnotation NAMED_DAANNOTATION = new DAAnnotation(
       DATypeFactory.declared(NAMED_QUALIFIEDNAME)
   );
+  public static final DAImport NAMED_DAIMPORT = DAImport.from(NAMED_DANAME);
 
 
   public static final String INJECT_QUALIFIEDNAME = "javax.inject.Inject";
@@ -41,6 +43,7 @@ public final class Jsr330Constants {
   public static final DAAnnotation INJECT_DAANNOTATION = new DAAnnotation(
       DATypeFactory.declared(INJECT_QUALIFIEDNAME)
   );
+  public static final DAImport INJECT_DAIMPORT = DAImport.from(INJECT_DANAME);
 
   @Nullable
   private final static Class<?> jsr330NamedClass = loadJSR330InjectClass(NAMED_QUALIFIEDNAME);

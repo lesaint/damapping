@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
@@ -44,10 +45,10 @@ public class DefaultGenerationContext implements GenerationContext {
   public static class PartialDescriptor {
     private final String key;
     private final DAType daType;
-    private final List<DAName> imports;
+    private final List<DAImport> imports;
     private final SourceGeneratorFactory sourceGeneratorFactory;
 
-    public PartialDescriptor(String key, DAType daType, List<DAName> imports, SourceGeneratorFactory sourceGeneratorFactory) {
+    public PartialDescriptor(String key, DAType daType, List<DAImport> imports, SourceGeneratorFactory sourceGeneratorFactory) {
       this.key = key;
       this.daType = daType;
       this.imports = imports;
