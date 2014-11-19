@@ -25,10 +25,14 @@ import fr.javatronic.damapping.util.Lists;
 import fr.javatronic.damapping.util.Maps;
 import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Predicates;
+import fr.javatronic.damapping.util.Sets;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.annotation.Nonnull;
@@ -43,7 +47,7 @@ import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
  * @author Sébastien Lesaint
  */
 public class ImportListBuilder {
-  private final List<DAImport> imports = Lists.of();
+  private final Set<DAImport> imports = Sets.of();
 
   protected void addImports(@Nullable DAType daType) {
     if (daType != null) {
@@ -105,16 +109,28 @@ public class ImportListBuilder {
   public List<DAImport> getImports(@Nonnull final String currentPackage) {
     checkNotNull(currentPackage, "currentPackage can not be null. Use the empty string for the default pacakge");
 
-    HomonymImportsComparator homonymImportsComparator = new HomonymImportsComparator(currentPackage);
-    Map<String, SortedSet<DAImport>> indexBySimpleName = Maps.newHashMap();
+    if (imports.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    Map<String, List<DAImport>> indexBySimpleName = Maps.newHashMap();
 
     for (DAImport anImport : imports) {
-      SortedSet<DAImport> names = indexBySimpleName.get(anImport.getSimpleName());
+      List<DAImport> names = indexBySimpleName.get(anImport.getSimpleName());
       if (names == null) {
-        names = new TreeSet<DAImport>(homonymImportsComparator);
+        names = Collections.singletonList(anImport);
         indexBySimpleName.put(anImport.getSimpleName(), names);
       }
-      names.add(anImport);
+      else if (names.size() == 1) {
+        DAImport existingImport = names.iterator().next();
+        names = new ArrayList<>(2);
+        names.add(existingImport);
+        names.add(anImport);
+        indexBySimpleName.put(anImport.getSimpleName(), names);
+      }
+      else {
+        names.add(anImport);
+      }
     }
 
     return from(indexBySimpleName.values())
@@ -161,16 +177,20 @@ public class ImportListBuilder {
     }
   }
 
-  private static class ImportSelector implements Function<SortedSet<DAImport>, DAImport> {
+  private static class ImportSelector implements Function<List<DAImport>, DAImport> {
+    @Nonnull
     private final String currentPackage;
+    @Nonnull
+    private final Comparator<DAImport> homonymImportsComparator;
 
-    public ImportSelector(String currentPackage) {
-      this.currentPackage = currentPackage;
+    public ImportSelector(@Nonnull String currentPackage) {
+      this.currentPackage = checkNotNull(currentPackage);
+      this.homonymImportsComparator = new HomonymImportsComparator(currentPackage);
     }
 
     @Nullable
     @Override
-    public DAImport apply(@Nullable SortedSet<DAImport> daNames) {
+    public DAImport apply(@Nullable List<DAImport> daNames) {
       if (daNames == null || daNames.isEmpty()) {
         return null;
       }
@@ -181,6 +201,9 @@ public class ImportListBuilder {
         }
         return anImport;
       }
+      // the following sort is seriously border-line
+      // but since ImportListBuilder is really the only user of the lists, we save a copy and just sort directly
+      Collections.sort(daNames, homonymImportsComparator);
       return daNames.iterator().next();
     }
   }
