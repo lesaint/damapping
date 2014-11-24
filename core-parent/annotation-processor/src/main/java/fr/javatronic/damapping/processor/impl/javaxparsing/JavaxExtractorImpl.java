@@ -62,7 +62,7 @@ import static fr.javatronic.damapping.util.Predicates.notNull;
  */
 public class JavaxExtractorImpl implements JavaxExtractor {
   @Nonnull
-  private final Types typeUtils;
+  private final ProcessingEnvironmentWrapper processingEnv;
   @Nullable
   private final UnresolvedTypeScanResult scanResult;
 
@@ -77,14 +77,15 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     }
   };
 
-  public JavaxExtractorImpl(@Nonnull Types typeUtils, @Nullable UnresolvedTypeScanResult scanResult) {
-    this.typeUtils = checkNotNull(typeUtils);
+  public JavaxExtractorImpl(@Nonnull ProcessingEnvironmentWrapper processingEnv, @Nullable UnresolvedTypeScanResult scanResult) {
+    this.processingEnv = checkNotNull(processingEnv);
     this.scanResult = scanResult;
   }
 
   @Override
   @Nonnull
   public DAType extractType(TypeMirror type) {
+    Types typeUtils = processingEnv.getTypeUtils();
     Element element = typeUtils.asElement(type);
     if (type.getKind() == TypeKind.ARRAY) {
       element = typeUtils.asElement(((ArrayType) type).getComponentType());

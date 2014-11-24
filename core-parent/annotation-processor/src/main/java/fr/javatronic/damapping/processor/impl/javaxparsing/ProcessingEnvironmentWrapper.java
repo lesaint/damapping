@@ -22,7 +22,6 @@ import fr.javatronic.damapping.util.Predicate;
 
 import java.lang.annotation.Annotation;
 import java.util.Locale;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.Filer;
@@ -33,7 +32,6 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.QualifiedNameable;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
@@ -45,11 +43,17 @@ import javax.tools.Diagnostic;
 public class ProcessingEnvironmentWrapper {
   @Nonnull
   private final ProcessingEnvironment processingEnvironment;
+  @Nonnull
+  private final ElementsWrapper elementUtils;
 
   public ProcessingEnvironmentWrapper(@Nonnull ProcessingEnvironment processingEnvironment) {
     this.processingEnvironment = Preconditions.checkNotNull(processingEnvironment);
+    this.elementUtils = ElementsWrappers.from(processingEnvironment.getElementUtils());
   }
 
+  /**
+   * @return the underlying {@link ProcessingEnvironment} provided by the compiler.
+   */
   @Nonnull
   public ProcessingEnvironment getProcessingEnvironment() {
     return processingEnvironment;
@@ -79,7 +83,7 @@ public class ProcessingEnvironmentWrapper {
    * Produit un message d'erreur indiquant que le traitement de l'annoation {@code annotation} a échoué avec
    * l'exception indiquée et précise la première ligne de la stacktrace si l'information est disponible.
    *
-   * @param e          l'{@link Exception} capturée
+   * @param e                    l'{@link Exception} capturée
    * @param annotationSimpleName un {@link TypeElement} représentation la classe d'une annotation
    *
    * @return une {@link String}
@@ -107,7 +111,7 @@ public class ProcessingEnvironmentWrapper {
    * @param annotation un {@link TypeElement} représentation la classe d'une annotation
    * @param element    un {@link Element} sur lequel est posé l'annotation
    *
-   * @return un {@link javax.lang.model.element.AnnotationMirror} ou {@code null}
+   * @return un {@link AnnotationMirror} ou {@code null}
    */
   @Nullable
   private AnnotationMirror getAnnotationMirror(final TypeElement annotation, final Element element) {
@@ -127,13 +131,15 @@ public class ProcessingEnvironmentWrapper {
   }
 
   @Nullable
-  private AnnotationMirror getAnnotationMirror(final Class<? extends Annotation> annotationClass, final Element element) {
+  private AnnotationMirror getAnnotationMirror(final Class<? extends Annotation> annotationClass,
+                                               final Element element) {
     Optional<? extends AnnotationMirror> annotationMirror = FluentIterable
         .from(element.getAnnotationMirrors())
         .filter(new Predicate<AnnotationMirror>() {
           @Override
           public boolean apply(@Nullable AnnotationMirror o) {
-            String qualifiedName = ((QualifiedNameable) (o.getAnnotationType().asElement())).getQualifiedName().toString();
+            String qualifiedName = ((QualifiedNameable) (o.getAnnotationType().asElement())).getQualifiedName()
+                                                                                            .toString();
             return qualifiedName.equals(annotationClass.getName());
           }
         }
@@ -144,16 +150,12 @@ public class ProcessingEnvironmentWrapper {
     return null;
   }
 
-  public Map<String, String> getOptions() {
-    return processingEnvironment.getOptions();
-  }
-
   public Types getTypeUtils() {
     return processingEnvironment.getTypeUtils();
   }
 
-  public Elements getElementUtils() {
-    return processingEnvironment.getElementUtils();
+  public ElementsWrapper getElementUtils() {
+    return elementUtils;
   }
 
   public Messager getMessager() {

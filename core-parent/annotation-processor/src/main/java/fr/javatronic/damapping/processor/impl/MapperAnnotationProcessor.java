@@ -100,7 +100,8 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     }
   }
 
-  private ParsingResult parse(TypeElement classElement, @Nullable Collection<DAType> generatedTypes) {
+  private ParsingResult parse(TypeElement classElement, @Nullable Collection<DAType> generatedTypes)
+      throws IOException {
     JavaxParsingService javaxParsingService = new JavaxParsingServiceImpl(processingEnv.getProcessingEnvironment());
     return javaxParsingService.parse(classElement, generatedTypes);
   }

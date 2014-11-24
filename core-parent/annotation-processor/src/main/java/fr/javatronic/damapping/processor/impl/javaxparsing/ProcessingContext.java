@@ -16,21 +16,18 @@
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
 import fr.javatronic.damapping.processor.model.DAType;
-import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Sets;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import static fr.javatronic.damapping.util.FluentIterable.from;
 import static fr.javatronic.damapping.util.Preconditions.checkArgument;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
- * ProcessingContext -
+ * ProcessingContext - Holds context information global to the whole annotation processing and specific to DAMapping.
  *
  * @author Sébastien Lesaint
  */

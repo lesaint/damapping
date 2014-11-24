@@ -21,9 +21,7 @@ import fr.javatronic.damapping.processor.impl.javaxparsing.ProcessingContext;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Optional;
-import fr.javatronic.damapping.util.Preconditions;
 import fr.javatronic.damapping.util.Predicate;
-import fr.javatronic.damapping.util.Predicates;
 import fr.javatronic.damapping.util.Sets;
 
 import java.io.IOException;
@@ -86,7 +84,7 @@ public class GeneratedAnnotationProcessor extends AbstractAnnotationProcessor<Ge
       return;
     }
 
-    JavaxExtractorImpl javaxExtractor = new JavaxExtractorImpl(processingEnv.getTypeUtils(), null);
+    JavaxExtractorImpl javaxExtractor = new JavaxExtractorImpl(processingEnv, null);
     DAType type = javaxExtractor.extractType(element.asType());
 
     processingContext.addGenerated(type);

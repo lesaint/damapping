@@ -26,6 +26,7 @@ import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Predicates;
 import fr.javatronic.damapping.util.Sets;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -37,7 +38,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
+         import    javax.   lang.   model.   type  .    DeclaredType    ;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
@@ -58,7 +59,7 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
 
   @Nonnull
   @Override
-  public ParsingResult parse(TypeElement classElement, Collection<DAType> generatedTypes) {
+  public ParsingResult parse(TypeElement classElement, Collection<DAType> generatedTypes) throws IOException {
     UnresolvedTypeScanResult scanResult = scanUnresolvedTypes(classElement, generatedTypes);
 
     if (!scanResult.getUnresolved().isEmpty()) {
@@ -67,7 +68,7 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
 
     DAType type = null;
     try {
-      JavaxExtractorImpl javaxExtractor = new JavaxExtractorImpl(processingEnv.getTypeUtils(), scanResult);
+      JavaxExtractorImpl javaxExtractor = new JavaxExtractorImpl(processingEnv, scanResult);
       type = javaxExtractor.extractType(classElement.asType());
       DASourceClass daSourceClass = parseImpl(classElement, type, javaxExtractor);
 
@@ -78,8 +79,9 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
     }
   }
 
-  private UnresolvedTypeScanResult scanUnresolvedTypes(TypeElement classElement, Collection<DAType> generatedTypes) {
-    UnresolvedReferencesScanner scanner = new UnresolvedReferencesScanner(new JavaxExtractorImpl(processingEnv.getTypeUtils(), null), generatedTypes);
+  private UnresolvedTypeScanResult scanUnresolvedTypes(TypeElement classElement, Collection<DAType> generatedTypes)
+      throws IOException {
+    UnresolvedReferencesScanner scanner = new UnresolvedReferencesScanner(processingEnv, new JavaxExtractorImpl(processingEnv, null), generatedTypes);
     return scanner.scan(classElement);
   }
 

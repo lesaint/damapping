@@ -15,22 +15,25 @@
  */
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
-import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.util.Optional;
 
-import java.io.IOException;
-import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.lang.model.element.TypeElement;
 
 /**
- * JavaxParsingService -
+ * ElementImports -
  *
  * @author Sébastien Lesaint
  */
-public interface JavaxParsingService {
-  @Nonnull
-  ParsingResult parse(@Nonnull TypeElement classElement, @Nullable Collection<DAType> generatedTypes)
-      throws IOException;
+public interface ElementImports {
 
+  /**
+   * Lookup amoung the explicite qualified imports, the explicite stard imports and the implicit imports of the current
+   * Element if any type has the specified simpleName.
+   *
+   * @param simpleName a {@link CharSequence} or {@code null}
+   * @return a {@link Optional} of a {@link String} representing the qualified name of the imported type
+   */
+  @Nonnull
+  Optional<String> findBySimpleName(@Nullable CharSequence simpleName);
 }

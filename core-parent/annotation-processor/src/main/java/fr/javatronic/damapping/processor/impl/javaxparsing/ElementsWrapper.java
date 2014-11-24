@@ -15,22 +15,19 @@
  */
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
-import fr.javatronic.damapping.processor.model.DAType;
-
 import java.io.IOException;
-import java.util.Collection;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.Element;
+import javax.lang.model.util.Elements;
 
 /**
- * JavaxParsingService -
+ * ElementsWrapper -
  *
  * @author Sébastien Lesaint
  */
-public interface JavaxParsingService {
+public interface ElementsWrapper extends Elements {
+
   @Nonnull
-  ParsingResult parse(@Nonnull TypeElement classElement, @Nullable Collection<DAType> generatedTypes)
-      throws IOException;
+  ElementImports findImports(@Nonnull Element e) throws IOException;
 
 }
