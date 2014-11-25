@@ -21,13 +21,10 @@ import fr.javatronic.damapping.util.Preconditions;
 import fr.javatronic.damapping.util.Predicate;
 
 import java.lang.annotation.Annotation;
-import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.QualifiedNameable;
@@ -44,11 +41,11 @@ public class ProcessingEnvironmentWrapper {
   @Nonnull
   private final ProcessingEnvironment processingEnvironment;
   @Nonnull
-  private final ElementsWrapper elementUtils;
+  private final ElementUtils elementUtils;
 
   public ProcessingEnvironmentWrapper(@Nonnull ProcessingEnvironment processingEnvironment) {
     this.processingEnvironment = Preconditions.checkNotNull(processingEnvironment);
-    this.elementUtils = ElementsWrappers.from(processingEnvironment.getElementUtils());
+    this.elementUtils = ElementUtilsFactory.from(processingEnvironment.getElementUtils());
   }
 
   /**
@@ -154,7 +151,7 @@ public class ProcessingEnvironmentWrapper {
     return processingEnvironment.getTypeUtils();
   }
 
-  public ElementsWrapper getElementUtils() {
+  public ElementUtils getElementUtils() {
     return elementUtils;
   }
 
@@ -162,15 +159,4 @@ public class ProcessingEnvironmentWrapper {
     return processingEnvironment.getMessager();
   }
 
-  public Locale getLocale() {
-    return processingEnvironment.getLocale();
-  }
-
-  public SourceVersion getSourceVersion() {
-    return processingEnvironment.getSourceVersion();
-  }
-
-  public Filer getFiler() {
-    return processingEnvironment.getFiler();
-  }
 }

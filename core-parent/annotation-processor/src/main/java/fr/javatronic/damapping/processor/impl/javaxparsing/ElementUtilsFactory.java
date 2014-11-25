@@ -51,28 +51,26 @@ import com.sun.tools.javac.util.Pair;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
- * ElementsWrappers -
- *
- * TODO remove System.err and System.out calls from ElementsWrappers
+ * ElementUtilsFactory - Factory for {@link ElementUtils} objects.
  *
  * @author Sébastien Lesaint
  */
-public final class ElementsWrappers {
+public final class ElementUtilsFactory {
 
   private static final QualifiedIdentifierVisitor IMPORT_QUALIFIED_NAME_VISITOR = new QualifiedIdentifierVisitor();
   // FIXME this pattern does not support with blank characters _inside_ the qualified name such as the following
 
-  private ElementsWrappers() {
+  private ElementUtilsFactory() {
     // prevents instantiation
   }
 
   @Nonnull
-  public static ElementsWrapper from(@Nonnull Elements elements) {
+  public static ElementUtils from(@Nonnull Elements elements) {
     if (elements instanceof JavacElements) {
-      return new JavacElementsWrapper(elements);
+      return new JavacElementUtils(elements);
     }
 
-    return new DefaultElementsWrapper(elements);
+    return new DefaultElementUtils(elements);
   }
 
   private static void addAllImplicitImports(Elements elements, Element e, Map<Name, String> elementBySimpleName) {
@@ -118,11 +116,11 @@ public final class ElementsWrappers {
     }
   }
 
-  private static abstract class BaseElementsWrapper<T extends Elements> implements ElementsWrapper {
+  private static abstract class BaseElementUtils<T extends Elements> implements ElementUtils {
     @Nonnull
     protected final T elements;
 
-    protected BaseElementsWrapper(@Nonnull T elements) {
+    protected BaseElementUtils(@Nonnull T elements) {
       this.elements = elements;
     }
 
@@ -248,7 +246,7 @@ public final class ElementsWrappers {
   }
 
   /**
-   * {@link ElementsWrapper} for Javac.
+   * {@link ElementUtils} for Javac.
    * <p>
    * Tries to retrieve imports through Javac's JCCompilationUnit class. If it can't (ie. the Element does not compile),
    * defaults to parsing the import statements in the source file directly.
@@ -262,9 +260,9 @@ public final class ElementsWrappers {
    *  </ul>
    * </p>
    */
-  private static class JavacElementsWrapper extends BaseElementsWrapper<JavacElements> {
+  private static class JavacElementUtils extends BaseElementUtils<JavacElements> {
 
-    public JavacElementsWrapper(Elements elements) {
+    public JavacElementUtils(Elements elements) {
       super((JavacElements) elements);
     }
 
@@ -381,12 +379,12 @@ public final class ElementsWrappers {
   }
 
   /**
-   * This is an implementation of {@link ElementsWrapper} interface which provides a {@code findImports(Element)] method
+   * This is an implementation of {@link ElementUtils} interface which provides a {@code findImports(Element)] method
    * which only supports implicite imports.
    */
-  private static class DefaultElementsWrapper extends BaseElementsWrapper<Elements> {
+  private static class DefaultElementUtils extends BaseElementUtils<Elements> {
 
-    public DefaultElementsWrapper(Elements elements) {
+    public DefaultElementUtils(Elements elements) {
       super(elements);
     }
 

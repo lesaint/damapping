@@ -18,17 +18,16 @@ package fr.javatronic.damapping.processor.impl.javaxparsing;
 import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.lang.model.element.Element;
-import javax.lang.model.util.Elements;
 
 /**
- * ElementsWrapper - This interface extends {@link Elements} to add methods specific to DAMapping.
+ * ElementUtils - This interface provide utility methods to work with {@link Element} objects.
  * <p>
- * These methods may be compiler specific.
+ * Some method may require to be implemented with code specific to each supported compilers.
  * </p>
  *
  * @author Sébastien Lesaint
  */
-public interface ElementsWrapper extends Elements {
+public interface ElementUtils {
 
   /**
    * Builds up the list of explicite and implicite imports for the specified {@link Element}
