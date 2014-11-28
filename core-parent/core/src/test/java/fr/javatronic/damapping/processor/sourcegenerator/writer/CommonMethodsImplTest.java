@@ -43,12 +43,7 @@ public class CommonMethodsImplTest {
 
   @Test(dataProvider = "array_or_declared_DP")
   public void appendType_type_from_current_package_without_import_uses_simple_reference(DAType type) throws Exception {
-    FileContextTestImpl fileContext = new FileContextTestImpl("com.acme") {
-      @Override
-      public boolean hasExpliciteImport(@Nullable DAType type) {
-        return false;
-      }
-    };
+    FileContextTestImpl fileContext = fileContext("com.acme", false, false);
     CommonMethods commonMethods = new CommonMethodsImpl(fileContext, 0);
 
     commonMethods.appendType(type);
@@ -58,12 +53,7 @@ public class CommonMethodsImplTest {
 
   @Test(dataProvider = "array_or_declared_DP")
   public void appendType_type_from_current_package_with_import_uses_simple_reference(DAType type) throws Exception {
-    FileContextTestImpl fileContext = new FileContextTestImpl("com.acme") {
-      @Override
-      public boolean hasExpliciteImport(@Nullable DAType type) {
-        return true;
-      }
-    };
+    FileContextTestImpl fileContext = fileContext("com.foo", true, false);
     CommonMethods commonMethods = new CommonMethodsImpl(fileContext, 0);
 
     commonMethods.appendType(type);
@@ -73,12 +63,7 @@ public class CommonMethodsImplTest {
 
   @Test(dataProvider = "array_or_declared_DP", expectedExceptions = IllegalArgumentException.class)
   public void appendType_type_from_other_package_without_import_is_invalid(DAType type) throws Exception {
-    FileContextTestImpl fileContext = new FileContextTestImpl("com.foo") {
-      @Override
-      public boolean hasExpliciteImport(@Nullable DAType type) {
-        return false;
-      }
-    };
+    FileContextTestImpl fileContext = fileContext("com.foo", false, false);
     CommonMethods commonMethods = new CommonMethodsImpl(fileContext, 0);
 
     commonMethods.appendType(type);
@@ -86,12 +71,7 @@ public class CommonMethodsImplTest {
 
   @Test(dataProvider = "array_or_declared_DP")
   public void appendType_type_from_other_package_with_import_uses_simple_reference(DAType type) throws Exception {
-    FileContextTestImpl fileContext = new FileContextTestImpl("com.foo") {
-      @Override
-      public boolean hasExpliciteImport(@Nullable DAType type) {
-        return true;
-      }
-    };
+    FileContextTestImpl fileContext = fileContext("com.foo", true, false);
     CommonMethods commonMethods = new CommonMethodsImpl(fileContext, 0);
 
     commonMethods.appendType(type);
@@ -101,22 +81,27 @@ public class CommonMethodsImplTest {
 
   @Test(dataProvider = "array_or_declared_DP")
   public void appendType_type_from_other_package_without_import_but_with_homonymous_uses_qualified_reference(DAType type) throws Exception {
-    FileContextTestImpl fileContext = new FileContextTestImpl("com.foo") {
-      @Override
-      public boolean hasExpliciteImport(@Nullable DAType type) {
-        return false;
-      }
-
-      @Override
-      public boolean hasHomonymousImport(@Nullable DAType type) {
-        return true;
-      }
-    };
+    FileContextTestImpl fileContext = fileContext("com.foo", false, true);
     CommonMethods commonMethods = new CommonMethodsImpl(fileContext, 0);
 
     commonMethods.appendType(type);
 
     assertThat(fileContext.getRes()).isEqualTo(type.isArray() ? "com.acme.Name[]" : "com.acme.Name");
+  }
+
+  private static FileContextTestImpl fileContext(final String packageName, final boolean explicitImport,
+                                          final boolean hasHomonymousImport) {
+    return new FileContextTestImpl(packageName) {
+        @Override
+        public boolean hasExpliciteImport(@Nullable DAType type) {
+          return explicitImport;
+        }
+
+        @Override
+        public boolean hasHomonymousImport(@Nullable DAType type) {
+          return hasHomonymousImport;
+        }
+      };
   }
 
   @DataProvider
