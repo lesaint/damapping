@@ -20,6 +20,8 @@ import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Preconditions;
 import fr.javatronic.damapping.util.Predicate;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -67,10 +69,12 @@ public class ProcessingEnvironmentWrapper {
   }
 
   public void printMessage(Class<? extends Annotation> annotationClass, Element element, Exception e) {
-    // In Maven, this message is actually not visible, I don't know yet about Oracle javac or Open JDK
+    StringWriter stringWriter = new StringWriter();
+    e.printStackTrace(new PrintWriter(stringWriter));
+    stringWriter.flush();
     processingEnvironment.getMessager().printMessage(
         Diagnostic.Kind.ERROR,
-        buildErrorMessage(e, annotationClass.getSimpleName()),
+        buildErrorMessage(e, annotationClass.getSimpleName()) + '\n' + stringWriter.toString(),
         element,
         getAnnotationMirror(annotationClass, element)
     );

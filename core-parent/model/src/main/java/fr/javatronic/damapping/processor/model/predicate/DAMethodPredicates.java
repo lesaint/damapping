@@ -202,7 +202,7 @@ public class DAMethodPredicates {
                                   .withName(DANameFactory.from("values"))
                                   .withModifiers(Sets.of(DAModifier.PUBLIC, DAModifier.STATIC))
                                   .withReturnType(
-                                      DAType.builder(DATypeKind.ARRAY, enumType.getSimpleName())
+                                      DAType.typeBuilder(DATypeKind.DECLARED, enumType.getSimpleName())
                                             .withQualifiedName(enumType.getQualifiedName())
                                             .build()
                                   ).build();

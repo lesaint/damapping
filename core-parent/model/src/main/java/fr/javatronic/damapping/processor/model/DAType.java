@@ -32,6 +32,7 @@ import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 public class DAType {
   @Nonnull
   private final DATypeKind kind;
+  private final boolean array;
   /**
    * Name du type, sauf :
    * <ul>
@@ -57,6 +58,7 @@ public class DAType {
 
   private DAType(Builder builder) {
     this.kind = builder.kind;
+    this.array = builder.array;
     this.simpleName = checkNotNull(builder.simpleName);
     this.qualifiedName = builder.qualifiedName;
     this.typeArgs = nonNullFrom(builder.typeArgs);
@@ -104,7 +106,7 @@ public class DAType {
   }
 
   public boolean isArray() {
-    return kind == DATypeKind.ARRAY;
+    return array;
   }
 
   @Override
@@ -151,11 +153,16 @@ public class DAType {
     return result;
   }
 
-  public static Builder builder(@Nonnull DATypeKind kind, @Nonnull DAName simpleName) {
-    return new Builder(kind, simpleName);
+  public static Builder typeBuilder(@Nonnull DATypeKind kind, @Nonnull DAName simpleName) {
+    return new Builder(false, kind, simpleName);
+  }
+
+  public static Builder arrayBuilder(@Nonnull DATypeKind kind, @Nonnull DAName simpleName) {
+    return new Builder(true, kind, simpleName);
   }
 
   public static class Builder {
+    private final boolean array;
     private final DATypeKind kind;
     private final DAName simpleName;
     DAName qualifiedName;
@@ -163,7 +170,8 @@ public class DAType {
     DAType superBound;
     DAType extendsBound;
 
-    public Builder(@Nonnull DATypeKind kind, @Nonnull DAName simpleName) {
+    public Builder(boolean array, @Nonnull DATypeKind kind, @Nonnull DAName simpleName) {
+      this.array = array;
       this.kind = checkNotNull(kind);
       this.simpleName = checkNotNull(simpleName);
     }

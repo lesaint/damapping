@@ -40,7 +40,7 @@ public class DAInterfacePredicatesTest {
 
   @Test
   public void guavaFunction_fails_if_DAType_has_no_declared_name() throws Exception {
-    DAInterface noDeclaredName = new DAInterface(DAType.builder(DATypeKind.CHAR, DANameFactory.from("char")).build());
+    DAInterface noDeclaredName = new DAInterface(DAType.typeBuilder(DATypeKind.CHAR, DANameFactory.from("char")).build());
     assertThat(DAInterfacePredicates.isGuavaFunction().apply(noDeclaredName)).isFalse();
   }
 

@@ -90,11 +90,6 @@ public enum DATypeKind {
   NULL,
 
   /**
-   * An array type.
-   */
-  ARRAY,
-
-  /**
    * A class or interface type.
    */
   DECLARED,

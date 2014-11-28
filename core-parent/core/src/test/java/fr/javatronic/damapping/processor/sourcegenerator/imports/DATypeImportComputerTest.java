@@ -117,7 +117,7 @@ public class DATypeImportComputerTest {
 
   private static DAType daType(String qualifiedName, List<DAType> typeArgs) {
     DAName daName = DANameFactory.from(qualifiedName);
-    return DAType.builder(DATypeKind.DECLARED, DANameFactory.simpleFromQualified(daName))
+    return DAType.typeBuilder(DATypeKind.DECLARED, DANameFactory.simpleFromQualified(daName))
                  .withQualifiedName(daName)
                  .withTypeArgs(typeArgs)
                  .build();

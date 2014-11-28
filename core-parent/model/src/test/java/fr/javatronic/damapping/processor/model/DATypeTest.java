@@ -34,12 +34,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DATypeTest {
   @Test
   public void isArray() throws Exception {
-    assertThat(daType(DATypeKind.ARRAY).isArray()).isTrue();
-    assertThat(daType(DATypeKind.DECLARED).isArray()).isFalse();
-  }
-
-  private static DAType daType(DATypeKind kind) {
-    return DAType.builder(kind, DANameFactory.from("simpleName")).build();
+    assertThat(DAType.arrayBuilder(DATypeKind.DECLARED, DANameFactory.from("simpleName")).build().isArray()).isTrue();
+    assertThat(DAType.typeBuilder(DATypeKind.DECLARED, DANameFactory.from("simpleName")).build().isArray()).isFalse();
   }
 
   @Test(dataProvider = "builder_makes_equals_objects_DP")
@@ -70,8 +66,8 @@ public class DATypeTest {
 
   @DataProvider
   private Object[][] builder_makes_equals_objects_DP() {
-    DAType.Builder toto = DAType.builder(DATypeKind.DECLARED, DANameFactory.from("toto"));
-    DAType.Builder tutu = DAType.builder(DATypeKind.DECLARED, DANameFactory.from("tutu"));
+    DAType.Builder toto = DAType.typeBuilder(DATypeKind.DECLARED, DANameFactory.from("toto"));
+    DAType.Builder tutu = DAType.typeBuilder(DATypeKind.DECLARED, DANameFactory.from("tutu"));
     return new Object[][]{
         {
             toto
@@ -80,36 +76,36 @@ public class DATypeTest {
             tutu
         },
         {
-            DAType.builder(DATypeKind.DECLARED, DANameFactory.from("toto"))
+            DAType.typeBuilder(DATypeKind.DECLARED, DANameFactory.from("toto"))
                   .withQualifiedName(DANameFactory.from("com.acme.toto"))
         },
         {
-            DAType.builder(DATypeKind.DECLARED, DANameFactory.from("toto"))
+            DAType.typeBuilder(DATypeKind.DECLARED, DANameFactory.from("toto"))
                   .withTypeArgs(ImmutableList.of(toto.build()))
         },
         {
-            DAType.builder(DATypeKind.DECLARED, DANameFactory.from("toto"))
+            DAType.typeBuilder(DATypeKind.DECLARED, DANameFactory.from("toto"))
                   .withTypeArgs(ImmutableList.of(toto.build(), tutu.build()))
         },
         {
-            DAType.builder(DATypeKind.DECLARED, DANameFactory.from("toto"))
+            DAType.typeBuilder(DATypeKind.DECLARED, DANameFactory.from("toto"))
                   .withTypeArgs(ImmutableList.of(tutu.build(), toto.build()))
         },
         {
-            DAType.builder(DATypeKind.DECLARED, DANameFactory.from("toto"))
+            DAType.typeBuilder(DATypeKind.DECLARED, DANameFactory.from("toto"))
                   .withExtendsBound(toto.build())
         },
         {
-            DAType.builder(DATypeKind.DECLARED, DANameFactory.from("toto"))
+            DAType.typeBuilder(DATypeKind.DECLARED, DANameFactory.from("toto"))
                   .withSuperBound(toto.build())
         },
         {
-            DAType.builder(DATypeKind.DECLARED, DANameFactory.from("toto"))
+            DAType.typeBuilder(DATypeKind.DECLARED, DANameFactory.from("toto"))
                   .withExtendsBound(tutu.build())
                   .withSuperBound(toto.build())
         },
         {
-            DAType.builder(DATypeKind.DECLARED, DANameFactory.from("toto"))
+            DAType.typeBuilder(DATypeKind.DECLARED, DANameFactory.from("toto"))
                   .withTypeArgs(ImmutableList.of(tutu.build()))
                   .withExtendsBound(tutu.build())
                   .withSuperBound(toto.build())

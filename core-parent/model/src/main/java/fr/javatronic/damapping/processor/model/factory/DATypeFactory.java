@@ -31,7 +31,7 @@ import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
  * @author Sébastien Lesaint
  */
 public final class DATypeFactory {
-  private static final DAType VOID_DATYPE = DAType.builder(DATypeKind.VOID, DANameFactory.voidDAName()).build();
+  private static final DAType VOID_DATYPE = DAType.typeBuilder(DATypeKind.VOID, DANameFactory.voidDAName()).build();
 
   private DATypeFactory() {
     // prevents instantiation
@@ -106,14 +106,14 @@ public final class DATypeFactory {
 
   @Nonnull
   public static DAType wildcardWithSuperBound(@Nonnull DAType superbound) {
-    return DAType.builder(DATypeKind.WILDCARD, DANameFactory.wildcard())
+    return DAType.typeBuilder(DATypeKind.WILDCARD, DANameFactory.wildcard())
                  .withSuperBound(superbound)
                  .build();
   }
 
   @Nonnull
   public static DAType wildcardWithExtendsBound(@Nonnull DAType extendsBound) {
-    return DAType.builder(DATypeKind.WILDCARD, DANameFactory.wildcard())
+    return DAType.typeBuilder(DATypeKind.WILDCARD, DANameFactory.wildcard())
                  .withExtendsBound(extendsBound)
                  .build();
   }
@@ -125,7 +125,7 @@ public final class DATypeFactory {
 
   @Nonnull
   private static DAType instance(DAName simpleName, DAName qualifiedName, List<DAType> typeArgs) {
-    return DAType.builder(DATypeKind.DECLARED, simpleName)
+    return DAType.typeBuilder(DATypeKind.DECLARED, simpleName)
                  .withQualifiedName(qualifiedName)
                  .withTypeArgs(checkNotNull(typeArgs))
                  .build();

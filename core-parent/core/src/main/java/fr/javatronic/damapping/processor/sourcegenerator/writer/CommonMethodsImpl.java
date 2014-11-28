@@ -147,7 +147,7 @@ class CommonMethodsImpl implements CommonMethods {
    * @return a flag indicating to use a qualified reference or not²
    */
   private boolean useQualifiedReference(DAType type) {
-    if (type.getKind() != DATypeKind.DECLARED && type.getKind() != DATypeKind.ARRAY) {
+    if (type.getKind() != DATypeKind.DECLARED) {
       return false;
     }
     if (DATypePredicates.isJavaLangType().apply(type)) {

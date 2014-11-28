@@ -148,7 +148,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
     for (ParsingResult parsingResult : processingContext.getPostponed()) {
       try {
         processPostponed(parsingResult);
-      } catch (IOException e) {
+      } catch (Exception e) {
         processingEnv.printMessage(Mapper.class, parsingResult.getClassElement(), e);
         throw new RuntimeException(
             String.format(

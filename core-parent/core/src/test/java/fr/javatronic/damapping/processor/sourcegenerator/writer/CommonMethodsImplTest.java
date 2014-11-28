@@ -22,13 +22,9 @@ import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 
 import java.io.BufferedWriter;
 import java.io.StringWriter;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -127,7 +123,7 @@ public class CommonMethodsImplTest {
   public Object[][] array_or_declared_DP() {
     return new Object[][] {
         {DAWriterTestUtil.NAME_DATYPE},
-        {DAType.builder(DATypeKind.ARRAY, DAWriterTestUtil.NAME_DATYPE.getSimpleName()).withQualifiedName(DAWriterTestUtil.NAME_DATYPE.getQualifiedName()).build()}
+        {DAType.arrayBuilder(DATypeKind.DECLARED, DAWriterTestUtil.NAME_DATYPE.getSimpleName()).withQualifiedName(DAWriterTestUtil.NAME_DATYPE.getQualifiedName()).build()}
     };
   }
 
@@ -141,7 +137,7 @@ public class CommonMethodsImplTest {
 
     CommonMethods commonMethods = new CommonMethodsImpl(fileContext, 0);
 
-    commonMethods.appendType(DAType.builder(kind, DANameFactory.from("Toto")).build());
+    commonMethods.appendType(DAType.typeBuilder(kind, DANameFactory.from("Toto")).build());
 
     bufferedWriter.flush();
     assertThat(out.toString()).isEqualTo("Toto");
@@ -152,10 +148,10 @@ public class CommonMethodsImplTest {
 
   @DataProvider
   public Object[][] appendType_non_declared_nor_array_type_always_uses_simple_reference_DP() {
-    Object[][] res = new Object[DATypeKind.values().length - 2][1];
+    Object[][] res = new Object[DATypeKind.values().length - 1][1];
     int i = 0;
     for (DATypeKind kind : DATypeKind.values()) {
-      if (kind != DATypeKind.DECLARED && kind != DATypeKind.ARRAY) {
+      if (kind != DATypeKind.DECLARED) {
         res[i++][0] = kind;
       }
     }
@@ -185,7 +181,7 @@ public class CommonMethodsImplTest {
   public Object[][] appendType_java_lang_type_uses_simple_reference_DP() {
     return new Object[][] {
         { DATypeFactory.from(String.class) },
-        { DAType.builder(DATypeKind.ARRAY, DANameFactory.from(String.class.getSimpleName())).withQualifiedName(DANameFactory.from(String.class.getName())).build()}
+        { DAType.arrayBuilder(DATypeKind.DECLARED, DANameFactory.from(String.class.getSimpleName())).withQualifiedName(DANameFactory.from(String.class.getName())).build()}
     };
   }
 }

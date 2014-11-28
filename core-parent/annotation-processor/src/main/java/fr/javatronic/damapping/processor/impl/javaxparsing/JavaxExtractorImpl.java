@@ -74,15 +74,15 @@ public class JavaxExtractorImpl implements JavaxExtractor {
 
   private final Function<AnnotationMirror, DAAnnotation> annotationMirrorToDAAnnotation = new
       Function<AnnotationMirror, DAAnnotation>() {
-    @Nullable
-    @Override
-    public DAAnnotation apply(@Nullable AnnotationMirror input) {
-      if (input == null) {
-        return null;
-      }
-      return new DAAnnotation(extractType(input.getAnnotationType()));
-    }
-  };
+        @Nullable
+        @Override
+        public DAAnnotation apply(@Nullable AnnotationMirror input) {
+          if (input == null) {
+            return null;
+          }
+          return new DAAnnotation(extractType(input.getAnnotationType()));
+        }
+      };
 
   public JavaxExtractorImpl(@Nonnull ProcessingEnvironmentWrapper processingEnv,
                             @Nonnull ReferenceScanResult scanResult) {
@@ -94,16 +94,30 @@ public class JavaxExtractorImpl implements JavaxExtractor {
   @Nonnull
   public DAType extractType(TypeMirror type) {
     Types typeUtils = processingEnv.getTypeUtils();
-    Element element = typeUtils.asElement(type);
+
+    if (type.getKind() == TypeKind.ERROR) {
+      return findFixedResolution(typeUtils.asElement(type));
+    }
+    if (type.getKind() == TypeKind.VOID) {
+      return DATypeFactory.voidDaType();
+    }
+    if (type.getKind() == TypeKind.WILDCARD) {
+      return extractWildcardType((WildcardType) type);
+    }
     if (type.getKind() == TypeKind.ARRAY) {
-      element = typeUtils.asElement(((ArrayType) type).getComponentType());
+      return extractArrayType((ArrayType) type);
     }
 
-    if (type.getKind() != TypeKind.ERROR) {
-      return extractType(type, element);
-    }
+    Element element = typeUtils.asElement(type);
+    DAType.Builder builder = DAType
+        .typeBuilder(
+            TypeKindToDATypeKind.INSTANCE.apply(type.getKind()),
+            extractSimpleName(type, element)
+        )
+        .withQualifiedName(extractQualifiedName(type, element))
+        .withTypeArgs(extractTypeArgs(type));
+    return builder.build();
 
-    return findFixedResolution(element);
   }
 
   /**
@@ -140,6 +154,16 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     return ensureNonnull(scanResult.findFixedByQualifiedName(imporfQualifiedName.get()), element);
   }
 
+  private DAType extractArrayType(ArrayType arrayType) {
+    TypeMirror componentType = arrayType.getComponentType();
+    Element componentElement = processingEnv.getTypeUtils().asElement(componentType);
+    DATypeKind daTypeKind = TypeKindToDATypeKind.INSTANCE.apply(componentType.getKind());
+    DAType.Builder builder = DAType.arrayBuilder(daTypeKind, extractSimpleName(componentType, componentElement))
+                                   .withQualifiedName(extractQualifiedName(componentType, componentElement))
+                                   .withTypeArgs(extractTypeArgs(componentType));
+    return builder.build();
+  }
+
   private DAType ensureNonnull(Optional<DAType> fixedByQualifiedName, Element element) {
     if (!fixedByQualifiedName.isPresent()) {
       IllegalArgumentException illegalArgumentException = new IllegalArgumentException(
@@ -149,24 +173,6 @@ public class JavaxExtractorImpl implements JavaxExtractor {
       throw illegalArgumentException;
     }
     return fixedByQualifiedName.get();
-  }
-
-  @Nonnull
-  private DAType extractType(TypeMirror type, Element element) {
-    if (type.getKind() == TypeKind.VOID) {
-      return DATypeFactory.voidDaType();
-    }
-    if (type.getKind() == TypeKind.WILDCARD) {
-      return extractWildcardType((WildcardType) type);
-    }
-    DAType.Builder builder = DAType
-        .builder(
-            TypeKindToDATypeKind.INSTANCE.apply(type.getKind()),
-            extractSimpleName(type, element)
-        )
-        .withQualifiedName(extractQualifiedName(type, element))
-        .withTypeArgs(extractTypeArgs(type));
-    return builder.build();
   }
 
   private static enum TypeKindToDATypeKind implements Function<TypeKind, DATypeKind> {
