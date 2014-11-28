@@ -80,7 +80,8 @@ public class CommonMethodsImplTest {
   }
 
   @Test(dataProvider = "array_or_declared_DP")
-  public void appendType_type_from_other_package_without_import_but_with_homonymous_uses_qualified_reference(DAType type) throws Exception {
+  public void appendType_type_from_other_package_without_import_but_with_homonymous_uses_qualified_reference(
+      DAType type) throws Exception {
     FileContextTestImpl fileContext = fileContext("com.foo", false, true);
     CommonMethods commonMethods = new CommonMethodsImpl(fileContext, 0);
 
@@ -89,26 +90,29 @@ public class CommonMethodsImplTest {
     assertThat(fileContext.getRes()).isEqualTo(type.isArray() ? "com.acme.Name[]" : "com.acme.Name");
   }
 
-  private static FileContextTestImpl fileContext(final String packageName, final boolean explicitImport,
-                                          final boolean hasHomonymousImport) {
+  private static FileContextTestImpl fileContext(final String packageName,
+                                                 final boolean explicitImport,
+                                                 final boolean hasHomonymousImport) {
     return new FileContextTestImpl(packageName) {
-        @Override
-        public boolean hasExpliciteImport(@Nullable DAType type) {
-          return explicitImport;
-        }
+      @Override
+      public boolean hasExpliciteImport(@Nullable DAType type) {
+        return explicitImport;
+      }
 
-        @Override
-        public boolean hasHomonymousImport(@Nullable DAType type) {
-          return hasHomonymousImport;
-        }
-      };
+      @Override
+      public boolean hasHomonymousImport(@Nullable DAType type) {
+        return hasHomonymousImport;
+      }
+    };
   }
 
   @DataProvider
   public Object[][] array_or_declared_DP() {
-    return new Object[][] {
+    return new Object[][]{
         {DAWriterTestUtil.NAME_DATYPE},
-        {DAType.arrayBuilder(DATypeKind.DECLARED, DAWriterTestUtil.NAME_DATYPE.getSimpleName()).withQualifiedName(DAWriterTestUtil.NAME_DATYPE.getQualifiedName()).build()}
+        {DAType.arrayBuilder(DATypeKind.DECLARED, DAWriterTestUtil.NAME_DATYPE.getSimpleName())
+               .withQualifiedName(DAWriterTestUtil.NAME_DATYPE.getQualifiedName())
+               .build()}
     };
   }
 
@@ -164,9 +168,11 @@ public class CommonMethodsImplTest {
 
   @DataProvider
   public Object[][] appendType_java_lang_type_uses_simple_reference_DP() {
-    return new Object[][] {
-        { DATypeFactory.from(String.class) },
-        { DAType.arrayBuilder(DATypeKind.DECLARED, DANameFactory.from(String.class.getSimpleName())).withQualifiedName(DANameFactory.from(String.class.getName())).build()}
+    return new Object[][]{
+        {DATypeFactory.from(String.class)},
+        {DAType.arrayBuilder(DATypeKind.DECLARED, DANameFactory.from(String.class.getSimpleName()))
+               .withQualifiedName(DANameFactory.from(String.class.getName()))
+               .build()}
     };
   }
 }

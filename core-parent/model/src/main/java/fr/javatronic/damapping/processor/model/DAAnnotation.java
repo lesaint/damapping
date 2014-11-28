@@ -33,14 +33,19 @@ public class DAAnnotation {
   private final DAType type;
   @Nonnull
   private final List<DAAnnotation> annotations;
+  @Nonnull
+  private final List<DAAnnotationMember> annotationMembers;
 
   public DAAnnotation(@Nonnull DAType type) {
-    this(type, null);
+    this(type, null, null);
   }
 
-  public DAAnnotation(@Nonnull DAType type, @Nullable List<DAAnnotation> annotations) {
+  public DAAnnotation(@Nonnull DAType type,
+                      @Nullable List<DAAnnotation> annotations,
+                      @Nullable List<DAAnnotationMember> annotationMembers) {
     this.type = type;
     this.annotations = nonNullFrom(annotations);
+    this.annotationMembers = nonNullFrom(annotationMembers);
   }
 
   @Nonnull
@@ -51,6 +56,11 @@ public class DAAnnotation {
   @Nonnull
   public List<DAAnnotation> getAnnotations() {
     return annotations;
+  }
+
+  @Nonnull
+  public List<DAAnnotationMember> getAnnotationMembers() {
+    return annotationMembers;
   }
 
   @Override

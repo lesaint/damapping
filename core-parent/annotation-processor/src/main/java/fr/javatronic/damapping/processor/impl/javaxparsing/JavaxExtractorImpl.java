@@ -16,6 +16,7 @@
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
 import fr.javatronic.damapping.processor.model.DAAnnotation;
+import fr.javatronic.damapping.processor.model.DAAnnotationMember;
 import fr.javatronic.damapping.processor.model.DAEnumValue;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAName;
@@ -30,10 +31,12 @@ import fr.javatronic.damapping.util.Predicates;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -72,35 +75,8 @@ public class JavaxExtractorImpl implements JavaxExtractor {
   @Nonnull
   private final ReferenceScanResult scanResult;
 
-  private final Function<AnnotationMirror, DAAnnotation> annotationMirrorToDAAnnotation = new
-      Function<AnnotationMirror, DAAnnotation>() {
-        @Nullable
-        @Override
-        public DAAnnotation apply(@Nullable AnnotationMirror input) {
-          if (input == null) {
-            return null;
-          }
-          DeclaredType annotationType = input.getAnnotationType();
-          DAType daType = extractType(annotationType);
-          return new DAAnnotation(daType, toDAAnnotations(daType, annotationType.asElement().getAnnotationMirrors()));
-        }
-
-        @Nullable
-        private List<DAAnnotation> toDAAnnotations(@Nonnull DAType daType,
-                                                   @Nullable List<? extends AnnotationMirror> annotationMirrors) {
-          if (annotationMirrors == null || annotationMirrors.isEmpty()) {
-            return null;
-          }
-          // no need to return the annotations on the Java language annotations, especially because some of them (e.g.
-          // Documented, are recursive.
-          if (daType.getQualifiedName() != null && daType.getQualifiedName()
-                                                         .getName()
-                                                         .startsWith("java.lang.annotation.")) {
-            return null;
-          }
-          return from(annotationMirrors).transform(annotationMirrorToDAAnnotation).toList();
-        }
-      };
+  private final EntryToDAAnnotationMember entryToDAAnnotationMember = new EntryToDAAnnotationMember();
+  private final Function<AnnotationMirror, DAAnnotation> annotationMirrorToDAAnnotation = new AnnotationMirrorToDAAnnotation();
 
   public JavaxExtractorImpl(@Nonnull ProcessingEnvironmentWrapper processingEnv,
                             @Nonnull ReferenceScanResult scanResult) {
@@ -382,4 +358,64 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     return from(methodElement.getAnnotationMirrors()).transform(toDAAnnotation()).filter(notNull()).toList();
   }
 
+  private class EntryToDAAnnotationMember
+      implements Function<Map.Entry<? extends ExecutableElement, ? extends AnnotationValue>, DAAnnotationMember> {
+
+    @Nullable
+    @Override
+    public DAAnnotationMember apply(
+        @Nullable Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry) {
+      if (entry == null) {
+        return null;
+      }
+
+      return new DAAnnotationMember(
+          entry.getKey().getSimpleName().toString(),
+          extractType(entry.getKey().getReturnType()),
+          entry.getValue().toString()
+      );
+    }
+  }
+
+  private class AnnotationMirrorToDAAnnotation implements Function<AnnotationMirror, DAAnnotation> {
+    @Nullable
+    @Override
+    public DAAnnotation apply(@Nullable AnnotationMirror input) {
+      if (input == null) {
+        return null;
+      }
+      DeclaredType annotationType = input.getAnnotationType();
+      DAType daType = extractType(annotationType);
+      return new DAAnnotation(daType,
+          toDAAnnotations(daType, annotationType.asElement().getAnnotationMirrors()),
+          toDAAnnotationMembers(daType, input.getElementValues())
+      );
+    }
+
+    @Nullable
+    private List<DAAnnotationMember> toDAAnnotationMembers(DAType daType,
+                                                           Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues) {
+      if (elementValues == null || elementValues.isEmpty()) {
+        return null;
+      }
+
+      return from(elementValues.entrySet()).transform(entryToDAAnnotationMember).toList();
+    }
+
+    @Nullable
+    private List<DAAnnotation> toDAAnnotations(@Nonnull DAType daType,
+                                               @Nullable List<? extends AnnotationMirror> annotationMirrors) {
+      if (annotationMirrors == null || annotationMirrors.isEmpty()) {
+        return null;
+      }
+      // no need to return the annotations on the Java language annotations, especially because some of them (e.g.
+      // Documented) are recursive.
+      if (daType.getQualifiedName() != null && daType.getQualifiedName()
+                                                     .getName()
+                                                     .startsWith("java.lang.annotation.")) {
+        return null;
+      }
+      return from(annotationMirrors).transform(annotationMirrorToDAAnnotation).toList();
+    }
+  }
 }

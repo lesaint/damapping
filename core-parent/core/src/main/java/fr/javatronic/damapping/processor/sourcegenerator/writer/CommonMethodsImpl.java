@@ -16,6 +16,7 @@
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
 import fr.javatronic.damapping.processor.model.DAAnnotation;
+import fr.javatronic.damapping.processor.model.DAAnnotationMember;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.DATypeKind;
@@ -104,12 +105,39 @@ class CommonMethodsImpl implements CommonMethods {
 
     Iterator<DAAnnotation> iterator = annotations.iterator();
     while (iterator.hasNext()) {
-      append("@").append(iterator.next().getType().getSimpleName());
+      DAAnnotation annotation = iterator.next();
+      append("@").append(annotation.getType().getSimpleName());
+      appendAnnotationMembers(annotation.getAnnotationMembers());
       if (iterator.hasNext()) {
         append(",");
       }
       append(" ");
     }
+  }
+
+  private void appendAnnotationMembers(Collection<DAAnnotationMember> annotationMembers) throws IOException {
+    if (annotationMembers.isEmpty()) {
+      return;
+    }
+    append('(');
+    if (annotationMembers.size() == 1) {
+      DAAnnotationMember member = annotationMembers.iterator().next();
+      if (!member.getName().equals("value")) {
+         append(member.getName()).append(" = ");
+      }
+      append(member.getValue());
+    }
+    else {
+      Iterator<DAAnnotationMember> memberIterator = annotationMembers.iterator();
+      while (memberIterator.hasNext()) {
+        DAAnnotationMember member = memberIterator.next();
+        append(member.getName()).append(" = ").append(member.getValue());
+        if (memberIterator.hasNext()) {
+          append(", ");
+        }
+      }
+    }
+    append(')');
   }
 
   @Override
