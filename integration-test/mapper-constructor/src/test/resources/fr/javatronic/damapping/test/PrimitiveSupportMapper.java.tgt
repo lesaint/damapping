@@ -1,0 +1,8 @@
+package fr.javatronic.damapping.test;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public interface PrimitiveSupportMapper {
+
+    float[] map(double[] doubles);
+
+}
