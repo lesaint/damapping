@@ -67,12 +67,11 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
   @Override
   protected void processNewElement(Element element, RoundEnvironment roundEnv) throws IOException {
     if (!SUPPORTED_ELEMENTKINDS.contains(element.getKind())) {
-      processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-          String.format(
-              "Type %s annoted with @Mapper annotation is not a class nor an enum (kind found = %s)",
-              element, element.getKind()
-          )
+      String msg = String.format(
+          "Type %s annoted with @Mapper annotation is not a class nor an enum (kind found = %s)",
+          element, element.getKind()
       );
+      processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, msg, element);
       return;
     }
 
