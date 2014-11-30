@@ -127,7 +127,8 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
   private void registerPostponedValidationAndGeneration(ParsingResult parsingResult) {
     processingEnv.getMessager().printMessage(
         Diagnostic.Kind.NOTE,
-        "Parsing found unresolved class/interface references. DAMapping won't generate any class/interface."
+        "Parsing found unresolved class/interface references. DAMapping won't generate any class/interface.",
+        parsingResult.getClassElement()
     );
     processingContext.addPostponed(parsingResult);
   }
@@ -178,7 +179,8 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
       case FAILED:
         processingEnv.getMessager().printMessage(
             Diagnostic.Kind.NOTE,
-            "Parsing failed. DAMapping won't generate any class/interface"
+            "Parsing failed. DAMapping won't generate any class/interface",
+            parsingResult.getClassElement()
         );
         if (newParsingResult.getType() != null) {
           processingContext.setFailed(parsingResult);
