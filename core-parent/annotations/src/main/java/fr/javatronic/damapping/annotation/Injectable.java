@@ -23,15 +23,13 @@ package fr.javatronic.damapping.annotation;
  * DAMapping annotation processor will raise a compilation error.
  * </p>
  * <p>
- * In practice, the generated "MapperImpl" class will be annotated with {@link javax.inject.Named}.
+ * In practice, if the dedicated class declares a non-default constructor, the generated MapperImpl class will declare a
+ * constructor with the same parameters (as any Mapper class) but the constructor will additionally be annotated with
+ * {@link javax.inject.Inject} (note that it implies that these arguments are beans which will be injected by the
+ * Dependency Injection framework).
  * </p>
  * <p>
- * If the dedicated class declares a non-default constructor, the generated class will declare a constructor with the
- * same parameters which will be annotated with {@link javax.inject.Inject} (note that it implies that these arguments
- * are beans which will be injected by the Dependency Injection framework).
- * </p>
- * <p>
- *
+ * In addition, if the dedicated class is annotated with any annotation
  * </p>
  *
  * @author Sébastien Lesaint

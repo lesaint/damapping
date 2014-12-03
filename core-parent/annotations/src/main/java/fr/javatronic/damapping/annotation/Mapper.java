@@ -16,7 +16,8 @@
 package fr.javatronic.damapping.annotation;
 
 /**
- * Mapper -
+ * Mapper - Identifies a class dedicated to implement object mapping which will be managed by the DAMapping
+ * framwork.
  *
  * @author Sébastien Lesaint
  */
@@ -24,5 +25,4 @@ package fr.javatronic.damapping.annotation;
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.SOURCE)
 @java.lang.annotation.Documented
 public @interface Mapper {
-//    Class<? extends Annotation> annotations();
 }
