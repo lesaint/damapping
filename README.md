@@ -40,6 +40,10 @@ An extensive list of dependency declarations is available on this [page](http://
 Check out the [getting started with the DAMapping framework](http://damapping.javatronic.fr/framework/getting-started.html)
 page.
 
+## Documentation
+
+Checkout the [documentation of the DAMapping framework](http://damapping.javatronic.fr/framework/documentation/)
+
 ## Contact and support
 
 Feel free to create an [issue](https://github.com/lesaint/damapping/issues) even to ask questions and/or contact me on [Twitter](https://twitter.com/LesaintSeb).
