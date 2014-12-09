@@ -20,17 +20,14 @@ import fr.javatronic.damapping.annotation.Mapper;
 import javax.annotation.Nullable;
 
 /**
- * This mapper is designed to test:
- * <ul>
- *   <li>that implicite mapper method with protected keyword are correctly supported</li>
- *   <li>support for implicite mapper method with the same name as one of the implicite methds of the Enum type (valueOf)</li>
- * </ul>
+ * This mapper is designed to test support for implicite mapper method with the same name as one of the implicite methds
+ * of the Enum type (valueOf).
  */
 @Mapper
 public enum ProtectedSameNameAsImpliciteEnumMethod {
   INSTANCE;
 
-  protected String valueOf(@Nullable Integer input) {
+  public String valueOf(@Nullable Integer input) {
     return null; // implementation does not matter here
   }
 }

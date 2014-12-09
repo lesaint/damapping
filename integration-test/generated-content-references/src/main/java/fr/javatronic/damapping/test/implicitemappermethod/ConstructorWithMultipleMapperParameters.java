@@ -39,7 +39,7 @@ public class ConstructorWithMultipleMapperParameters {
     this.simpleMapper = simpleMapper;
   }
 
-  protected String fooBarDonut(Integer input) {
+  public String fooBarDonut(Integer input) {
     return null; // content doesn't matter
   }
 

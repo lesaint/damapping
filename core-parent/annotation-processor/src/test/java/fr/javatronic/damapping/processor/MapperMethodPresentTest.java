@@ -31,6 +31,9 @@ import org.truth0.Truth;
  * @author Sébastien Lesaint
  */
 public class MapperMethodPresentTest {
+
+  private static final String MISSING_MAPPER_METHOD_ERROR_MSG = "Mapper must have one and only one method qualifying as mapper method";
+
   @Test
   public void compiling_empty_annotated_class_fails_because_there_is_no_mapper_method() throws Exception {
     JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.Empty",
@@ -44,7 +47,73 @@ public class MapperMethodPresentTest {
 
     assertThat(fileObject)
         .failsToCompile()
-        .withErrorContaining("Mapper must have at one and only one method qualifying as mapper method")
+        .withErrorContaining(MISSING_MAPPER_METHOD_ERROR_MSG)
+        .in(fileObject)
+        .onLine(6);
+  }
+
+  @Test
+  public void compiling_annotated_class_with_only_private_method_fails_because_there_is_no_mapper_method() throws Exception {
+    JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.OnlyPrivate",
+        "package test;",
+        "",
+        "import fr.javatronic.damapping.annotation.Mapper;",
+        "",
+        "@Mapper",
+        "public class OnlyPrivate {",
+        "  private Integer apply(String input) {",
+        "    return null;",
+        "  }",
+        "}"
+    );
+
+    assertThat(fileObject)
+        .failsToCompile()
+        .withErrorContaining(MISSING_MAPPER_METHOD_ERROR_MSG)
+        .in(fileObject)
+        .onLine(6);
+  }
+
+  @Test
+  public void compiling_annotated_class_with_only_protected_method_fails_because_there_is_no_mapper_method() throws Exception {
+    JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.OnlyProtected",
+        "package test;",
+        "",
+        "import fr.javatronic.damapping.annotation.Mapper;",
+        "",
+        "@Mapper",
+        "public class OnlyProtected {",
+        "  protected Integer apply(String input) {",
+        "    return null;",
+        "  }",
+        "}"
+    );
+
+    assertThat(fileObject)
+        .failsToCompile()
+        .withErrorContaining(MISSING_MAPPER_METHOD_ERROR_MSG)
+        .in(fileObject)
+        .onLine(6);
+  }
+
+  @Test
+  public void compiling_annotated_class_with_only_default_protected_method_fails_because_there_is_no_mapper_method() throws Exception {
+    JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.OnlyDefaultProtected",
+        "package test;",
+        "",
+        "import fr.javatronic.damapping.annotation.Mapper;",
+        "",
+        "@Mapper",
+        "public class OnlyDefaultProtected {",
+        "  Integer apply(String input) {",
+        "    return null;",
+        "  }",
+        "}"
+    );
+
+    assertThat(fileObject)
+        .failsToCompile()
+        .withErrorContaining(MISSING_MAPPER_METHOD_ERROR_MSG)
         .in(fileObject)
         .onLine(6);
   }

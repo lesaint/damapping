@@ -20,14 +20,14 @@ import fr.javatronic.damapping.test.AbstractMapperTest;
 import org.testng.annotations.Test;
 
 /**
- * DefaultProtectedTest -
+ * CustomTypesAndGenericsTest -
  *
  * @author lesaint
  */
-public class ProtectedTest extends AbstractMapperTest {
+public class CustomTypesAndGenericsTest extends AbstractMapperTest {
 
-  public ProtectedTest() {
-    super(Protected.class);
+  public CustomTypesAndGenericsTest() {
+    super(CustomTypesAndGenerics.class);
   }
 
   @Test

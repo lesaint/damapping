@@ -102,7 +102,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
       throw new ValidationError("Mapper having more than one method qualifying as mapper method is not supported");
     }
     if (mapperMethodCount == 0) {
-      throw new ValidationError("Mapper must have at one and only one method qualifying as mapper method (either implemente Guava's Function interface or define a single non private method)");
+      throw new ValidationError("Mapper must have one and only one method qualifying as mapper method (either implemente Guava's Function interface or define a single non private method)");
     }
 
     for (DAMethod daMethod : from(methods).filter(isMapperFactoryMethod())) {

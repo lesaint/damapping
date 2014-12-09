@@ -4,8 +4,8 @@ import fr.javatronic.damapping.test.implicitemappermethod.subpackage.OutOfPackag
 import fr.javatronic.damapping.util.Optional;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
-public class ProtectedMapperImpl implements ProtectedMapper {
-    private final Protected dedicatedInstance = new Protected();
+public class CustomTypesAndGenericsMapperImpl implements CustomTypesAndGenericsMapper {
+    private final CustomTypesAndGenerics dedicatedInstance = new CustomTypesAndGenerics();
 
     @Override
     public InPackage fooBarDonut(Optional<? extends OutOfPackage> optional) {

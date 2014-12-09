@@ -99,6 +99,19 @@ public class DAMethodPredicates {
 
   private static final Predicate<DAMethod> NOT_STATIC = Predicates.not(StaticPredicate.INSTANCE);
 
+  public static Predicate<DAMethod> isPublic() {
+    return PublicPredicate.INSTANCE;
+  }
+
+  private static enum PublicPredicate implements Predicate<DAMethod> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nullable DAMethod daMethod) {
+      return daMethod != null && daMethod.getModifiers().contains(DAModifier.PUBLIC);
+    }
+  }
+
   public static Predicate<DAMethod> isNotPrivate() {
     return NotPrivatePredicate.INSTANCE;
   }

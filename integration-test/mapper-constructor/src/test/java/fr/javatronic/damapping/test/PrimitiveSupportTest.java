@@ -18,7 +18,7 @@ package fr.javatronic.damapping.test;
 import org.testng.annotations.Test;
 
 /**
- * DefaultProtectedTest -
+ * PrimitiveSupportTest -
  *
  * @author lesaint
  */

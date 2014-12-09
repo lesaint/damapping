@@ -15,29 +15,32 @@
  */
 package fr.javatronic.damapping.test.implicitemappermethod;
 
-import fr.javatronic.damapping.test.AbstractMapperTest;
+import fr.javatronic.damapping.annotation.Mapper;
+import fr.javatronic.damapping.test.implicitemappermethod.subpackage.OutOfPackage;
+import fr.javatronic.damapping.util.Optional;
 
-import org.testng.annotations.Test;
+import java.math.BigDecimal;
 
 /**
- * DefaultProtectedTest -
- *
- * @author lesaint
+ * This mapper is designed to test support for implicite mapper method as well as ignore for non-public methods.
  */
-public class DefaultProtectedTest extends AbstractMapperTest {
+@Mapper
+public class CustomTypesAndGenerics {
 
-  public DefaultProtectedTest() {
-    super(DefaultProtected.class);
+  public InPackage fooBarDonut(Optional<? extends OutOfPackage> optional) {
+    return null; // content doesn't matter
   }
 
-  @Test
-  public void check_generated_mapper_file() throws Exception {
-    testUtil.checkGeneratedFile(getClass(), "Mapper");
+  protected String map(Boolean a) {
+    return a.toString();
   }
 
-  @Test
-  public void check_generated_mapperImpl_file() throws Exception {
-    testUtil.checkGeneratedFile(getClass(), "MapperImpl");
+  String map(BigDecimal b) {
+    return b.toString();
+  }
+
+  private void method_a(String a_param) {
+    // content does not matter
   }
 
 }
