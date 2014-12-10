@@ -19,12 +19,16 @@ import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DASourceClass;
+import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.constants.Jsr330Constants;
 import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.javatronic.damapping.util.Predicates;
 
 import java.util.List;
 import java.util.Set;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isImpliciteMapperMethod;
@@ -106,11 +110,25 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     }
 
     for (DAMethod daMethod : from(methods).filter(isMapperFactoryMethod())) {
-      if (daMethod.getReturnType() == null || daMethod.getReturnType().getQualifiedName() == null
-          || !daMethod.getReturnType().getQualifiedName().equals(sourceClass.getType().getQualifiedName())) {
+      if (!isValidMapperFactoryMethodKindAndQualifiers(daMethod)) {
+        throw new ValidationError("Method annotated with @MapperFactory must either be a public constructor or a public static method");
+      }
+      if (!isValidMapperFactoryReturnType(sourceClass, daMethod.getReturnType())) {
         throw new ValidationError("Method annotated with @MapperFactory must return type of the class annotated with @Mapper");
       }
     }
+  }
+
+  private static boolean isValidMapperFactoryMethodKindAndQualifiers(@Nonnull DAMethod daMethod) {
+    return daMethod.getModifiers().contains(DAModifier.PUBLIC) &&
+        (daMethod.isConstructor() || daMethod.getModifiers().contains(DAModifier.STATIC));
+  }
+
+  private static boolean isValidMapperFactoryReturnType(@Nonnull DASourceClass sourceClass,
+                                                        @Nullable DAType returnType) {
+    return returnType != null
+        && returnType.getQualifiedName() != null
+        && returnType.getQualifiedName().equals(sourceClass.getType().getQualifiedName());
   }
 
   private void validateJSR330InPath(DASourceClass sourceClass) throws ValidationError {
