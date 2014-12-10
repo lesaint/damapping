@@ -16,6 +16,7 @@
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
 import fr.javatronic.damapping.processor.model.DAParameter;
+import fr.javatronic.damapping.processor.model.DAParameterImpl;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
@@ -136,7 +137,7 @@ public class DAStatementWriterTest {
     FileContextTestImpl fileContext = new FileContextTestImpl();
     methodWriter(fileContext).appendParamValues(
         Collections.singletonList(
-            DAParameter.builder(DANameFactory.from("param"), DATypeFactory.from(String.class))
+            DAParameterImpl.builder(DANameFactory.from("param"), DATypeFactory.from(String.class))
                        .build()
         )
     );
@@ -149,9 +150,9 @@ public class DAStatementWriterTest {
     FileContextTestImpl fileContext = new FileContextTestImpl();
     methodWriter(fileContext).appendParamValues(
         ImmutableList.of(
-            DAParameter.builder(DANameFactory.from("param1"), DATypeFactory.from(String.class))
+            DAParameterImpl.builder(DANameFactory.from("param1"), DATypeFactory.from(String.class))
                        .build(),
-            DAParameter.builder(DANameFactory.from("param2"), DATypeFactory.from(String.class))
+            DAParameterImpl.builder(DANameFactory.from("param2"), DATypeFactory.from(String.class))
                        .build()
         )
     );

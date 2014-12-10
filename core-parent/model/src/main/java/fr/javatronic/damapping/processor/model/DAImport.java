@@ -15,85 +15,22 @@
  */
 package fr.javatronic.damapping.processor.model;
 
-import fr.javatronic.damapping.util.Function;
-
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
-
-import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
-* DAImport -
-*
-* @author Sébastien Lesaint
-*/
-@Immutable
-public class DAImport {
-  private final boolean defaultPackage;
-  @Nonnull
-  private final DAName qualifiedName;
-  @Nonnull
-  private final String packageName;
-  @Nonnull
-  private final String simpleName;
-
-  private DAImport(@Nonnull DAName qualifiedName, @Nonnull String packageName, @Nonnull String simpleName) {
-    this.qualifiedName = checkNotNull(qualifiedName);
-    this.packageName = checkNotNull(packageName);
-    this.defaultPackage = packageName.isEmpty();
-    this.simpleName = simpleName;
-  }
+ * DAImport -
+ *
+ * @author Sébastien Lesaint
+ */
+public interface DAImport {
+  boolean isDefaultPackage();
 
   @Nonnull
-  public static DAImport from(@Nonnull DAName daName) {
-    checkNotNull(daName);
-
-    String qualifiedName = daName.getName();
-    String simpleName = qualifiedName.substring(qualifiedName.lastIndexOf(".") + 1);
-    String packageName = simpleName.equals(qualifiedName) ? "" : qualifiedName.substring(0, qualifiedName.length() - simpleName.length() - 1);
-    return new DAImport(daName, packageName, simpleName);
-  }
-
-  public boolean isDefaultPackage() {
-    return defaultPackage;
-  }
+  DAName getQualifiedName();
 
   @Nonnull
-  public DAName getQualifiedName() {
-    return qualifiedName;
-  }
+  String getPackageName();
 
   @Nonnull
-  public String getPackageName() {
-    return packageName;
-  }
-
-  @Nonnull
-  public String getSimpleName() {
-    return simpleName;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-
-    DAImport daImport = (DAImport) o;
-
-    if (!qualifiedName.equals(daImport.qualifiedName)) {
-      return false;
-    }
-
-    return true;
-  }
-
-  @Override
-  public int hashCode() {
-    return qualifiedName.hashCode();
-  }
+  String getSimpleName();
 }

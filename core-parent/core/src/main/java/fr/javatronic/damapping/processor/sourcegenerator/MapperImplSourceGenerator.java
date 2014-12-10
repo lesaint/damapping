@@ -19,7 +19,6 @@ import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
-import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
@@ -43,7 +42,6 @@ import javax.annotation.Nonnull;
 
 import static fr.javatronic.damapping.processor.model.constants.Jsr330Constants.INJECT_DAANNOTATION;
 import static fr.javatronic.damapping.processor.model.constants.Jsr330Constants.INJECT_DAIMPORT;
-import static fr.javatronic.damapping.processor.model.constants.Jsr330Constants.INJECT_DANAME;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**

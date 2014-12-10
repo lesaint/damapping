@@ -16,14 +16,11 @@
 package fr.javatronic.damapping.processor.sourcegenerator.imports;
 
 import fr.javatronic.damapping.processor.model.DAImport;
-import fr.javatronic.damapping.processor.model.DAName;
+import fr.javatronic.damapping.processor.model.DAImportImpl;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.DATypeKind;
-import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
-import fr.javatronic.damapping.util.FluentIterable;
 import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Predicate;
-import fr.javatronic.damapping.util.Predicates;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -31,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static fr.javatronic.damapping.util.FluentIterable.from;
@@ -56,7 +52,7 @@ public class DATypeImportComputer {
 
   public static Collection<DAImport> computeImports(DAType daType) {
     List<DAImport> qualifiedName = hasQualifiedNameToImport(daType)
-        ? Collections.<DAImport>emptyList() : Collections.singletonList(DAImport.from(daType.getQualifiedName()));
+        ? Collections.<DAImport>emptyList() : Collections.singletonList(DAImportImpl.from(daType.getQualifiedName()));
 
     Set<DAImport> res = new HashSet<DAImport>();
     addAll(res, qualifiedName);

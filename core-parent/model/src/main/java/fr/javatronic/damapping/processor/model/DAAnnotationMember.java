@@ -17,50 +17,29 @@ package fr.javatronic.damapping.processor.model;
 
 import javax.annotation.Nonnull;
 
-import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
-
 /**
  * DAAnnotationMember - Represents a Member of an annotation:
  *
  * @author Sébastien Lesaint
  */
-public class DAAnnotationMember {
+public interface DAAnnotationMember {
   /**
    * The name of the member (ie. the name of the abstract method).
    */
   @Nonnull
-  private final String name;
+  String getName();
+
   /**
    * The return type of the annotation member.
    */
   @Nonnull
-  private final DAType type;
+  DAType getType();
+
   /**
    * The value of the member of the annotation as String suitable to represent the value in source code.
    *
    * @see {@link javax.lang.model.element.AnnotationValue#toString()}
    */
   @Nonnull
-  private final String value;
-
-  public DAAnnotationMember(@Nonnull String name, @Nonnull DAType type, @Nonnull String value) {
-    this.name = checkNotNull(name);
-    this.type = checkNotNull(type);
-    this.value = checkNotNull(value);
-  }
-
-  @Nonnull
-  public String getName() {
-    return name;
-  }
-
-  @Nonnull
-  public DAType getType() {
-    return type;
-  }
-
-  @Nonnull
-  public String getValue() {
-    return value;
-  }
+  String getValue();
 }

@@ -16,6 +16,7 @@
 package fr.javatronic.damapping.processor.model.factory;
 
 import fr.javatronic.damapping.processor.model.DAName;
+import fr.javatronic.damapping.processor.model.DANameImpl;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 
 import java.util.Locale;
@@ -42,11 +43,11 @@ public final class DANameFactory {
    *
    * @param string un {@link String}
    *
-   * @return un {@link DAName}
+   * @return un {@link fr.javatronic.damapping.processor.model.DANameImpl}
    */
   @Nonnull
-  public static DAName from(@Nonnull String string) {
-    return new DAName(string);
+  public static DANameImpl from(@Nonnull String string) {
+    return new DANameImpl(string);
   }
 
   /**
@@ -57,7 +58,7 @@ public final class DANameFactory {
    *
    * @param kind un {@link DATypeKind} primitif
    *
-   * @return a {@link DAName}
+   * @return a {@link fr.javatronic.damapping.processor.model.DANameImpl}
    *
    * @throws IllegalArgumentException si {@code kink.isPrimitive()} retourne false
    */
@@ -73,9 +74,9 @@ public final class DANameFactory {
    * En pratique, cela consiste à parser le name de {@code daName} et extraire tout ce qui suit le dernier point
    * (s'il y en a un).
    *
-   * @param daName a {@link DAName}
+   * @param daName a {@link fr.javatronic.damapping.processor.model.DANameImpl}
    *
-   * @return a {@link DAName}
+   * @return a {@link fr.javatronic.damapping.processor.model.DANameImpl}
    */
   @Nonnull
   public static DAName simpleFromQualified(@Nonnull DAName daName) {
@@ -91,7 +92,7 @@ public final class DANameFactory {
    *
    * @param qualifiedName a {@link String}
    *
-   * @return a {@link DAName}
+   * @return a {@link fr.javatronic.damapping.processor.model.DANameImpl}
    */
   @Nonnull
   public static DAName simpleFromQualified(@Nonnull String qualifiedName) {

@@ -16,6 +16,7 @@
 package fr.javatronic.damapping.processor.model.constants;
 
 import fr.javatronic.damapping.processor.model.DAAnnotation;
+import fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 
 /**
@@ -28,6 +29,6 @@ public final class JavaLangConstants {
     // prevents instantiation
   }
 
-  public static final DAAnnotation OVERRIDE_ANNOTATION = new DAAnnotation(DATypeFactory.from(Override.class));
+  public static final DAAnnotation OVERRIDE_ANNOTATION = new DAAnnotationImpl(DATypeFactory.from(Override.class));
 
 }

@@ -16,7 +16,9 @@
 package fr.javatronic.damapping.processor.model.factory;
 
 import fr.javatronic.damapping.processor.model.DAName;
+import fr.javatronic.damapping.processor.model.DANameImpl;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.DATypeImpl;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 
 import java.util.Collections;
@@ -31,7 +33,7 @@ import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
  * @author Sébastien Lesaint
  */
 public final class DATypeFactory {
-  private static final DAType VOID_DATYPE = DAType.typeBuilder(DATypeKind.VOID, DANameFactory.voidDAName()).build();
+  private static final DAType VOID_DATYPE = DATypeImpl.typeBuilder(DATypeKind.VOID, DANameFactory.voidDAName()).build();
 
   private DATypeFactory() {
     // prevents instantiation
@@ -106,14 +108,14 @@ public final class DATypeFactory {
 
   @Nonnull
   public static DAType wildcardWithSuperBound(@Nonnull DAType superbound) {
-    return DAType.typeBuilder(DATypeKind.WILDCARD, DANameFactory.wildcard())
+    return DATypeImpl.typeBuilder(DATypeKind.WILDCARD, DANameFactory.wildcard())
                  .withSuperBound(superbound)
                  .build();
   }
 
   @Nonnull
   public static DAType wildcardWithExtendsBound(@Nonnull DAType extendsBound) {
-    return DAType.typeBuilder(DATypeKind.WILDCARD, DANameFactory.wildcard())
+    return DATypeImpl.typeBuilder(DATypeKind.WILDCARD, DANameFactory.wildcard())
                  .withExtendsBound(extendsBound)
                  .build();
   }
@@ -124,8 +126,8 @@ public final class DATypeFactory {
   }
 
   @Nonnull
-  private static DAType instance(DAName simpleName, DAName qualifiedName, List<DAType> typeArgs) {
-    return DAType.typeBuilder(DATypeKind.DECLARED, simpleName)
+  private static DAType instance(DAName simpleName, DANameImpl qualifiedName, List<DAType> typeArgs) {
+    return DATypeImpl.typeBuilder(DATypeKind.DECLARED, simpleName)
                  .withQualifiedName(qualifiedName)
                  .withTypeArgs(checkNotNull(typeArgs))
                  .build();

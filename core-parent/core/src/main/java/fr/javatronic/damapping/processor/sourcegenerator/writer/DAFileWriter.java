@@ -21,7 +21,6 @@ import fr.javatronic.damapping.processor.model.function.DANameFunctions;
 import fr.javatronic.damapping.processor.model.predicate.DANamePredicates;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.function.DAImportFunctions;
-import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Lists;
 import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Predicates;

@@ -16,7 +16,6 @@
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
 import fr.javatronic.damapping.processor.model.DAType;
-import fr.javatronic.damapping.util.Optional;
 
 import java.io.BufferedWriter;
 import javax.annotation.Nonnull;

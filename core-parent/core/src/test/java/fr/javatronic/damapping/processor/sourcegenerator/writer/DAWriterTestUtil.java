@@ -15,9 +15,11 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
-import fr.javatronic.damapping.processor.model.DAName;
+import fr.javatronic.damapping.processor.model.DANameImpl;
 import fr.javatronic.damapping.processor.model.DAParameter;
+import fr.javatronic.damapping.processor.model.DAParameterImpl;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.DATypeImpl;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
@@ -52,19 +54,19 @@ final class DAWriterTestUtil {
   }
 
   static DAParameter daParameter(String typeQualifiedName, String name) {
-    return DAParameter.builder(DANameFactory.from(name), declared(typeQualifiedName)).build();
+    return DAParameterImpl.builder(DANameFactory.from(name), declared(typeQualifiedName)).build();
   }
 
   /**
    * Un paramètre de type tableau de Function<String, Integer>
    */
   private static DAParameter functionStringToIntegerArray(String name) {
-    DAName qualifiedName = DANameFactory.from("com.google.common.base.Function");
-    DAType parameterType = DAType.arrayBuilder(DATypeKind.DECLARED, DANameFactory.simpleFromQualified(qualifiedName))
+    DANameImpl qualifiedName = DANameFactory.from("com.google.common.base.Function");
+    DAType parameterType = DATypeImpl.arrayBuilder(DATypeKind.DECLARED, DANameFactory.simpleFromQualified(qualifiedName))
                                  .withQualifiedName(qualifiedName)
                                  .withTypeArgs(
                                      ImmutableList.of(declared("java.lang.String"), declared("java.lang.Integer"))
                                  ).build();
-    return DAParameter.builder(DANameFactory.from(name), parameterType).build();
+    return DAParameterImpl.builder(DANameFactory.from(name), parameterType).build();
   }
 }

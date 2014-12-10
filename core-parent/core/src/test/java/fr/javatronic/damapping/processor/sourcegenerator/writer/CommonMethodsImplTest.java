@@ -16,6 +16,7 @@
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.DATypeImpl;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
@@ -110,7 +111,7 @@ public class CommonMethodsImplTest {
   public Object[][] array_or_declared_DP() {
     return new Object[][]{
         {DAWriterTestUtil.NAME_DATYPE},
-        {DAType.arrayBuilder(DATypeKind.DECLARED, DAWriterTestUtil.NAME_DATYPE.getSimpleName())
+        {DATypeImpl.arrayBuilder(DATypeKind.DECLARED, DAWriterTestUtil.NAME_DATYPE.getSimpleName())
                .withQualifiedName(DAWriterTestUtil.NAME_DATYPE.getQualifiedName())
                .build()}
     };
@@ -126,7 +127,7 @@ public class CommonMethodsImplTest {
 
     CommonMethods commonMethods = new CommonMethodsImpl(fileContext, 0);
 
-    commonMethods.appendType(DAType.typeBuilder(kind, DANameFactory.from("Toto")).build());
+    commonMethods.appendType(DATypeImpl.typeBuilder(kind, DANameFactory.from("Toto")).build());
 
     bufferedWriter.flush();
     assertThat(out.toString()).isEqualTo("Toto");
@@ -170,7 +171,7 @@ public class CommonMethodsImplTest {
   public Object[][] appendType_java_lang_type_uses_simple_reference_DP() {
     return new Object[][]{
         {DATypeFactory.from(String.class)},
-        {DAType.arrayBuilder(DATypeKind.DECLARED, DANameFactory.from(String.class.getSimpleName()))
+        {DATypeImpl.arrayBuilder(DATypeKind.DECLARED, DANameFactory.from(String.class.getSimpleName()))
                .withQualifiedName(DANameFactory.from(String.class.getName()))
                .build()}
     };

@@ -16,6 +16,7 @@
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
 import fr.javatronic.damapping.processor.model.DAImport;
+import fr.javatronic.damapping.processor.model.DAImportImpl;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
@@ -74,9 +75,9 @@ public class DAFileWriterTest {
     new DAFileWriter(fileContext.getWriter())
         .appendPackage(PACKAGE_NAME)
         .appendImports(ImmutableSet.<DAImport>of(
-            DAImport.from(DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE.getQualifiedName()),
-            DAImport.from(DAWriterTestUtil.BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS.getQualifiedName()),
-            DAImport.from(OVERRIDE_ANNOTATION.getType().getQualifiedName())
+            DAImportImpl.from(DAWriterTestUtil.FUNCTION_INTEGER_TO_STRING_INTERFACE.getQualifiedName()),
+            DAImportImpl.from(DAWriterTestUtil.BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS.getQualifiedName()),
+            DAImportImpl.from(OVERRIDE_ANNOTATION.getType().getQualifiedName())
         )
         );
 
@@ -141,7 +142,7 @@ public class DAFileWriterTest {
   public void appendImports_emptyCollection_after_filtering_prints_nothing() throws Exception {
     FileContextTestImpl fileContext = new FileContextTestImpl();
     new DAFileWriter(fileContext.getWriter()).appendImports(
-        ImmutableList.of(DAImport.from(DANameFactory.from(String.class.getName())))
+        ImmutableList.of(DAImportImpl.from(DANameFactory.from(String.class.getName())))
     );
 
     assertThat(fileContext.getRes()).isEqualTo("");

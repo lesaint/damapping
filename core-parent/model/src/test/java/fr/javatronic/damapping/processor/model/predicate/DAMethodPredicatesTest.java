@@ -17,9 +17,12 @@ package fr.javatronic.damapping.processor.model.predicate;
 
 import fr.javatronic.damapping.annotation.MapperFactory;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
+import fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl;
 import fr.javatronic.damapping.processor.model.DAMethod;
+import fr.javatronic.damapping.processor.model.DAMethodImpl;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAParameter;
+import fr.javatronic.damapping.processor.model.DAParameterImpl;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 
@@ -32,7 +35,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static com.google.common.collect.ImmutableSet.of;
-import static fr.javatronic.damapping.processor.model.DAMethod.methodBuilder;
+import static fr.javatronic.damapping.processor.model.DAMethodImpl.methodBuilder;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isDefaultConstructor;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isApplyWithSingleParam;
@@ -52,10 +55,10 @@ import static org.mockito.Mockito.when;
  */
 public class DAMethodPredicatesTest {
 
-  private static final DAParameter PARAM_2 = DAParameter.builder(DANameFactory.from("param2"),
+  private static final DAParameter PARAM_2 = DAParameterImpl.builder(DANameFactory.from("param2"),
       DATypeFactory.from(String.class)
   ).build();
-  private static final DAParameter PARAM_1 = DAParameter.builder(DANameFactory.from("param1"),
+  private static final DAParameter PARAM_1 = DAParameterImpl.builder(DANameFactory.from("param1"),
       DATypeFactory.from(String.class)
   ).build();
 
@@ -112,7 +115,7 @@ public class DAMethodPredicatesTest {
 
   @Test
   public void isStatic_returns_true_for_modifier_set_contains_STATIC() throws Exception {
-    DAMethod.Builder builder = methodBuilder();
+    DAMethodImpl.Builder builder = methodBuilder();
     assertThat(
         isStatic().apply(builder.withModifiers(of(DAModifier.STATIC)).build())
     ).isTrue();
@@ -135,7 +138,7 @@ public class DAMethodPredicatesTest {
 
   @Test
   public void notPrivate_returns_false_for_modifier_set_contains_STATIC() throws Exception {
-    DAMethod.Builder builder = methodBuilder();
+    DAMethodImpl.Builder builder = methodBuilder();
     assertThat(
         isStatic().apply(builder.withModifiers(of(DAModifier.PRIVATE)).build())
     ).isFalse();
@@ -152,16 +155,16 @@ public class DAMethodPredicatesTest {
 
   @Test
   public void isMapperFactoryMethod_uses_mapperFactoryProperty() throws Exception {
-    DAMethod.Builder builder = methodBuilder();
+    DAMethodImpl.Builder builder = methodBuilder();
     assertThat(
         isMapperFactoryMethod().apply(
-          builder.withAnnotations(ImmutableList.of(new DAAnnotation(DATypeFactory.declared("com.acme.Foo")))).build()
+          builder.withAnnotations(ImmutableList.<DAAnnotation>of(new DAAnnotationImpl(DATypeFactory.declared("com.acme.Foo")))).build()
         )
     ).isFalse();
     assertThat(
         isMapperFactoryMethod().apply(
             builder.withAnnotations(
-                ImmutableList.of(new DAAnnotation(DATypeFactory.declared(MapperFactory.class.getName())))
+                ImmutableList.<DAAnnotation>of(new DAAnnotationImpl(DATypeFactory.declared(MapperFactory.class.getName())))
             ).build()
         )
     ).isTrue();

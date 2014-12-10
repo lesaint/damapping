@@ -16,6 +16,7 @@
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
 import fr.javatronic.damapping.processor.model.DAName;
+import fr.javatronic.damapping.processor.model.DANameImpl;
 
 import javax.annotation.Nonnull;
 import javax.lang.model.element.Name;
@@ -39,6 +40,6 @@ public final class JavaxDANameFactory {
    */
   @Nonnull
   public static DAName from(@Nonnull Name name) {
-    return new DAName(name.toString());
+    return new DANameImpl(name.toString());
   }
 }

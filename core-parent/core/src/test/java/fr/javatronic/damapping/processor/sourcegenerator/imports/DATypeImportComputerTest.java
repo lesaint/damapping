@@ -17,6 +17,7 @@ package fr.javatronic.damapping.processor.sourcegenerator.imports;
 
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.DATypeImpl;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
@@ -117,7 +118,7 @@ public class DATypeImportComputerTest {
 
   private static DAType daType(String qualifiedName, List<DAType> typeArgs) {
     DAName daName = DANameFactory.from(qualifiedName);
-    return DAType.typeBuilder(DATypeKind.DECLARED, DANameFactory.simpleFromQualified(daName))
+    return DATypeImpl.typeBuilder(DATypeKind.DECLARED, DANameFactory.simpleFromQualified(daName))
                  .withQualifiedName(daName)
                  .withTypeArgs(typeArgs)
                  .build();

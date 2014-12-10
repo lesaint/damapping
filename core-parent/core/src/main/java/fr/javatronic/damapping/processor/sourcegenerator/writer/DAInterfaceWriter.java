@@ -20,7 +20,6 @@ import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.util.Lists;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;

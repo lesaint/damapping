@@ -17,7 +17,9 @@ package fr.javatronic.damapping.processor.impl.javaxparsing;
 
 import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.processor.model.DAInterface;
+import fr.javatronic.damapping.processor.model.DAInterfaceImpl;
 import fr.javatronic.damapping.processor.model.DAMethod;
+import fr.javatronic.damapping.processor.model.DAMethodImpl;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
@@ -133,8 +135,8 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
             }
 
             ExecutableElement methodElement = (ExecutableElement) o;
-            DAMethod.Builder builder = daMethodBuilder(methodElement);
-            DAMethod.Builder res = builder
+            DAMethodImpl.Builder builder = daMethodBuilder(methodElement);
+            DAMethodImpl.Builder res = builder
                 .withAnnotations(javaxExtractor.extractDAAnnotations(methodElement))
                 .withModifiers(javaxExtractor.extractModifiers(methodElement))
                 .withParameters(javaxExtractor.extractParameters(methodElement));
@@ -164,12 +166,12 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
     return sb.toString();
   }
 
-  private DAMethod.Builder daMethodBuilder(ExecutableElement element) {
+  private DAMethodImpl.Builder daMethodBuilder(ExecutableElement element) {
     if (element.getKind() == ElementKind.METHOD) {
-      return DAMethod.methodBuilder();
+      return DAMethodImpl.methodBuilder();
     }
     if (element.getKind() == ElementKind.CONSTRUCTOR) {
-      return DAMethod.constructorBuilder();
+      return DAMethodImpl.constructorBuilder();
     }
     throw new IllegalArgumentException(
         String.format(
@@ -198,7 +200,7 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
           return null;
         }
 
-        return new DAInterface(javaxExtractor.extractType(o));
+        return new DAInterfaceImpl(javaxExtractor.extractType(o));
       }
     }
     ).filter(Predicates.notNull()).toList();

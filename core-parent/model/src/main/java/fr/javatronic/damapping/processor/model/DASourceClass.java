@@ -103,9 +103,9 @@ public class DASourceClass implements DAModelVisitable {
   }
 
   /**
-   * The {@link DAAnnotation} from {@link #annotations} which represents the {@link Injectable} annotation on the
+   * The {@link DAAnnotationImpl} from {@link #annotations} which represents the {@link Injectable} annotation on the
    * dedicated class (if it exists).
-   * @return a {@link Optional} of {@link DAAnnotation}
+   * @return a {@link Optional} of {@link DAAnnotationImpl}
    */
   @Nonnull
   public Optional<DAAnnotation> getInjectableAnnotation() {
@@ -128,10 +128,10 @@ public class DASourceClass implements DAModelVisitable {
   }
 
   /**
-   * The {@link DAMethod}(s) from {@link #methods} which represents a non-private constructor in the dedicated class
+   * The {@link DAMethodImpl}(s) from {@link #methods} which represents a non-private constructor in the dedicated class
    * (if any).
    *
-   * @return a {@link List} of {@link DAMethod}
+   * @return a {@link List} of {@link DAMethodImpl}
    */
   @Nonnull
   public List<DAMethod> getAccessibleConstructors() {
@@ -276,7 +276,7 @@ public class DASourceClass implements DAModelVisitable {
           @Override
           public DAMethod apply(@Nullable DAMethod daMethod) {
             if (daMethod == impliciteMapperMethod) {
-              return DAMethod.makeImpliciteMapperMethod(daMethod);
+              return DAMethodImpl.makeImpliciteMapperMethod(daMethod);
             }
             return daMethod;
           }
@@ -296,7 +296,7 @@ public class DASourceClass implements DAModelVisitable {
           @Override
           public DAMethod apply(@Nullable DAMethod daMethod) {
             if (daMethod == applyMethod) {
-              return DAMethod.makeGuavaFunctionApplyMethod(daMethod);
+              return DAMethodImpl.makeGuavaFunctionApplyMethod(daMethod);
             }
             return daMethod;
           }

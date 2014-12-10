@@ -16,6 +16,7 @@
 package fr.javatronic.damapping.processor.model.constants;
 
 import fr.javatronic.damapping.processor.model.DAAnnotation;
+import fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 
@@ -29,10 +30,10 @@ import javax.annotation.Resource;
  */
 public final class JavaxConstants {
   public static final DAType NULLABLE_TYPE = DATypeFactory.from(Nullable.class);
-  public static final DAAnnotation NULLABLE_ANNOTATION = new DAAnnotation(NULLABLE_TYPE);
+  public static final DAAnnotation NULLABLE_ANNOTATION = new DAAnnotationImpl(NULLABLE_TYPE);
 
   public static final DAType RESOURCE_TYPE = DATypeFactory.from(Resource.class);
-  public static final DAAnnotation RESOURCE_ANNOTATION = new DAAnnotation(RESOURCE_TYPE);
+  public static final DAAnnotation RESOURCE_ANNOTATION = new DAAnnotationImpl(RESOURCE_TYPE);
 
   private JavaxConstants() {
     // prevents instantiation

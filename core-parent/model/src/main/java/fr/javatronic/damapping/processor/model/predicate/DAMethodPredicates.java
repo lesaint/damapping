@@ -16,9 +16,11 @@
 package fr.javatronic.damapping.processor.model.predicate;
 
 import fr.javatronic.damapping.processor.model.DAMethod;
+import fr.javatronic.damapping.processor.model.DAMethodImpl;
 import fr.javatronic.damapping.processor.model.DAModifier;
-import fr.javatronic.damapping.processor.model.DAParameter;
+import fr.javatronic.damapping.processor.model.DAParameterImpl;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.DATypeImpl;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
@@ -211,19 +213,20 @@ public class DAMethodPredicates {
 
     private CompilerGeneratedEnumMethods(DAType enumType) {
       this.enumType = enumType;
-      this.valuesMethod = DAMethod.methodBuilder()
+      this.valuesMethod = DAMethodImpl.methodBuilder()
                                   .withName(DANameFactory.from("values"))
                                   .withModifiers(Sets.of(DAModifier.PUBLIC, DAModifier.STATIC))
                                   .withReturnType(
-                                      DAType.typeBuilder(DATypeKind.DECLARED, enumType.getSimpleName())
+                                      DATypeImpl.typeBuilder(DATypeKind.DECLARED, enumType.getSimpleName())
                                             .withQualifiedName(enumType.getQualifiedName())
                                             .build()
                                   ).build();
-      this.valueOfMethod = DAMethod.methodBuilder()
+      this.valueOfMethod = DAMethodImpl.methodBuilder()
           .withName(DANameFactory.from("valueOf"))
           .withModifiers(Sets.of(DAModifier.PUBLIC, DAModifier.STATIC))
           .withReturnType(enumType)
-          .withParameters(Lists.of(DAParameter.builder(DANameFactory.from("name"), DATypeFactory.from(String.class)).build()))
+          .withParameters(Lists.of(
+              DAParameterImpl.builder(DANameFactory.from("name"), DATypeFactory.from(String.class)).build()))
           .build();
     }
 

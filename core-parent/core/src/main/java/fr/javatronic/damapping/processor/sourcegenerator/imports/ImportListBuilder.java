@@ -21,7 +21,6 @@ import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.util.Function;
-import fr.javatronic.damapping.util.Lists;
 import fr.javatronic.damapping.util.Maps;
 import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Predicates;
@@ -33,8 +32,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 

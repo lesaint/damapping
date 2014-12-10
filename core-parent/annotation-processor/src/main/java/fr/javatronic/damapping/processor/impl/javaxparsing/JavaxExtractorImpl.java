@@ -21,10 +21,15 @@ import fr.javatronic.damapping.processor.model.DAEnumValue;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAParameter;
+import fr.javatronic.damapping.processor.model.DAParameterImpl;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.DATypeImpl;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
+import fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl;
+import fr.javatronic.damapping.processor.model.impl.DAAnnotationMemberImpl;
+import fr.javatronic.damapping.processor.model.impl.DAEnumValueImpl;
 import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicates;
@@ -63,7 +68,7 @@ import static fr.javatronic.damapping.util.Predicates.notNull;
  * by a {@link ReferenceScanResult} instance.
  * <p>
  * If an unresolved refernces has no fix provided by the {@link ReferenceScanResult} object, an
- * {@link IllegalStateException} will be raised: <strong>no {@link DAType} is supposed to be built unless all
+ * {@link IllegalStateException} will be raised: <strong>no {@link fr.javatronic.damapping.processor.model.DATypeImpl} is supposed to be built unless all
  * references are valid or fixed</strong>.
  * </p>
  *
@@ -103,7 +108,7 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     }
 
     Element element = typeUtils.asElement(type);
-    DAType.Builder builder = DAType
+    DATypeImpl.Builder builder = DATypeImpl
         .typeBuilder(
             TypeKindToDATypeKind.INSTANCE.apply(type.getKind()),
             extractSimpleName(type, element)
@@ -152,7 +157,7 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     TypeMirror componentType = arrayType.getComponentType();
     Element componentElement = processingEnv.getTypeUtils().asElement(componentType);
     DATypeKind daTypeKind = TypeKindToDATypeKind.INSTANCE.apply(componentType.getKind());
-    DAType.Builder builder = DAType.arrayBuilder(daTypeKind, extractSimpleName(componentType, componentElement))
+    DATypeImpl.Builder builder = DATypeImpl.arrayBuilder(daTypeKind, extractSimpleName(componentType, componentElement))
                                    .withQualifiedName(extractQualifiedName(componentType, componentElement))
                                    .withTypeArgs(extractTypeArgs(componentType));
     return builder.build();
@@ -260,7 +265,7 @@ public class JavaxExtractorImpl implements JavaxExtractor {
           @Nullable
           @Override
           public DAParameter apply(@Nullable VariableElement o) {
-            return DAParameter.builder(JavaxDANameFactory.from(o.getSimpleName()), extractType(o.asType()))
+            return DAParameterImpl.builder(JavaxDANameFactory.from(o.getSimpleName()), extractType(o.asType()))
                               .withModifiers(from(o.getModifiers()).transform(toDAModifier()).toSet())
                               .withAnnotations(extractDAAnnotations(o))
                               .build();
@@ -332,7 +337,7 @@ public class JavaxExtractorImpl implements JavaxExtractor {
           @Nonnull
           @Override
           public DAEnumValue apply(@Nonnull VariableElement o) {
-            return new DAEnumValue(o.getSimpleName().toString());
+            return new DAEnumValueImpl(o.getSimpleName().toString());
           }
         }
         )
@@ -369,7 +374,7 @@ public class JavaxExtractorImpl implements JavaxExtractor {
         return null;
       }
 
-      return new DAAnnotationMember(
+      return new DAAnnotationMemberImpl(
           entry.getKey().getSimpleName().toString(),
           extractType(entry.getKey().getReturnType()),
           entry.getValue().toString()
@@ -386,7 +391,7 @@ public class JavaxExtractorImpl implements JavaxExtractor {
       }
       DeclaredType annotationType = input.getAnnotationType();
       DAType daType = extractType(annotationType);
-      return new DAAnnotation(daType,
+      return new DAAnnotationImpl(daType,
           toDAAnnotations(daType, annotationType.asElement().getAnnotationMirrors()),
           toDAAnnotationMembers(daType, input.getElementValues())
       );

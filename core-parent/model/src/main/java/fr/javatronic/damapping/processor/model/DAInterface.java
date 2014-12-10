@@ -16,55 +16,15 @@
 package fr.javatronic.damapping.processor.model;
 
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitable;
-import fr.javatronic.damapping.processor.model.visitor.DAModelVisitor;
 
 import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
 
 /**
- * DAInterface - Représente un type Interface implémenté par une classe ou étendue par une autre interface.
+ * DAInterface -
  *
  * @author Sébastien Lesaint
  */
-@Immutable
-public class DAInterface implements DAModelVisitable {
+public interface DAInterface extends DAModelVisitable {
   @Nonnull
-  private final DAType type;
-
-  public DAInterface(DAType type) {
-    this.type = type;
-  }
-
-  @Nonnull
-  public DAType getType() {
-    return type;
-  }
-
-  @Override
-  public void accept(DAModelVisitor visitor) {
-    visitor.visit(this);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-
-    DAInterface that = (DAInterface) o;
-
-    if (!type.equals(that.type)) {
-      return false;
-    }
-
-    return true;
-  }
-
-  @Override
-  public int hashCode() {
-    return type.hashCode();
-  }
+  DAType getType();
 }
