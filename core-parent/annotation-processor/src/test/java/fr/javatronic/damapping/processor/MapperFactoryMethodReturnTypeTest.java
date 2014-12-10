@@ -15,22 +15,17 @@
  */
 package fr.javatronic.damapping.processor;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import javax.tools.JavaFileObject;
 
-import com.google.testing.compile.CompileTester;
 import com.google.testing.compile.JavaFileObjects;
-import com.google.testing.compile.JavaSourceSubjectFactory;
 import org.testng.annotations.Test;
-import org.truth0.Truth;
 
 /**
  * MapperMethodPresentTest -
  *
  * @author Sébastien Lesaint
  */
-public class MapperFactoryMethodReturnTypeTest {
+public class MapperFactoryMethodReturnTypeTest extends AbstractCompilationTest {
   @Test
   public void compilation_fails_when_mapperfactory_method_does_not_return_mapper_type() throws Exception {
     JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.TrivalMapperFactory",
@@ -59,9 +54,4 @@ public class MapperFactoryMethodReturnTypeTest {
         .onLine(7);
   }
 
-  private CompileTester assertThat(JavaFileObject fileObject) {
-    return Truth.ASSERT.about(JavaSourceSubjectFactory.javaSource())
-                                       .that(fileObject)
-                                       .processedWith(new DAAnnotationProcessor());
-  }
 }

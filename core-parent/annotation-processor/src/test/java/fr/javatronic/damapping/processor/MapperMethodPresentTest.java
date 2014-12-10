@@ -15,35 +15,26 @@
  */
 package fr.javatronic.damapping.processor;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import javax.tools.JavaFileObject;
 
-import com.google.testing.compile.CompileTester;
 import com.google.testing.compile.JavaFileObjects;
-import com.google.testing.compile.JavaSourceSubjectFactory;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.truth0.Truth;
 
 /**
  * MapperMethodPresentTest -
  *
  * @author Sébastien Lesaint
  */
-public class MapperMethodPresentTest {
+public class MapperMethodPresentTest extends AbstractCompilationTest {
 
-  private static final String MISSING_MAPPER_METHOD_ERROR_MSG = "Mapper must have one and only one method qualifying as mapper method";
+  private static final String MISSING_MAPPER_METHOD_ERROR_MSG = "Mapper must have one and only one method qualifying " +
+      "as mapper method";
 
-  @Test
-  public void compiling_empty_annotated_class_fails_because_there_is_no_mapper_method() throws Exception {
-    JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.Empty",
-        "package test;",
-        "",
-        "import fr.javatronic.damapping.annotation.Mapper;",
-        "",
-        "@Mapper",
-        "public class Empty {}"
-    );
+  @Test(dataProvider = "classes_without_public_mapper_method")
+  public void compiling_annotated_class_without_mapper_method_causes_compilation_error(String fqn, String[] source)
+      throws Exception {
+    JavaFileObject fileObject = JavaFileObjects.forSourceLines(fqn, source);
 
     assertThat(fileObject)
         .failsToCompile()
@@ -52,70 +43,64 @@ public class MapperMethodPresentTest {
         .onLine(6);
   }
 
-  @Test
-  public void compiling_annotated_class_with_only_private_method_fails_because_there_is_no_mapper_method() throws Exception {
-    JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.OnlyPrivate",
-        "package test;",
-        "",
-        "import fr.javatronic.damapping.annotation.Mapper;",
-        "",
-        "@Mapper",
-        "public class OnlyPrivate {",
-        "  private Integer apply(String input) {",
-        "    return null;",
-        "  }",
-        "}"
-    );
-
-    assertThat(fileObject)
-        .failsToCompile()
-        .withErrorContaining(MISSING_MAPPER_METHOD_ERROR_MSG)
-        .in(fileObject)
-        .onLine(6);
-  }
-
-  @Test
-  public void compiling_annotated_class_with_only_protected_method_fails_because_there_is_no_mapper_method() throws Exception {
-    JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.OnlyProtected",
-        "package test;",
-        "",
-        "import fr.javatronic.damapping.annotation.Mapper;",
-        "",
-        "@Mapper",
-        "public class OnlyProtected {",
-        "  protected Integer apply(String input) {",
-        "    return null;",
-        "  }",
-        "}"
-    );
-
-    assertThat(fileObject)
-        .failsToCompile()
-        .withErrorContaining(MISSING_MAPPER_METHOD_ERROR_MSG)
-        .in(fileObject)
-        .onLine(6);
-  }
-
-  @Test
-  public void compiling_annotated_class_with_only_default_protected_method_fails_because_there_is_no_mapper_method() throws Exception {
-    JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.OnlyDefaultProtected",
-        "package test;",
-        "",
-        "import fr.javatronic.damapping.annotation.Mapper;",
-        "",
-        "@Mapper",
-        "public class OnlyDefaultProtected {",
-        "  Integer apply(String input) {",
-        "    return null;",
-        "  }",
-        "}"
-    );
-
-    assertThat(fileObject)
-        .failsToCompile()
-        .withErrorContaining(MISSING_MAPPER_METHOD_ERROR_MSG)
-        .in(fileObject)
-        .onLine(6);
+  @DataProvider
+  public Object[][] classes_without_public_mapper_method() {
+    return new Object[][]{
+        {
+            "test.Empty",
+            new String[]{
+                "package test;",
+                "",
+                "import fr.javatronic.damapping.annotation.Mapper;",
+                "",
+                "@Mapper",
+                "public class Empty {}"
+            }
+        },
+        {
+            "test.OnlyDefaultProtected",
+            new String[]{"package test;",
+                "",
+                "import fr.javatronic.damapping.annotation.Mapper;",
+                "",
+                "@Mapper",
+                "public class OnlyDefaultProtected {",
+                "  Integer apply(String input) {",
+                "    return null;",
+                "  }",
+                "}"}
+        },
+        {
+            "test.OnlyProtected",
+            new String[]{
+                "package test;",
+                "",
+                "import fr.javatronic.damapping.annotation.Mapper;",
+                "",
+                "@Mapper",
+                "public class OnlyProtected {",
+                "  protected Integer apply(String input) {",
+                "    return null;",
+                "  }",
+                "}"
+            }
+        },
+        {
+            "test.OnlyPrivate",
+            new String[]{
+                "package test;",
+                "",
+                "import fr.javatronic.damapping.annotation.Mapper;",
+                "",
+                "@Mapper",
+                "public class OnlyPrivate {",
+                "  private Integer apply(String input) {",
+                "    return null;",
+                "  }",
+                "}"
+            }
+        }
+    };
   }
 
   @Test
@@ -138,17 +123,4 @@ public class MapperMethodPresentTest {
     assertThat(fileObject).compilesWithoutError();
   }
 
-  private CompileTester assertThat(String fullyQualifiedName, String... sourceLines) {
-    return assertThat(JavaFileObjects.forSourceLines(fullyQualifiedName, sourceLines));
-  }
-
-  private CompileTester assertThat(String fileName) throws URISyntaxException, MalformedURLException {
-    return assertThat(JavaFileObjects.forResource(getClass().getResource(fileName).toURI().toURL()));
-  }
-
-  private CompileTester assertThat(JavaFileObject fileObject) {
-    return Truth.ASSERT.about(JavaSourceSubjectFactory.javaSource())
-                                       .that(fileObject)
-                                       .processedWith(new DAAnnotationProcessor());
-  }
 }

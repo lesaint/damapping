@@ -17,33 +17,24 @@ package fr.javatronic.damapping.processor;
 
 import javax.tools.JavaFileObject;
 
+import com.google.testing.compile.CompileTester;
 import com.google.testing.compile.JavaFileObjects;
-import org.testng.annotations.Test;
+import com.google.testing.compile.JavaSourceSubjectFactory;
+import org.truth0.Truth;
 
 /**
- * MapperAnnotationTest -
+ * AbstractCompilationTest -
  *
  * @author Sébastien Lesaint
  */
-public class MapperAnnotationTest extends AbstractCompilationTest {
-
-  @Test
-  public void compiling_empty_annotated_class_implementing_Function_is_successfull() throws Exception {
-    JavaFileObject fileObject = JavaFileObjects.forSourceLines(
-        "MapperOnInterface",
-        "import fr.javatronic.damapping.annotation.Mapper;",
-        "",
-        "@Mapper",
-        "public interface MapperOnInterface {",
-        "  Integer apply(String input);",
-        "}"
-    );
-
-    assertThat(fileObject)
-        .failsToCompile()
-        .withErrorContaining("Type MapperOnInterface annoted with @Mapper annotation is not a class nor an enum (kind found = INTERFACE)")
-        .in(fileObject)
-        .onLine(4);
+public abstract class AbstractCompilationTest {
+  protected CompileTester assertThat(String fullyQualifiedName, String... sourceLines) {
+    return assertThat(JavaFileObjects.forSourceLines(fullyQualifiedName, sourceLines));
   }
 
+  protected CompileTester assertThat(JavaFileObject fileObject) {
+    return Truth.ASSERT.about(JavaSourceSubjectFactory.javaSource())
+                .that(fileObject)
+                .processedWith(new DAAnnotationProcessor());
+  }
 }

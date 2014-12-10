@@ -15,20 +15,14 @@
  */
 package fr.javatronic.damapping.processor;
 
-import javax.tools.JavaFileObject;
-
-import com.google.testing.compile.CompileTester;
-import com.google.testing.compile.JavaFileObjects;
-import com.google.testing.compile.JavaSourceSubjectFactory;
 import org.testng.annotations.Test;
-import org.truth0.Truth;
 
 /**
  * DefaultPackageDedicatedClassTest - Tests generating classes from a dedicated class in the default package.
  *
  * @author Sébastien Lesaint
  */
-public class DefaultPackageDedicatedClassTest {
+public class DefaultPackageDedicatedClassTest extends AbstractCompilationTest {
   @Test
   public void compiling_mapper_in_default_package_is_successfull() throws Exception {
     assertThat("MostSimple",
@@ -63,13 +57,4 @@ public class DefaultPackageDedicatedClassTest {
     ).compilesWithoutError();
   }
 
-  private CompileTester assertThat(String fullyQualifiedName, String... sourceLines) {
-    return assertThat(JavaFileObjects.forSourceLines(fullyQualifiedName, sourceLines));
-  }
-
-  private CompileTester assertThat(JavaFileObject fileObject) {
-    return Truth.ASSERT.about(JavaSourceSubjectFactory.javaSource())
-                .that(fileObject)
-                .processedWith(new DAAnnotationProcessor());
-  }
 }

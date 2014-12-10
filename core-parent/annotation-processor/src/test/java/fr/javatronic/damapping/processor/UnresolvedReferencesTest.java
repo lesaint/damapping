@@ -17,18 +17,15 @@ package fr.javatronic.damapping.processor;
 
 import javax.tools.JavaFileObject;
 
-import com.google.testing.compile.CompileTester;
 import com.google.testing.compile.JavaFileObjects;
-import com.google.testing.compile.JavaSourceSubjectFactory;
 import org.testng.annotations.Test;
-import org.truth0.Truth;
 
 /**
  * UnresolvedReferencesTest -
  *
  * @author Sébastien Lesaint
  */
-public class UnresolvedReferencesTest {
+public class UnresolvedReferencesTest extends AbstractCompilationTest {
   @Test
   public void does_not_generate_source_classes_when_property_has_unresolved_type() throws Exception {
     JavaFileObject javaFileObject = JavaFileObjects.forSourceLines("UnresolvedTypeInProperty",
@@ -64,13 +61,4 @@ public class UnresolvedReferencesTest {
         .withErrorContaining("cannot find symbol").in(javaFileObject).onLine(6);
   }
 
-  private CompileTester assertThat(String fullyQualifiedName, String... sourceLines) {
-    return assertThat(JavaFileObjects.forSourceLines(fullyQualifiedName, sourceLines));
-  }
-
-  private CompileTester assertThat(JavaFileObject fileObject) {
-    return Truth.ASSERT.about(JavaSourceSubjectFactory.javaSource())
-                .that(fileObject)
-                .processedWith(new DAAnnotationProcessor());
-  }
 }

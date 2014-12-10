@@ -17,18 +17,15 @@ package fr.javatronic.damapping.processor;
 
 import javax.tools.JavaFileObject;
 
-import com.google.testing.compile.CompileTester;
 import com.google.testing.compile.JavaFileObjects;
-import com.google.testing.compile.JavaSourceSubjectFactory;
 import org.testng.annotations.Test;
-import org.truth0.Truth;
 
 /**
  * UnresolvedReferencesTest -
  *
  * @author Sébastien Lesaint
  */
-public class Jsr330PresentTest {
+public class Jsr330PresentTest extends AbstractCompilationTest {
   @Test
   public void compilation_fails_when_Injectable_is_used_without_JSR330_annotations_in_classpath() throws Exception {
     JavaFileObject javaFileObject = JavaFileObjects.forSourceLines("MostSimpleClass",
@@ -46,13 +43,4 @@ public class Jsr330PresentTest {
         .in(javaFileObject).onLine(3);
   }
 
-  private CompileTester assertThat(String fullyQualifiedName, String... sourceLines) {
-    return assertThat(JavaFileObjects.forSourceLines(fullyQualifiedName, sourceLines));
-  }
-
-  private CompileTester assertThat(JavaFileObject fileObject) {
-    return Truth.ASSERT.about(JavaSourceSubjectFactory.javaSource())
-                .that(fileObject)
-                .processedWith(new DAAnnotationProcessor());
-  }
 }

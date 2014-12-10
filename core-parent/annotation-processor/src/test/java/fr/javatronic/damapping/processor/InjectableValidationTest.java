@@ -17,18 +17,15 @@ package fr.javatronic.damapping.processor;
 
 import javax.tools.JavaFileObject;
 
-import com.google.testing.compile.CompileTester;
 import com.google.testing.compile.JavaFileObjects;
-import com.google.testing.compile.JavaSourceSubjectFactory;
 import org.testng.annotations.Test;
-import org.truth0.Truth;
 
 /**
  * UnresolvedReferencesTest -
  *
  * @author Sébastien Lesaint
  */
-public class InjectableValidationTest {
+public class InjectableValidationTest extends AbstractCompilationTest {
   @Test
   public void compilation_fails_when_Injectable_is_set_on_an_interface() throws Exception {
     JavaFileObject javaFileObject = JavaFileObjects.forSourceLines("InjectableOnAnInterface",
@@ -56,13 +53,4 @@ public class InjectableValidationTest {
         .withErrorContaining("@Injectable must be used on a class or enum also annotated with @Mapper").in(javaFileObject).onLine(2);
   }
 
-  private CompileTester assertThat(String fullyQualifiedName, String... sourceLines) {
-    return assertThat(JavaFileObjects.forSourceLines(fullyQualifiedName, sourceLines));
-  }
-
-  private CompileTester assertThat(JavaFileObject fileObject) {
-    return Truth.ASSERT.about(JavaSourceSubjectFactory.javaSource())
-                .that(fileObject)
-                .processedWith(new DAAnnotationProcessor());
-  }
 }
