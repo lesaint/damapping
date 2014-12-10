@@ -106,6 +106,41 @@ public class MapperFactoryMethodValidationTest extends AbstractCompilationTest {
   }
 
   @Test
+  public void compilation_fails_when_mixing_mapperfactory_method_and_constructor() throws Exception {
+    JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.ConstructorAndMethodMixMapperFactory",
+        "package test;",
+        "",
+        "import fr.javatronic.damapping.annotation.Mapper;",
+        "import fr.javatronic.damapping.annotation.MapperFactory;",
+        "",
+        "@Mapper",
+        "public class ConstructorAndMethodMixMapperFactory {",
+        "  @MapperFactory",
+        "  public ConstructorAndMethodMixMapperFactory() {",
+        "    // content does not matter",
+        "  }",
+        "",
+        "  @MapperFactory",
+        "  public static ConstructorAndMethodMixMapperFactory create() {",
+        "    return null; // content does not matter",
+        "  }",
+        "",
+        "  public String map(Integer input) {",
+        "    return null;",
+        "  }",
+        "}"
+    );
+
+    assertThat(fileObject)
+        .failsToCompile()
+        .withErrorContaining(
+            "Dedicated class can have both constructor(s) and static method(s) annotated with @MapperFactory"
+        )
+        .in(fileObject)
+        .onLine(7);
+  }
+
+  @Test
   public void compilation_succeeds_when_mapperfactory_method_is_public_static_and_return_dedicated_class() throws Exception {
     JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.StaticMethodMapperFactory",
         "package test;",

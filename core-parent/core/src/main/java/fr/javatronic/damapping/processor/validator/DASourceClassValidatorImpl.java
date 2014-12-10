@@ -48,6 +48,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     validateAnnotations(sourceClass.getAnnotations());
     validateModifiers(sourceClass.getModifiers());
     validateMethods(sourceClass);
+    validateMapperFactoryMethods(sourceClass);
     validateJSR330InPath(sourceClass);
 
     // retrieve instantiation type from @Mapper annotation
@@ -108,14 +109,23 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     if (mapperMethodCount == 0) {
       throw new ValidationError("Mapper must have one and only one method qualifying as mapper method (either implemente Guava's Function interface or define a single non private method)");
     }
+  }
 
-    for (DAMethod daMethod : from(methods).filter(isMapperFactoryMethod())) {
+  private void validateMapperFactoryMethods(DASourceClass sourceClass) throws ValidationError {
+    boolean hasConstructor = false;
+    boolean hasStaticMethod = false;
+    for (DAMethod daMethod : from(sourceClass.getMethods()).filter(isMapperFactoryMethod())) {
       if (!isValidMapperFactoryMethodKindAndQualifiers(daMethod)) {
         throw new ValidationError("Method annotated with @MapperFactory must either be a public constructor or a public static method");
       }
       if (!isValidMapperFactoryReturnType(sourceClass, daMethod.getReturnType())) {
         throw new ValidationError("Method annotated with @MapperFactory must return type of the class annotated with @Mapper");
       }
+      hasConstructor |= daMethod.isConstructor();
+      hasStaticMethod |= !daMethod.isConstructor();
+    }
+    if (hasConstructor && hasStaticMethod) {
+      throw new ValidationError("Dedicated class can have both constructor(s) and static method(s) annotated with @MapperFactory");
     }
   }
 
@@ -132,7 +142,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
   }
 
   private void validateJSR330InPath(DASourceClass sourceClass) throws ValidationError {
-    if (sourceClass.getInjectableAnnotation().isPresent() &&  !Jsr330Constants.isJSR330Present()) {
+    if (sourceClass.getInjectableAnnotation().isPresent() && !Jsr330Constants.isJSR330Present()) {
       throw new ValidationError("Class annotated with @Mapper and @Injectable requires JSR 330's annotations (@Named, @Inject, ...) to be available in classpath");
     }
   }
