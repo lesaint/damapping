@@ -18,16 +18,16 @@ package fr.javatronic.damapping.processor.model;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
+import static fr.javatronic.damapping.util.Preconditions.checkArgument;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
-* DAImport -
-*
-* @author Sébastien Lesaint
-*/
+ * DAImportImpl -
+ *
+ * @author Sébastien Lesaint
+ */
 @Immutable
 public class DAImportImpl implements DAImport {
-  private final boolean defaultPackage;
   @Nonnull
   private final DAName qualifiedName;
   @Nonnull
@@ -38,23 +38,31 @@ public class DAImportImpl implements DAImport {
   private DAImportImpl(@Nonnull DAName qualifiedName, @Nonnull String packageName, @Nonnull String simpleName) {
     this.qualifiedName = checkNotNull(qualifiedName);
     this.packageName = checkNotNull(packageName);
-    this.defaultPackage = packageName.isEmpty();
-    this.simpleName = simpleName;
+    this.simpleName = checkNotNull(simpleName);
   }
 
+  /**
+   *
+   *
+   * @param daName a {@link DAName}
+   *
+   * @return a {@link DAImportImpl} instance.
+   *
+   * @throws IllegalArgumentException if the specified DAName has no package
+   */
   @Nonnull
   public static DAImport from(@Nonnull DAName daName) {
     checkNotNull(daName);
 
     String qualifiedName = daName.getName();
     String simpleName = qualifiedName.substring(qualifiedName.lastIndexOf(".") + 1);
-    String packageName = simpleName.equals(qualifiedName) ? "" : qualifiedName.substring(0, qualifiedName.length() - simpleName.length() - 1);
-    return new DAImportImpl(daName, packageName, simpleName);
-  }
+    checkArgument(!simpleName.equals(qualifiedName), "importing a type from the default/unamed package is illegal");
 
-  @Override
-  public boolean isDefaultPackage() {
-    return defaultPackage;
+    return new DAImportImpl(
+        daName,
+        qualifiedName.substring(0, qualifiedName.length() - simpleName.length() - 1),
+        simpleName
+    );
   }
 
   @Override

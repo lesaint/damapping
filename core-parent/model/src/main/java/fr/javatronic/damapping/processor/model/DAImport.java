@@ -18,19 +18,37 @@ package fr.javatronic.damapping.processor.model;
 import javax.annotation.Nonnull;
 
 /**
- * DAImport -
+ * DAImport - Represents an import statement in a Java source file.
  *
  * @author Sébastien Lesaint
  */
 public interface DAImport {
-  boolean isDefaultPackage();
-
+  /**
+   * The qualified name of the imported type, ie. a {@link DAName} object which name is {@code com.foo.Bar} for
+   * {@code import com.foo.Bar}.
+   *
+   * @return a {@link DAName}
+   */
   @Nonnull
   DAName getQualifiedName();
 
+  /**
+   * The package of the import type ie. {@code com.foo} in {@code import com.foo.Bar}.
+   * <p>
+   * Since it is illegal to import a Type from the unamed package, this method can not return an empty
+   * String.
+   * </p>
+   *
+   * @return a non empty {@link String}
+   */
   @Nonnull
   String getPackageName();
 
+  /**
+   * The simple name of the imported type, ie. {@code Bar} in {@code import com.foo.Bar}.
+   *
+   * @return a non empty {@link String}
+   */
   @Nonnull
   String getSimpleName();
 }
