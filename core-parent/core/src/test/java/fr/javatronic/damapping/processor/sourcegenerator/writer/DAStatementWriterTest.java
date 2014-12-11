@@ -16,7 +16,7 @@
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
 import fr.javatronic.damapping.processor.model.DAParameter;
-import fr.javatronic.damapping.processor.model.DAParameterImpl;
+import fr.javatronic.damapping.processor.model.impl.DAParameterImpl;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;

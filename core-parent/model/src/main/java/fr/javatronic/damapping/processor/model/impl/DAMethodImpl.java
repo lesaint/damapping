@@ -13,8 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.processor.model;
+package fr.javatronic.damapping.processor.model.impl;
 
+import fr.javatronic.damapping.processor.model.DAAnnotation;
+import fr.javatronic.damapping.processor.model.DAMethod;
+import fr.javatronic.damapping.processor.model.DAModifier;
+import fr.javatronic.damapping.processor.model.DAName;
+import fr.javatronic.damapping.processor.model.DAParameter;
+import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitor;
 
@@ -28,7 +34,7 @@ import static fr.javatronic.damapping.processor.model.util.ImmutabilityHelper.no
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
- * DAMethod -
+ * DAMethodImpl - Implementation of DAMethod as a immutable object.
  *
  * @author Sébastien Lesaint
  */
@@ -73,7 +79,7 @@ public class DAMethodImpl implements DAMethod {
    */
   private final boolean guavaFunctionApplyMethod;
   /**
-   * Indique que la méthode courante est la mapper méthode implicite de la {@link DASourceClass}
+   * Indique que la méthode courante est la mapper méthode implicite de la {@link fr.javatronic.damapping.processor.model.DASourceClass}
    */
   private final boolean implicitMapperMethod;
 

@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.processor.model;
+package fr.javatronic.damapping.processor.model.impl;
+
+import fr.javatronic.damapping.processor.model.DAName;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
@@ -22,10 +24,7 @@ import static fr.javatronic.damapping.util.Preconditions.checkArgument;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
- * DAName - Représent un nom de class, paramètre, package, ...
- * <br />
- * C'est essentiellement un wrapper autours d'une String qui permet d'avoir un meilleur typage des autres
- * classes et méthode du framework.
+ * DANameImpl - Implementation of DAName as an immutable object.
  *
  * @author Sébastien Lesaint
  */
@@ -34,6 +33,13 @@ public class DANameImpl implements DAName {
   @Nonnull
   private final String name;
 
+  /**
+   * Creates a new DANameImpl instance with the specified name value.
+   *
+   * @param name a {@link String}
+   *
+   * @throws IllegalArgumentException if the specified String is empty
+   */
   public DANameImpl(@Nonnull String name) {
     this.name = checkNotNull(name);
     checkArgument(!name.isEmpty(), "DAName can not be empty");

@@ -16,11 +16,11 @@
 package fr.javatronic.damapping.processor.model.predicate;
 
 import fr.javatronic.damapping.processor.model.DAMethod;
-import fr.javatronic.damapping.processor.model.DAMethodImpl;
+import fr.javatronic.damapping.processor.model.impl.DAMethodImpl;
 import fr.javatronic.damapping.processor.model.DAModifier;
-import fr.javatronic.damapping.processor.model.DAParameterImpl;
+import fr.javatronic.damapping.processor.model.impl.DAParameterImpl;
 import fr.javatronic.damapping.processor.model.DAType;
-import fr.javatronic.damapping.processor.model.DATypeImpl;
+import fr.javatronic.damapping.processor.model.impl.DATypeImpl;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;

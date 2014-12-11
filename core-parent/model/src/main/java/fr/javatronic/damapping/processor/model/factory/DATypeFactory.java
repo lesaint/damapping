@@ -16,9 +16,9 @@
 package fr.javatronic.damapping.processor.model.factory;
 
 import fr.javatronic.damapping.processor.model.DAName;
-import fr.javatronic.damapping.processor.model.DANameImpl;
+import fr.javatronic.damapping.processor.model.impl.DANameImpl;
 import fr.javatronic.damapping.processor.model.DAType;
-import fr.javatronic.damapping.processor.model.DATypeImpl;
+import fr.javatronic.damapping.processor.model.impl.DATypeImpl;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 
 import java.util.Collections;

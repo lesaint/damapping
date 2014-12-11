@@ -20,11 +20,16 @@ import fr.javatronic.damapping.processor.model.visitor.DAModelVisitable;
 import javax.annotation.Nonnull;
 
 /**
- * DAInterface -
+ * DAInterface - Represents an interface implemented by a class or extended by an interface.
  *
  * @author Sébastien Lesaint
  */
 public interface DAInterface extends DAModelVisitable {
+  /**
+   * The type representing the implemented/extended interface.
+   *
+   * @return a {@link DAType}
+   */
   @Nonnull
   DAType getType();
 }

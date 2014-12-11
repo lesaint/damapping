@@ -18,11 +18,19 @@ package fr.javatronic.damapping.processor.model;
 import javax.annotation.Nonnull;
 
 /**
- * DAName -
+ * DAName - Represents the name of a class, parameter, package, etc. It can not be empty.
+ * <p>
+ * This type is essentially here to enforce better typing in the model and enforcing that a name can not be empty
+ * </p>
  *
  * @author Sébastien Lesaint
  */
 public interface DAName extends CharSequence, Comparable<DAName> {
+  /**
+   * The String representation of the DAName.
+   *
+   * @return a non-empty {@link String}
+   */
   @Nonnull
   String getName();
 }

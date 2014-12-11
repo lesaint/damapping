@@ -16,8 +16,8 @@
 package fr.javatronic.damapping.processor.model.predicate;
 
 import fr.javatronic.damapping.processor.model.DAInterface;
-import fr.javatronic.damapping.processor.model.DAInterfaceImpl;
-import fr.javatronic.damapping.processor.model.DATypeImpl;
+import fr.javatronic.damapping.processor.model.impl.DAInterfaceImpl;
+import fr.javatronic.damapping.processor.model.impl.DATypeImpl;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;

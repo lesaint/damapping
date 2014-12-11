@@ -18,7 +18,7 @@ package fr.javatronic.damapping.processor.model.constants;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl;
 import fr.javatronic.damapping.processor.model.DAImport;
-import fr.javatronic.damapping.processor.model.DAImportImpl;
+import fr.javatronic.damapping.processor.model.impl.DAImportImpl;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;

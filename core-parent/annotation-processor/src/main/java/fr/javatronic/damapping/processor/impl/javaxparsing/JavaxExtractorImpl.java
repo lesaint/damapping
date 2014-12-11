@@ -21,9 +21,9 @@ import fr.javatronic.damapping.processor.model.DAEnumValue;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAParameter;
-import fr.javatronic.damapping.processor.model.DAParameterImpl;
+import fr.javatronic.damapping.processor.model.impl.DAParameterImpl;
 import fr.javatronic.damapping.processor.model.DAType;
-import fr.javatronic.damapping.processor.model.DATypeImpl;
+import fr.javatronic.damapping.processor.model.impl.DATypeImpl;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
@@ -68,7 +68,7 @@ import static fr.javatronic.damapping.util.Predicates.notNull;
  * by a {@link ReferenceScanResult} instance.
  * <p>
  * If an unresolved refernces has no fix provided by the {@link ReferenceScanResult} object, an
- * {@link IllegalStateException} will be raised: <strong>no {@link fr.javatronic.damapping.processor.model.DATypeImpl} is supposed to be built unless all
+ * {@link IllegalStateException} will be raised: <strong>no {@link fr.javatronic.damapping.processor.model.impl.DATypeImpl} is supposed to be built unless all
  * references are valid or fixed</strong>.
  * </p>
  *

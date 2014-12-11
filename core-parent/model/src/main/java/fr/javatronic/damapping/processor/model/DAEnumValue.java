@@ -18,11 +18,25 @@ package fr.javatronic.damapping.processor.model;
 import javax.annotation.Nonnull;
 
 /**
- * DAEnumValue -
+ * DAEnumValue - Represents a value of an enum.
+ * <p>
+ * In the following example, there will be a DAEnumValue object for {@code BLUE}, {@link RED} and
+ * {@code GREEN}.
+ * <pre>
+ * public enum Color {
+ *   BLUE, RED, GREEN;
+ * }
+ * </pre>
+ * </p>
  *
  * @author Sébastien Lesaint
  */
 public interface DAEnumValue extends CharSequence {
+  /**
+   * The name of the enum value, ie. the value returned by the {@link Enum#name()} method.
+   *
+   * @return a {@link String}
+   */
   @Nonnull
   String getName();
 }

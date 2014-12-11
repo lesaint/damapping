@@ -158,7 +158,7 @@ class CommonMethodsImpl implements CommonMethods {
   }
 
   /**
-   * Compute whether a qualified reference should be used for the specified {@link fr.javatronic.damapping.processor.model.DATypeImpl}.
+   * Compute whether a qualified reference should be used for the specified {@link fr.javatronic.damapping.processor.model.impl.DATypeImpl}.
    * <p>
    *   Compute uses the following test, in order:
    *   <ul>
@@ -171,7 +171,7 @@ class CommonMethodsImpl implements CommonMethods {
    *   </ul>
    * </p>
    *
-   * @param type a {@link fr.javatronic.damapping.processor.model.DATypeImpl}
+   * @param type a {@link fr.javatronic.damapping.processor.model.impl.DATypeImpl}
    * @return a flag indicating to use a qualified reference or not²
    */
   private boolean useQualifiedReference(DAType type) {

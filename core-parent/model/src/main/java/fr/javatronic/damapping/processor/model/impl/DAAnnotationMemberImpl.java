@@ -24,7 +24,7 @@ import javax.annotation.concurrent.Immutable;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
- * DAAnnotationMember - Represents a Member of an annotation:
+ * DAAnnotationMemberImpl - Implementation of DAAnnotationMember as an immutable object.
  *
  * @author Sébastien Lesaint
  */

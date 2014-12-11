@@ -17,9 +17,9 @@ package fr.javatronic.damapping.processor.impl.javaxparsing;
 
 import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.processor.model.DAInterface;
-import fr.javatronic.damapping.processor.model.DAInterfaceImpl;
+import fr.javatronic.damapping.processor.model.impl.DAInterfaceImpl;
 import fr.javatronic.damapping.processor.model.DAMethod;
-import fr.javatronic.damapping.processor.model.DAMethodImpl;
+import fr.javatronic.damapping.processor.model.impl.DAMethodImpl;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;

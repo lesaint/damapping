@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.processor.model;
+package fr.javatronic.damapping.processor.model.impl;
+
+import fr.javatronic.damapping.processor.model.DAName;
+import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.DATypeKind;
 
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -24,7 +28,7 @@ import static fr.javatronic.damapping.processor.model.util.ImmutabilityHelper.no
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
- * DAType - Représente class, array, enum, type primitif avec support des générics afin de générer du code source
+ * DATypeImpl - Implementation of DAType as an immutable object.
  *
  * @author Sébastien Lesaint
  */

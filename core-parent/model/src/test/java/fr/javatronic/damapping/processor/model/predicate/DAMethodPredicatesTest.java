@@ -19,10 +19,10 @@ import fr.javatronic.damapping.annotation.MapperFactory;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl;
 import fr.javatronic.damapping.processor.model.DAMethod;
-import fr.javatronic.damapping.processor.model.DAMethodImpl;
+import fr.javatronic.damapping.processor.model.impl.DAMethodImpl;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAParameter;
-import fr.javatronic.damapping.processor.model.DAParameterImpl;
+import fr.javatronic.damapping.processor.model.impl.DAParameterImpl;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 
@@ -35,7 +35,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static com.google.common.collect.ImmutableSet.of;
-import static fr.javatronic.damapping.processor.model.DAMethodImpl.methodBuilder;
+import static fr.javatronic.damapping.processor.model.impl.DAMethodImpl.methodBuilder;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isDefaultConstructor;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isApplyWithSingleParam;

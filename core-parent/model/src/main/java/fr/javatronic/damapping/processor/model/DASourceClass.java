@@ -16,6 +16,7 @@
 package fr.javatronic.damapping.processor.model;
 
 import fr.javatronic.damapping.annotation.Injectable;
+import fr.javatronic.damapping.processor.model.impl.DAMethodImpl;
 import fr.javatronic.damapping.processor.model.predicate.DAInterfacePredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitable;
@@ -103,9 +104,9 @@ public class DASourceClass implements DAModelVisitable {
   }
 
   /**
-   * The {@link DAAnnotationImpl} from {@link #annotations} which represents the {@link Injectable} annotation on the
+   * The {@link fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl} from {@link #annotations} which represents the {@link Injectable} annotation on the
    * dedicated class (if it exists).
-   * @return a {@link Optional} of {@link DAAnnotationImpl}
+   * @return a {@link Optional} of {@link fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl}
    */
   @Nonnull
   public Optional<DAAnnotation> getInjectableAnnotation() {
@@ -128,10 +129,10 @@ public class DASourceClass implements DAModelVisitable {
   }
 
   /**
-   * The {@link DAMethodImpl}(s) from {@link #methods} which represents a non-private constructor in the dedicated class
+   * The {@link fr.javatronic.damapping.processor.model.impl.DAMethodImpl}(s) from {@link #methods} which represents a non-private constructor in the dedicated class
    * (if any).
    *
-   * @return a {@link List} of {@link DAMethodImpl}
+   * @return a {@link List} of {@link fr.javatronic.damapping.processor.model.impl.DAMethodImpl}
    */
   @Nonnull
   public List<DAMethod> getAccessibleConstructors() {

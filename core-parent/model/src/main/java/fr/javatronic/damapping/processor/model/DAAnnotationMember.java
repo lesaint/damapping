@@ -18,25 +18,32 @@ package fr.javatronic.damapping.processor.model;
 import javax.annotation.Nonnull;
 
 /**
- * DAAnnotationMember - Represents a Member of an annotation:
+ * DAAnnotationMember - Represents a Member of an annotation in source code (ie. not the member
+ * defined in the annotation class, the member and its value written in source code).
  *
  * @author Sébastien Lesaint
  */
 public interface DAAnnotationMember {
   /**
    * The name of the member (ie. the name of the abstract method).
+   *
+   * @return a {@link String}
    */
   @Nonnull
   String getName();
 
   /**
    * The return type of the annotation member.
+   *
+   * @return a {@link DAType}
    */
   @Nonnull
   DAType getType();
 
   /**
    * The value of the member of the annotation as String suitable to represent the value in source code.
+   *
+   * @return a {@link String}
    *
    * @see {@link javax.lang.model.element.AnnotationValue#toString()}
    */

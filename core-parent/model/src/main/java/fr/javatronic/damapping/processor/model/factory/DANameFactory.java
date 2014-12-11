@@ -16,7 +16,8 @@
 package fr.javatronic.damapping.processor.model.factory;
 
 import fr.javatronic.damapping.processor.model.DAName;
-import fr.javatronic.damapping.processor.model.DANameImpl;
+import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.impl.DANameImpl;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 
 import java.util.Locale;
@@ -31,8 +32,8 @@ import static fr.javatronic.damapping.util.Preconditions.checkArgument;
  */
 public final class DANameFactory {
 
-  private static final DAName WILCARD = from("?");
-  private static final DAName VOID = from("void");
+  private static final DAName WILCARD = from(DAType.GENERIC_WILDCARD_SIMPLE_NAME);
+  private static final DAName VOID = from(DATypeKind.VOID.name().toLowerCase());
 
   private DANameFactory() {
     // prevents instantiation
@@ -43,7 +44,7 @@ public final class DANameFactory {
    *
    * @param string un {@link String}
    *
-   * @return un {@link fr.javatronic.damapping.processor.model.DANameImpl}
+   * @return un {@link fr.javatronic.damapping.processor.model.impl.DANameImpl}
    */
   @Nonnull
   public static DANameImpl from(@Nonnull String string) {
@@ -58,7 +59,7 @@ public final class DANameFactory {
    *
    * @param kind un {@link DATypeKind} primitif
    *
-   * @return a {@link fr.javatronic.damapping.processor.model.DANameImpl}
+   * @return a {@link fr.javatronic.damapping.processor.model.impl.DANameImpl}
    *
    * @throws IllegalArgumentException si {@code kink.isPrimitive()} retourne false
    */
@@ -74,9 +75,9 @@ public final class DANameFactory {
    * En pratique, cela consiste à parser le name de {@code daName} et extraire tout ce qui suit le dernier point
    * (s'il y en a un).
    *
-   * @param daName a {@link fr.javatronic.damapping.processor.model.DANameImpl}
+   * @param daName a {@link fr.javatronic.damapping.processor.model.impl.DANameImpl}
    *
-   * @return a {@link fr.javatronic.damapping.processor.model.DANameImpl}
+   * @return a {@link fr.javatronic.damapping.processor.model.impl.DANameImpl}
    */
   @Nonnull
   public static DAName simpleFromQualified(@Nonnull DAName daName) {
@@ -92,7 +93,7 @@ public final class DANameFactory {
    *
    * @param qualifiedName a {@link String}
    *
-   * @return a {@link fr.javatronic.damapping.processor.model.DANameImpl}
+   * @return a {@link fr.javatronic.damapping.processor.model.impl.DANameImpl}
    */
   @Nonnull
   public static DAName simpleFromQualified(@Nonnull String qualifiedName) {

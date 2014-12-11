@@ -16,6 +16,7 @@
 package fr.javatronic.damapping.processor.model;
 
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
+import fr.javatronic.damapping.processor.model.impl.DATypeImpl;
 
 import java.util.List;
 import com.google.common.collect.ImmutableList;

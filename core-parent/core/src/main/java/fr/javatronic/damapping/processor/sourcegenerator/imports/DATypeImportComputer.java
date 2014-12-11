@@ -16,7 +16,7 @@
 package fr.javatronic.damapping.processor.sourcegenerator.imports;
 
 import fr.javatronic.damapping.processor.model.DAImport;
-import fr.javatronic.damapping.processor.model.DAImportImpl;
+import fr.javatronic.damapping.processor.model.impl.DAImportImpl;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.util.Function;

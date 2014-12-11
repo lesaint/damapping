@@ -23,7 +23,7 @@ import javax.annotation.concurrent.Immutable;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
- * DAEnumValue -
+ * DAEnumValueImpl - Implementation of DAEnumValueImpl as an immutable object.
  *
  * @author Sébastien Lesaint
  */

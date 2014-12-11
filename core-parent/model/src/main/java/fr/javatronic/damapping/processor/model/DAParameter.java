@@ -20,20 +20,40 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 /**
- * DAParameter -
+ * DAParameter - Represents a parameter of a method with name, type, modifiers and annotations.
  *
  * @author Sébastien Lesaint
  */
 public interface DAParameter {
+  /**
+   * the name of the parameter.
+   *
+   * @return a {@link DAName}
+   */
   @Nonnull
   DAName getName();
 
+  /**
+   * The type of the parameter.
+   *
+   * @return a {@link DAType}
+   */
   @Nonnull
   DAType getType();
 
-  @Nonnull
-  List<DAAnnotation> getAnnotations();
-
+  /**
+   * The modifiers of the parameter.
+   *
+   * @return a {@linkn Set} of {@link DAModifier}
+   */
   @Nonnull
   Set<DAModifier> getModifiers();
+
+  /**
+   * The annotations on the parameter.
+   *
+   * @return a {@link List} of {@link DAAnnotation}
+   */
+  @Nonnull
+  List<DAAnnotation> getAnnotations();
 }

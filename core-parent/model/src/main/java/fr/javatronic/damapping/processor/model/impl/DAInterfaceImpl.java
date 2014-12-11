@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.processor.model;
+package fr.javatronic.damapping.processor.model.impl;
 
+import fr.javatronic.damapping.processor.model.DAInterface;
+import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * DAInterface - Représente un type Interface implémenté par une classe ou étendue par une autre interface.
+ * DAInterfaceImpl - Implementation of DAInterface as a immutable object.
  *
  * @author Sébastien Lesaint
  */

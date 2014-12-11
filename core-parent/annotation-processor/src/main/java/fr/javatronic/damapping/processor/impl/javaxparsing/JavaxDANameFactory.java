@@ -16,7 +16,7 @@
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
 import fr.javatronic.damapping.processor.model.DAName;
-import fr.javatronic.damapping.processor.model.DANameImpl;
+import fr.javatronic.damapping.processor.model.impl.DANameImpl;
 
 import javax.annotation.Nonnull;
 import javax.lang.model.element.Name;

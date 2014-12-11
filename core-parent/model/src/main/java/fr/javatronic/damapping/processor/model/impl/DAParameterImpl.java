@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.processor.model;
+package fr.javatronic.damapping.processor.model.impl;
+
+import fr.javatronic.damapping.processor.model.DAAnnotation;
+import fr.javatronic.damapping.processor.model.DAModifier;
+import fr.javatronic.damapping.processor.model.DAName;
+import fr.javatronic.damapping.processor.model.DAParameter;
+import fr.javatronic.damapping.processor.model.DAType;
 
 import java.util.List;
 import java.util.Set;
@@ -25,14 +31,12 @@ import static fr.javatronic.damapping.processor.model.util.ImmutabilityHelper.no
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
- * DAParameter - Représente un paramètre de méthode avec son nom, son type et ses éventuels
- * modifieurs ("final" en particulier).
+ * DAParameterImpl - Implementation of DAParameter as an immutable object.
  *
  * @author Sébastien Lesaint
  */
 @Immutable
 public class DAParameterImpl implements DAParameter {
-  /*nom du paramètre*/
   @Nonnull
   private final DAName name;
   @Nonnull

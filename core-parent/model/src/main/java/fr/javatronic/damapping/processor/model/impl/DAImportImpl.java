@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.processor.model;
+package fr.javatronic.damapping.processor.model.impl;
+
+import fr.javatronic.damapping.processor.model.DAImport;
+import fr.javatronic.damapping.processor.model.DAName;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
@@ -22,7 +25,7 @@ import static fr.javatronic.damapping.util.Preconditions.checkArgument;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
- * DAImportImpl -
+ * DAImportImpl - Implementation of DAImport as an immutable object.
  *
  * @author Sébastien Lesaint
  */

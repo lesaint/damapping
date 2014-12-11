@@ -27,7 +27,7 @@ import javax.annotation.concurrent.Immutable;
 import static fr.javatronic.damapping.processor.model.util.ImmutabilityHelper.nonNullFrom;
 
 /**
- * DAAnnotation -
+ * DAAnnotationImpl - Implementation of DAAnnotation as an immutable object.
  *
  * @author Sébastien Lesaint
  */
