@@ -36,6 +36,7 @@ import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -206,9 +207,14 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
     ).filter(Predicates.notNull()).toList();
   }
 
+  @Nullable
   private DAName retrievePackageName(TypeElement classElement) {
     PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();
-    return JavaxDANameFactory.from(packageElement.getQualifiedName());
+    Name qualifiedName = packageElement.getQualifiedName();
+    if (qualifiedName.length() == 0) {
+      return null;
+    }
+    return JavaxDANameFactory.from(qualifiedName);
   }
 
 }

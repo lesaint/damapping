@@ -98,8 +98,11 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
   }
 
   private DAFileWriter packageImportAndComment(BufferedWriter bw, DASourceClass sourceClass) throws IOException {
-    return new DAFileWriter(bw)
-        .appendPackage(sourceClass.getPackageName())
+    DAFileWriter fileWriter = new DAFileWriter(bw);
+    if (sourceClass.getPackageName() != null) {
+      fileWriter.appendPackage(sourceClass.getPackageName());
+    }
+    return fileWriter
         .appendImports(computeMapperImplImports(descriptor, sourceClass))
         .appendGeneratedAnnotation(DAMAPPING_ANNOTATION_PROCESSOR_QUALIFIED_NAME);
   }
@@ -135,10 +138,15 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
   }
 
   private List<DAType> computeImplemented(DASourceClass daSourceClass) {
-    DAType mapperInterface = DATypeFactory.declared(
-        daSourceClass.getPackageName().getName() + "." + daSourceClass.getType().getSimpleName() + "Mapper"
-    );
+    DAType mapperInterface = DATypeFactory.declared(computeImplementedName(daSourceClass));
     return Collections.singletonList(mapperInterface);
+  }
+
+  private String computeImplementedName(DASourceClass daSourceClass) {
+    if (daSourceClass.getPackageName() == null) {
+      return daSourceClass.getType().getSimpleName() + "Mapper";
+    }
+    return daSourceClass.getPackageName().getName() + "." + daSourceClass.getType().getSimpleName() + "Mapper";
   }
 
   private void writeMapperWithConstructor(DAClassWriter<DAFileWriter> classWriter,

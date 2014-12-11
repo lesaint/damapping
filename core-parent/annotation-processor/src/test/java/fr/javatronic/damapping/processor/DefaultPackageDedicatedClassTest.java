@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
  */
 public class DefaultPackageDedicatedClassTest extends AbstractCompilationTest {
   @Test
-  public void compiling_mapper_in_default_package_is_successfull() throws Exception {
+  public void compiling_mapper_in_default_package_is_successful() throws Exception {
     assertThat("MostSimple",
         "import fr.javatronic.damapping.annotation.Mapper;",
         "",
@@ -38,7 +38,7 @@ public class DefaultPackageDedicatedClassTest extends AbstractCompilationTest {
   }
 
   @Test
-  public void compiling_mapperFactory_in_default_package_is_successfull() throws Exception {
+  public void compiling_mapperFactory_in_default_package_is_successful() throws Exception {
     assertThat("MostSimpleFactory",
         "import fr.javatronic.damapping.annotation.Mapper;",
         "import fr.javatronic.damapping.annotation.MapperFactory;",

@@ -175,7 +175,7 @@ public class DAMethodPredicates {
       // should check the parameter type and the return type
       return daMethod != null
           && !daMethod.isConstructor()
-          && daMethod.getName() != null && "apply".equals(daMethod.getName().getName())
+          && "apply".equals(daMethod.getName().getName())
           && daMethod.getParameters().size() == 1;
     }
   }

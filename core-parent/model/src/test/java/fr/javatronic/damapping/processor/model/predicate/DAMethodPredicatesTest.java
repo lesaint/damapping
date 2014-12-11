@@ -176,11 +176,6 @@ public class DAMethodPredicatesTest {
   }
 
   @Test
-  public void isApplyWithSingleParam_fails_if_no_name() throws Exception {
-    assertThat(isApplyWithSingleParam().apply(mockDAMethod(""))).isFalse();
-  }
-
-  @Test
   public void isApplyWithSingleParam_fails_if_name_is_not_apply() throws Exception {
     assertThat(isApplyWithSingleParam().apply(mockDAMethod("toto"))).isFalse();
   }
@@ -219,7 +214,7 @@ public class DAMethodPredicatesTest {
 
   @Test
   public void isNotConstructor_fails_if_flag_constructor_is_true() throws Exception {
-    DAMethod method = mockDAMethod("");
+    DAMethod method = mockDAMethod("toto");
     when(method.isConstructor()).thenReturn(true);
 
     assertThat(DAMethodPredicates.isNotConstructor().apply(method)).isFalse();
@@ -227,7 +222,7 @@ public class DAMethodPredicatesTest {
 
   @Test
   public void isNotConstructor_succedd_if_flag_constructor_is_false() throws Exception {
-    DAMethod method = mockDAMethod("");
+    DAMethod method = mockDAMethod("toto");
     when(method.isConstructor()).thenReturn(false);
 
     assertThat(DAMethodPredicates.isNotConstructor().apply(method)).isTrue();
@@ -240,7 +235,7 @@ public class DAMethodPredicatesTest {
 
   @Test
   public void isGuavaFunctionApply_fails_if_flag_isGuavaFunctionApply_is_false() throws Exception {
-    DAMethod daMethod = mockDAMethod("");
+    DAMethod daMethod = mockDAMethod("toto");
     when(daMethod.isGuavaFunctionApplyMethod()).thenReturn(false);
 
     assertThat(DAMethodPredicates.isGuavaFunctionApply().apply(daMethod)).isFalse();
@@ -248,7 +243,7 @@ public class DAMethodPredicatesTest {
 
   @Test
   public void isGuavaFunctionApply_succeeds_if_flag_isGuavaFunctionApply_is_true() throws Exception {
-    DAMethod daMethod = mockDAMethod("");
+    DAMethod daMethod = mockDAMethod("toto");
     when(daMethod.isGuavaFunctionApplyMethod()).thenReturn(true);
 
     assertThat(DAMethodPredicates.isGuavaFunctionApply().apply(daMethod)).isTrue();
@@ -261,7 +256,7 @@ public class DAMethodPredicatesTest {
 
   @Test
   public void isMapperMethod_fails_if_flag_mapperMethod_is_false() throws Exception {
-    DAMethod daMethod = mockDAMethod("");
+    DAMethod daMethod = mockDAMethod("toto");
     when(daMethod.isMapperMethod()).thenReturn(false);
 
     assertThat(DAMethodPredicates.isMapperMethod().apply(daMethod)).isFalse();
@@ -269,7 +264,7 @@ public class DAMethodPredicatesTest {
 
   @Test
   public void isMapperMethod_succeeds_if_flag_mapperMethod_is_true() throws Exception {
-    DAMethod daMethod = mockDAMethod("");
+    DAMethod daMethod = mockDAMethod("toto");
     when(daMethod.isMapperMethod()).thenReturn(true);
 
     assertThat(DAMethodPredicates.isMapperMethod().apply(daMethod)).isTrue();
@@ -282,7 +277,7 @@ public class DAMethodPredicatesTest {
 
   @Test
   public void isImpliciteMapperMethod_fails_if_flag_false() throws Exception {
-    DAMethod daMethod = mockDAMethod("");
+    DAMethod daMethod = mockDAMethod("toto");
     when(daMethod.isImplicitMapperMethod()).thenReturn(false);
 
     assertThat(DAMethodPredicates.isImpliciteMapperMethod().apply(daMethod)).isFalse();
@@ -290,7 +285,7 @@ public class DAMethodPredicatesTest {
 
   @Test
   public void isImpliciteMapperMethod_succeeds_if_flag_true() throws Exception {
-    DAMethod daMethod = mockDAMethod("");
+    DAMethod daMethod = mockDAMethod("toto");
     when(daMethod.isImplicitMapperMethod()).thenReturn(true);
 
     assertThat(DAMethodPredicates.isImpliciteMapperMethod().apply(daMethod)).isTrue();

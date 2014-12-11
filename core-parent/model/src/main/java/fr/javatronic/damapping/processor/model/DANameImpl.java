@@ -18,6 +18,7 @@ package fr.javatronic.damapping.processor.model;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
+import static fr.javatronic.damapping.util.Preconditions.checkArgument;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
@@ -35,6 +36,7 @@ public class DANameImpl implements DAName {
 
   public DANameImpl(@Nonnull String name) {
     this.name = checkNotNull(name);
+    checkArgument(!name.isEmpty(), "DAName can not be empty");
   }
 
   @Override
