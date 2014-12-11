@@ -17,6 +17,7 @@ package fr.javatronic.damapping.processor.impl.javaxparsing;
 
 import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.processor.model.DAInterface;
+import fr.javatronic.damapping.processor.model.impl.DASourceClassImpl;
 import fr.javatronic.damapping.processor.model.impl.DAInterfaceImpl;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.impl.DAMethodImpl;
@@ -83,12 +84,12 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
 
   @Nonnull
   private DASourceClass parseImpl(TypeElement classElement, DAType type, JavaxExtractor javaxExtractor) {
-    DASourceClass.Builder<?> builder;
+    DASourceClassImpl.Builder<?> builder;
     if (classElement.getKind() == ElementKind.ENUM) {
-      builder = DASourceClass.enumBuilder(type, javaxExtractor.extractEnumValues(classElement));
+      builder = DASourceClassImpl.enumBuilder(type, javaxExtractor.extractEnumValues(classElement));
     }
     else if (classElement.getKind() == ElementKind.CLASS) {
-      builder = DASourceClass.classbuilder(type);
+      builder = DASourceClassImpl.classbuilder(type);
     }
     else {
       throw new IllegalArgumentException("Unsupported Kind of TypeElement, must be either CLASS or ENUM");
