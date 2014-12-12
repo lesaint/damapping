@@ -41,7 +41,11 @@ import javax.annotation.concurrent.Immutable;
 
 import static fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates.isInjectable;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isNotConstructor;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isNotMapperFactoryMethod;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isNotPrivate;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isNotStatic;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isPublic;
 import static fr.javatronic.damapping.processor.model.util.ImmutabilityHelper.nonNullFrom;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
@@ -281,27 +285,9 @@ public class DASourceClassImpl implements DASourceClass {
     }
 
     private static List<DAMethod> setMapperMethodFlag(List<DAMethod> methods) {
-      List<DAMethod> publicMethods = from(methods)
-          .filter(DAMethodPredicates.isNotStatic())
-          .filter(DAMethodPredicates.isNotConstructor())
-          .filter(DAMethodPredicates.isNotMapperFactoryMethod())
-          .filter(DAMethodPredicates.isPublic())
+      return from(methods)
+          .transform(DAMethodToMapperDAMethod.INSTANCE)
           .toList();
-      if (publicMethods.size() == 1) {
-        final DAMethod mapperMethod = publicMethods.iterator().next();
-        return from(methods).transform(new Function<DAMethod, DAMethod>() {
-          @Nullable
-          @Override
-          public DAMethod apply(@Nullable DAMethod daMethod) {
-            if (daMethod == mapperMethod) {
-              return DAMethodImpl.makeMapperMethod(daMethod);
-            }
-            return daMethod;
-          }
-        }
-        ).toList();
-      }
-      return methods;
     }
 
     private static List<DAMethod> setGuavaFunctionFlag(List<DAMethod> methods) {
@@ -378,7 +364,6 @@ public class DASourceClassImpl implements DASourceClass {
     public List<DAMethod> getMethods() {
       return methods;
     }
-
   }
 
   public static class ClassBuilder extends AbstractBuilder<ClassBuilder> {
@@ -408,6 +393,29 @@ public class DASourceClassImpl implements DASourceClass {
       return enumValues;
     }
 
+  }
+
+  private static enum DAMethodToMapperDAMethod implements Function<DAMethod, DAMethod> {
+    INSTANCE;
+
+    @Nullable
+    @Override
+    public DAMethod apply(@Nullable DAMethod daMethod) {
+      if (daMethod == null) {
+        return null;
+      }
+      if (isMapperMethod(daMethod)) {
+        return DAMethodImpl.makeMapperMethod(daMethod);
+      }
+      return daMethod;
+    }
+
+    private static boolean isMapperMethod(DAMethod daMethod) {
+      return isNotStatic().apply(daMethod)
+          && isNotConstructor().apply(daMethod)
+          && isNotMapperFactoryMethod().apply(daMethod)
+          && isPublic().apply(daMethod);
+    }
   }
 
 }

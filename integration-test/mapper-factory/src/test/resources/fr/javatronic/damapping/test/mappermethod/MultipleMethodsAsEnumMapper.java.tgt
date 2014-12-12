@@ -1,0 +1,14 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public interface MultipleMethodsAsEnumMapper {
+
+    @Nonnull
+    Integer fromString(@Nullable String input);
+
+    @Nonnull
+    String toString(@Nullable Integer i);
+}

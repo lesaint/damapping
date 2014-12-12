@@ -18,26 +18,29 @@ package fr.javatronic.damapping.processor.sourcegenerator;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAParameter;
-import fr.javatronic.damapping.processor.model.impl.DAParameterImpl;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.constants.JavaLangConstants;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
+import fr.javatronic.damapping.processor.model.impl.DAParameterImpl;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassMethodWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAStatementWriter;
 import fr.javatronic.damapping.util.Lists;
-import fr.javatronic.damapping.util.Predicates;
+import fr.javatronic.damapping.util.Predicate;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import javax.annotation.Nonnull;
 
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperMethod;
 import static fr.javatronic.damapping.util.FluentIterable.from;
+import static fr.javatronic.damapping.util.Predicates.or;
 
 /**
  * MapperFactoryImplSourceGenerator - Générateur du fichier source de la classe MapperFactoryImpl générée dans le cas
@@ -46,6 +49,8 @@ import static fr.javatronic.damapping.util.FluentIterable.from;
  * @author Sébastien Lesaint
  */
 public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
+
+  private static final Predicate<DAMethod> IMPLEMENTED_MAPPER_METHOD = or(isGuavaFunctionApply(), isMapperMethod());
 
   public MapperFactoryImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor) {
     super(descriptor, new SourceGeneratorSupport());
@@ -166,10 +171,15 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
 
     // mapper method(s)
     // implémentation de la méthode de mapping (Function.apply tant qu'on ne supporte pas @MapperMethod)
-    DAMethod mapperMethod = from(sourceClass.getMethods())
-        .firstMatch(
-            Predicates.or(DAMethodPredicates.isGuavaFunctionApply(), DAMethodPredicates.isMapperMethod()))
-        .get();
+    for (DAMethod mapperMethod : from(sourceClass.getMethods()).filter(IMPLEMENTED_MAPPER_METHOD)) {
+      appendMapperMethod(mapperMethod, mapperClassWriter);
+    }
+
+    mapperClassWriter.end();
+  }
+
+  private void appendMapperMethod(DAMethod mapperMethod, DAClassWriter<DAClassWriter<DAFileWriter>> mapperClassWriter)
+      throws IOException {
     DAClassMethodWriter<?> methodWriter = mapperClassWriter
         .newMethod(mapperMethod.getName().getName(), mapperMethod.getReturnType())
         .withAnnotations(support.computeOverrideMethodAnnotations(mapperMethod))
@@ -188,8 +198,6 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
                 .end();
 
     methodWriter.end();
-
-    mapperClassWriter.end();
   }
 
 }

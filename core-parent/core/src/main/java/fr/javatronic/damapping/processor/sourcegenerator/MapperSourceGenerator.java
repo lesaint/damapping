@@ -25,7 +25,6 @@ import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAInterfaceWriter;
 import fr.javatronic.damapping.util.Function;
-import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Predicates;
 
@@ -77,10 +76,8 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
         .withModifiers(filterModifiers(sourceClass.getModifiers()))
         .withExtended(toDAType(sourceClass.getInterfaces())).start();
 
-    // déclaration de la méthode mapper (si pas héritée de l'interface Function)
-    Optional<DAMethod> mapperMethodO = findMapperMethod(sourceClass);
-    if (mapperMethodO.isPresent()) {
-      DAMethod mapperMethod = mapperMethodO.get();
+    // declare mapper methods
+    for (DAMethod mapperMethod : findMapperMethod(sourceClass)) {
       interfaceWriter.newMethod(mapperMethod.getName().getName(), mapperMethod.getReturnType())
           .withAnnotations(computeMapperMethodAnnotations(mapperMethod))
           .withParams(mapperMethod.getParameters())
@@ -100,8 +97,8 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
     return mapperMethod.getAnnotations();
   }
 
-  private Optional<DAMethod> findMapperMethod(DASourceClass sourceClass) {
-    return from(sourceClass.getMethods()).filter(DAMethodPredicates.isMapperMethod()).first();
+  private Iterable<DAMethod> findMapperMethod(DASourceClass sourceClass) {
+    return from(sourceClass.getMethods()).filter(DAMethodPredicates.isMapperMethod());
   }
 
   private static List<DAType> toDAType(List<DAInterface> interfaces) {

@@ -1,0 +1,38 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public class MultipleMethodsAsEnumMapperFactoryImpl implements MultipleMethodsAsEnumMapperFactory {
+
+    @Override
+    public MultipleMethodsAsEnumMapper bigDecimal() {
+        return new MultipleMethodsAsEnumMapperImpl(MultipleMethodsAsEnum.bigDecimal());
+    }
+
+    @Override
+    public MultipleMethodsAsEnumMapper integer() {
+        return new MultipleMethodsAsEnumMapperImpl(MultipleMethodsAsEnum.integer());
+    }
+
+    private static class MultipleMethodsAsEnumMapperImpl implements MultipleMethodsAsEnumMapper {
+        private final MultipleMethodsAsEnum instance;
+
+        public MultipleMethodsAsEnumMapperImpl(MultipleMethodsAsEnum instance) {
+            this.instance = instance;
+        }
+
+        @Override
+        @Nonnull
+        public Integer fromString(@Nullable String input) {
+            return instance.fromString(input);
+        }
+
+        @Override
+        @Nonnull
+        public String toString(@Nullable Integer i) {
+            return instance.toString(i);
+        }
+    }
+}

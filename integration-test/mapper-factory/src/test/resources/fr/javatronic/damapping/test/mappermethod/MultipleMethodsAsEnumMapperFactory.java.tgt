@@ -1,0 +1,9 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public interface MultipleMethodsAsEnumMapperFactory {
+
+    MultipleMethodsAsEnumMapper bigDecimal();
+
+    MultipleMethodsAsEnumMapper integer();
+}
