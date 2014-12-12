@@ -16,6 +16,8 @@
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
 import fr.javatronic.damapping.annotation.Mapper;
+import fr.javatronic.damapping.processor.impl.javaxparsing.model.JavaxDAMethod;
+import fr.javatronic.damapping.processor.impl.javaxparsing.model.JavaxDASourceClass;
 import fr.javatronic.damapping.processor.model.DAInterface;
 import fr.javatronic.damapping.processor.model.impl.DASourceClassImpl;
 import fr.javatronic.damapping.processor.model.impl.DAInterfaceImpl;
@@ -114,7 +116,7 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
 
     List<DAMethod> methods = retrieveMethods(classElement, javaxExtractor);
     builder.withMethods(methods);
-    return builder.build();
+    return new JavaxDASourceClass(builder.build(), classElement);
   }
 
   @Nonnull
@@ -150,7 +152,7 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
               res.withName(JavaxDANameFactory.from(o.getSimpleName()));
               res.withReturnType(javaxExtractor.extractReturnType(methodElement));
             }
-            return res.build();
+            return new JavaxDAMethod(res.build(), methodElement);
           }
         }
         )

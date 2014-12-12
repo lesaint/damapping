@@ -54,7 +54,7 @@ public class MapperFactoryMethodValidationTest extends AbstractCompilationTest {
             "Method annotated with @MapperFactory must return type of the class annotated with @Mapper"
         )
         .in(fileObject)
-        .onLine(7);
+        .onLine(8);
   }
 
   @Test(dataProvider = "invalidMethodFactories")
@@ -68,7 +68,7 @@ public class MapperFactoryMethodValidationTest extends AbstractCompilationTest {
             "Method annotated with @MapperFactory must either be a public constructor or a public static method"
         )
         .in(fileObject)
-        .onLine(7);
+        .onLine(8);
   }
 
   @DataProvider

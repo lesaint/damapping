@@ -40,7 +40,7 @@ public class Jsr330PresentTest extends AbstractCompilationTest {
     assertThat(javaFileObject)
         .failsToCompile()
         .withErrorContaining("Class annotated with @Mapper and @Injectable requires JSR 330's annotations (@Named, @Inject, ...) to be available in classpath")
-        .in(javaFileObject).onLine(3);
+        .in(javaFileObject).onLine(2);
   }
 
 }

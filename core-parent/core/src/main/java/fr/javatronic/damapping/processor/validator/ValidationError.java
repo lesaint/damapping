@@ -15,26 +15,47 @@
  */
 package fr.javatronic.damapping.processor.validator;
 
+import fr.javatronic.damapping.processor.model.DAAnnotation;
+import fr.javatronic.damapping.processor.model.DAElement;
+import fr.javatronic.damapping.processor.model.DASourceClass;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * ValidationError - Check exception representing a validation error
  *
  * @author Sébastien Lesaint
  */
 public class ValidationError extends Exception {
+  @Nonnull
+  private final DASourceClass sourceClass;
+  @Nullable
+  private final DAElement element;
+  @Nullable
+  private final DAAnnotation annotation;
 
-  public ValidationError(String message) {
+  public ValidationError(String message,
+                         @Nonnull DASourceClass sourceClass,
+                         @Nullable DAElement element, @Nullable DAAnnotation annotation) {
     super(message);
+    this.sourceClass = sourceClass;
+    this.element = element;
+    this.annotation = annotation;
   }
 
-  public ValidationError(String message, Throwable cause) {
-    super(message, cause);
+  @Nonnull
+  public DASourceClass getSourceClass() {
+    return sourceClass;
   }
 
-  public ValidationError(Throwable cause) {
-    super(cause);
+  @Nullable
+  public DAElement getElement() {
+    return element;
   }
 
-  public ValidationError(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-    super(message, cause, enableSuppression, writableStackTrace);
+  @Nullable
+  public DAAnnotation getAnnotation() {
+    return annotation;
   }
 }

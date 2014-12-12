@@ -29,7 +29,7 @@ import java.util.Set;
 public interface DASourceClassValidator {
   void validate(DASourceClass sourceClass) throws ValidationError;
 
-  void validateModifiers(Set<DAModifier> modifiers) throws ValidationError;
+  void validateModifiers(DASourceClass sourceClass) throws ValidationError;
 
   void validateInstantiationTypeRequirements(DASourceClass daSourceClass) throws ValidationError;
 
