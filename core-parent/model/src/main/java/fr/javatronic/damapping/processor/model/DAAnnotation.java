@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
  *
  * @author Sébastien Lesaint
  */
-public interface DAAnnotation {
+public interface DAAnnotation extends DAElement {
   /**
    * The {@link DAType} of this annotation
    *

@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
  *
  * @author Sébastien Lesaint
  */
-public interface DASourceClass extends DAModelVisitable {
+public interface DASourceClass extends DAModelVisitable, DAElement {
   /**
    * The type of the source class.
    *

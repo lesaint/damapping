@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
  *
  * @author Sébastien Lesaint
  */
-public interface DAImport {
+public interface DAImport extends DAElement {
   /**
    * The qualified name of the imported type, ie. a {@link DAName} object which name is {@code com.foo.Bar} for
    * {@code import com.foo.Bar}.

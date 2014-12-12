@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
  *
  * @author Sébastien Lesaint
  */
-public interface DAEnumValue extends CharSequence {
+public interface DAEnumValue extends CharSequence, DAElement {
   /**
    * The name of the enum value, ie. the value returned by the {@link Enum#name()} method.
    *
