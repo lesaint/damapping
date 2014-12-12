@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
  *
  * @author Sébastien Lesaint
  */
-public interface DAParameter {
+public interface DAParameter extends DAElement {
   /**
    * the name of the parameter.
    *

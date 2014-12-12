@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
  *
  * @author Sébastien Lesaint
  */
-public interface DAAnnotationMember {
+public interface DAAnnotationMember extends DAElement {
   /**
    * The name of the member (ie. the name of the abstract method).
    *

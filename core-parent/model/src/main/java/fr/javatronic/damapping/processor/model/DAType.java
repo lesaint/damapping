@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
  *
  * @author Sébastien Lesaint
  */
-public interface DAType {
+public interface DAType extends DAElement {
   static final String GENERIC_WILDCARD_SIMPLE_NAME = "?";
 
   /**

@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
  *
  * @author Sébastien Lesaint
  */
-public interface DAMethod extends DAModelVisitable {
+public interface DAMethod extends DAModelVisitable, DAElement {
   /**
    * Name of the method.
    *

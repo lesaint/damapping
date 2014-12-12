@@ -20,6 +20,11 @@ import fr.javatronic.damapping.processor.impl.javaxparsing.JavaxParsingService;
 import fr.javatronic.damapping.processor.impl.javaxparsing.JavaxParsingServiceImpl;
 import fr.javatronic.damapping.processor.impl.javaxparsing.ParsingResult;
 import fr.javatronic.damapping.processor.impl.javaxparsing.ProcessingContext;
+import fr.javatronic.damapping.processor.impl.javaxparsing.model.JavaxDAAnnotation;
+import fr.javatronic.damapping.processor.impl.javaxparsing.model.JavaxDAMethod;
+import fr.javatronic.damapping.processor.impl.javaxparsing.model.JavaxDASourceClass;
+import fr.javatronic.damapping.processor.model.DAAnnotation;
+import fr.javatronic.damapping.processor.model.DAElement;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.sourcegenerator.GenerationContext;
 import fr.javatronic.damapping.processor.sourcegenerator.GenerationContextComputer;
@@ -29,6 +34,7 @@ import fr.javatronic.damapping.processor.sourcegenerator.SourceGenerationService
 import fr.javatronic.damapping.processor.validator.DASourceClassValidator;
 import fr.javatronic.damapping.processor.validator.DASourceClassValidatorImpl;
 import fr.javatronic.damapping.processor.validator.ValidationError;
+import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Sets;
 
 import java.io.IOException;
@@ -38,6 +44,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
@@ -119,9 +126,36 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
       checker.validate(parsingResult.getSourceClass());
       return true;
     } catch (ValidationError e) {
-      processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.getMessage(), parsingResult.getClassElement());
+      printValidationError(e, parsingResult.getClassElement());
       return false;
     }
+  }
+
+  private void printValidationError(ValidationError e, TypeElement classElement) {
+    Optional<Element> element = toElement(e.getElement() == null ? e.getSourceClass() : e.getElement());
+    Optional<AnnotationMirror> annotationMirror = toAnnotationMirror(e.getAnnotation());
+    processingEnv.getMessager().printMessage(
+        Diagnostic.Kind.ERROR, e.getMessage(), element.or(classElement), annotationMirror.orNull()
+    );
+  }
+
+  @Nonnull
+  private static Optional<Element> toElement(@Nullable DAElement element) {
+    if (element instanceof JavaxDASourceClass) {
+      return Optional.<Element>of(((JavaxDASourceClass) element).getClassElement());
+    }
+    if (element instanceof JavaxDAMethod) {
+      return Optional.<Element>of(((JavaxDAMethod) element).getMethodElement());
+    }
+    return Optional.absent();
+  }
+
+  @Nonnull
+  private Optional<AnnotationMirror> toAnnotationMirror(@Nullable DAAnnotation annotation) {
+    if (annotation instanceof JavaxDAAnnotation) {
+      return Optional.of(((JavaxDAAnnotation) annotation).getAnnotationMirror());
+    }
+    return Optional.absent();
   }
 
   private void registerPostponedValidationAndGeneration(ParsingResult parsingResult) {

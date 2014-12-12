@@ -22,10 +22,10 @@ import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.constants.Jsr330Constants;
 import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
+import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicates;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,8 +45,8 @@ import static fr.javatronic.damapping.util.FluentIterable.from;
 public class DASourceClassValidatorImpl implements DASourceClassValidator {
   @Override
   public void validate(DASourceClass sourceClass) throws ValidationError {
-    validateAnnotations(sourceClass.getAnnotations());
-    validateModifiers(sourceClass.getModifiers());
+    validateAnnotations(sourceClass);
+    validateModifiers(sourceClass);
     validateMethods(sourceClass);
     validateMapperFactoryMethods(sourceClass);
     validateJSR330InPath(sourceClass);
@@ -58,34 +58,34 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     validateInstantiationTypeRequirements(sourceClass);
   }
 
-  private void validateAnnotations(List<DAAnnotation> annotations) throws ValidationError {
-    List<DAAnnotation> mapperAnnotations = from(annotations).filter(DAAnnotationPredicates.isMapper()).toList();
+  private void validateAnnotations(DASourceClass sourceClass) throws ValidationError {
+    List<DAAnnotation> mapperAnnotations = from(sourceClass.getAnnotations()).filter(DAAnnotationPredicates.isMapper()).toList();
     if (mapperAnnotations.size() > 1) {
-      throw new ValidationError("Mapper with more than one @Mapper annotation is not supported");
+      throw new ValidationError("Mapper with more than one @Mapper annotation is not supported", sourceClass, null, mapperAnnotations.get(1));
     }
     if (mapperAnnotations.isEmpty()) {
-      throw new ValidationError("Mapper without @Mapper annotation is not supported");
+      throw new ValidationError("Mapper without @Mapper annotation is not supported", sourceClass, null, null);
     }
   }
 
   @Override
-  public void validateModifiers(Set<DAModifier> modifiers) throws ValidationError {
+  public void validateModifiers(DASourceClass sourceClass) throws ValidationError {
     // retrieve qualifiers of the class with @Mapper + make validate : must be public or protected sinon erreur de
     // compilation
-    if (modifiers.contains(DAModifier.PRIVATE)) {
-      throw new ValidationError("Class annoted with @Mapper can not be private");
+    if (sourceClass.getModifiers().contains(DAModifier.PRIVATE)) {
+      throw new ValidationError("Class annoted with @Mapper can not be private", sourceClass, null, null);
     }
   }
 
   private void hasAccessibleConstructor(DASourceClass sourceClass) throws ValidationError {
     if (sourceClass.getAccessibleConstructors().isEmpty()) {
-      throw new ValidationError("Classe does not exposed an accessible default constructor");
+      throw new ValidationError("Class does not expose an accessible default constructor", sourceClass, null, null);
     }
   }
 
-  private void hasOnlyOneEnumValue(DASourceClass daSourceClass) throws ValidationError {
-    if (daSourceClass.getEnumValues().size() != 1) {
-      throw new ValidationError("Enum annoted wih @Mapper must have one value");
+  private void hasOnlyOneEnumValue(DASourceClass sourceClass) throws ValidationError {
+    if (sourceClass.getEnumValues().size() != 1) {
+      throw new ValidationError("Enum annoted wih @Mapper must have one value", sourceClass, null, null);
     }
   }
 
@@ -96,18 +96,24 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     // si aucune méthode trouvée => erreur  de compilation
     // TOIMPROVE : la récupération et les contrôles sur la méthode apply sont faibles
     if (methods.isEmpty()) {
-      throw new ValidationError("Class annoted with @Mapper must have at least one method");
+      throw new ValidationError("Class annoted with @Mapper must have at least one method", sourceClass, null, null);
     }
 
-    int mapperMethodCount = from(methods)
+    List<DAMethod> mapperMethods = from(methods)
         .filter(Predicates.or(isGuavaFunctionApply(), isImpliciteMapperMethod()))
-        .size();
+        .toList();
     // until we support @MapperMethod, this first case can not happen because of how the DAMethod flags are set
-    if (mapperMethodCount > 1) {
-      throw new ValidationError("Mapper having more than one method qualifying as mapper method is not supported");
+    if (mapperMethods.size() > 1) {
+      throw new ValidationError(
+          "Mapper having more than one method qualifying as mapper method is not supported",
+          sourceClass, mapperMethods.get(1), null
+      );
     }
-    if (mapperMethodCount == 0) {
-      throw new ValidationError("Mapper must have one and only one method qualifying as mapper method (either implemente Guava's Function interface or define a single non private method)");
+    if (mapperMethods.isEmpty()) {
+      throw new ValidationError(
+          "Mapper must have one and only one method qualifying as mapper method (either implemente Guava's Function interface or define a single non private method)",
+          sourceClass, null, null
+      );
     }
   }
 
@@ -116,17 +122,29 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     boolean hasStaticMethod = false;
     for (DAMethod daMethod : from(sourceClass.getMethods()).filter(isMapperFactoryMethod())) {
       if (!isValidMapperFactoryMethodKindAndQualifiers(daMethod)) {
-        throw new ValidationError("Method annotated with @MapperFactory must either be a public constructor or a public static method");
+        throw new ValidationError("Method annotated with @MapperFactory must either be a public constructor or a public static method",
+            sourceClass, daMethod, extractMapperFactoryAnnotation(daMethod.getAnnotations())
+        );
       }
       if (!isValidMapperFactoryReturnType(sourceClass, daMethod.getReturnType())) {
-        throw new ValidationError("Method annotated with @MapperFactory must return type of the class annotated with @Mapper");
+        throw new ValidationError("Method annotated with @MapperFactory must return type of the class annotated with " +
+            "@Mapper",
+            sourceClass, daMethod, extractMapperFactoryAnnotation(daMethod.getAnnotations())
+        );
       }
       hasConstructor |= daMethod.isConstructor();
       hasStaticMethod |= !daMethod.isConstructor();
     }
     if (hasConstructor && hasStaticMethod) {
-      throw new ValidationError("Dedicated class can have both constructor(s) and static method(s) annotated with @MapperFactory");
+      throw new ValidationError("Dedicated class can have both constructor(s) and static method(s) annotated with " +
+          "@MapperFactory",
+          sourceClass, null, null
+      );
     }
+  }
+
+  private DAAnnotation extractMapperFactoryAnnotation(List<DAAnnotation> annotations) {
+    return from(annotations).filter(DAAnnotationPredicates.isMapperFactoryMethod()).first().get();
   }
 
   private static boolean isValidMapperFactoryMethodKindAndQualifiers(@Nonnull DAMethod daMethod) {
@@ -142,8 +160,12 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
   }
 
   private void validateJSR330InPath(DASourceClass sourceClass) throws ValidationError {
-    if (sourceClass.getInjectableAnnotation().isPresent() && !Jsr330Constants.isJSR330Present()) {
-      throw new ValidationError("Class annotated with @Mapper and @Injectable requires JSR 330's annotations (@Named, @Inject, ...) to be available in classpath");
+    Optional<DAAnnotation> injectableAnnotation = sourceClass.getInjectableAnnotation();
+    if (injectableAnnotation.isPresent() && !Jsr330Constants.isJSR330Present()) {
+      throw new ValidationError(
+          "Class annotated with @Mapper and @Injectable requires JSR 330's annotations (@Named, @Inject, ...) to be available in classpath",
+          sourceClass, null, injectableAnnotation.get()
+      );
     }
   }
 

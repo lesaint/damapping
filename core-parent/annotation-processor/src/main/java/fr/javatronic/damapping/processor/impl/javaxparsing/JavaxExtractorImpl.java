@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
+import fr.javatronic.damapping.processor.impl.javaxparsing.model.JavaxDAAnnotation;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAAnnotationMember;
 import fr.javatronic.damapping.processor.model.DAEnumValue;
@@ -391,10 +392,11 @@ public class JavaxExtractorImpl implements JavaxExtractor {
       }
       DeclaredType annotationType = input.getAnnotationType();
       DAType daType = extractType(annotationType);
-      return new DAAnnotationImpl(daType,
+      DAAnnotationImpl daAnnotation = new DAAnnotationImpl(daType,
           toDAAnnotations(daType, annotationType.asElement().getAnnotationMirrors()),
           toDAAnnotationMembers(daType, input.getElementValues())
       );
+      return new JavaxDAAnnotation(daAnnotation, input);
     }
 
     @Nullable

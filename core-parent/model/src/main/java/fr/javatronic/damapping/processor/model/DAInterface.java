@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
  *
  * @author Sébastien Lesaint
  */
-public interface DAInterface extends DAModelVisitable {
+public interface DAInterface extends DAModelVisitable, DAElement {
   /**
    * The type representing the implemented/extended interface.
    *
