@@ -15,21 +15,18 @@
  */
 package fr.javatronic.damapping.test.mappermethod;
 
-import fr.javatronic.damapping.annotation.Mapper;
+import fr.javatronic.damapping.test.AbstractMapperFactoryTest;
 
 /**
- * This mapper is designed to test that the static method is not identified as a  mapper method.
+ * MultipleImplementationAsEnum - Test de génération des fichiers sources des classes générées à partir de la class
+ * MultipleImplementationAsEnum
+ *
+ * @author Sébastien Lesaint
  */
-@Mapper
-public enum StaticMethodsIgnored {
-  INSTANCE;
+public class MultiConstructorWithGenericsAndMultipleParametersTest extends AbstractMapperFactoryTest {
 
-  // this method is not a mapper method
-  public static String apply(Integer i) {
-    return null;
+  public MultiConstructorWithGenericsAndMultipleParametersTest() {
+    super(MultiConstructorWithGenericsAndMultipleParameters.class);
   }
 
-  public String map(Integer input) {
-    return null;
-  }
 }

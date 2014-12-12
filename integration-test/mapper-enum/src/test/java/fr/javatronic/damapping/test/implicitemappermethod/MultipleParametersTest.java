@@ -13,23 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test.mappermethod;
+package fr.javatronic.damapping.test.implicitemappermethod;
 
-import fr.javatronic.damapping.annotation.Mapper;
+import fr.javatronic.damapping.test.AbstractMapperTest;
+
+import org.testng.annotations.Test;
 
 /**
- * This mapper is designed to test that the static method is not identified as a  mapper method.
+ * MultipleParametersTest -
+ *
+ * @author lesaint
  */
-@Mapper
-public enum StaticMethodsIgnored {
-  INSTANCE;
+public class MultipleParametersTest extends AbstractMapperTest {
 
-  // this method is not a mapper method
-  public static String apply(Integer i) {
-    return null;
+  public MultipleParametersTest() {
+    super(MultipleParameters.class);
   }
 
-  public String map(Integer input) {
-    return null;
+  @Test
+  public void check_generated_mapper_file() throws Exception {
+    testUtil.checkGeneratedFile(getClass(), "Mapper");
   }
+
+  @Test
+  public void check_generated_mapperImpl_file() throws Exception {
+    testUtil.checkGeneratedFile(getClass(), "MapperImpl");
+  }
+
 }

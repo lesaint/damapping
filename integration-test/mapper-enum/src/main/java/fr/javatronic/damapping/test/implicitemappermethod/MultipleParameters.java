@@ -13,39 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test.mappermethod;
+package fr.javatronic.damapping.test.implicitemappermethod;
 
 import fr.javatronic.damapping.annotation.Mapper;
-import fr.javatronic.damapping.annotation.MapperFactory;
-import fr.javatronic.damapping.test.mappermethod.sub.B;
-import fr.javatronic.damapping.test.mappermethod.sub.C;
+import fr.javatronic.damapping.test.guava.subpackage.OutOfPackage;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.google.common.base.Optional;
 
 /**
- * MultiConstructorWithGenerics -
- *
- * @author Sébastien Lesaint
+ * MultipleParameters - This mapper is designed to test an enum mapper which has a mapper method with multiple
+ * parameters, with annotations, types from current package and another package, generics and arrays.
  */
 @Mapper
-public class MultiConstructorWithGenerics {
-  @MapperFactory
-  public MultiConstructorWithGenerics(Set<A> as) {
-    // implementation does not matter
-  }
+public enum MultipleParameters {
+  INSTANCE;
 
-  @MapperFactory
-  public MultiConstructorWithGenerics(List<B> bs) {
-    // implementation does not matter
-  }
-
-  @Nullable
-  public Optional<String> apply(@Nullable Map<C, Set<BigDecimal>> input) {
-    return Optional.of("doesn't matter");
+  public List<BigDecimal> map(@Nonnull OutOfPackage paramA, @Nullable InPackage paramB, Optional<Object[]> objs) {
+    return null;
   }
 }

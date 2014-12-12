@@ -1,0 +1,13 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+import fr.javatronic.damapping.test.mappermethod.sub.B;
+import java.util.List;
+import java.util.Set;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public interface MultiConstructorWithGenericsAndMultipleParametersMapperFactory {
+
+    MultiConstructorWithGenericsAndMultipleParametersMapper instanceByConstructor(Set<A> as);
+
+    MultiConstructorWithGenericsAndMultipleParametersMapper instanceByConstructor(List<B> bs);
+}

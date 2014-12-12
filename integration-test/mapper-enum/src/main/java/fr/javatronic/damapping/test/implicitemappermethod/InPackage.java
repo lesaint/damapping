@@ -13,23 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test.mappermethod;
-
-import fr.javatronic.damapping.annotation.Mapper;
+package fr.javatronic.damapping.test.implicitemappermethod;
 
 /**
- * This mapper is designed to test that the static method is not identified as a  mapper method.
+ * InPackage - Juste une classe qui se trouve dans le même package que la classe annotée avec @Mapper
+ *
+ * @author Sébastien Lesaint
  */
-@Mapper
-public enum StaticMethodsIgnored {
-  INSTANCE;
-
-  // this method is not a mapper method
-  public static String apply(Integer i) {
-    return null;
-  }
-
-  public String map(Integer input) {
-    return null;
-  }
+class InPackage {
 }

@@ -13,23 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.test.mappermethod;
-
-import fr.javatronic.damapping.annotation.Mapper;
+package fr.javatronic.damapping.test.guava.subpackage;
 
 /**
- * This mapper is designed to test that the static method is not identified as a  mapper method.
+ * OutOfPackage - Juste une classe qui n'est pas dans le package de la classe annotée avec @Mapper
+ *
+ * @author Sébastien Lesaint
  */
-@Mapper
-public enum StaticMethodsIgnored {
-  INSTANCE;
-
-  // this method is not a mapper method
-  public static String apply(Integer i) {
-    return null;
-  }
-
-  public String map(Integer input) {
-    return null;
-  }
+public class OutOfPackage {
 }

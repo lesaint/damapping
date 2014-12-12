@@ -17,24 +17,35 @@ package fr.javatronic.damapping.test.mappermethod;
 
 import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.annotation.MapperFactory;
+import fr.javatronic.damapping.test.mappermethod.sub.B;
+import fr.javatronic.damapping.test.mappermethod.sub.C;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nullable;
+import com.google.common.base.Optional;
 
 /**
- * MapperMethodNotCalledApply -
+ * MultiConstructorWithGenericsAndMultipleParameters -
  *
  * @author Sébastien Lesaint
  */
 @Mapper
-public class MapperMethodNotCalledApply {
+public class MultiConstructorWithGenericsAndMultipleParameters {
   @MapperFactory
-  public MapperMethodNotCalledApply(boolean flag) {
+  public MultiConstructorWithGenericsAndMultipleParameters(Set<A> as) {
+    // implementation does not matter
+  }
+
+  @MapperFactory
+  public MultiConstructorWithGenericsAndMultipleParameters(List<B> bs) {
     // implementation does not matter
   }
 
   @Nullable
-  public Float fooBar(@Nullable BigDecimal inBigD) {
-    return 1f; // implementation does not matter
+  public Optional<String> apply(@Nullable Map<C, Set<BigDecimal>> input, Object[] objs) {
+    return Optional.of("doesn't matter");
   }
 }

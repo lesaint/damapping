@@ -8,8 +8,8 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
-public interface MultiConstructorWithGenericsMapper {
+public interface MultiConstructorWithGenericsAndMultipleParametersMapper {
 
     @Nullable
-    Optional<String> apply(@Nullable Map<C, Set<BigDecimal>> input);
+    Optional<String> apply(@Nullable Map<C, Set<BigDecimal>> input, Object[] objs);
 }

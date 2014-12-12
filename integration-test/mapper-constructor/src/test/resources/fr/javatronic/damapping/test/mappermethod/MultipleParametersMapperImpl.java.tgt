@@ -1,0 +1,18 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+import com.google.common.base.Optional;
+import fr.javatronic.damapping.test.guava.subpackage.OutOfPackage;
+import java.math.BigDecimal;
+import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public class MultipleParametersMapperImpl implements MultipleParametersMapper {
+    private final MultipleParameters dedicatedInstance = new MultipleParameters();
+
+    @Override
+    public List<BigDecimal> map(@Nonnull OutOfPackage paramA, @Nullable InPackage paramB, Optional<Object[]> objs) {
+        return this.dedicatedInstance.map(paramA, paramB, objs);
+    }
+}

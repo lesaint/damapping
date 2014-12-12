@@ -15,18 +15,25 @@
  */
 package fr.javatronic.damapping.test.mappermethod;
 
-import fr.javatronic.damapping.test.AbstractMapperFactoryTest;
+import fr.javatronic.damapping.annotation.Mapper;
+import fr.javatronic.damapping.test.guava.subpackage.OutOfPackage;
+
+import java.math.BigDecimal;
+import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import com.google.common.base.Optional;
 
 /**
- * MultipleImplementationAsEnum - Test de génération des fichiers sources des classes générées à partir de la class
- * MultipleImplementationAsEnum
+ * MultipleParameters - This mapper is designed to test support for multiple parameters in implicit mapper method, it
+ * covers parameters annotations, type from current package and subpackage, generics and arrays.
  *
  * @author Sébastien Lesaint
  */
-public class MultiConstructorWithGenericsTest extends AbstractMapperFactoryTest {
+@Mapper
+public class MultipleParameters {
 
-  public MultiConstructorWithGenericsTest() {
-    super(MultiConstructorWithGenerics.class);
+  public List<BigDecimal> map(@Nonnull OutOfPackage paramA, @Nullable InPackage paramB, Optional<Object[]> objs) {
+    return null; // implementation does not matter
   }
-
 }
