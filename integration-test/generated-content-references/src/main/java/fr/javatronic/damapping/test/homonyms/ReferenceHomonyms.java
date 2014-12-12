@@ -18,11 +18,11 @@ package fr.javatronic.damapping.test.homonyms;
 import fr.javatronic.damapping.annotation.Mapper;
 
 /**
- * ReferenceHomonyms - Dedicated class part demonstrating support for dedicated classes with references to
- * generated types with the same names.
+ * ReferenceHomonyms - Dedicated class demonstrating support for dedicated classes with references to generated types
+ * with the same names.
  * Here, we reference Mapper interfaces for {@code ClassB} in the current package and {@code ClassB} in package
  * {@code mapperreferences}.
- * We chose to not make an import (except the implicite one of types from the current package) and use qualified
+ * We chose to not make an import (except the implicit one of types from the current package) and use qualified
  * references for the {@code ClassBMapper} from package {@code mapperreferences}.
  *
  * @author Sébastien Lesaint

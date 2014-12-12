@@ -277,24 +277,24 @@ public class DASourceClassImpl implements DASourceClass {
         return setGuavaFunctionFlag(filterdMethods);
       }
 
-      return setImpliciteMapperMethodFlag(filterdMethods);
+      return setMapperMethodFlag(filterdMethods);
     }
 
-    private static List<DAMethod> setImpliciteMapperMethodFlag(List<DAMethod> methods) {
-      List<DAMethod> nonPrivateMethods = from(methods)
+    private static List<DAMethod> setMapperMethodFlag(List<DAMethod> methods) {
+      List<DAMethod> publicMethods = from(methods)
           .filter(DAMethodPredicates.isNotStatic())
           .filter(DAMethodPredicates.isNotConstructor())
           .filter(DAMethodPredicates.isNotMapperFactoryMethod())
           .filter(DAMethodPredicates.isPublic())
           .toList();
-      if (nonPrivateMethods.size() == 1) {
-        final DAMethod impliciteMapperMethod = nonPrivateMethods.iterator().next();
+      if (publicMethods.size() == 1) {
+        final DAMethod mapperMethod = publicMethods.iterator().next();
         return from(methods).transform(new Function<DAMethod, DAMethod>() {
           @Nullable
           @Override
           public DAMethod apply(@Nullable DAMethod daMethod) {
-            if (daMethod == impliciteMapperMethod) {
-              return DAMethodImpl.makeImpliciteMapperMethod(daMethod);
+            if (daMethod == mapperMethod) {
+              return DAMethodImpl.makeMapperMethod(daMethod);
             }
             return daMethod;
           }

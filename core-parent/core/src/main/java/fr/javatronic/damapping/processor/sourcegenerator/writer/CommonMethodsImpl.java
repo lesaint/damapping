@@ -166,7 +166,7 @@ class CommonMethodsImpl implements CommonMethods {
    *     <li>if the specified type is a type or an array of type from "java.lang", use simple reference</li>
    *     <li>if the specified type has an explicite import, use simple reference</li>
    *     <li>if the specified type has an homonymous amough the explicite imports, use qualified reference</li>
-   *     <li>if the specified type belongs to the current package, use implicite reference</li>
+   *     <li>if the specified type belongs to the current package, use implicit reference</li>
    *     <li>if the specified type did not match any of the above rules, raise an error, there is something wrong</li>
    *   </ul>
    * </p>

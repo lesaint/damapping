@@ -16,7 +16,7 @@
 package fr.javatronic.damapping.test.guava;
 
 import fr.javatronic.damapping.annotation.Mapper;
-import fr.javatronic.damapping.test.implicitemappermethod.Dummy_1Mapper;
+import fr.javatronic.damapping.test.mappermethod.Dummy_1Mapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

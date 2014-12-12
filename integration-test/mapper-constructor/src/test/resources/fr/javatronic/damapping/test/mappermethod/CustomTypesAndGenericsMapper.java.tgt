@@ -1,0 +1,10 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+import fr.javatronic.damapping.test.mappermethod.subpackage.OutOfPackage;
+import fr.javatronic.damapping.util.Optional;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public interface CustomTypesAndGenericsMapper {
+
+    InPackage fooBarDonut(Optional<? extends OutOfPackage> optional);
+}

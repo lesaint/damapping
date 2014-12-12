@@ -1,0 +1,17 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+import fr.javatronic.damapping.test.mappermethod.subpackage.OutOfPackage;
+import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public class PublicWithWildcardGenericsMapperImpl implements PublicWithWildcardGenericsMapper {
+    private final PublicWithWildcardGenerics dedicatedInstance = new PublicWithWildcardGenerics();
+
+    @Override
+    @Nonnull
+    public String transform(@Nullable List<? extends OutOfPackage> entities) {
+        return this.dedicatedInstance.transform(entities);
+    }
+}

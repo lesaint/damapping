@@ -101,7 +101,7 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
   }
 
   private Optional<DAMethod> findMapperMethod(DASourceClass sourceClass) {
-    return from(sourceClass.getMethods()).filter(DAMethodPredicates.isImpliciteMapperMethod()).first();
+    return from(sourceClass.getMethods()).filter(DAMethodPredicates.isMapperMethod()).first();
   }
 
   private static List<DAType> toDAType(List<DAInterface> interfaces) {

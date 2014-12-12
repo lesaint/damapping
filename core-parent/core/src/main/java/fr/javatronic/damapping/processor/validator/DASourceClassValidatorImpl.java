@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
-import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isImpliciteMapperMethod;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperMethod;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperFactoryMethod;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 
@@ -100,7 +100,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     }
 
     List<DAMethod> mapperMethods = from(methods)
-        .filter(Predicates.or(isGuavaFunctionApply(), isImpliciteMapperMethod()))
+        .filter(Predicates.or(isGuavaFunctionApply(), isMapperMethod()))
         .toList();
     // until we support @MapperMethod, this first case can not happen because of how the DAMethod flags are set
     if (mapperMethods.size() > 1) {

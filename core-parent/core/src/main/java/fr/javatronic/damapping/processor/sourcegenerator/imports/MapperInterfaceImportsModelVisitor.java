@@ -43,12 +43,12 @@ public class MapperInterfaceImportsModelVisitor extends ImportListBuilder implem
 
   @Override
   public void visit(DAMethod daMethod) {
-    if (daMethod.isImplicitMapperMethod()) {
+    if (daMethod.isMapperMethod()) {
       addImports(daMethod);
     }
     // mapper interface does not define any method of its own if inherits from Guava's Function interface
     // which imports are added via the DAInterface
-    // mapper interface only defines implicite mapper method or the one annoted with @MapperMethod
+    // mapper interface only defines implicit mapper method or the one annoted with @MapperMethod
   }
 
 }

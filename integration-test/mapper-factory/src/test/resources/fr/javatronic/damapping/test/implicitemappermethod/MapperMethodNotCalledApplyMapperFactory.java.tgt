@@ -1,7 +1,0 @@
-package fr.javatronic.damapping.test.implicitemappermethod;
-
-@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
-public interface MapperMethodNotCalledApplyMapperFactory {
-
-    MapperMethodNotCalledApplyMapper instanceByConstructor(boolean flag);
-}

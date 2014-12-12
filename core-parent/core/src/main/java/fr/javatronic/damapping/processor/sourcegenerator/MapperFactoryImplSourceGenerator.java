@@ -168,7 +168,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
     // implémentation de la méthode de mapping (Function.apply tant qu'on ne supporte pas @MapperMethod)
     DAMethod mapperMethod = from(sourceClass.getMethods())
         .firstMatch(
-            Predicates.or(DAMethodPredicates.isGuavaFunctionApply(), DAMethodPredicates.isImpliciteMapperMethod()))
+            Predicates.or(DAMethodPredicates.isGuavaFunctionApply(), DAMethodPredicates.isMapperMethod()))
         .get();
     DAClassMethodWriter<?> methodWriter = mapperClassWriter
         .newMethod(mapperMethod.getName().getName(), mapperMethod.getReturnType())

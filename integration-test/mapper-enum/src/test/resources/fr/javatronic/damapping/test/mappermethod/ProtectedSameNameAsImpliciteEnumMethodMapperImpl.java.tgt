@@ -1,0 +1,12 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+import javax.annotation.Nullable;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public class ProtectedSameNameAsImpliciteEnumMethodMapperImpl implements ProtectedSameNameAsImpliciteEnumMethodMapper {
+
+    @Override
+    public String valueOf(@Nullable Integer input) {
+        return ProtectedSameNameAsImpliciteEnumMethod.INSTANCE.valueOf(input);
+    }
+}

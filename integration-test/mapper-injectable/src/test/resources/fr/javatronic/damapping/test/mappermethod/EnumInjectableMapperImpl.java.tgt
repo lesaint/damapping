@@ -1,0 +1,13 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+import javax.annotation.Nonnull;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public class EnumInjectableMapperImpl implements EnumInjectableMapper {
+
+    @Override
+    @Nonnull
+    public String fooBar(String someParam) {
+        return EnumInjectable.THE_ONLY_INSTANCE.fooBar(someParam);
+    }
+}

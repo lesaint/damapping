@@ -250,23 +250,23 @@ public class DAMethodPredicatesTest {
   }
 
   @Test
-  public void isImpliciteMapperMethod_fails_if_null() throws Exception {
-    assertThat(DAMethodPredicates.isImpliciteMapperMethod().apply(null)).isFalse();
+  public void isMapperMethod_fails_if_null() throws Exception {
+    assertThat(DAMethodPredicates.isMapperMethod().apply(null)).isFalse();
   }
 
   @Test
-  public void isImpliciteMapperMethod_fails_if_flag_false() throws Exception {
+  public void isMapperMethod_fails_if_flag_false() throws Exception {
     DAMethod daMethod = mockDAMethod("toto");
-    when(daMethod.isImplicitMapperMethod()).thenReturn(false);
+    when(daMethod.isMapperMethod()).thenReturn(false);
 
-    assertThat(DAMethodPredicates.isImpliciteMapperMethod().apply(daMethod)).isFalse();
+    assertThat(DAMethodPredicates.isMapperMethod().apply(daMethod)).isFalse();
   }
 
   @Test
-  public void isImpliciteMapperMethod_succeeds_if_flag_true() throws Exception {
+  public void isMapperMethod_succeeds_if_flag_true() throws Exception {
     DAMethod daMethod = mockDAMethod("toto");
-    when(daMethod.isImplicitMapperMethod()).thenReturn(true);
+    when(daMethod.isMapperMethod()).thenReturn(true);
 
-    assertThat(DAMethodPredicates.isImpliciteMapperMethod().apply(daMethod)).isTrue();
+    assertThat(DAMethodPredicates.isMapperMethod().apply(daMethod)).isTrue();
   }
 }

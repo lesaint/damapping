@@ -174,16 +174,16 @@ public class DAMethodPredicates {
     };
   }
 
-  public static Predicate<DAMethod> isImpliciteMapperMethod() {
-    return ImpliciteMapperMethod.INSTANCE;
+  public static Predicate<DAMethod> isMapperMethod() {
+    return MapperMethod.INSTANCE;
   }
 
-  private static enum ImpliciteMapperMethod implements Predicate<DAMethod> {
+  private static enum MapperMethod implements Predicate<DAMethod> {
     INSTANCE;
 
     @Override
     public boolean apply(@Nullable DAMethod daMethod) {
-      return daMethod != null && daMethod.isImplicitMapperMethod();
+      return daMethod != null && daMethod.isMapperMethod();
     }
   }
 

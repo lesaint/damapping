@@ -17,12 +17,11 @@ package fr.javatronic.damapping.test.guava;
 
 import fr.javatronic.damapping.annotation.Injectable;
 import fr.javatronic.damapping.annotation.Mapper;
-import fr.javatronic.damapping.test.implicitemappermethod.UsePackageTypeInjectableMapper;
+import fr.javatronic.damapping.test.mappermethod.UsePackageTypeInjectableMapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

@@ -30,7 +30,7 @@ import javax.lang.model.element.Element;
 public interface ElementUtils {
 
   /**
-   * Builds up the list of explicite and implicite imports for the specified {@link Element}
+   * Builds up the list of explicit and implicit imports for the specified {@link Element}
    *
    * @param e a {@link Element}
    *

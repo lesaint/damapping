@@ -126,8 +126,8 @@ public class JavaxExtractorImpl implements JavaxExtractor {
    * <ol>
    * <li>look for the fixed reference in the current {@link ReferenceScanResult} for the qualified reference in
    * Element</li>
-   * <li>look for the fixed reference in the current {@link ReferenceScanResult} for the import (explicite or
-   * implicite) with the simpleName of the specified Element</li>
+   * <li>look for the fixed reference in the current {@link ReferenceScanResult} for the import (explicit or
+   * implicit) with the simpleName of the specified Element</li>
    * <li>if neither search returned a DAType, throw a {@link IllegalStateException}, this is not supposed to happen</li>
    * </ol>
    * </p>

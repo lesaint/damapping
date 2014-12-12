@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 public interface ElementImports {
 
   /**
-   * Lookup amoung the explicite qualified imports, the explicite stard imports and the implicit imports of the current
+   * Lookup amoung the explicit qualified imports, the explicit star imports and the implicit imports of the current
    * Element if any type has the specified simpleName.
    *
    * @param simpleName a {@link CharSequence} or {@code null}

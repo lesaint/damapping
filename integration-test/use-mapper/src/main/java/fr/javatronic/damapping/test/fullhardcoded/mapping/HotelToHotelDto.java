@@ -23,13 +23,13 @@ import javax.annotation.Nullable;
 import com.google.common.collect.FluentIterable;
 
 /**
- * HotelToHotelDto - This mappper uses the implicite mapper method functionnnality
+ * HotelToHotelDto - A mapper using another one
  *
  * @author Sébastien Lesaint
  */
 @Mapper
 public class HotelToHotelDto {
-  private FloorToFloorDtoMapper floorToFloorDtoMapper = new FloorToFloorDtoMapperImpl();
+  private final FloorToFloorDtoMapper floorToFloorDtoMapper = new FloorToFloorDtoMapperImpl();
 
   @Nullable
   public HotelDto apply(@Nullable Hotel hotel) {

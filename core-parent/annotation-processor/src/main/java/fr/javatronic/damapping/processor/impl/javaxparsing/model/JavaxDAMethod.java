@@ -95,8 +95,8 @@ public class JavaxDAMethod implements DAMethod {
   }
 
   @Override
-  public boolean isImplicitMapperMethod() {
-    return delegate.isImplicitMapperMethod();
+  public boolean isMapperMethod() {
+    return delegate.isMapperMethod();
   }
 
   @Override

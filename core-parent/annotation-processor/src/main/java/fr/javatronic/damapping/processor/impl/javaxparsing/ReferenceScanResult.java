@@ -31,7 +31,7 @@ import javax.lang.model.element.Element;
 /**
  * ReferenceScanResult - Holds the result of a scan performed by {@link ReferencesScanner}.
  * <ul>
- *   <li>the imports (explicite and implicite) of the scanned {@link javax.lang.model.element.TypeElement}</li>
+ *   <li>the imports (explicit and implicit) of the scanned {@link javax.lang.model.element.TypeElement}</li>
  *   <li>the unresolved references found during the scan</li>
  *   <li>the fixed unresolved references found during the scan</li>
  * </ul>

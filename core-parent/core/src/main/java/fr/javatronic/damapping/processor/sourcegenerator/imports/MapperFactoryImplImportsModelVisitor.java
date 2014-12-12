@@ -26,7 +26,7 @@ import fr.javatronic.damapping.util.Predicate;
 import javax.annotation.Nullable;
 
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
-import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isImpliciteMapperMethod;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperMethod;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperFactoryMethod;
 
 /**
@@ -58,7 +58,7 @@ public class MapperFactoryImplImportsModelVisitor extends ImportListBuilder impl
         }
       }));
     }
-    if (isGuavaFunctionApply().apply(daMethod) || isImpliciteMapperMethod().apply(daMethod)) {
+    if (isGuavaFunctionApply().apply(daMethod) || isMapperMethod().apply(daMethod)) {
       addImports(daMethod);
     }
 //    // mapperFactoryMethod are exposed as methods of the MapperFactory

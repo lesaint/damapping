@@ -1,6 +1,6 @@
 package fr.javatronic.damapping.test.guava;
 
-import fr.javatronic.damapping.test.implicitemappermethod.UsePackageTypeInjectableMapper;
+import fr.javatronic.damapping.test.mappermethod.UsePackageTypeInjectableMapper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;

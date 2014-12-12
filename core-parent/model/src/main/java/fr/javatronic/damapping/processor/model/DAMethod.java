@@ -89,7 +89,7 @@ public interface DAMethod extends DAModelVisitable, DAElement {
    *
    * @return a boolean
    */
-  boolean isImplicitMapperMethod();
+  boolean isMapperMethod();
 
   /**
    * Indicates that the method override the {@code apply} method of the Guava's {@code Function}

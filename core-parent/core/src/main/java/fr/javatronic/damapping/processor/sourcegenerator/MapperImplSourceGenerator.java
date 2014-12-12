@@ -255,7 +255,7 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
 
   private DAMethod findMapperMethod(DASourceClass sourceClass) {
     return from(sourceClass.getMethods())
-        .filter(Predicates.or(DAMethodPredicates.isGuavaFunctionApply(), DAMethodPredicates.isImpliciteMapperMethod()))
+        .filter(Predicates.or(DAMethodPredicates.isGuavaFunctionApply(), DAMethodPredicates.isMapperMethod()))
         .first()
         .get();
   }
