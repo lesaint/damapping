@@ -250,27 +250,6 @@ public class DAMethodPredicatesTest {
   }
 
   @Test
-  public void isMapperMethod_fails_if_null() throws Exception {
-    assertThat(DAMethodPredicates.isMapperMethod().apply(null)).isFalse();
-  }
-
-  @Test
-  public void isMapperMethod_fails_if_flag_mapperMethod_is_false() throws Exception {
-    DAMethod daMethod = mockDAMethod("toto");
-    when(daMethod.isMapperMethod()).thenReturn(false);
-
-    assertThat(DAMethodPredicates.isMapperMethod().apply(daMethod)).isFalse();
-  }
-
-  @Test
-  public void isMapperMethod_succeeds_if_flag_mapperMethod_is_true() throws Exception {
-    DAMethod daMethod = mockDAMethod("toto");
-    when(daMethod.isMapperMethod()).thenReturn(true);
-
-    assertThat(DAMethodPredicates.isMapperMethod().apply(daMethod)).isTrue();
-  }
-
-  @Test
   public void isImpliciteMapperMethod_fails_if_null() throws Exception {
     assertThat(DAMethodPredicates.isImpliciteMapperMethod().apply(null)).isFalse();
   }

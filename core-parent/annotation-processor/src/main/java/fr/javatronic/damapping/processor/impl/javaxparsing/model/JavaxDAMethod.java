@@ -90,11 +90,6 @@ public class JavaxDAMethod implements DAMethod {
   }
 
   @Override
-  public boolean isMapperMethod() {
-    return delegate.isMapperMethod();
-  }
-
-  @Override
   public boolean isMapperFactoryMethod() {
     return delegate.isMapperFactoryMethod();
   }

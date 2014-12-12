@@ -77,14 +77,6 @@ public interface DAMethod extends DAModelVisitable, DAElement {
   boolean isConstructor();
 
   /**
-   * Indicates that the method is annotated with the {@link fr.javatronic.damapping.annotation.MapperMethod}
-   * annotation.
-   *
-   * @return a boolean
-   */
-  boolean isMapperMethod();
-
-  /**
    * Indicates that the method is annotated with the {@link fr.javatronic.damapping.annotation.MapperFactory}
    * annotation.
    *

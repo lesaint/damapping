@@ -128,20 +128,6 @@ public class DAMethodPredicates {
 
   }
 
-  public static Predicate<DAMethod> isMapperMethod() {
-    return MapperMethod.INSTANCE;
-  }
-
-  private static enum MapperMethod implements Predicate<DAMethod> {
-    INSTANCE;
-
-    @Override
-    public boolean apply(@Nullable DAMethod daMethod) {
-      return daMethod != null && daMethod.isMapperMethod();
-    }
-
-  }
-
   public static Predicate<DAMethod> isMapperFactoryMethod() {
     return MapperFactoryMethodPredicate.INSTANCE;
   }
@@ -153,7 +139,6 @@ public class DAMethodPredicates {
     public boolean apply(@Nonnull DAMethod daMethod) {
       return daMethod.isMapperFactoryMethod();
     }
-
   }
 
   private static final Predicate<DAMethod> NOT_MAPPERFACTORY_METHOD = Predicates.not(MapperFactoryMethodPredicate.INSTANCE);

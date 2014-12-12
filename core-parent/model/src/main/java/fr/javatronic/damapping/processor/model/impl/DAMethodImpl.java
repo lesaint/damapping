@@ -67,10 +67,6 @@ public class DAMethodImpl implements DAMethod {
   @Nonnull
   private final List<DAParameter> parameters;
   /**
-   * Indique que cette méthode est annotée avec @MapperMethod
-   */
-  private final boolean mapperMethod;
-  /**
    * Indique si cette méthode était annotée avec @MapperFactory
    */
   private final boolean mapperFactoryMethod;
@@ -83,14 +79,13 @@ public class DAMethodImpl implements DAMethod {
    */
   private final boolean implicitMapperMethod;
 
-  private DAMethodImpl(Builder builder, boolean mapperMethod, boolean mapperFactoryMethod) {
+  private DAMethodImpl(Builder builder, boolean mapperFactoryMethod) {
     this.constructor = builder.constructor;
     this.name = builder.name;
     this.annotations = nonNullFrom(builder.annotations);
     this.modifiers = nonNullFrom(builder.modifiers);
     this.returnType = builder.returnType;
     this.parameters = nonNullFrom(builder.parameters);
-    this.mapperMethod = mapperMethod;
     this.mapperFactoryMethod = mapperFactoryMethod;
     this.guavaFunctionApplyMethod = false;
     this.implicitMapperMethod = false;
@@ -103,7 +98,6 @@ public class DAMethodImpl implements DAMethod {
     this.modifiers = from.getModifiers();
     this.returnType = from.getReturnType();
     this.parameters = from.getParameters();
-    this.mapperMethod = from.isMapperMethod();
     this.mapperFactoryMethod = from.isMapperFactoryMethod();
     this.guavaFunctionApplyMethod = guavaFunctionApplyMethod;
     this.implicitMapperMethod = implicitMapperMethod;
@@ -163,11 +157,6 @@ public class DAMethodImpl implements DAMethod {
   }
 
   @Override
-  public boolean isMapperMethod() {
-    return mapperMethod;
-  }
-
-  @Override
   public boolean isMapperFactoryMethod() {
     return mapperFactoryMethod;
   }
@@ -212,9 +201,6 @@ public class DAMethodImpl implements DAMethod {
     if (mapperFactoryMethod != daMethod.mapperFactoryMethod) {
       return false;
     }
-    if (mapperMethod != daMethod.mapperMethod) {
-      return false;
-    }
     if (!modifiers.equals(daMethod.modifiers)) {
       return false;
     }
@@ -239,7 +225,6 @@ public class DAMethodImpl implements DAMethod {
     result = 31 * result + modifiers.hashCode();
     result = 31 * result + (returnType != null ? returnType.hashCode() : 0);
     result = 31 * result + parameters.hashCode();
-    result = 31 * result + (mapperMethod ? 1 : 0);
     result = 31 * result + (mapperFactoryMethod ? 1 : 0);
     result = 31 * result + (guavaFunctionApplyMethod ? 1 : 0);
     result = 31 * result + (implicitMapperMethod ? 1 : 0);
@@ -291,12 +276,7 @@ public class DAMethodImpl implements DAMethod {
 
     public DAMethod build() {
       List<DAAnnotation> daAnnotations = nonNullFrom(this.annotations);
-      return new DAMethodImpl(this, computeMapperMethodFlag(daAnnotations), computeMapperFactoryMethodFlag(daAnnotations));
-    }
-
-    private static boolean computeMapperMethodFlag(List<DAAnnotation> daAnnotations) {
-      // TODO implementer isMapperMethod si on ajoute une annotation MapperMethod
-      return false;
+      return new DAMethodImpl(this, computeMapperFactoryMethodFlag(daAnnotations));
     }
 
     private static boolean computeMapperFactoryMethodFlag(@Nonnull List<DAAnnotation> daAnnotations) {
