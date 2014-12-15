@@ -38,8 +38,7 @@ public interface DASourceClass extends DAModelVisitable, DAElement {
   DAType getType();
 
   /**
-   * The name of the package the source class belongs to or {@code null} if the
-   * source class belongs to the default/unamed package.
+   * Convenience method which equivalent to {@code getType().getPackageName()}.
    *
    * @return a {@link DAName} or {@code null}
    */

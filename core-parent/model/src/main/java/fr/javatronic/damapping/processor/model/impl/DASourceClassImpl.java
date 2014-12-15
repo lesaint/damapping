@@ -59,8 +59,6 @@ import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 public class DASourceClassImpl implements DASourceClass {
   @Nonnull
   private final DAType type;
-  @Nullable
-  private final DAName packageName;
   @Nonnull
   private final List<DAAnnotation> annotations;
   @Nonnull
@@ -80,7 +78,6 @@ public class DASourceClassImpl implements DASourceClass {
 
   private DASourceClassImpl(Builder<?> builder, List<DAMethod> daMethods, InstantiationType instantiationType) {
     this.type = builder.getType();
-    this.packageName = builder.getPackageName();
     this.annotations = nonNullFrom(builder.getAnnotations());
     this.injectableAnnotation = from(this.annotations).firstMatch(isInjectable());
     this.modifiers = nonNullFrom(builder.getModifiers());
@@ -108,7 +105,7 @@ public class DASourceClassImpl implements DASourceClass {
   @Override
   @Nullable
   public DAName getPackageName() {
-    return packageName;
+    return type.getPackageName();
   }
 
   @Override
@@ -183,8 +180,6 @@ public class DASourceClassImpl implements DASourceClass {
 
   public static interface Builder<T extends Builder> {
 
-    T withPackageName(DAName packageName);
-
     T withAnnotations(List<DAAnnotation> annotations);
 
     T withModifiers(Set<DAModifier> modifiers);
@@ -196,8 +191,6 @@ public class DASourceClassImpl implements DASourceClass {
     DASourceClass build();
 
     DAType getType();
-
-    DAName getPackageName();
 
     List<DAAnnotation> getAnnotations();
 
@@ -216,7 +209,6 @@ public class DASourceClassImpl implements DASourceClass {
     private final boolean isEnum;
     private final Class<T> clazz;
     private final DAType type;
-    private DAName packageName;
     private List<DAAnnotation> annotations;
     private Set<DAModifier> modifiers;
     private List<DAInterface> interfaces;
@@ -226,11 +218,6 @@ public class DASourceClassImpl implements DASourceClass {
       this.clazz = clazz;
       this.isEnum = isEnum;
       this.type = checkNotNull(type);
-    }
-
-    public T withPackageName(DAName packageName) {
-      this.packageName = packageName;
-      return clazz.cast(this);
     }
 
     @Override
@@ -339,11 +326,6 @@ public class DASourceClassImpl implements DASourceClass {
     @Override
     public DAType getType() {
       return type;
-    }
-
-    @Override
-    public DAName getPackageName() {
-      return packageName;
     }
 
     public List<DAAnnotation> getAnnotations() {

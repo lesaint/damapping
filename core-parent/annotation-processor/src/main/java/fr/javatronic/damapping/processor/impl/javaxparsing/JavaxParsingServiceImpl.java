@@ -19,14 +19,13 @@ import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.processor.impl.javaxparsing.model.JavaxDAMethod;
 import fr.javatronic.damapping.processor.impl.javaxparsing.model.JavaxDASourceClass;
 import fr.javatronic.damapping.processor.model.DAInterface;
-import fr.javatronic.damapping.processor.model.impl.DASourceClassImpl;
-import fr.javatronic.damapping.processor.model.impl.DAInterfaceImpl;
 import fr.javatronic.damapping.processor.model.DAMethod;
-import fr.javatronic.damapping.processor.model.impl.DAMethodImpl;
-import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
+import fr.javatronic.damapping.processor.model.impl.DAInterfaceImpl;
+import fr.javatronic.damapping.processor.model.impl.DAMethodImpl;
+import fr.javatronic.damapping.processor.model.impl.DASourceClassImpl;
 import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Predicates;
 
@@ -39,8 +38,6 @@ import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Name;
-import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
@@ -96,9 +93,6 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
     else {
       throw new IllegalArgumentException("Unsupported Kind of TypeElement, must be either CLASS or ENUM");
     }
-
-    // retrieve name of the package of the class with @Mapper
-    builder.withPackageName(retrievePackageName(classElement));
 
     builder.withAnnotations(javaxExtractor.extractDAAnnotations(classElement));
 
@@ -208,16 +202,6 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
       }
     }
     ).filter(Predicates.notNull()).toList();
-  }
-
-  @Nullable
-  private DAName retrievePackageName(TypeElement classElement) {
-    PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();
-    Name qualifiedName = packageElement.getQualifiedName();
-    if (qualifiedName.length() == 0) {
-      return null;
-    }
-    return JavaxDANameFactory.from(qualifiedName);
   }
 
 }
