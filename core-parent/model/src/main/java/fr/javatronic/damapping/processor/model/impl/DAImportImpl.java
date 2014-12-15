@@ -58,14 +58,13 @@ public class DAImportImpl implements DAImport {
   public static DAImport from(@Nonnull DAName daName) {
     checkNotNull(daName);
 
-    String qualifiedName = daName.getName();
-    String simpleName = qualifiedName.substring(qualifiedName.lastIndexOf(".") + 1);
-    checkArgument(!simpleName.equals(qualifiedName), "importing a type from the default/unamed package is illegal");
+    DAName packageName = DANameFactory.packageNameFromQualified(daName);
+    checkArgument(packageName != null, "importing a type from the default/unamed package is illegal");
 
     return new DAImportImpl(
         daName,
-        DANameFactory.from(qualifiedName.substring(0, qualifiedName.length() - simpleName.length() - 1)),
-        DANameFactory.from(simpleName)
+        packageName,
+        DANameFactory.simpleFromQualified(daName)
     );
   }
 

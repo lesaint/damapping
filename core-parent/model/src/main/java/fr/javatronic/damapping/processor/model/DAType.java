@@ -63,13 +63,13 @@ public interface DAType extends DAElement {
   DAName getQualifiedName();
 
   /**
-   * The name of the package if the qualified name is known, or the empty String if the qualified name is unkown or if
+   * The name of the package if the qualified name is known, or {@code null} if the qualified name is unkown or if
    * the type belongs to the unamed package.
    *
-   * @return a {@link String}
+   * @return a {@link DAName} or {@code null}
    */
-  @Nonnull
-  String getPackageName();
+  @Nullable
+  DAName getPackageName();
 
   /**
    * The geneic type argument of the type (ie. what's enclosed between {@literal <} and {@literal >}.

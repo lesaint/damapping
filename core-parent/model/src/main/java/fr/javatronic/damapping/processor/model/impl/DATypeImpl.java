@@ -18,6 +18,7 @@ package fr.javatronic.damapping.processor.model.impl;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.DATypeKind;
+import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -53,6 +54,8 @@ public class DATypeImpl implements DAType {
    */
   @Nullable
   private final DAName qualifiedName;
+  @Nullable
+  private final DAName packageName;
   @Nonnull
   private final List<DAType> typeArgs;
   @Nullable
@@ -65,6 +68,7 @@ public class DATypeImpl implements DAType {
     this.array = builder.array;
     this.simpleName = checkNotNull(builder.simpleName);
     this.qualifiedName = builder.qualifiedName;
+    this.packageName = DANameFactory.packageNameFromQualified(this.qualifiedName);
     this.typeArgs = nonNullFrom(builder.typeArgs);
     this.superBound = builder.superBound;
     this.extendsBound = builder.extendsBound;
@@ -90,12 +94,8 @@ public class DATypeImpl implements DAType {
 
   @Override
   @Nonnull
-  public String getPackageName() {
-    if (qualifiedName == null || qualifiedName.compareTo(simpleName) == 0) {
-      return "";
-    }
-    String str = qualifiedName.getName();
-    return str.substring(0, str.length() - (simpleName.length() + 1));
+  public DAName getPackageName() {
+    return packageName;
   }
 
   @Override

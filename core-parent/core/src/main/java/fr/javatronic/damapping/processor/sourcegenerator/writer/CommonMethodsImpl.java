@@ -187,7 +187,10 @@ class CommonMethodsImpl implements CommonMethods {
     if (fileContext.hasHomonymousImport(type)) {
       return true;
     }
-    if (type.getPackageName().equals(fileContext.getPackageName())) {
+    if (type.getPackageName() == null && fileContext.getPackageName().isEmpty()) {
+      return false;
+    }
+    if (type.getPackageName() != null && type.getPackageName().equals(fileContext.getPackageName())) {
       return false;
     }
     // unless import are incomplete (and generated class will not compile), this should not happen

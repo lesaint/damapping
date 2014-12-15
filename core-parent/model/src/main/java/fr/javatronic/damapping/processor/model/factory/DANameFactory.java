@@ -22,6 +22,7 @@ import fr.javatronic.damapping.processor.model.DATypeKind;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static fr.javatronic.damapping.util.Preconditions.checkArgument;
 
@@ -98,6 +99,21 @@ public final class DANameFactory {
   @Nonnull
   public static DAName simpleFromQualified(@Nonnull String qualifiedName) {
     return from(qualifiedName.substring(qualifiedName.lastIndexOf(".") + 1));
+  }
+
+  @Nullable
+  public static DAName packageNameFromQualified(@Nullable DAName qualifiedName) {
+    if (qualifiedName == null) {
+      return null;
+    }
+
+
+    String str = qualifiedName.getName();
+    int dotIndex = str.lastIndexOf(".");
+    if (dotIndex < 0) {
+      return null;
+    }
+    return from(str.substring(0, dotIndex));
   }
 
   /**
