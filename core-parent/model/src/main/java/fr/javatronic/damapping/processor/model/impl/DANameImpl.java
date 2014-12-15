@@ -18,6 +18,7 @@ package fr.javatronic.damapping.processor.model.impl;
 import fr.javatronic.damapping.processor.model.DAName;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import static fr.javatronic.damapping.util.Preconditions.checkArgument;
@@ -49,6 +50,14 @@ public class DANameImpl implements DAName {
   @Nonnull
   public String getName() {
     return name;
+  }
+
+  @Override
+  public boolean equals(@Nullable String packageName) {
+    if (packageName == null || packageName.isEmpty()) {
+      return false;
+    }
+    return name.equals(packageName);
   }
 
   @Override

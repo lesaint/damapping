@@ -76,7 +76,7 @@ public class DATypeImportComputer {
 
     @Override
     public boolean apply(@Nullable DAImport anImport) {
-      return anImport != null && !anImport.getPackageName().startsWith("java.lang");
+      return anImport != null && !anImport.getPackageName().getName().startsWith("java.lang");
     }
   }
 

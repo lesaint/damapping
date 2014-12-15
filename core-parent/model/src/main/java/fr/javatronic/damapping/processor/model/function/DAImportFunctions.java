@@ -51,16 +51,16 @@ public final class DAImportFunctions {
   }
 
   @Nonnull
-  public static Function<DAImport, String> toSimpleName() {
+  public static Function<DAImport, DAName> toSimpleName() {
     return DAImportToSimpleName.INSTANCE;
   }
 
-  private static enum DAImportToSimpleName implements Function<DAImport, String> {
+  private static enum DAImportToSimpleName implements Function<DAImport, DAName> {
     INSTANCE;
 
     @Nullable
     @Override
-    public String apply(@Nullable DAImport daImport) {
+    public DAName apply(@Nullable DAImport daImport) {
       if (daImport == null) {
         return null;
       }

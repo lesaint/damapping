@@ -35,20 +35,19 @@ public interface DAImport extends DAElement {
   /**
    * The package of the import type ie. {@code com.foo} in {@code import com.foo.Bar}.
    * <p>
-   * Since it is illegal to import a Type from the unamed package, this method can not return an empty
-   * String.
+   * Since it is illegal to import a Type from the unamed package, this method can not return an {@code null}.
    * </p>
    *
-   * @return a non empty {@link String}
+   * @return a {@link DAName}
    */
   @Nonnull
-  String getPackageName();
+  DAName getPackageName();
 
   /**
    * The simple name of the imported type, ie. {@code Bar} in {@code import com.foo.Bar}.
    *
-   * @return a non empty {@link String}
+   * @return a {@link DAName}
    */
   @Nonnull
-  String getSimpleName();
+  DAName getSimpleName();
 }

@@ -18,6 +18,7 @@ package fr.javatronic.damapping.processor.sourcegenerator.imports;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAMethod;
+import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.util.Function;
@@ -110,7 +111,7 @@ public class ImportListBuilder {
       return Collections.emptyList();
     }
 
-    Map<String, List<DAImport>> indexBySimpleName = Maps.newHashMap();
+    Map<DAName, List<DAImport>> indexBySimpleName = Maps.newHashMap();
 
     for (DAImport anImport : imports) {
       List<DAImport> names = indexBySimpleName.get(anImport.getSimpleName());
@@ -193,7 +194,7 @@ public class ImportListBuilder {
       }
       if (daNames.size() == 1) {
         DAImport anImport = daNames.iterator().next();
-        if (currentPackage.equals(anImport.getPackageName())) {
+        if (anImport.getPackageName().equals(currentPackage)) {
           return null;
         }
         return anImport;

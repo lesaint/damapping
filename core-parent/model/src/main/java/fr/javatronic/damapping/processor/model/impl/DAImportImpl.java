@@ -17,6 +17,7 @@ package fr.javatronic.damapping.processor.model.impl;
 
 import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAName;
+import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
@@ -34,11 +35,11 @@ public class DAImportImpl implements DAImport {
   @Nonnull
   private final DAName qualifiedName;
   @Nonnull
-  private final String packageName;
+  private final DAName packageName;
   @Nonnull
-  private final String simpleName;
+  private final DAName simpleName;
 
-  private DAImportImpl(@Nonnull DAName qualifiedName, @Nonnull String packageName, @Nonnull String simpleName) {
+  private DAImportImpl(@Nonnull DAName qualifiedName, @Nonnull DAName packageName, @Nonnull DAName simpleName) {
     this.qualifiedName = checkNotNull(qualifiedName);
     this.packageName = checkNotNull(packageName);
     this.simpleName = checkNotNull(simpleName);
@@ -63,8 +64,8 @@ public class DAImportImpl implements DAImport {
 
     return new DAImportImpl(
         daName,
-        qualifiedName.substring(0, qualifiedName.length() - simpleName.length() - 1),
-        simpleName
+        DANameFactory.from(qualifiedName.substring(0, qualifiedName.length() - simpleName.length() - 1)),
+        DANameFactory.from(simpleName)
     );
   }
 
@@ -76,13 +77,13 @@ public class DAImportImpl implements DAImport {
 
   @Override
   @Nonnull
-  public String getPackageName() {
+  public DAName getPackageName() {
     return packageName;
   }
 
   @Override
   @Nonnull
-  public String getSimpleName() {
+  public DAName getSimpleName() {
     return simpleName;
   }
 

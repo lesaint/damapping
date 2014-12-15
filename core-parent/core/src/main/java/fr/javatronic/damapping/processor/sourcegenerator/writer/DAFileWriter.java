@@ -17,10 +17,9 @@ package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
 import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAName;
-import fr.javatronic.damapping.processor.model.function.DANameFunctions;
-import fr.javatronic.damapping.processor.model.predicate.DANamePredicates;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.function.DAImportFunctions;
+import fr.javatronic.damapping.processor.model.predicate.DANamePredicates;
 import fr.javatronic.damapping.util.Lists;
 import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Predicates;
@@ -51,9 +50,9 @@ public class DAFileWriter implements DAWriter {
   @Nullable
   private DAName packageName;
   @Nullable
-  private Set<String> importQualifiedNames;
+  private Set<DAName> importQualifiedNames;
   @Nullable
-  private Set<String> importSimpleNames;
+  private Set<DAName> importSimpleNames;
 
   public DAFileWriter(BufferedWriter writer) {
     this.writer = writer;
@@ -94,7 +93,6 @@ public class DAFileWriter implements DAWriter {
 
     this.importQualifiedNames = from(mapperImports)
         .transform(DAImportFunctions.toQualifiedName())
-        .transform(DANameFunctions.toName())
         .filter(notNull())
         .toSet();
     this.importSimpleNames = from(mapperImports).transform(DAImportFunctions.toSimpleName())
@@ -163,7 +161,7 @@ public class DAFileWriter implements DAWriter {
       if (type == null || importQualifiedNames == null || type.getQualifiedName() == null) {
         return false;
       }
-      return importQualifiedNames.contains(type.getQualifiedName().getName());
+      return importQualifiedNames.contains(type.getQualifiedName());
     }
 
     @Override
@@ -171,7 +169,7 @@ public class DAFileWriter implements DAWriter {
       if (type == null || importSimpleNames == null) {
         return false;
       }
-      return !hasExpliciteImport(type) && importSimpleNames.contains(type.getSimpleName().getName());
+      return !hasExpliciteImport(type) && importSimpleNames.contains(type.getSimpleName());
     }
   }
 }

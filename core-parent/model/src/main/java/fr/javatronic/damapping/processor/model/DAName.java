@@ -16,6 +16,7 @@
 package fr.javatronic.damapping.processor.model;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * DAName - Represents the name of a class, parameter, package, etc. It can not be empty.
@@ -33,4 +34,13 @@ public interface DAName extends CharSequence, Comparable<DAName>, DAElement {
    */
   @Nonnull
   String getName();
+
+  /**
+   * Convenience method equalivalent to {@code getName().equals(packageName)} but with {@code null} support.
+   *
+   * @param packageName a {@link String} or {@code null}
+   *
+   * @return a boolean
+   */
+  boolean equals(@Nullable String packageName);
 }
