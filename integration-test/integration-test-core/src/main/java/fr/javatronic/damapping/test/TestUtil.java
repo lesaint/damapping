@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import org.apache.commons.io.FileUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,7 +49,7 @@ public class TestUtil {
         "generated-sources/annotations/" + classUnderTest.getCanonicalName().replaceAll("\\.", "/") + suffix + ".java"
     );
 
-    assertThat(srcFile).usingCharset(CHARSET_NAME).hasContent(FileUtils.readFileToString(tgtFile, "UTF-8"));
+    assertThat(srcFile).usingCharset(CHARSET_NAME).hasContentEqualTo(tgtFile);
   }
 
   private int packageDepth(Class<?> testcaseClass) {
