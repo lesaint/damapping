@@ -123,4 +123,30 @@ public class MapperMethodPresentTest extends AbstractCompilationTest {
     assertThat(fileObject).compilesWithoutError();
   }
 
+  @Test
+  public void compiling_function_with_public_method_fails() throws Exception {
+    JavaFileObject fileObject = JavaFileObjects.forSourceLines(
+        "test.ImplementingFunctionWithPublicMethod",
+        "package test;",
+        "",
+        "import fr.javatronic.damapping.annotation.Mapper;",
+        "import com.google.common.base.Function;",
+        "",
+        "@Mapper",
+        "public class ImplementingFunctionWithPublicMethod implements Function<String, Integer> {",
+        "  public Integer apply(String input) {",
+        "    return null;",
+        "  }",
+        "  public Integer map(String input) {",
+        "    return null;",
+        "  }",
+        "}"
+    );
+
+    assertThat(fileObject).failsToCompile()
+        .withErrorContaining("Mapper must either implement Guava's Function interface or define public method(s), it can not do both")
+        .in(fileObject)
+        .onLine(11);
+  }
+
 }
