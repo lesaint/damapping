@@ -25,21 +25,23 @@ import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.InstantiationType;
-import fr.javatronic.damapping.processor.model.predicate.DAInterfacePredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitor;
 import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Optional;
-import fr.javatronic.damapping.util.Predicates;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import static fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates.isInjectable;
+import static fr.javatronic.damapping.processor.model.predicate.DAInterfacePredicates.isGuavaFunction;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isApplyWithSingleParam;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isCompilerGeneratedForEnum;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isNotConstructor;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isNotMapperFactoryMethod;
@@ -49,6 +51,7 @@ import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicat
 import static fr.javatronic.damapping.processor.model.util.ImmutabilityHelper.nonNullFrom;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
+import static fr.javatronic.damapping.util.Predicates.not;
 
 /**
  * DASourceClassImpl - Implements DASourceClass as an immutable object.
@@ -115,8 +118,10 @@ public class DASourceClassImpl implements DASourceClass {
   }
 
   /**
-   * The {@link fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl} from {@link #annotations} which represents the {@link Injectable} annotation on the
+   * The {@link fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl} from {@link #annotations} which
+   * represents the {@link Injectable} annotation on the
    * dedicated class (if it exists).
+   *
    * @return a {@link Optional} of {@link fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl}
    */
   @Override
@@ -144,7 +149,8 @@ public class DASourceClassImpl implements DASourceClass {
   }
 
   /**
-   * The {@link fr.javatronic.damapping.processor.model.impl.DAMethodImpl}(s) from {@link #methods} which represents a non-private constructor in the dedicated class
+   * The {@link fr.javatronic.damapping.processor.model.impl.DAMethodImpl}(s) from {@link #methods} which represents
+   * a non-private constructor in the dedicated class
    * (if any).
    *
    * @return a {@link List} of {@link fr.javatronic.damapping.processor.model.impl.DAMethodImpl}
@@ -246,59 +252,31 @@ public class DASourceClassImpl implements DASourceClass {
       return new DASourceClassImpl(
           this,
           daMethods,
-          computeInstantiationType(nonNullFrom(this.annotations), daMethods, this.isEnum)
+          computeInstantiationType(daMethods, this.isEnum)
       );
     }
 
     private static List<DAMethod> setMethodFlags(@Nullable List<DAMethod> methods,
-                                                 @Nullable List<DAInterface> interfaces,
+                                                 @Nullable final List<DAInterface> interfaces,
                                                  @Nonnull DAType daType,
                                                  boolean isEnum) {
       if (methods == null || methods.isEmpty()) {
         return Collections.emptyList();
       }
 
-      List<DAMethod> filterdMethods = isEnum ? from(methods)
-          .filter(Predicates.not(DAMethodPredicates.isCompilerGeneratedForEnum(daType)))
-          .toList() : methods;
-      Optional<DAInterface> guavaFunctionInterface = from(nonNullFrom(interfaces))
-          .filter(DAInterfacePredicates.isGuavaFunction())
-          .first();
-      if (guavaFunctionInterface.isPresent()) {
-        return setGuavaFunctionFlag(filterdMethods);
+      List<DAMethod> filterdMethods = methods;
+      if (isEnum) {
+        filterdMethods = from(methods)
+            .filter(not(isCompilerGeneratedForEnum(daType)))
+            .toList();
       }
 
-      return setMapperMethodFlag(filterdMethods);
-    }
-
-    private static List<DAMethod> setMapperMethodFlag(List<DAMethod> methods) {
-      return from(methods)
-          .transform(DAMethodToMapperDAMethod.INSTANCE)
+      return from(filterdMethods)
+          .transform(new ToGuavaFunctionOrMapperMethod(interfaces))
           .toList();
     }
 
-    private static List<DAMethod> setGuavaFunctionFlag(List<DAMethod> methods) {
-      List<DAMethod> applyMethods = from(methods).filter(DAMethodPredicates.isApplyWithSingleParam()).toList();
-
-      if (applyMethods.size() == 1) {
-        final DAMethod applyMethod = applyMethods.iterator().next();
-        return from(methods).transform(new Function<DAMethod, DAMethod>() {
-          @Nullable
-          @Override
-          public DAMethod apply(@Nullable DAMethod daMethod) {
-            if (daMethod == applyMethod) {
-              return DAMethodImpl.makeGuavaFunctionApplyMethod(daMethod);
-            }
-            return daMethod;
-          }
-        }
-        ).toList();
-      }
-      return methods;
-    }
-
-    private static InstantiationType computeInstantiationType(@Nonnull List<DAAnnotation> daAnnotations,
-                                                              @Nonnull List<DAMethod> daMethods,
+    private static InstantiationType computeInstantiationType(@Nonnull List<DAMethod> daMethods,
                                                               boolean isEnumFlag) {
       Optional<DAMethod> mapperFactoryConstructor = from(daMethods)
           .filter(isConstructor())
@@ -377,8 +355,14 @@ public class DASourceClassImpl implements DASourceClass {
 
   }
 
-  private static enum DAMethodToMapperDAMethod implements Function<DAMethod, DAMethod> {
-    INSTANCE;
+  private static class ToGuavaFunctionOrMapperMethod implements Function<DAMethod, DAMethod> {
+    private final Optional<DAInterface> guavaFunctionInterface;
+
+    public ToGuavaFunctionOrMapperMethod(List<DAInterface> interfaces) {
+      this.guavaFunctionInterface = from(nonNullFrom(interfaces))
+          .filter(isGuavaFunction())
+          .first();
+    }
 
     @Nullable
     @Override
@@ -386,10 +370,33 @@ public class DASourceClassImpl implements DASourceClass {
       if (daMethod == null) {
         return null;
       }
+      if (isGuavaFunctionMethod(daMethod)) {
+        return DAMethodImpl.makeGuavaFunctionApplyMethod(daMethod);
+      }
       if (isMapperMethod(daMethod)) {
         return DAMethodImpl.makeMapperMethod(daMethod);
       }
       return daMethod;
+    }
+
+    private boolean isGuavaFunctionMethod(DAMethod daMethod) {
+      return guavaFunctionInterface.isPresent()
+          && isApplyWithSingleParam().apply(daMethod)
+          && checkTypes(daMethod, guavaFunctionInterface.get());
+    }
+
+    private static boolean checkTypes(DAMethod applyMethod, DAInterface guavaFunctionInterface) {
+      // applyMethod must have a return type
+      DAType returnType = applyMethod.getReturnType();
+      if (returnType == null) {
+        return false;
+      }
+
+      DAType parameterType = applyMethod.getParameters().iterator().next().getType();
+      List<DAType> typeArgs = guavaFunctionInterface.getType().getTypeArgs();
+
+      return Objects.equals(parameterType.getQualifiedName(), typeArgs.get(0).getQualifiedName())
+          && Objects.equals(returnType.getQualifiedName(), typeArgs.get(1).getQualifiedName());
     }
 
     private static boolean isMapperMethod(DAMethod daMethod) {

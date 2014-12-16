@@ -23,16 +23,15 @@ import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.constants.Jsr330Constants;
 import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.javatronic.damapping.util.Optional;
-import fr.javatronic.damapping.util.Predicates;
 
 import java.util.List;
-
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
-import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperMethod;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperFactoryMethod;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperMethod;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
@@ -99,20 +98,18 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
       throw new ValidationError("Class annoted with @Mapper must have at least one method", sourceClass, null, null);
     }
 
-    List<DAMethod> mapperMethods = from(methods)
-        .filter(Predicates.or(isGuavaFunctionApply(), isMapperMethod()))
-        .toList();
-    // until we support @MapperMethod, this first case can not happen because of how the DAMethod flags are set
-//    if (mapperMethods.size() > 1) {
-//      throw new ValidationError(
-//          "Mapper having more than one method qualifying as mapper method is not supported",
-//          sourceClass, mapperMethods.get(1), null
-//      );
-//    }
-    if (mapperMethods.isEmpty()) {
+    Optional<DAMethod> guavaFunction = from(methods).filter(isGuavaFunctionApply()).first();
+    Optional<DAMethod> mapperMethod = from(methods).filter(isMapperMethod()).first();
+    if (!guavaFunction.or(mapperMethod).isPresent()) {
       throw new ValidationError(
           "Mapper must have one and only one method qualifying as mapper method (either implemente Guava's Function interface or define a single non private method)",
           sourceClass, null, null
+      );
+    }
+    if (guavaFunction.isPresent() && mapperMethod.isPresent()) {
+      throw new ValidationError(
+          "Mapper must either implement Guava's Function interface or define public method(s), it can not do both",
+          sourceClass, mapperMethod.get(), null
       );
     }
   }
@@ -155,8 +152,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
   private static boolean isValidMapperFactoryReturnType(@Nonnull DASourceClass sourceClass,
                                                         @Nullable DAType returnType) {
     return returnType != null
-        && returnType.getQualifiedName() != null
-        && returnType.getQualifiedName().equals(sourceClass.getType().getQualifiedName());
+        && Objects.equals(returnType.getQualifiedName(), sourceClass.getType().getQualifiedName());
   }
 
   private void validateJSR330InPath(DASourceClass sourceClass) throws ValidationError {
