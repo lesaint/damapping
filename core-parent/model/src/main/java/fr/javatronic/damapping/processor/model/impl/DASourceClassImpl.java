@@ -27,31 +27,20 @@ import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.InstantiationType;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitor;
-import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Optional;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import static fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates.isInjectable;
-import static fr.javatronic.damapping.processor.model.predicate.DAInterfacePredicates.isGuavaFunction;
-import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isApplyWithSingleParam;
-import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isCompilerGeneratedForEnum;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
-import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isNotConstructor;
-import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isNotMapperFactoryMethod;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isNotPrivate;
-import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isNotStatic;
-import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isPublic;
 import static fr.javatronic.damapping.processor.model.util.ImmutabilityHelper.nonNullFrom;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
-import static fr.javatronic.damapping.util.Predicates.not;
 
 /**
  * DASourceClassImpl - Implements DASourceClass as an immutable object.
@@ -248,32 +237,11 @@ public class DASourceClassImpl implements DASourceClass {
     }
 
     public DASourceClass build() {
-      List<DAMethod> daMethods = setMethodFlags(this.methods, this.interfaces, this.type, this.isEnum);
       return new DASourceClassImpl(
           this,
-          daMethods,
-          computeInstantiationType(daMethods, this.isEnum)
+          this.methods,
+          computeInstantiationType(this.methods, this.isEnum)
       );
-    }
-
-    private static List<DAMethod> setMethodFlags(@Nullable List<DAMethod> methods,
-                                                 @Nullable final List<DAInterface> interfaces,
-                                                 @Nonnull DAType daType,
-                                                 boolean isEnum) {
-      if (methods == null || methods.isEmpty()) {
-        return Collections.emptyList();
-      }
-
-      List<DAMethod> filterdMethods = methods;
-      if (isEnum) {
-        filterdMethods = from(methods)
-            .filter(not(isCompilerGeneratedForEnum(daType)))
-            .toList();
-      }
-
-      return from(filterdMethods)
-          .transform(new ToGuavaFunctionOrMapperMethod(interfaces))
-          .toList();
     }
 
     private static InstantiationType computeInstantiationType(@Nonnull List<DAMethod> daMethods,
@@ -353,58 +321,6 @@ public class DASourceClassImpl implements DASourceClass {
       return enumValues;
     }
 
-  }
-
-  private static class ToGuavaFunctionOrMapperMethod implements Function<DAMethod, DAMethod> {
-    private final Optional<DAInterface> guavaFunctionInterface;
-
-    public ToGuavaFunctionOrMapperMethod(List<DAInterface> interfaces) {
-      this.guavaFunctionInterface = from(nonNullFrom(interfaces))
-          .filter(isGuavaFunction())
-          .first();
-    }
-
-    @Nullable
-    @Override
-    public DAMethod apply(@Nullable DAMethod daMethod) {
-      if (daMethod == null) {
-        return null;
-      }
-      if (isGuavaFunctionMethod(daMethod)) {
-        return DAMethodImpl.makeGuavaFunctionApplyMethod(daMethod);
-      }
-      if (isMapperMethod(daMethod)) {
-        return DAMethodImpl.makeMapperMethod(daMethod);
-      }
-      return daMethod;
-    }
-
-    private boolean isGuavaFunctionMethod(DAMethod daMethod) {
-      return guavaFunctionInterface.isPresent()
-          && isApplyWithSingleParam().apply(daMethod)
-          && checkTypes(daMethod, guavaFunctionInterface.get());
-    }
-
-    private static boolean checkTypes(DAMethod applyMethod, DAInterface guavaFunctionInterface) {
-      // applyMethod must have a return type
-      DAType returnType = applyMethod.getReturnType();
-      if (returnType == null) {
-        return false;
-      }
-
-      DAType parameterType = applyMethod.getParameters().iterator().next().getType();
-      List<DAType> typeArgs = guavaFunctionInterface.getType().getTypeArgs();
-
-      return Objects.equals(parameterType.getQualifiedName(), typeArgs.get(0).getQualifiedName())
-          && Objects.equals(returnType.getQualifiedName(), typeArgs.get(1).getQualifiedName());
-    }
-
-    private static boolean isMapperMethod(DAMethod daMethod) {
-      return isNotStatic().apply(daMethod)
-          && isNotConstructor().apply(daMethod)
-          && isNotMapperFactoryMethod().apply(daMethod)
-          && isPublic().apply(daMethod);
-    }
   }
 
 }

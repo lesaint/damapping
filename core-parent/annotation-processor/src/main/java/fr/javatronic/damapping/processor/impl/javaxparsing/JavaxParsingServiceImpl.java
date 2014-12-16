@@ -23,6 +23,7 @@ import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
+import fr.javatronic.damapping.processor.model.function.ToGuavaFunctionOrMapperMethod;
 import fr.javatronic.damapping.processor.model.impl.DAInterfaceImpl;
 import fr.javatronic.damapping.processor.model.impl.DAMethodImpl;
 import fr.javatronic.damapping.processor.model.impl.DASourceClassImpl;
@@ -43,8 +44,11 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
+import static fr.javatronic.damapping.processor.model.impl.DAMethodImpl.makeGuavaFunctionApplyMethod;
+import static fr.javatronic.damapping.processor.model.impl.DAMethodImpl.makeMapperMethod;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
+import static fr.javatronic.damapping.util.Predicates.notNull;
 
 /**
  * JavaxParsingService -
@@ -108,14 +112,17 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
     // pour le moment, on ne traite pas les classes abstraites implémentées par la class @Mapper ni les interfaces
     // implémentées indirectement
 
-    List<DAMethod> methods = retrieveMethods(classElement, javaxExtractor);
-    builder.withMethods(methods);
+    builder.withMethods(
+        from(retrieveMethods(classElement, javaxExtractor))
+            .transform(new JavaxToGuavaFunctionOrMapperMethod(interfaces))
+            .toList()
+    );
+
     return new JavaxDASourceClass(builder.build(), classElement);
   }
 
   @Nonnull
-  private List<DAMethod> retrieveMethods(final TypeElement classElement,
-                                         final JavaxExtractor javaxExtractor) {
+  private Iterable<JavaxDAMethod> retrieveMethods(final TypeElement classElement, final JavaxExtractor javaxExtractor) {
     if (classElement.getEnclosedElements() == null) {
       return Collections.emptyList();
     }
@@ -123,11 +130,11 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
     return from(classElement.getEnclosedElements())
         // methods are ExecutableElement
         .filter(Predicates.instanceOf(ExecutableElement.class))
-            // transform
-        .transform(new Function<Element, DAMethod>() {
+         // transform
+        .transform(new Function<Element, JavaxDAMethod>() {
           @Nullable
           @Override
-          public DAMethod apply(@Nullable Element o) {
+          public JavaxDAMethod apply(@Nullable Element o) {
             if (o == null) {
               return null;
             }
@@ -150,8 +157,26 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
           }
         }
         )
-        .filter(Predicates.notNull())
-        .toList();
+        .filter(notNull());
+  }
+
+  private static class JavaxToGuavaFunctionOrMapperMethod extends ToGuavaFunctionOrMapperMethod<JavaxDAMethod> {
+
+    public JavaxToGuavaFunctionOrMapperMethod(List<DAInterface> interfaces) {
+      super(interfaces);
+    }
+
+    @Override
+    @Nonnull
+    protected DAMethod toMapperMethod(@Nonnull JavaxDAMethod daMethod) {
+      return new JavaxDAMethod(makeMapperMethod(daMethod), daMethod.getMethodElement());
+    }
+
+    @Override
+    @Nonnull
+    protected DAMethod toGuavaFunction(@Nonnull JavaxDAMethod daMethod) {
+      return new JavaxDAMethod(makeGuavaFunctionApplyMethod(daMethod), daMethod.getMethodElement());
+    }
   }
 
   public static String uncapitalize(String str) {
@@ -201,7 +226,7 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
         return new DAInterfaceImpl(javaxExtractor.extractType(o));
       }
     }
-    ).filter(Predicates.notNull()).toList();
+    ).filter(notNull()).toList();
   }
 
 }
