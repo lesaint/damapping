@@ -134,9 +134,14 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
   private void printValidationError(ValidationError e, TypeElement classElement) {
     Optional<Element> element = toElement(e.getElement() == null ? e.getSourceClass() : e.getElement());
     Optional<AnnotationMirror> annotationMirror = toAnnotationMirror(e.getAnnotation());
-    processingEnv.getMessager().printMessage(
-        Diagnostic.Kind.ERROR, e.getMessage(), element.or(classElement), annotationMirror.orNull()
-    );
+    if (annotationMirror.isPresent()) {
+      processingEnv.getMessager().printMessage(
+          Diagnostic.Kind.ERROR, e.getMessage(), element.or(classElement), annotationMirror.get()
+      );
+    }
+    else {
+      processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.getMessage(), element.or(classElement));
+    }
   }
 
   @Nonnull
