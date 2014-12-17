@@ -7,16 +7,19 @@ import javax.annotation.Nullable;
 public class MultipleImplementationAsEnumMapperFactoryImpl implements MultipleImplementationAsEnumMapperFactory {
 
     @Override
+    @Nonnull
     public MultipleImplementationAsEnumMapper bigDecimal() {
         return new MultipleImplementationAsEnumMapperImpl(MultipleImplementationAsEnum.bigDecimal());
     }
 
     @Override
+    @Nonnull
     public MultipleImplementationAsEnumMapper integer() {
         return new MultipleImplementationAsEnumMapperImpl(MultipleImplementationAsEnum.integer());
     }
 
     @Override
+    @Nonnull
     public MultipleImplementationAsEnumMapper instance(boolean bigDecimal) {
         return new MultipleImplementationAsEnumMapperImpl(MultipleImplementationAsEnum.instance(bigDecimal));
     }

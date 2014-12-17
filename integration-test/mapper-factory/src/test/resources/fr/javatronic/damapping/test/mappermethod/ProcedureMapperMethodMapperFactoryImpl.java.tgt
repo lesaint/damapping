@@ -1,9 +1,12 @@
 package fr.javatronic.damapping.test.mappermethod;
 
+import javax.annotation.Nonnull;
+
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class ProcedureMapperMethodMapperFactoryImpl implements ProcedureMapperMethodMapperFactory {
 
     @Override
+    @Nonnull
     public ProcedureMapperMethodMapper get(boolean flag) {
         return new ProcedureMapperMethodMapperImpl(new ProcedureMapperMethod(flag));
     }

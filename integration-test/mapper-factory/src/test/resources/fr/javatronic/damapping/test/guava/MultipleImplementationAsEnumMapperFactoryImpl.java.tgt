@@ -1,21 +1,25 @@
 package fr.javatronic.damapping.test.guava;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class MultipleImplementationAsEnumMapperFactoryImpl implements MultipleImplementationAsEnumMapperFactory {
 
     @Override
+    @Nonnull
     public MultipleImplementationAsEnumMapper bigDecimal() {
         return new MultipleImplementationAsEnumMapperImpl(MultipleImplementationAsEnum.bigDecimal());
     }
 
     @Override
+    @Nonnull
     public MultipleImplementationAsEnumMapper integer() {
         return new MultipleImplementationAsEnumMapperImpl(MultipleImplementationAsEnum.integer());
     }
 
     @Override
+    @Nonnull
     public MultipleImplementationAsEnumMapper instance(boolean bigDecimal) {
         return new MultipleImplementationAsEnumMapperImpl(MultipleImplementationAsEnum.instance(bigDecimal));
     }

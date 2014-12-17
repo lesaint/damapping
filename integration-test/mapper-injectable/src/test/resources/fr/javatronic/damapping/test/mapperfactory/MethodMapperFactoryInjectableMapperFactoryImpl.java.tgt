@@ -1,12 +1,14 @@
 package fr.javatronic.damapping.test.mapperfactory;
 
 import java.math.BigDecimal;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class MethodMapperFactoryInjectableMapperFactoryImpl implements MethodMapperFactoryInjectableMapperFactory {
 
     @Override
+    @Nonnull
     public MethodMapperFactoryInjectableMapper from(Boolean flag) {
         return new MethodMapperFactoryInjectableMapperImpl(MethodMapperFactoryInjectable.from(flag));
     }

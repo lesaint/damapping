@@ -2,17 +2,20 @@ package fr.javatronic.damapping.test.guava;
 
 import fr.javatronic.damapping.test.guava.sub.B;
 import fr.javatronic.damapping.test.guava.sub.C;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class MultiConstructorOnBusinessTypesMapperFactoryImpl implements MultiConstructorOnBusinessTypesMapperFactory {
 
     @Override
+    @Nonnull
     public MultiConstructorOnBusinessTypesMapper get(A a) {
         return new MultiConstructorOnBusinessTypesMapperImpl(new MultiConstructorOnBusinessTypes(a));
     }
 
     @Override
+    @Nonnull
     public MultiConstructorOnBusinessTypesMapper get(B b) {
         return new MultiConstructorOnBusinessTypesMapperImpl(new MultiConstructorOnBusinessTypes(b));
     }

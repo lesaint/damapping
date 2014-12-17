@@ -30,7 +30,6 @@ import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAConstructorWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAStatementWriter;
-import fr.javatronic.damapping.util.Lists;
 import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicate;
 
@@ -41,7 +40,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import static fr.javatronic.damapping.processor.model.constants.Jsr330Constants.INJECT_DAANNOTATION;
-import static fr.javatronic.damapping.processor.model.constants.Jsr330Constants.INJECT_DAIMPORT;
+import static fr.javatronic.damapping.processor.model.constants.Jsr330Constants.INJECT_DANAME;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperMethod;
 import static fr.javatronic.damapping.util.FluentIterable.from;
@@ -112,13 +111,10 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
   }
 
   private List<DAImport> computeMapperImplImports(GeneratedFileDescriptor descriptor, DASourceClass daSourceClass) {
-    if (daSourceClass.getInjectableAnnotation().isPresent()) {
-      List<DAImport> res = Lists.copyOf(descriptor.getImports());
-      Optional<DAMethod> constructor = from(daSourceClass.getAccessibleConstructors()).first();
-      if (constructor.isPresent() &&  !constructor.get().getParameters().isEmpty()) {
-        res.add(INJECT_DAIMPORT);
-      }
-      return res;
+    Optional<DAMethod> constructor = from(daSourceClass.getAccessibleConstructors()).first();
+    if (daSourceClass.getInjectableAnnotation().isPresent()
+        && constructor.isPresent() && !constructor.get().getParameters().isEmpty()) {
+        return support.appendImports(descriptor.getImports(), INJECT_DANAME);
     }
     return descriptor.getImports();
   }

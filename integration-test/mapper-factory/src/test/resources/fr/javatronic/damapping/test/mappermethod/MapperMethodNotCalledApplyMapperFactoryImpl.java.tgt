@@ -1,12 +1,14 @@
 package fr.javatronic.damapping.test.mappermethod;
 
 import java.math.BigDecimal;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class MapperMethodNotCalledApplyMapperFactoryImpl implements MapperMethodNotCalledApplyMapperFactory {
 
     @Override
+    @Nonnull
     public MapperMethodNotCalledApplyMapper get(boolean flag) {
         return new MapperMethodNotCalledApplyMapperImpl(new MapperMethodNotCalledApply(flag));
     }

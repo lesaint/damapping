@@ -15,13 +15,13 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.DATypeKind;
-import fr.javatronic.damapping.processor.model.constants.JavaLangConstants;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.processor.model.impl.DAParameterImpl;
@@ -35,8 +35,12 @@ import fr.javatronic.damapping.util.Predicate;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Collection;
 import javax.annotation.Nonnull;
 
+import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
+import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.NONNULL_ANNOTATION;
+import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.NONNULL_TYPE;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperMethod;
@@ -86,7 +90,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
     if (sourceClass.getPackageName() != null) {
         fileWriter.appendPackage(sourceClass.getPackageName());
     }
-    fileWriter.appendImports(descriptor.getImports())
+    fileWriter.appendImports(computeImports(descriptor))
         .appendGeneratedAnnotation(DAMAPPING_ANNOTATION_PROCESSOR_QUALIFIED_NAME);
 
     DAClassWriter<DAFileWriter> classWriter = fileWriter
@@ -106,6 +110,10 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
     fileWriter.end();
   }
 
+  private  Collection<DAImport> computeImports(GeneratedFileDescriptor descriptor) {
+    return support.appendImports(descriptor.getImports(), NONNULL_TYPE.getQualifiedName());
+  }
+
   private void appendFactoryMethods(DASourceClass sourceClass, GeneratedFileDescriptor mapperInterfaceDescriptor,
                                     DAType mapperImpl,
                                     DAClassWriter<DAFileWriter> classWriter)
@@ -114,7 +122,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
       String name = isConstructor().apply(method) ? MAPPER_FACTORY_CONSTRUCTOR_METHOD_NAME : method.getName().getName();
       DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter
           .newMethod(name, mapperInterfaceDescriptor.getType())
-          .withAnnotations(Lists.of(JavaLangConstants.OVERRIDE_ANNOTATION))
+          .withAnnotations(Lists.of(OVERRIDE_ANNOTATION, NONNULL_ANNOTATION))
           .withModifiers(DAModifier.PUBLIC)
           .withParams(method.getParameters())
           .start();

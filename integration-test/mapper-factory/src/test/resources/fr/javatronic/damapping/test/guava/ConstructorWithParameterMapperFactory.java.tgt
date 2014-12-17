@@ -1,7 +1,10 @@
 package fr.javatronic.damapping.test.guava;
 
+import javax.annotation.Nonnull;
+
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface ConstructorWithParameterMapperFactory {
 
+    @Nonnull
     ConstructorWithParameterMapper get(String salt);
 }

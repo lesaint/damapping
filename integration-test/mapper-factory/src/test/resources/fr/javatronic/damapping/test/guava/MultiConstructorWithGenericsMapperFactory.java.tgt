@@ -3,11 +3,14 @@ package fr.javatronic.damapping.test.guava;
 import fr.javatronic.damapping.test.guava.sub.B;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nonnull;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface MultiConstructorWithGenericsMapperFactory {
 
+    @Nonnull
     MultiConstructorWithGenericsMapper get(Set<A> as);
 
+    @Nonnull
     MultiConstructorWithGenericsMapper get(List<B> bs);
 }

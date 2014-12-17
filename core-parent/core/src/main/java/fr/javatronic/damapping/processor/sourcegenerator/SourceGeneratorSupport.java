@@ -16,8 +16,11 @@
 package fr.javatronic.damapping.processor.sourcegenerator;
 
 import fr.javatronic.damapping.processor.model.DAAnnotation;
+import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAMethod;
+import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.impl.DAImportImpl;
 import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Lists;
 import fr.javatronic.damapping.util.Predicate;
@@ -30,6 +33,7 @@ import javax.annotation.Nullable;
 
 import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
 import static fr.javatronic.damapping.util.FluentIterable.from;
+import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
  * SourceGeneratorSupport -
@@ -40,15 +44,16 @@ public class SourceGeneratorSupport {
   private static final List<DAAnnotation> OVERRIDE_ANNOTATION_AS_LIST = Lists.of(OVERRIDE_ANNOTATION);
   private static final Predicate<DAAnnotation> NOT_OVERRIDE_ANNOTATION = Predicates.not(
       Predicates.compose(Predicates.equalTo(OVERRIDE_ANNOTATION.getType()), new Function<DAAnnotation, DAType>() {
-        @Nullable
-        @Override
-        public DAType apply(@Nullable DAAnnotation daAnnotation) {
-          if (daAnnotation == null) {
-            return null;
+            @Nullable
+            @Override
+            public DAType apply(@Nullable DAAnnotation daAnnotation) {
+              if (daAnnotation == null) {
+                return null;
+              }
+              return daAnnotation.getType();
+            }
           }
-          return daAnnotation.getType();
-        }
-      })
+      )
   );
 
   /**
@@ -75,6 +80,23 @@ public class SourceGeneratorSupport {
     List<DAAnnotation> res = new ArrayList<DAAnnotation>();
     res.add(OVERRIDE_ANNOTATION);
     res.addAll(from(annotations).filter(NOT_OVERRIDE_ANNOTATION).toList());
+    return res;
+  }
+
+  @Nonnull
+  public List<DAImport> appendImports(@Nonnull List<DAImport> imports, @Nullable DAName... names) {
+    checkNotNull(imports);
+    if (names == null) {
+      return imports;
+    }
+
+    List<DAImport> res = Lists.copyOf(imports);
+    for (DAName name : names) {
+      if (name == null) {
+        continue;
+      }
+      res.add(DAImportImpl.from(name));
+    }
     return res;
   }
 }

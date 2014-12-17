@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DASourceClass;
@@ -26,8 +27,11 @@ import fr.javatronic.damapping.processor.sourcegenerator.writer.DAInterfaceWrite
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Collection;
 import javax.annotation.Nonnull;
 
+import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.NONNULL_ANNOTATION;
+import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.NONNULL_TYPE;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 
@@ -57,7 +61,7 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
     if (sourceClass.getPackageName() != null) {
         fileWriter.appendPackage(sourceClass.getPackageName());
     }
-    fileWriter.appendImports(descriptor.getImports())
+    fileWriter.appendImports(computeImports(descriptor))
         .appendGeneratedAnnotation(DAMAPPING_ANNOTATION_PROCESSOR_QUALIFIED_NAME);
 
     DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter
@@ -68,10 +72,17 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
     DAType mapperClass = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "Mapper");
     for (DAMethod method : from(sourceClass.getMethods()).filter(DAMethodPredicates.isMapperFactoryMethod()).toList()) {
       String name = isConstructor().apply(method) ? MAPPER_FACTORY_CONSTRUCTOR_METHOD_NAME : method.getName().getName();
-      interfaceWriter.newMethod(name, mapperClass).withParams(method.getParameters()).write();
+      interfaceWriter.newMethod(name, mapperClass)
+                     .withAnnotations(NONNULL_ANNOTATION)
+                     .withParams(method.getParameters())
+                     .write();
     }
 
     interfaceWriter.end();
     fileWriter.end();
+  }
+
+  private Collection<DAImport> computeImports(GeneratedFileDescriptor descriptor) {
+    return support.appendImports(descriptor.getImports(), NONNULL_TYPE.getQualifiedName());
   }
 }

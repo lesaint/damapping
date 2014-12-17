@@ -1,11 +1,14 @@
 package fr.javatronic.damapping.test.guava;
 
 import fr.javatronic.damapping.test.guava.sub.B;
+import javax.annotation.Nonnull;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface MultiConstructorOnBusinessTypesMapperFactory {
 
+    @Nonnull
     MultiConstructorOnBusinessTypesMapper get(A a);
 
+    @Nonnull
     MultiConstructorOnBusinessTypesMapper get(B b);
 }

@@ -1,12 +1,14 @@
 package fr.javatronic.damapping.test.guava;
 
 import java.math.BigDecimal;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public class ConstructorWithParameterMapperFactoryImpl implements ConstructorWithParameterMapperFactory {
 
     @Override
+    @Nonnull
     public ConstructorWithParameterMapper get(String salt) {
         return new ConstructorWithParameterMapperImpl(new ConstructorWithParameter(salt));
     }

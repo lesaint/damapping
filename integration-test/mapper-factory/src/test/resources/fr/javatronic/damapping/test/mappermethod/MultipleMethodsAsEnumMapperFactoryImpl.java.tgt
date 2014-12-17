@@ -7,11 +7,13 @@ import javax.annotation.Nullable;
 public class MultipleMethodsAsEnumMapperFactoryImpl implements MultipleMethodsAsEnumMapperFactory {
 
     @Override
+    @Nonnull
     public MultipleMethodsAsEnumMapper bigDecimal() {
         return new MultipleMethodsAsEnumMapperImpl(MultipleMethodsAsEnum.bigDecimal());
     }
 
     @Override
+    @Nonnull
     public MultipleMethodsAsEnumMapper integer() {
         return new MultipleMethodsAsEnumMapperImpl(MultipleMethodsAsEnum.integer());
     }
