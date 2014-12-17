@@ -7,7 +7,7 @@ import java.util.Set;
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface MultiConstructorWithGenericsAndMultipleParametersMapperFactory {
 
-    MultiConstructorWithGenericsAndMultipleParametersMapper instanceByConstructor(Set<A> as);
+    MultiConstructorWithGenericsAndMultipleParametersMapper get(Set<A> as);
 
-    MultiConstructorWithGenericsAndMultipleParametersMapper instanceByConstructor(List<B> bs);
+    MultiConstructorWithGenericsAndMultipleParametersMapper get(List<B> bs);
 }

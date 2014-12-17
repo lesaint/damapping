@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 public class ConstructorFactoryInjectableMapperFactoryImpl implements ConstructorFactoryInjectableMapperFactory {
 
     @Override
-    public ConstructorFactoryInjectableMapper instanceByConstructor(Boolean flag) {
+    public ConstructorFactoryInjectableMapper get(Boolean flag) {
         return new ConstructorFactoryInjectableMapperImpl(new ConstructorFactoryInjectable(flag));
     }
 

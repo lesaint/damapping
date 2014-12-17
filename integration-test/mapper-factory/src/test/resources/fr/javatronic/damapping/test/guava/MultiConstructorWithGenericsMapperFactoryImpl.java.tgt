@@ -13,12 +13,12 @@ import javax.annotation.Nullable;
 public class MultiConstructorWithGenericsMapperFactoryImpl implements MultiConstructorWithGenericsMapperFactory {
 
     @Override
-    public MultiConstructorWithGenericsMapper instanceByConstructor(Set<A> as) {
+    public MultiConstructorWithGenericsMapper get(Set<A> as) {
         return new MultiConstructorWithGenericsMapperImpl(new MultiConstructorWithGenerics(as));
     }
 
     @Override
-    public MultiConstructorWithGenericsMapper instanceByConstructor(List<B> bs) {
+    public MultiConstructorWithGenericsMapper get(List<B> bs) {
         return new MultiConstructorWithGenericsMapperImpl(new MultiConstructorWithGenerics(bs));
     }
 

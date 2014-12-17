@@ -5,7 +5,7 @@ import fr.javatronic.damapping.test.guava.sub.B;
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface MultiConstructorOnBusinessTypesMapperFactory {
 
-    MultiConstructorOnBusinessTypesMapper instanceByConstructor(A a);
+    MultiConstructorOnBusinessTypesMapper get(A a);
 
-    MultiConstructorOnBusinessTypesMapper instanceByConstructor(B b);
+    MultiConstructorOnBusinessTypesMapper get(B b);
 }

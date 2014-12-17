@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 public class ConstructorWithParameterMapperFactoryImpl implements ConstructorWithParameterMapperFactory {
 
     @Override
-    public ConstructorWithParameterMapper instanceByConstructor(String salt) {
+    public ConstructorWithParameterMapper get(String salt) {
         return new ConstructorWithParameterMapperImpl(new ConstructorWithParameter(salt));
     }
 

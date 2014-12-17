@@ -8,12 +8,12 @@ import javax.annotation.Nullable;
 public class MultiConstructorOnBusinessTypesMapperFactoryImpl implements MultiConstructorOnBusinessTypesMapperFactory {
 
     @Override
-    public MultiConstructorOnBusinessTypesMapper instanceByConstructor(A a) {
+    public MultiConstructorOnBusinessTypesMapper get(A a) {
         return new MultiConstructorOnBusinessTypesMapperImpl(new MultiConstructorOnBusinessTypes(a));
     }
 
     @Override
-    public MultiConstructorOnBusinessTypesMapper instanceByConstructor(B b) {
+    public MultiConstructorOnBusinessTypesMapper get(B b) {
         return new MultiConstructorOnBusinessTypesMapperImpl(new MultiConstructorOnBusinessTypes(b));
     }
 

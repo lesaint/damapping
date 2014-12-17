@@ -3,5 +3,5 @@ package fr.javatronic.damapping.test.guava;
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface ConstructorWithParameterMapperFactory {
 
-    ConstructorWithParameterMapper instanceByConstructor(String salt);
+    ConstructorWithParameterMapper get(String salt);
 }

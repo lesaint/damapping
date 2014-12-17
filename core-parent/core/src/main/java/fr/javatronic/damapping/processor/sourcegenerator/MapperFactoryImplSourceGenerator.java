@@ -40,6 +40,7 @@ import javax.annotation.Nonnull;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperMethod;
+import static fr.javatronic.damapping.processor.sourcegenerator.MapperFactoryInterfaceSourceGenerator.MAPPER_FACTORY_CONSTRUCTOR_METHOD_NAME;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 import static fr.javatronic.damapping.util.Predicates.or;
 
@@ -110,7 +111,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
                                     DAClassWriter<DAFileWriter> classWriter)
       throws IOException {
     for (DAMethod method : from(sourceClass.getMethods()).filter(DAMethodPredicates.isMapperFactoryMethod()).toList()) {
-      String name = isConstructor().apply(method) ? "instanceByConstructor" : method.getName().getName();
+      String name = isConstructor().apply(method) ? MAPPER_FACTORY_CONSTRUCTOR_METHOD_NAME : method.getName().getName();
       DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter
           .newMethod(name, mapperInterfaceDescriptor.getType())
           .withAnnotations(Lists.of(JavaLangConstants.OVERRIDE_ANNOTATION))

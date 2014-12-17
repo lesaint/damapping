@@ -3,5 +3,5 @@ package fr.javatronic.damapping.test.mappermethod;
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface MapperMethodNotCalledApplyMapperFactory {
 
-    MapperMethodNotCalledApplyMapper instanceByConstructor(boolean flag);
+    MapperMethodNotCalledApplyMapper get(boolean flag);
 }

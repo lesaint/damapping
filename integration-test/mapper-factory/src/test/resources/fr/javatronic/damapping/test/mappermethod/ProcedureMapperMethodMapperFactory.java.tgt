@@ -3,5 +3,5 @@ package fr.javatronic.damapping.test.mappermethod;
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface ProcedureMapperMethodMapperFactory {
 
-    ProcedureMapperMethodMapper instanceByConstructor(boolean flag);
+    ProcedureMapperMethodMapper get(boolean flag);
 }

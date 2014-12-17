@@ -39,6 +39,8 @@ import static fr.javatronic.damapping.util.FluentIterable.from;
  */
 public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerator {
 
+  protected static final String MAPPER_FACTORY_CONSTRUCTOR_METHOD_NAME = "get";
+
   public MapperFactoryInterfaceSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor) {
     super(descriptor, new SourceGeneratorSupport());
   }
@@ -65,7 +67,7 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
 
     DAType mapperClass = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "Mapper");
     for (DAMethod method : from(sourceClass.getMethods()).filter(DAMethodPredicates.isMapperFactoryMethod()).toList()) {
-      String name = isConstructor().apply(method) ? "instanceByConstructor" : method.getName().getName();
+      String name = isConstructor().apply(method) ? MAPPER_FACTORY_CONSTRUCTOR_METHOD_NAME : method.getName().getName();
       interfaceWriter.newMethod(name, mapperClass).withParams(method.getParameters()).write();
     }
 

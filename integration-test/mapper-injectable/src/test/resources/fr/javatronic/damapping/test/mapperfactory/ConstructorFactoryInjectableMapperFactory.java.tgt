@@ -3,5 +3,5 @@ package fr.javatronic.damapping.test.mapperfactory;
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface ConstructorFactoryInjectableMapperFactory {
 
-    ConstructorFactoryInjectableMapper instanceByConstructor(Boolean flag);
+    ConstructorFactoryInjectableMapper get(Boolean flag);
 }

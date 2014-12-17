@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 public class MapperMethodNotCalledApplyMapperFactoryImpl implements MapperMethodNotCalledApplyMapperFactory {
 
     @Override
-    public MapperMethodNotCalledApplyMapper instanceByConstructor(boolean flag) {
+    public MapperMethodNotCalledApplyMapper get(boolean flag) {
         return new MapperMethodNotCalledApplyMapperImpl(new MapperMethodNotCalledApply(flag));
     }
 

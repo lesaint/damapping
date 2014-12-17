@@ -4,7 +4,7 @@ package fr.javatronic.damapping.test.mappermethod;
 public class ProcedureMapperMethodMapperFactoryImpl implements ProcedureMapperMethodMapperFactory {
 
     @Override
-    public ProcedureMapperMethodMapper instanceByConstructor(boolean flag) {
+    public ProcedureMapperMethodMapper get(boolean flag) {
         return new ProcedureMapperMethodMapperImpl(new ProcedureMapperMethod(flag));
     }
 
