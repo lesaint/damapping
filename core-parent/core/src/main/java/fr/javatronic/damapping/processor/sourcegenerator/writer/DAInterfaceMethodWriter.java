@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * DAInterfaceMethodWriter - Writer pour les méthodes d'une interface
@@ -33,7 +35,9 @@ import java.util.List;
 public class DAInterfaceMethodWriter<T extends DAWriter> extends AbstractDAWriter<T> {
   private final String name;
   private final DAType returnType;
+  @Nonnull
   private List<DAAnnotation> annotations = Collections.emptyList();
+  @Nonnull
   private List<DAParameter> params = Collections.<DAParameter>emptyList();
 
   public DAInterfaceMethodWriter(String name, DAType returnType, FileContext fileContext, int indentOffset, T parent) {
@@ -42,12 +46,20 @@ public class DAInterfaceMethodWriter<T extends DAWriter> extends AbstractDAWrite
     this.returnType = returnType;
   }
 
-  public DAInterfaceMethodWriter<T> withAnnotations(List<DAAnnotation> annotations) {
+  public DAInterfaceMethodWriter<T> withAnnotations(@Nullable DAAnnotation... annotations) {
+    return withAnnotations(annotations == null ? Collections.<DAAnnotation>emptyList() : Lists.of(annotations));
+  }
+
+  public DAInterfaceMethodWriter<T> withAnnotations(@Nullable List<DAAnnotation> annotations) {
     this.annotations = annotations == null ? Collections.<DAAnnotation>emptyList() : Lists.copyOf(annotations);
     return this;
   }
 
-  public DAInterfaceMethodWriter<T> withParams(List<DAParameter> params) {
+  public DAInterfaceMethodWriter<T> withParams(@Nullable DAParameter... params) {
+    return withParams(params == null ? Collections.<DAParameter>emptyList() : Lists.of(params));
+  }
+
+  public DAInterfaceMethodWriter<T> withParams(@Nullable List<DAParameter> params) {
     this.params = params == null ? Collections.<DAParameter>emptyList() : Lists.copyOf(params);
     return this;
   }

@@ -104,7 +104,7 @@ public class DAInterfaceWriterTest {
     daInterfaceWriter(fileContext, "name")
         .start()
         .newMethod("methodName", FUNCTION_INTEGER_TO_STRING_INTERFACE)
-        .withAnnotations(ImmutableList.of(OVERRIDE_ANNOTATION))
+        .withAnnotations(OVERRIDE_ANNOTATION)
         .write()
         .end();
 

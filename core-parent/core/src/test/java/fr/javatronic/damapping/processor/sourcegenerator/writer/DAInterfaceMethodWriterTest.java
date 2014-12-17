@@ -23,7 +23,10 @@ import org.testng.annotations.Test;
 
 import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
+import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil
+    .FUNCTION_STRING_INTEGER_ARRAY_PARAMETER;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.LINE_SEPARATOR;
+import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.STRING_TITI_PARAMETER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -51,7 +54,7 @@ public class DAInterfaceMethodWriterTest {
   public void method_one_parameter() throws Exception {
     FileContextTestImpl fileContext = new FileContextTestImpl();
     methodWriter("name", "java.lang.String", fileContext)
-        .withParams(ImmutableList.of(DAWriterTestUtil.STRING_TOTO_PARAMETER))
+        .withParams(DAWriterTestUtil.STRING_TOTO_PARAMETER)
         .write();
 
     assertThat(fileContext.getRes())
@@ -62,10 +65,7 @@ public class DAInterfaceMethodWriterTest {
   public void method_two_parameters() throws Exception {
     FileContextTestImpl fileContext = new FileContextTestImpl();
     methodWriter("name", "java.lang.String", fileContext)
-        .withParams(ImmutableList.of(DAWriterTestUtil.STRING_TITI_PARAMETER,
-            DAWriterTestUtil.FUNCTION_STRING_INTEGER_ARRAY_PARAMETER
-        )
-        )
+        .withParams(ImmutableList.of(STRING_TITI_PARAMETER, FUNCTION_STRING_INTEGER_ARRAY_PARAMETER))
         .write();
 
     assertThat(fileContext.getRes())
@@ -78,7 +78,7 @@ public class DAInterfaceMethodWriterTest {
   public void annoted_method() throws Exception {
     FileContextTestImpl fileContext = new FileContextTestImpl();
     methodWriter("name", "java.lang.String", fileContext)
-        .withAnnotations(ImmutableList.of(OVERRIDE_ANNOTATION))
+        .withAnnotations(OVERRIDE_ANNOTATION)
         .write();
 
     assertThat(fileContext.getRes())
