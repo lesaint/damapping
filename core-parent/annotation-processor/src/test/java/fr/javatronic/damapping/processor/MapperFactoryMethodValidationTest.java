@@ -175,7 +175,7 @@ public class MapperFactoryMethodValidationTest extends AbstractCompilationTest {
         "@Mapper",
         "public class ConstructorMapperFactory {",
         "  @MapperFactory",
-        "  public ConstructorMapperFactory() {",
+        "  public ConstructorMapperFactory(boolean flag) {",
         "    // content does not matter",
         "  }",
         "",
@@ -186,6 +186,36 @@ public class MapperFactoryMethodValidationTest extends AbstractCompilationTest {
     );
 
     assertThat(fileObject).compilesWithoutError();
+  }
+  @Test
+  public void compilation_fails_when_single_default_constructor_mapperfactory() throws Exception {
+    JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.SingleDefaultConstructorMapperFactory",
+        "package test;",
+        "",
+        "import fr.javatronic.damapping.annotation.Mapper;",
+        "import fr.javatronic.damapping.annotation.MapperFactory;",
+        "",
+        "@Mapper",
+        "public class SingleDefaultConstructorMapperFactory {",
+        "  @MapperFactory",
+        "  public SingleDefaultConstructorMapperFactory() {",
+        "    return null; // content does not matter",
+        "  }",
+        "",
+        "  public String map(Integer input) {",
+        "    return null;",
+        "  }",
+        "}"
+    );
+
+    assertThat(fileObject)
+        .failsToCompile()
+        .withErrorContaining(
+            "@MapperFactory can not be used for default constructor when there is no other constructor defined. "
+                + "If you do not need another constructor, just remove the @MapperFactory"
+        )
+        .in(fileObject)
+        .onLine(8);
   }
 
 }

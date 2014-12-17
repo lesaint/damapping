@@ -29,6 +29,8 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isDefaultConstructor;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperFactoryMethod;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperMethod;
@@ -133,10 +135,25 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
       hasStaticMethod |= !daMethod.isConstructor();
     }
     if (hasConstructor && hasStaticMethod) {
-      throw new ValidationError("Dedicated class can have both constructor(s) and static method(s) annotated with " +
-          "@MapperFactory",
+      throw new ValidationError(
+          "Dedicated class can have both constructor(s) and static method(s) annotated with @MapperFactory",
           sourceClass, null, null
       );
+    }
+    List<DAMethod> mapperFactoryConstructors = from(sourceClass.getMethods()).filter(isMapperFactoryMethod())
+                                                             .filter(isConstructor())
+                                                             .toList();
+    if (mapperFactoryConstructors.size() == 1) {
+      DAMethod mapperFactoryConstructor = mapperFactoryConstructors.iterator().next();
+      if (isDefaultConstructor().apply(mapperFactoryConstructor)) {
+        throw new ValidationError(
+            "@MapperFactory can not be used for default constructor when there is no other constructor defined. "
+                + "If you do not need another constructor, just remove the @MapperFactory",
+            sourceClass,
+            mapperFactoryConstructor,
+            extractMapperFactoryAnnotation(mapperFactoryConstructor.getAnnotations())
+        );
+      }
     }
   }
 
