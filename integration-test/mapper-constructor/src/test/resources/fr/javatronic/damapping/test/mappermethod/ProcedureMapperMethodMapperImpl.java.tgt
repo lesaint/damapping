@@ -1,0 +1,11 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public class ProcedureMapperMethodMapperImpl implements ProcedureMapperMethodMapper {
+    private final ProcedureMapperMethod dedicatedInstance = new ProcedureMapperMethod();
+
+    @Override
+    public void createOrUpdate(String arrAsStr, String[] arr) {
+        this.dedicatedInstance.createOrUpdate(arrAsStr, arr);
+    }
+}

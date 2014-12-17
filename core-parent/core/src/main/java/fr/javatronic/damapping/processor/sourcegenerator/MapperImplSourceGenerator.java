@@ -22,6 +22,7 @@ import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassMethodWriter;
@@ -251,7 +252,10 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
         .start();
 
     // retourne le résultat de la méthode apply de l'instance de la classe @Mapper
-    DAStatementWriter<?> statementWriter = methodWriter.newStatement().start().append("return ");
+    DAStatementWriter<?> statementWriter = methodWriter.newStatement().start();
+    if (hasReturnType(mapperMethod)) {
+      statementWriter.append("return ");
+    }
     appendSourceClassReference(statementWriter, sourceClass);
     statementWriter.append(".")
                    .append(mapperMethod.getName())
@@ -260,6 +264,10 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
 
     // clos la méthode
     methodWriter.end();
+  }
+
+  private static boolean hasReturnType(DAMethod mapperMethod) {
+    return mapperMethod.getReturnType() != null && mapperMethod.getReturnType().getKind() != DATypeKind.VOID;
   }
 
   private void appendSourceClassReference(DAStatementWriter<?> statementWriter, DASourceClass sourceClass)
