@@ -20,6 +20,7 @@ import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.constants.JavaLangConstants;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
@@ -188,9 +189,11 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
         .start();
 
     // retourne le résultat de la méhode apply de l'instance de la classe @Mapper
-    methodWriter.newStatement()
-                .start()
-                .append("return ")
+    DAStatementWriter<?> statementWriter = methodWriter.newStatement().start();
+    if (mapperMethod.getReturnType() != null && mapperMethod.getReturnType().getKind() != DATypeKind.VOID) {
+      statementWriter.append("return ");
+    }
+    statementWriter
                 .append("instance")
                 .append(".")
                 .append(mapperMethod.getName())
