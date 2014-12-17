@@ -20,6 +20,7 @@ import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.constants.Jsr330Constants;
 import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.javatronic.damapping.util.Optional;
@@ -38,7 +39,7 @@ import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
  * DASourceClassValidator -
- * <p/>
+ * <p>
  * TODO add unit test coverage for DASourceClassValidatorImpl
  *
  * @author Sébastien Lesaint
@@ -60,9 +61,12 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
   }
 
   private void validateAnnotations(DASourceClass sourceClass) throws ValidationError {
-    List<DAAnnotation> mapperAnnotations = from(sourceClass.getAnnotations()).filter(DAAnnotationPredicates.isMapper()).toList();
+    List<DAAnnotation> mapperAnnotations = from(sourceClass.getAnnotations()).filter(DAAnnotationPredicates.isMapper())
+                                                                             .toList();
     if (mapperAnnotations.size() > 1) {
-      throw new ValidationError("Mapper with more than one @Mapper annotation is not supported", sourceClass, null, mapperAnnotations.get(1));
+      throw new ValidationError("Mapper with more than one @Mapper annotation is not supported", sourceClass, null,
+          mapperAnnotations.get(1)
+      );
     }
     if (mapperAnnotations.isEmpty()) {
       throw new ValidationError("Mapper without @Mapper annotation is not supported", sourceClass, null, null);
@@ -104,7 +108,8 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     Optional<DAMethod> mapperMethod = from(methods).filter(isMapperMethod()).first();
     if (!guavaFunction.or(mapperMethod).isPresent()) {
       throw new ValidationError(
-          "Mapper must have one and only one method qualifying as mapper method (either implemente Guava's Function interface or define a single non private method)",
+          "Mapper must have one and only one method qualifying as mapper method (either implemente Guava's Function " +
+              "interface or define a single non private method)",
           sourceClass, null, null
       );
     }
@@ -114,6 +119,15 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
           sourceClass, mapperMethod.get(), null
       );
     }
+    for (DAMethod daMethod : from(methods).filter(isMapperMethod())) {
+      if ((daMethod.getReturnType() == null || daMethod.getReturnType().getKind() == DATypeKind.VOID)
+          && daMethod.getParameters().size() < 2) {
+        throw new ValidationError(
+            "A mapper method returning void must have at least two arguments",
+            sourceClass, daMethod, null
+        );
+      }
+    }
   }
 
   private void validateMapperFactoryMethods(DASourceClass sourceClass) throws ValidationError {
@@ -121,7 +135,8 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     boolean hasStaticMethod = false;
     for (DAMethod daMethod : from(sourceClass.getMethods()).filter(isMapperFactoryMethod())) {
       if (!isValidMapperFactoryMethodKindAndQualifiers(daMethod)) {
-        throw new ValidationError("Method annotated with @MapperFactory must either be a public constructor or a public static method",
+        throw new ValidationError(
+            "Method annotated with @MapperFactory must either be a public constructor or a public static method",
             sourceClass, daMethod, extractMapperFactoryAnnotation(daMethod.getAnnotations())
         );
       }
@@ -140,9 +155,10 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
           sourceClass, null, null
       );
     }
-    List<DAMethod> mapperFactoryConstructors = from(sourceClass.getMethods()).filter(isMapperFactoryMethod())
-                                                             .filter(isConstructor())
-                                                             .toList();
+    List<DAMethod> mapperFactoryConstructors = from(sourceClass.getMethods())
+        .filter(isMapperFactoryMethod())
+        .filter(isConstructor())
+        .toList();
     if (mapperFactoryConstructors.size() == 1) {
       DAMethod mapperFactoryConstructor = mapperFactoryConstructors.iterator().next();
       if (isDefaultConstructor().apply(mapperFactoryConstructor)) {
@@ -176,7 +192,8 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
     Optional<DAAnnotation> injectableAnnotation = sourceClass.getInjectableAnnotation();
     if (injectableAnnotation.isPresent() && !Jsr330Constants.isJSR330Present()) {
       throw new ValidationError(
-          "Class annotated with @Mapper and @Injectable requires JSR 330's annotations (@Named, @Inject, ...) to be available in classpath",
+          "Class annotated with @Mapper and @Injectable requires JSR 330's annotations (@Named, @Inject, ...) to be " +
+              "available in classpath",
           sourceClass, null, injectableAnnotation.get()
       );
     }

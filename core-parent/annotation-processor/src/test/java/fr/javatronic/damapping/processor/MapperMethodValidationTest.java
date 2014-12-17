@@ -22,11 +22,11 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * MapperMethodPresentTest -
+ * MapperMethodValidationTest -
  *
  * @author Sébastien Lesaint
  */
-public class MapperMethodPresentTest extends AbstractCompilationTest {
+public class MapperMethodValidationTest extends AbstractCompilationTest {
 
   private static final String MISSING_MAPPER_METHOD_ERROR_MSG = "Mapper must have one and only one method qualifying " +
       "as mapper method";
@@ -144,9 +144,63 @@ public class MapperMethodPresentTest extends AbstractCompilationTest {
     );
 
     assertThat(fileObject).failsToCompile()
-        .withErrorContaining("Mapper must either implement Guava's Function interface or define public method(s), it can not do both")
-        .in(fileObject)
-        .onLine(11);
+                          .withErrorContaining("Mapper must either implement Guava's Function interface or define public method(s), it can not do both")
+                          .in(fileObject)
+                          .onLine(11);
+  }
+
+  @Test
+  public void compilation_fails_for_mapper_method_procedure_with_no_argument() throws Exception {
+    JavaFileObject fileObject = mapper_with_mapper_procedure("");
+
+    assertThat(fileObject).failsToCompile()
+                          .withErrorContaining("A mapper method returning void must have at least two arguments")
+                          .in(fileObject)
+                          .onLine(7);
+  }
+
+  @Test
+  public void compilation_fails_for_mapper_method_procedure_with_only_one_argument() throws Exception {
+    JavaFileObject fileObject = mapper_with_mapper_procedure("String input");
+
+    assertThat(fileObject).failsToCompile()
+                          .withErrorContaining("A mapper method returning void must have at least two arguments")
+                          .in(fileObject)
+                          .onLine(7);
+  }
+
+  @Test
+  public void compilation_succeeds_for_mapper_method_procedure_with_two_argument() throws Exception {
+    assertThat(mapper_with_mapper_procedure("String input, String output")).compilesWithoutError();
+  }
+
+  @Test
+  public void compilation_succeeds_for_mapper_method_procedure_with_three_argument() throws Exception {
+    assertThat(mapper_with_mapper_procedure("String input, String output, String extra")).compilesWithoutError();
+  }
+
+  private void compilation_fails_for_mapper_method_procedure(String arguments) {
+    JavaFileObject fileObject = mapper_with_mapper_procedure(arguments);
+
+    assertThat(fileObject).failsToCompile()
+                          .withErrorContaining("A mapper method returning void must have at least two arguments")
+                          .in(fileObject)
+                          .onLine(7);
+  }
+
+  private static JavaFileObject mapper_with_mapper_procedure(String arguments) {
+    return JavaFileObjects.forSourceLines(
+        "test.ImplementingFunctionWithPublicMethod",
+        "package test;",
+        "",
+        "import fr.javatronic.damapping.annotation.Mapper;",
+        "",
+        "@Mapper",
+        "public class ImplementingFunctionWithPublicMethod {",
+        "  public void apply(" + arguments + ") {",
+        "  }",
+        "}"
+    );
   }
 
 }
