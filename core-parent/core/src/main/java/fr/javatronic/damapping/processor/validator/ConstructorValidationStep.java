@@ -29,9 +29,30 @@ import javax.annotation.Nonnull;
 public class ConstructorValidationStep implements ValidationStep {
   @Override
   public void validate(@Nonnull DASourceClass sourceClass) throws ValidationError {
-    if (sourceClass.getInstantiationType() == InstantiationType.CONSTRUCTOR
-        && sourceClass.getAccessibleConstructors().isEmpty()) {
+    if (sourceClass.getInstantiationType() != InstantiationType.CONSTRUCTOR) {
+      return;
+    }
+
+    validateHasAccessibleConstructor(sourceClass);
+
+    validateHasOnlyOneCosntructor(sourceClass);
+  }
+
+  private void validateHasAccessibleConstructor(DASourceClass sourceClass) throws ValidationError {
+    if (sourceClass.getAccessibleConstructors().isEmpty()) {
       throw new ValidationError("Class does not expose an accessible default constructor", sourceClass, null, null);
     }
   }
+
+  private void validateHasOnlyOneCosntructor(DASourceClass sourceClass) throws ValidationError {
+    if (sourceClass.getAccessibleConstructors().size() > 1) {
+      throw new ValidationError(
+          "Mapper can not define more than one constructor",
+          sourceClass,
+          sourceClass.getAccessibleConstructors().get(1),
+          null
+      );
+    }
+  }
+
 }
