@@ -20,26 +20,18 @@ import fr.javatronic.damapping.processor.model.DASourceClass;
 import javax.annotation.Nonnull;
 
 /**
- * DASourceClassValidator - Class responsible for validating part or all of a DASourceClass instance before processing
- * to generate classes.
+ * ValidationStep - Step of the DASourceClass validation process.
  *
  * @author Sébastien Lesaint
  */
-public interface DASourceClassValidator {
+interface ValidationStep {
+
   /**
-   * Performs validations on the specified DASourceClass instance.
-   * Validations check that:
-   * <ul>
-   * <li>applies compilation check for illegal use of annotations @Mapper and/or @MapperFactory</li>
-   * <li>verifies that the specified DASourceClass is consistent enough so that only valid types will be generated</li>
-   * </ul>
+   * Implements a step of the DASourceClass validation process, raises a ValidationError if a validation fails.
    *
    * @param sourceClass a {@link fr.javatronic.damapping.processor.model.DASourceClass}
    *
-   * @throws ValidationError for the first failing validation
+   * @throws ValidationError if a validation fails
    */
   void validate(@Nonnull DASourceClass sourceClass) throws ValidationError;
-
-  void validateInstantiationTypeRequirements(DASourceClass daSourceClass) throws ValidationError;
-
 }
