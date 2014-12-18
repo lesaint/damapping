@@ -31,13 +31,14 @@ import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
-import javax.lang.model.element.QualifiedNameable;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementScanner6;
+
+import static fr.javatronic.damapping.processor.impl.javaxparsing.visitor.QualifiedNameExtractor.QUALIFIED_NAME_EXTRACTOR;
 
 /**
 * ReferencesScanner -
@@ -81,8 +82,7 @@ public class ReferencesScanner {
   }
 
   private ElementVisitor<Void, ReferenceScanResult> instanceVisitor(@Nonnull final ElementImports imports) {
-    // FIXME: this visitor does not visit all elements in the class, only those
-    return new ElementScanner6<Void, ReferenceScanResult>() {
+    ElementScanner6<Void, ReferenceScanResult> scanResultElementScanner = new ElementScanner6<Void, ReferenceScanResult>() {
       @Override
       public Void scan(Element e, ReferenceScanResult scanResult) {
         visitAnnotations(e, scanResult);
@@ -139,6 +139,7 @@ public class ReferencesScanner {
         return super.visitUnknown(e, scanResult);
       }
     };
+    return scanResultElementScanner;
   }
 
   private void processElement(@Nonnull Element e, @Nonnull ElementImports imports, @Nonnull ReferenceScanResult referenceScanResult) {
@@ -172,7 +173,7 @@ public class ReferencesScanner {
       return Optional.absent();
     }
 
-    Name qualifiedName = element instanceof QualifiedNameable ? ((QualifiedNameable) element).getQualifiedName() : null;
+    Name qualifiedName = element.accept(QUALIFIED_NAME_EXTRACTOR, null);
     // qualified reference to Type in code
     if (qualifiedName != null && !qualifiedName.contentEquals(element.getSimpleName())) {
       return Optional.fromNullable(generatedTypesByQualifiedName.get(qualifiedName.toString()));

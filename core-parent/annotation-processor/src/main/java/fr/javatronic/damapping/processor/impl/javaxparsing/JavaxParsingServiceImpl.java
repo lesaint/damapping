@@ -42,7 +42,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
-import javax.tools.Diagnostic;
+import javax.lang.model.util.SimpleTypeVisitor6;
 
 import static fr.javatronic.damapping.processor.model.impl.DAMethodImpl.makeGuavaFunctionApplyMethod;
 import static fr.javatronic.damapping.processor.model.impl.DAMethodImpl.makeMapperMethod;
@@ -211,22 +211,30 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
       return Collections.emptyList();
     }
 
-    return from(interfaces).transform(new Function<TypeMirror, DAInterface>() {
-      @Nullable
-      @Override
-      public DAInterface apply(@Nullable TypeMirror o) {
-        // TOIMPROVE : le filtrage des interfaces de la classe annotée avec @Mapper sur DeclaredType est-il pertinent ?
-        if (!(o instanceof DeclaredType)) {
-          processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-              "Interface is not a DeclaredType, not supported", classElement
-          );
-          return null;
-        }
-
-        return new DAInterfaceImpl(javaxExtractor.extractType(o));
-      }
-    }
-    ).filter(notNull()).toList();
+    return from(interfaces)
+        .transform(new TypeMirrorToDAInterface(javaxExtractor))
+        .filter(notNull())
+        .toList();
   }
 
+  private static class TypeMirrorToDAInterface implements Function<TypeMirror, DAInterface> {
+    private final SimpleTypeVisitor6<DAInterface, Void> daInterfaceExtracter;
+
+    public TypeMirrorToDAInterface(final JavaxExtractor javaxExtractor) {
+      this.daInterfaceExtracter = new SimpleTypeVisitor6<DAInterface, Void>() {
+
+        // TOIMPROVE : le filtrage des interfaces de la classe annotée avec @Mapper sur DeclaredType est-il pertinent ?
+        @Override
+        public DAInterface visitDeclared(DeclaredType declaredType, Void aVoid) {
+          return new DAInterfaceImpl(javaxExtractor.extractType(declaredType));
+        }
+      };
+    }
+
+    @Nullable
+    @Override
+    public DAInterface apply(@Nullable TypeMirror o) {
+      return o.accept(daInterfaceExtracter, null);
+    }
+  }
 }

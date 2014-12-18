@@ -16,23 +16,25 @@
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
 import fr.javatronic.damapping.processor.impl.javaxparsing.model.JavaxDAAnnotation;
+import fr.javatronic.damapping.processor.impl.javaxparsing.visitor.QualifiedNameExtractor;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAAnnotationMember;
 import fr.javatronic.damapping.processor.model.DAEnumValue;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAParameter;
-import fr.javatronic.damapping.processor.model.impl.DAParameterImpl;
 import fr.javatronic.damapping.processor.model.DAType;
-import fr.javatronic.damapping.processor.model.impl.DATypeImpl;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl;
 import fr.javatronic.damapping.processor.model.impl.DAAnnotationMemberImpl;
 import fr.javatronic.damapping.processor.model.impl.DAEnumValueImpl;
+import fr.javatronic.damapping.processor.model.impl.DAParameterImpl;
+import fr.javatronic.damapping.processor.model.impl.DATypeImpl;
 import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Optional;
+import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Predicates;
 
 import java.util.Collections;
@@ -48,18 +50,22 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
-import javax.lang.model.element.QualifiedNameable;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ErrorType;
+import javax.lang.model.type.NoType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.WildcardType;
-import javax.lang.model.util.Types;
+import javax.lang.model.util.SimpleTypeVisitor6;
 
+import static fr.javatronic.damapping.processor.impl.javaxparsing.visitor.QualifiedDANameExtractor
+    .QUALIFIED_DANAME_EXTRACTOR;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
+import static fr.javatronic.damapping.util.Predicates.equalTo;
 import static fr.javatronic.damapping.util.Predicates.notNull;
 
 
@@ -69,20 +75,30 @@ import static fr.javatronic.damapping.util.Predicates.notNull;
  * by a {@link ReferenceScanResult} instance.
  * <p>
  * If an unresolved refernces has no fix provided by the {@link ReferenceScanResult} object, an
- * {@link IllegalStateException} will be raised: <strong>no {@link fr.javatronic.damapping.processor.model.impl.DATypeImpl} is supposed to be built unless all
+ * {@link IllegalStateException} will be raised: <strong>no {@link fr.javatronic.damapping.processor.model.impl
+ * .DATypeImpl} is supposed to be built unless all
  * references are valid or fixed</strong>.
  * </p>
  *
  * @author Sébastien Lesaint
  */
 public class JavaxExtractorImpl implements JavaxExtractor {
+  private static final Predicate<Element> NOT_AN_ENUM_CONSTANT =
+      Predicates.compose(equalTo(ElementKind.ENUM_CONSTANT),ElementToElementKind.INSTANCE);
+
+  private final AnnotationValueEntryToDAAnnotationMember annotationValueEntryToDAAnnotationMember =
+      new AnnotationValueEntryToDAAnnotationMember();
+
+  private final Function<AnnotationMirror, DAAnnotation> annotationMirrorToDAAnnotation =
+      new AnnotationMirrorToDAAnnotation();
+  private final DATypeExtractor daTypeExtractor = new DATypeExtractor();
+  private final TypeArgsExtractor typeArgsExtractor = new TypeArgsExtractor();
+  private final VariableElementToDAParameter variableElementToDAParameter = new VariableElementToDAParameter();
+
   @Nonnull
   private final ProcessingEnvironmentWrapper processingEnv;
   @Nonnull
   private final ReferenceScanResult scanResult;
-
-  private final EntryToDAAnnotationMember entryToDAAnnotationMember = new EntryToDAAnnotationMember();
-  private final Function<AnnotationMirror, DAAnnotation> annotationMirrorToDAAnnotation = new AnnotationMirrorToDAAnnotation();
 
   public JavaxExtractorImpl(@Nonnull ProcessingEnvironmentWrapper processingEnv,
                             @Nonnull ReferenceScanResult scanResult) {
@@ -90,34 +106,11 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     this.scanResult = checkNotNull(scanResult);
   }
 
+
   @Override
   @Nonnull
-  public DAType extractType(TypeMirror type) {
-    Types typeUtils = processingEnv.getTypeUtils();
-
-    if (type.getKind() == TypeKind.ERROR) {
-      return findFixedResolution(typeUtils.asElement(type));
-    }
-    if (type.getKind() == TypeKind.VOID) {
-      return DATypeFactory.voidDaType();
-    }
-    if (type.getKind() == TypeKind.WILDCARD) {
-      return extractWildcardType((WildcardType) type);
-    }
-    if (type.getKind() == TypeKind.ARRAY) {
-      return extractArrayType((ArrayType) type);
-    }
-
-    Element element = typeUtils.asElement(type);
-    DATypeImpl.Builder builder = DATypeImpl
-        .typeBuilder(
-            TypeKindToDATypeKind.INSTANCE.apply(type.getKind()),
-            extractSimpleName(type, element)
-        )
-        .withQualifiedName(extractQualifiedName(type, element))
-        .withTypeArgs(extractTypeArgs(type));
-    return builder.build();
-
+  public DAType extractType(TypeMirror typeMirror) {
+    return typeMirror.accept(daTypeExtractor, null);
   }
 
   /**
@@ -140,7 +133,7 @@ public class JavaxExtractorImpl implements JavaxExtractor {
    */
   @Nonnull
   private DAType findFixedResolution(Element element) {
-    Name qualifiedName = element instanceof QualifiedNameable ? ((QualifiedNameable) element).getQualifiedName() : null;
+    Name qualifiedName = element.accept(QualifiedNameExtractor.QUALIFIED_NAME_EXTRACTOR, null);
     // qualified reference to Type in code
     if (qualifiedName != null && !qualifiedName.contentEquals(element.getSimpleName())) {
       return ensureNonnull(scanResult.findFixedByQualifiedName(qualifiedName.toString()), element);
@@ -156,11 +149,10 @@ public class JavaxExtractorImpl implements JavaxExtractor {
 
   private DAType extractArrayType(ArrayType arrayType) {
     TypeMirror componentType = arrayType.getComponentType();
-    Element componentElement = processingEnv.getTypeUtils().asElement(componentType);
     DATypeKind daTypeKind = TypeKindToDATypeKind.INSTANCE.apply(componentType.getKind());
-    DATypeImpl.Builder builder = DATypeImpl.arrayBuilder(daTypeKind, extractSimpleName(componentType, componentElement))
-                                   .withQualifiedName(extractQualifiedName(componentType, componentElement))
-                                   .withTypeArgs(extractTypeArgs(componentType));
+    DATypeImpl.Builder builder = DATypeImpl.arrayBuilder(daTypeKind, extractSimpleName(componentType))
+                                           .withQualifiedName(extractQualifiedName(componentType))
+                                           .withTypeArgs(extractTypeArgs(componentType));
     return builder.build();
   }
 
@@ -200,30 +192,7 @@ public class JavaxExtractorImpl implements JavaxExtractor {
   @Override
   @Nonnull
   public List<DAType> extractTypeArgs(TypeMirror typeMirror) {
-    if (!(typeMirror instanceof DeclaredType)) {
-      return Collections.emptyList();
-    }
-
-    List<? extends TypeMirror> typeArguments = ((DeclaredType) typeMirror).getTypeArguments();
-    if (typeArguments == null) {
-      return Collections.emptyList();
-    }
-
-    return from(typeArguments)
-        .transform(new Function<TypeMirror, DAType>() {
-          @Nullable
-          @Override
-          public DAType apply(@Nullable TypeMirror o) {
-            if (o == null) {
-              return null;
-            }
-
-            return extractType(o);
-          }
-        }
-        )
-        .filter(notNull())
-        .toList();
+    return typeMirror.accept(typeArgsExtractor, null);
   }
 
   @Override
@@ -262,17 +231,7 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     }
 
     return from(methodElement.getParameters())
-        .transform(new Function<VariableElement, DAParameter>() {
-          @Nullable
-          @Override
-          public DAParameter apply(@Nullable VariableElement o) {
-            return DAParameterImpl.builder(JavaxDANameFactory.from(o.getSimpleName()), extractType(o.asType()))
-                              .withModifiers(from(o.getModifiers()).transform(toDAModifier()).toSet())
-                              .withAnnotations(extractDAAnnotations(o))
-                              .build();
-          }
-        }
-        )
+        .transform(variableElementToDAParameter)
         .filter(notNull())
         .toList();
   }
@@ -289,27 +248,31 @@ public class JavaxExtractorImpl implements JavaxExtractor {
 
   @Override
   @Nullable
-  public DAName extractSimpleName(TypeMirror type, Element element) {
+  public DAName extractSimpleName(TypeMirror type) {
     if (type.getKind().isPrimitive()) {
       return DANameFactory.fromPrimitiveKind(TypeKindToDATypeKind.INSTANCE.apply(type.getKind()));
     }
+
     if (type.getKind() == TypeKind.WILDCARD) {
       // wildward types do not have a name nor qualified name
+      return null;
+    }
+
+    Element element = processingEnv.getTypeUtils().asElement(type);
+    if (element == null) {
       return null;
     }
     return JavaxDANameFactory.from(element.getSimpleName());
   }
 
   @Nullable
-  private DAName extractQualifiedName(TypeMirror type, Element element) {
-    if (type.getKind().isPrimitive()) {
-      // primitive types do not have a qualifiedName by definition
+  private DAName extractQualifiedName(@Nonnull TypeMirror type) {
+    Element element = processingEnv.getTypeUtils().asElement(type);
+    if (element == null) {
       return null;
     }
-    if (element instanceof QualifiedNameable) {
-      return JavaxDANameFactory.from(((QualifiedNameable) element).getQualifiedName());
-    }
-    return null;
+
+    return element.accept(QUALIFIED_DANAME_EXTRACTOR, null);
   }
 
   @Nullable
@@ -320,28 +283,10 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     }
 
     return from(classElement.getEnclosedElements())
-        // enum values are VariableElement with kind=Kind.ENUM_CONSTANT
-        .filter(
-            Predicates.compose(
-                Predicates.equalTo(ElementKind.ENUM_CONSTANT),
-                new Function<Element, ElementKind>() {
-                  @Nonnull
-                  @Override
-                  public ElementKind apply(@Nonnull Element o) {
-                    return o.getKind();
-                  }
-                }
-            )
-        )
         .filter(VariableElement.class)
-        .transform(new Function<VariableElement, DAEnumValue>() {
-          @Nonnull
-          @Override
-          public DAEnumValue apply(@Nonnull VariableElement o) {
-            return new DAEnumValueImpl(o.getSimpleName().toString());
-          }
-        }
-        )
+         // enum values are VariableElement with kind=Kind.ENUM_CONSTANT
+        .filter(NOT_AN_ENUM_CONSTANT)
+        .transform(VariableElementToDAEnumValue.INSTANCE)
         .toList();
   }
 
@@ -364,22 +309,23 @@ public class JavaxExtractorImpl implements JavaxExtractor {
     return from(methodElement.getAnnotationMirrors()).transform(toDAAnnotation()).filter(notNull()).toList();
   }
 
-  private class EntryToDAAnnotationMember
-      implements Function<Map.Entry<? extends ExecutableElement, ? extends AnnotationValue>, DAAnnotationMember> {
+  private static enum ElementToElementKind implements Function<Element, ElementKind> {
+    INSTANCE;
 
-    @Nullable
+    @Nonnull
     @Override
-    public DAAnnotationMember apply(
-        @Nullable Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry) {
-      if (entry == null) {
-        return null;
-      }
+    public ElementKind apply(@Nonnull Element o) {
+      return o.getKind();
+    }
+  }
 
-      return new DAAnnotationMemberImpl(
-          entry.getKey().getSimpleName().toString(),
-          extractType(entry.getKey().getReturnType()),
-          entry.getValue().toString()
-      );
+  private static enum VariableElementToDAEnumValue implements Function<VariableElement, DAEnumValue> {
+    INSTANCE;
+
+    @Nonnull
+    @Override
+    public DAEnumValue apply(@Nonnull VariableElement o) {
+      return new DAEnumValueImpl(o.getSimpleName().toString());
     }
   }
 
@@ -401,12 +347,13 @@ public class JavaxExtractorImpl implements JavaxExtractor {
 
     @Nullable
     private List<DAAnnotationMember> toDAAnnotationMembers(DAType daType,
-                                                           Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues) {
+                                                           Map<? extends ExecutableElement, ? extends
+                                                               AnnotationValue> elementValues) {
       if (elementValues == null || elementValues.isEmpty()) {
         return null;
       }
 
-      return from(elementValues.entrySet()).transform(entryToDAAnnotationMember).toList();
+      return from(elementValues.entrySet()).transform(annotationValueEntryToDAAnnotationMember).toList();
     }
 
     @Nullable
@@ -425,4 +372,101 @@ public class JavaxExtractorImpl implements JavaxExtractor {
       return from(annotationMirrors).transform(annotationMirrorToDAAnnotation).toList();
     }
   }
+
+  private class VariableElementToDAParameter implements Function<VariableElement, DAParameter> {
+    @Nullable
+    @Override
+    public DAParameter apply(@Nullable VariableElement o) {
+      DAName simpleName = JavaxDANameFactory.from(o.getSimpleName());
+      return DAParameterImpl.builder(simpleName, extractType(o.asType()))
+                            .withModifiers(from(o.getModifiers()).transform(toDAModifier()).toSet())
+                            .withAnnotations(extractDAAnnotations(o))
+                            .build();
+    }
+  }
+
+  private class AnnotationValueEntryToDAAnnotationMember
+      implements Function<Map.Entry<? extends ExecutableElement, ? extends AnnotationValue>, DAAnnotationMember> {
+
+    @Nullable
+    @Override
+    public DAAnnotationMember apply(
+        @Nullable Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry) {
+      if (entry == null) {
+        return null;
+      }
+
+      return new DAAnnotationMemberImpl(
+          entry.getKey().getSimpleName().toString(),
+          extractType(entry.getKey().getReturnType()),
+          entry.getValue().toString()
+      );
+    }
+  }
+
+  private class DATypeExtractor extends SimpleTypeVisitor6<DAType, Void> {
+    @Override
+    public DAType visitError(ErrorType errorType, Void o) {
+      return findFixedResolution(processingEnv.getTypeUtils().asElement(errorType));
+    }
+
+    @Override
+    public DAType visitNoType(NoType noType, Void aVoid) {
+      return DATypeFactory.voidDaType();
+    }
+
+    @Override
+    public DAType visitWildcard(WildcardType wildcardType, Void o) {
+      return extractWildcardType(wildcardType);
+    }
+
+    @Override
+    public DAType visitArray(ArrayType arrayType, Void o) {
+      return extractArrayType(arrayType);
+    }
+
+    @Override
+    protected DAType defaultAction(TypeMirror type, Void o) {
+      DATypeImpl.Builder builder = DATypeImpl
+          .typeBuilder(
+              TypeKindToDATypeKind.INSTANCE.apply(type.getKind()),
+              extractSimpleName(type)
+          )
+          .withQualifiedName(extractQualifiedName(type))
+          .withTypeArgs(extractTypeArgs(type));
+      return builder.build();
+    }
+  }
+
+  private class TypeArgsExtractor extends SimpleTypeVisitor6<List<DAType>, Void> {
+    public TypeArgsExtractor() {
+      super(Collections.<DAType>emptyList());
+    }
+
+    @Override
+    public List<DAType> visitDeclared(DeclaredType declaredType, Void aVoid) {
+      List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
+      if (typeArguments == null) {
+        return Collections.emptyList();
+      }
+
+      return from(typeArguments)
+          .transform(
+              new Function<TypeMirror, DAType>() {
+                @Nullable
+                @Override
+                public DAType apply(@Nullable TypeMirror o) {
+                  if (o == null) {
+                    return null;
+                  }
+
+                  return extractType(o);
+                }
+              }
+          )
+          .filter(notNull())
+          .toList();
+    }
+  }
+
 }

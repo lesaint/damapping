@@ -66,7 +66,7 @@ public interface JavaxExtractor {
   List<DAParameter> extractParameters(ExecutableElement methodElement);
 
   @Nullable
-  DAName extractSimpleName(TypeMirror type, Element element);
+  DAName extractSimpleName(TypeMirror type);
 
   @Nullable
   List<DAEnumValue> extractEnumValues(@Nonnull TypeElement classElement);
