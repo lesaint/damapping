@@ -22,7 +22,7 @@
   <parent>
     <groupId>fr.javatronic.damapping</groupId>
     <artifactId>parent</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>integration-test</artifactId>
