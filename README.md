@@ -25,7 +25,7 @@ To be used, the DAMapping annotation-processor has to be a default/compile depen
 <dependency>
     <groupId>fr.phan.damapping</groupId>
     <artifactId>damapping-annotation-processor</artifactId>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
     <!-- scope does not need to be explicitly specified, default scope works just fine -->
     <scope>compile</scope>
 </dependency>
@@ -33,7 +33,7 @@ To be used, the DAMapping annotation-processor has to be a default/compile depen
 
 ### other tools
 
-An extensive list of dependency declarations is available on this [page](http://search.maven.org/#artifactdetails|fr.javatronic.damapping|damapping-annotation-processor|0.5.0|jar).
+An extensive list of dependency declarations is available on this [page](http://search.maven.org/#artifactdetails|fr.javatronic.damapping|damapping-annotation-processor|0.6.0|jar).
 
 ## Getting started ...
 
