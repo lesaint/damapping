@@ -23,7 +23,7 @@ To be used, the DAMapping annotation-processor has to be a default/compile depen
 
 ```xml
 <dependency>
-    <groupId>fr.phan.damapping</groupId>
+    <groupId>fr.javatronic.damapping</groupId>
     <artifactId>damapping-annotation-processor</artifactId>
     <version>0.6.0</version>
     <!-- scope does not need to be explicitly specified, default scope works just fine -->
