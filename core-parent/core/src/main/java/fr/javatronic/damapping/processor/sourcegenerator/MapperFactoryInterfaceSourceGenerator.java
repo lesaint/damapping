@@ -20,12 +20,16 @@ import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
+import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
+import fr.javatronic.damapping.processor.model.predicate.DAParameterPredicates;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAInterfaceWriter;
+import fr.javatronic.damapping.util.Predicate;
+import fr.javatronic.damapping.util.Predicates;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -48,6 +52,9 @@ import static fr.javatronic.damapping.util.FluentIterable.from;
 public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerator {
 
   protected static final String MAPPER_FACTORY_CONSTRUCTOR_METHOD_NAME = "get";
+  private static final Predicate<DAParameter> FILTER_OUT_PARAMETER_WITH_MAPPER_DEPENDENCY_ANNOTATION = Predicates.not(
+      DAParameterPredicates.hasMapperDependencyAnnotation()
+  );
 
   public MapperFactoryInterfaceSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
                                                @Nonnull ProcessorClasspathChecker classpathChecker) {
@@ -65,10 +72,10 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
     DASourceClass sourceClass = descriptor.getContext().getSourceClass();
     DAFileWriter fileWriter = new DAFileWriter(bw);
     if (sourceClass.getPackageName() != null) {
-        fileWriter.appendPackage(sourceClass.getPackageName());
+      fileWriter.appendPackage(sourceClass.getPackageName());
     }
     fileWriter.appendImports(computeImports(descriptor))
-        .appendGeneratedAnnotation(DAMAPPING_ANNOTATION_PROCESSOR_QUALIFIED_NAME);
+              .appendGeneratedAnnotation(DAMAPPING_ANNOTATION_PROCESSOR_QUALIFIED_NAME);
 
     DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter
         .newInterface(descriptor.getType().getSimpleName().getName())
@@ -76,11 +83,15 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
         .start();
 
     DAType mapperClass = DATypeFactory.declared(sourceClass.getType().getQualifiedName() + "Mapper");
-    for (DAMethod method : from(sourceClass.getMethods()).filter(DAMethodPredicates.isMapperFactoryMethod()).toList()) {
+    for (DAMethod method : from(sourceClass.getMethods()).filter(DAMethodPredicates.isMapperFactoryMethod())) {
       String name = isConstructor().apply(method) ? MAPPER_FACTORY_CONSTRUCTOR_METHOD_NAME : method.getName().getName();
       interfaceWriter.newMethod(name, mapperClass)
                      .withAnnotations(computeMethodAnnotations())
-                     .withParams(method.getParameters())
+                     .withParams(
+                        from(method.getParameters())
+                             .filter(FILTER_OUT_PARAMETER_WITH_MAPPER_DEPENDENCY_ANNOTATION)
+                             .toList()
+                     )
                      .write();
     }
 
@@ -101,4 +112,5 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
     }
     return Collections.emptyList();
   }
+
 }

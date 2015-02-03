@@ -19,9 +19,8 @@ import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAName;
-import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.function.DAAnnotationFunctions;
 import fr.javatronic.damapping.processor.model.impl.DAImportImpl;
-import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Lists;
 import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Predicates;
@@ -43,17 +42,7 @@ import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 public class SourceGeneratorSupport {
   private static final List<DAAnnotation> OVERRIDE_ANNOTATION_AS_LIST = Lists.of(OVERRIDE_ANNOTATION);
   private static final Predicate<DAAnnotation> NOT_OVERRIDE_ANNOTATION = Predicates.not(
-      Predicates.compose(Predicates.equalTo(OVERRIDE_ANNOTATION.getType()), new Function<DAAnnotation, DAType>() {
-            @Nullable
-            @Override
-            public DAType apply(@Nullable DAAnnotation daAnnotation) {
-              if (daAnnotation == null) {
-                return null;
-              }
-              return daAnnotation.getType();
-            }
-          }
-      )
+      Predicates.compose(Predicates.equalTo(OVERRIDE_ANNOTATION.getType()), DAAnnotationFunctions.toType())
   );
 
   /**

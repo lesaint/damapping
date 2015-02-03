@@ -1,0 +1,11 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+import java.math.BigDecimal;
+import javax.annotation.Nullable;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public interface ConstructorWithDependencyMapper {
+
+    @Nullable
+    String apply(@Nullable BigDecimal input);
+}

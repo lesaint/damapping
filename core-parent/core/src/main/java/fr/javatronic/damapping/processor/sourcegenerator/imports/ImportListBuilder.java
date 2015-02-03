@@ -21,6 +21,7 @@ import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.constants.DAMappingConstants;
 import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Maps;
 import fr.javatronic.damapping.util.Predicate;
@@ -45,6 +46,10 @@ import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
  * @author Sébastien Lesaint
  */
 public class ImportListBuilder {
+  private static final Predicate<DAImport> FILTER_OUT_MAPPER_DEPENDENCY_ANNOTATION_IMPORT = Predicates.not(
+      Predicates.equalTo(DAMappingConstants.MAPPER_DEPENDENCY_DAIMPORT)
+  );
+
   private final Set<DAImport> imports = Sets.of();
 
   protected void addImports(@Nullable DAType daType) {
@@ -105,12 +110,22 @@ public class ImportListBuilder {
 
   @Nonnull
   public List<DAImport> getImports(@Nonnull final String currentPackage) {
-    checkNotNull(currentPackage, "currentPackage can not be null. Use the empty string for the default pacakge");
+    checkNotNull(currentPackage, "currentPackage can not be null. Use the empty string for the default package");
 
     if (imports.isEmpty()) {
       return Collections.emptyList();
     }
 
+    Map<DAName, List<DAImport>> indexBySimpleName = indexImportsBySimpleName(imports);
+    return from(indexBySimpleName.values())
+        .transform(new ImportSelector(currentPackage))
+        .filter(Predicates.notNull())
+        // MapperDependency must not appear in any generated class/interface
+        .filter(FILTER_OUT_MAPPER_DEPENDENCY_ANNOTATION_IMPORT)
+        .toList();
+  }
+
+  private static Map<DAName, List<DAImport>> indexImportsBySimpleName(Set<DAImport> imports) {
     Map<DAName, List<DAImport>> indexBySimpleName = Maps.newHashMap();
 
     for (DAImport anImport : imports) {
@@ -129,12 +144,7 @@ public class ImportListBuilder {
       else {
         names.add(anImport);
       }
-    }
-
-    return from(indexBySimpleName.values())
-        .transform(new ImportSelector(currentPackage))
-        .filter(Predicates.notNull())
-        .toList();
+    } return indexBySimpleName;
   }
 
   /**

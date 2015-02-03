@@ -20,13 +20,13 @@ import fr.javatronic.damapping.test.AbstractMapperTest;
 import org.testng.annotations.Test;
 
 /**
- * ConstructorFactoryInjectableTest -
+ * ConstructorFactoryInjectableWithDependencyTest -
  *
  * @author Sébastien Lesaint
  */
-public class ConstructorFactoryInjectableTest extends AbstractMapperTest {
-  public ConstructorFactoryInjectableTest() {
-    super(ConstructorFactoryInjectable.class);
+public class ConstructorFactoryInjectableWithDependencyTest extends AbstractMapperTest {
+  public ConstructorFactoryInjectableWithDependencyTest() {
+    super(ConstructorFactoryInjectableWithDependency.class);
   }
 
   @Test

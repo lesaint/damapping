@@ -1,0 +1,35 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+import java.math.BigDecimal;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public class ConstructorWithDependencyMapperFactoryImpl implements ConstructorWithDependencyMapperFactory {
+    @Nonnull
+    private final String otherParam;
+
+    public ConstructorWithDependencyMapperFactoryImpl(@Nonnull String otherParam) {
+        this.otherParam = otherParam;
+    }
+
+    @Override
+    @Nonnull
+    public ConstructorWithDependencyMapper get(Boolean flag) {
+        return new ConstructorWithDependencyMapperImpl(new ConstructorWithDependency(flag, otherParam));
+    }
+
+    private static class ConstructorWithDependencyMapperImpl implements ConstructorWithDependencyMapper {
+        private final ConstructorWithDependency instance;
+
+        public ConstructorWithDependencyMapperImpl(ConstructorWithDependency instance) {
+            this.instance = instance;
+        }
+
+        @Override
+        @Nullable
+        public String apply(@Nullable BigDecimal input) {
+            return instance.apply(input);
+        }
+    }
+}

@@ -24,16 +24,21 @@ import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.DATypeKind;
+import fr.javatronic.damapping.processor.model.constants.DAMappingConstants;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
+import fr.javatronic.damapping.processor.model.function.DAAnnotationFunctions;
 import fr.javatronic.damapping.processor.model.impl.DAParameterImpl;
-import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassMethodWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAClassWriter;
+import fr.javatronic.damapping.processor.sourcegenerator.writer.DAConstructorWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAStatementWriter;
+import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Lists;
+import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicate;
+import fr.javatronic.damapping.util.Predicates;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -45,9 +50,14 @@ import javax.annotation.Nonnull;
 import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
 import static fr.javatronic.damapping.processor.model.constants.Jsr305Constants.NONNULL_ANNOTATION;
 import static fr.javatronic.damapping.processor.model.constants.Jsr305Constants.NONNULL_TYPE;
+import static fr.javatronic.damapping.processor.model.constants.Jsr330Constants.INJECT_DAANNOTATION;
+import static fr.javatronic.damapping.processor.model.constants.Jsr330Constants.INJECT_DANAME;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.hasMapperDependencyParameters;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
+import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperFactoryMethod;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperMethod;
+import static fr.javatronic.damapping.processor.model.predicate.DAParameterPredicates.hasMapperDependencyAnnotation;
 import static fr.javatronic.damapping.processor.sourcegenerator.MapperFactoryInterfaceSourceGenerator.MAPPER_FACTORY_CONSTRUCTOR_METHOD_NAME;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 import static fr.javatronic.damapping.util.Predicates.or;
@@ -61,6 +71,12 @@ import static fr.javatronic.damapping.util.Predicates.or;
 public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
 
   private static final Predicate<DAMethod> IMPLEMENTED_MAPPER_METHOD = or(isGuavaFunctionApply(), isMapperMethod());
+  private static final Predicate<DAAnnotation> REMOVE_MAPPER_DEPENDENCY_ANNOTATION = Predicates.not(
+      Predicates.compose(
+          Predicates.equalTo(DAMappingConstants.MAPPER_DEPENDENCY_DATYPE),
+          DAAnnotationFunctions.toType()
+      )
+  );
 
   public MapperFactoryImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
                                           @Nonnull ProcessorClasspathChecker classpathChecker) {
@@ -84,28 +100,32 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
     if (factoryInterfaceDescriptor == null || mapperInterfaceDescriptor == null) {
       return;
     }
+    DASourceClass sourceClass = descriptor.getContext().getSourceClass();
+
     DAType mapperImpl = DATypeFactory.declared(
         descriptor.getContext()
                   .getDescriptor(GenerationContext.MAPPER_INTERFACE_KEY)
                   .getType()
                   .getQualifiedName().getName() + "Impl"
     );
+    List<DAParameter> mapperDependencyParameters = computeMapperDependencies(sourceClass);
 
-    DASourceClass sourceClass = descriptor.getContext().getSourceClass();
     DAFileWriter fileWriter = new DAFileWriter(bw);
     if (sourceClass.getPackageName() != null) {
-        fileWriter.appendPackage(sourceClass.getPackageName());
+      fileWriter.appendPackage(sourceClass.getPackageName());
     }
-    fileWriter.appendImports(computeImports(descriptor))
-        .appendGeneratedAnnotation(DAMAPPING_ANNOTATION_PROCESSOR_QUALIFIED_NAME);
+    fileWriter.appendImports(computeImports(sourceClass, mapperDependencyParameters, descriptor))
+              .appendGeneratedAnnotation(DAMAPPING_ANNOTATION_PROCESSOR_QUALIFIED_NAME);
 
     DAClassWriter<DAFileWriter> classWriter = fileWriter
         .newClass(descriptor.getType())
-        .withImplemented(
-            Lists.of(factoryInterfaceDescriptor.getType())
-        )
+        .withImplemented(Lists.of(factoryInterfaceDescriptor.getType()))
         .withModifiers(DAModifier.PUBLIC)
         .start();
+
+    appendProperties(mapperDependencyParameters, classWriter);
+
+    appendConstructor(sourceClass, mapperDependencyParameters, classWriter);
 
     appendFactoryMethods(sourceClass, mapperInterfaceDescriptor, mapperImpl, classWriter);
 
@@ -116,24 +136,149 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
     fileWriter.end();
   }
 
-  private  Collection<DAImport> computeImports(GeneratedFileDescriptor descriptor) {
-    if (classpathChecker.isNonnullPresent()) {
-      return support.appendImports(descriptor.getImports(), NONNULL_TYPE.getQualifiedName());
+  private Collection<DAImport> computeImports(DASourceClass sourceClass,
+                                              List<DAParameter> mapperDependencyParameters,
+                                              GeneratedFileDescriptor descriptor) {
+    List<DAImport> res = descriptor.getImports();
+    if (sourceClass.getInjectableAnnotation().isPresent() && !mapperDependencyParameters.isEmpty()) {
+      res = support.appendImports(res, INJECT_DANAME);
     }
-    return descriptor.getImports();
+    if (classpathChecker.isNonnullPresent()) {
+      return support.appendImports(res, NONNULL_TYPE.getQualifiedName());
+    }
+    return res;
   }
 
-  private void appendFactoryMethods(DASourceClass sourceClass, GeneratedFileDescriptor mapperInterfaceDescriptor,
+  /**
+   * Creates a property for each DAParameter in the list of parameters identified as dependencies of the
+   * MapperFactoryImpl class (same name, same type and same annotations except {@code MapperDependency}).
+   * <p>
+   * Dependencies of the MapperFactory interface are identified by the
+   * {@link fr.javatronic.damapping.annotation.MapperDependency} annotation.
+   * </p>
+   */
+  private void appendProperties(List<DAParameter> mapperDependencyParameters, DAClassWriter<DAFileWriter> classWriter)
+      throws IOException {
+    for (DAParameter parameter : mapperDependencyParameters) {
+      classWriter.newProperty(parameter.getName().getName(), parameter.getType())
+                 .withModifiers(DAModifier.PRIVATE, DAModifier.FINAL)
+                 .withAnnotations(
+                     from(parameter.getAnnotations()).filter(REMOVE_MAPPER_DEPENDENCY_ANNOTATION).toList()
+                 )
+                 .write();
+    }
+
+  }
+
+  /**
+   * MapperFactoryImpl class does not have a constructor unless there is at least one mapperDependency parameter
+   * see {@link fr.javatronic.damapping.annotation.MapperDependency}).
+   * <p>
+   * In such case, the constructor will have one parameter for each mapper dependency parameter (same name, same type
+   * and same annotations except {@code MapperDependency}) and it will initialized the corresponding properties with
+   * their values.
+   * </p>
+   */
+  private void appendConstructor(DASourceClass sourceClass,
+                                 List<DAParameter> mapperDependencyParameters,
+                                 DAClassWriter<DAFileWriter> classWriter) throws IOException {
+    if (mapperDependencyParameters.isEmpty()) {
+      return;
+    }
+
+    DAConstructorWriter<DAClassWriter<DAFileWriter>> constructorWriter = classWriter.newConstructor();
+    constructorWriter.withModifiers(DAModifier.PUBLIC)
+                     .withParams(
+                         from(mapperDependencyParameters)
+                             .transform(RemoveMapperDependencyAnnotation.INSTANCE)
+                             .toList()
+                     )
+                     .withAnnotations(computeConstructorAnnotations(sourceClass))
+                     .start();
+
+    for (DAParameter mapperDependencyParameter : mapperDependencyParameters) {
+      constructorWriter.newStatement()
+                       .start()
+                       .append("this.")
+                       .append(mapperDependencyParameter.getName())
+                       .append(" = ")
+                       .append(mapperDependencyParameter.getName())
+                       .end();
+    }
+
+    constructorWriter.end();
+  }
+
+  private static List<DAAnnotation> computeConstructorAnnotations(DASourceClass sourceClass) {
+    if (sourceClass.getInjectableAnnotation().isPresent()) {
+      return Collections.singletonList(INJECT_DAANNOTATION);
+    }
+    return null;
+  }
+
+
+  @Nonnull
+  private static List<DAParameter> computeMapperDependencies(@Nonnull DASourceClass sourceClass) {
+    Optional<DAMethod> mapperWithDependencyMethod = from(sourceClass.getMethods())
+        .filter(isMapperFactoryMethod())
+        .filter(hasMapperDependencyParameters())
+        .first();
+    if (!mapperWithDependencyMethod.isPresent()) {
+      return Collections.emptyList();
+    }
+
+    return from(mapperWithDependencyMethod.get().getParameters())
+        .filter(hasMapperDependencyAnnotation())
+        .toList();
+  }
+
+  private static enum RemoveMapperDependencyAnnotation implements Function<DAParameter, DAParameter> {
+    INSTANCE;
+
+    @Override
+    public DAParameter apply(DAParameter daParameter) {
+      List<DAAnnotation> filterAnnotations = removeMapperDependencyAnnotation(daParameter.getAnnotations());
+      if (filterAnnotations.size() == daParameter.getAnnotations().size()) {
+        return daParameter;
+      }
+
+      return DAParameterImpl.builder(daParameter.getName(), daParameter.getType())
+                            .withModifiers(daParameter.getModifiers())
+                            .withAnnotations(filterAnnotations)
+                            .build();
+    }
+
+    @Nonnull
+    private static List<DAAnnotation> removeMapperDependencyAnnotation(@Nonnull List<DAAnnotation> annotations) {
+      if (annotations.isEmpty()) {
+        return annotations;
+      }
+
+      return from(annotations)
+          .filter(
+              Predicates.not(
+                  Predicates.compose(Predicates.equalTo(DAMappingConstants.MAPPER_DEPENDENCY_DATYPE),
+                      DAAnnotationFunctions
+                          .toType()
+                  )
+              )
+          )
+          .toList();
+    }
+  }
+
+  private void appendFactoryMethods(DASourceClass sourceClass,
+                                    GeneratedFileDescriptor mapperInterfaceDescriptor,
                                     DAType mapperImpl,
                                     DAClassWriter<DAFileWriter> classWriter)
       throws IOException {
-    for (DAMethod method : from(sourceClass.getMethods()).filter(DAMethodPredicates.isMapperFactoryMethod()).toList()) {
+    for (DAMethod method : from(sourceClass.getMethods()).filter(isMapperFactoryMethod()).toList()) {
       String name = isConstructor().apply(method) ? MAPPER_FACTORY_CONSTRUCTOR_METHOD_NAME : method.getName().getName();
       DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter
           .newMethod(name, mapperInterfaceDescriptor.getType())
           .withAnnotations(computeFactoryMethodAnnotations())
           .withModifiers(DAModifier.PUBLIC)
-          .withParams(method.getParameters())
+          .withParams(removeMapperDependencyParams(method.getParameters()))
           .start();
       DAStatementWriter<?> statementWriter = methodWriter
           .newStatement()
@@ -163,6 +308,13 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
       return Lists.of(OVERRIDE_ANNOTATION, NONNULL_ANNOTATION);
     }
     return Collections.singletonList(OVERRIDE_ANNOTATION);
+  }
+
+  @Nonnull
+  private List<DAParameter> removeMapperDependencyParams(@Nonnull List<DAParameter> parameters) {
+    return from(parameters)
+        .filter(Predicates.not(hasMapperDependencyAnnotation()))
+        .toList();
   }
 
   private void appendInnerClass(DAType mapperImpl,
@@ -219,13 +371,12 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
       statementWriter.append("return ");
     }
     statementWriter
-                .append("instance")
-                .append(".")
-                .append(mapperMethod.getName())
-                .appendParamValues(mapperMethod.getParameters())
-                .end();
+        .append("instance")
+        .append(".")
+        .append(mapperMethod.getName())
+        .appendParamValues(mapperMethod.getParameters())
+        .end();
 
     methodWriter.end();
   }
-
 }

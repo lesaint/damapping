@@ -16,14 +16,14 @@
 package fr.javatronic.damapping.processor.model.predicate;
 
 import fr.javatronic.damapping.processor.model.DAMethod;
-import fr.javatronic.damapping.processor.model.impl.DAMethodImpl;
 import fr.javatronic.damapping.processor.model.DAModifier;
-import fr.javatronic.damapping.processor.model.impl.DAParameterImpl;
 import fr.javatronic.damapping.processor.model.DAType;
-import fr.javatronic.damapping.processor.model.impl.DATypeImpl;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
+import fr.javatronic.damapping.processor.model.impl.DAMethodImpl;
+import fr.javatronic.damapping.processor.model.impl.DAParameterImpl;
+import fr.javatronic.damapping.processor.model.impl.DATypeImpl;
 import fr.javatronic.damapping.util.Lists;
 import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Predicates;
@@ -31,6 +31,8 @@ import fr.javatronic.damapping.util.Sets;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import static fr.javatronic.damapping.util.FluentIterable.from;
 
 /**
  * DAMethodPredicates -
@@ -184,6 +186,26 @@ public class DAMethodPredicates {
     @Override
     public boolean apply(@Nullable DAMethod daMethod) {
       return daMethod != null && daMethod.isMapperMethod();
+    }
+  }
+
+  /**
+   * Indicates whether the specified DAMethod has at least one parameter with the
+   * {@link fr.javatronic.damapping.annotation.MapperDependency} annotation.
+   */
+  public static Predicate<DAMethod> hasMapperDependencyParameters() {
+    return HasMapperDependencyParameters.INSTANCE;
+  }
+
+  private static enum HasMapperDependencyParameters implements Predicate<DAMethod> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nullable DAMethod daMethod) {
+      return daMethod != null
+          && from(daMethod.getParameters())
+          .firstMatch(DAParameterPredicates.hasMapperDependencyAnnotation())
+          .isPresent();
     }
   }
 
