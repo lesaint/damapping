@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
  *
  * @author Sébastien Lesaint
  */
-public final class Jsr330Constants {
+public final class Jsr330Constants extends Constants {
 
   public static final String NAMED_QUALIFIEDNAME = "javax.inject.Named";
   public static final DAName NAMED_DANAME = DANameFactory.from(NAMED_QUALIFIEDNAME);
@@ -60,17 +60,9 @@ public final class Jsr330Constants {
   );
 
   @Nullable
-  private final static Class<?> jsr330NamedClass = loadJSR330InjectClass(NAMED_QUALIFIEDNAME);
+  private final static Class<?> jsr330NamedClass = loadClass(NAMED_QUALIFIEDNAME);
   @Nullable
-  private final static Class<?> jsr330InjectClass = loadJSR330InjectClass(INJECT_QUALIFIEDNAME);
-
-  private static Class<?> loadJSR330InjectClass(String qualifiedName) {
-    try {
-      return Class.forName(qualifiedName);
-    } catch (ClassNotFoundException e) {
-      return null;
-    }
-  }
+  private final static Class<?> jsr330InjectClass = loadClass(INJECT_QUALIFIEDNAME);
 
   public static boolean isJSR330Present() {
     return jsr330InjectClass != null && jsr330NamedClass != null;

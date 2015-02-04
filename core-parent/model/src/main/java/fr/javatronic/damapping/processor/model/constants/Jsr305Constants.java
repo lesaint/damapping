@@ -22,25 +22,34 @@ import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.Resource;
 
 /**
- * JAVA_LANG_CONSTANTS -
+ * Jsr305Constants -
  *
  * @author Sébastien Lesaint
  */
-public final class JavaxConstants {
-  public static final DAType NULLABLE_TYPE = DATypeFactory.from(Nullable.class);
+public final class Jsr305Constants extends Constants {
+  public static final String NULLABLE_QUALIFIEDNAME = Nullable.class.getCanonicalName();
+  public static final DAType NULLABLE_TYPE = DATypeFactory.declared(NULLABLE_QUALIFIEDNAME);
   public static final DAAnnotation NULLABLE_ANNOTATION = new DAAnnotationImpl(NULLABLE_TYPE);
 
-  public static final DAType NONNULL_TYPE = DATypeFactory.from(Nonnull.class);
+  public static final String NONNULL_QUALIFIEDNAME = Nonnull.class.getCanonicalName();
+  public static final DAType NONNULL_TYPE = DATypeFactory.declared(NONNULL_QUALIFIEDNAME);
   public static final DAAnnotation NONNULL_ANNOTATION = new DAAnnotationImpl(NONNULL_TYPE);
 
-  public static final DAType RESOURCE_TYPE = DATypeFactory.from(Resource.class);
+  public static final String RESOURCE_QUALIFIEDNAME = Nonnull.class.getCanonicalName();
+  public static final DAType RESOURCE_TYPE = DATypeFactory.declared(RESOURCE_QUALIFIEDNAME);
   public static final DAAnnotation RESOURCE_ANNOTATION = new DAAnnotationImpl(RESOURCE_TYPE);
 
-  private JavaxConstants() {
+  private Jsr305Constants() {
     // prevents instantiation
+  }
+
+  @Nullable
+  private final static Class<?> jsr305NullableClass = loadClass(NULLABLE_QUALIFIEDNAME);
+
+  public static boolean isNullablePresent() {
+    return jsr305NullableClass != null;
   }
 
 }

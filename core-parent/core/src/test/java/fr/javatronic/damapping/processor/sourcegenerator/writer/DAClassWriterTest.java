@@ -27,7 +27,7 @@ import org.testng.annotations.Test;
 
 import static fr.javatronic.damapping.processor.model.constants.JavaIOConstants.SERIALIZABLE_TYPE;
 import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
-import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.NULLABLE_ANNOTATION;
+import static fr.javatronic.damapping.processor.model.constants.Jsr305Constants.NULLABLE_ANNOTATION;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.BIDON_INTEGER_TO_STRING_ABSTRACT_CLASS;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.DAWRITER_ABSTACT_CLASS;

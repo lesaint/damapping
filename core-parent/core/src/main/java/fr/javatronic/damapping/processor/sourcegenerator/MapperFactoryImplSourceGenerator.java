@@ -39,8 +39,8 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 
 import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
-import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.NONNULL_ANNOTATION;
-import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.NONNULL_TYPE;
+import static fr.javatronic.damapping.processor.model.constants.Jsr305Constants.NONNULL_ANNOTATION;
+import static fr.javatronic.damapping.processor.model.constants.Jsr305Constants.NONNULL_TYPE;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperMethod;
