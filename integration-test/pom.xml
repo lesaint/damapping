@@ -38,6 +38,7 @@
     <module>mapper-injectable</module>
     <module>generated-content-references</module>
     <module>use-mapper</module>
+    <module>no-jsr305</module>
   </modules>
 
   <dependencies>
@@ -49,10 +50,6 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
     </dependency>
   </dependencies>
 

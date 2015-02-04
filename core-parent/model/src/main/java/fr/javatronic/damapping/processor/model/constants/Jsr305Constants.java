@@ -16,11 +16,10 @@
 package fr.javatronic.damapping.processor.model.constants;
 
 import fr.javatronic.damapping.processor.model.DAAnnotation;
-import fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
+import fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -29,15 +28,15 @@ import javax.annotation.Nullable;
  * @author Sébastien Lesaint
  */
 public final class Jsr305Constants extends Constants {
-  public static final String NULLABLE_QUALIFIEDNAME = Nullable.class.getCanonicalName();
+  public static final String NULLABLE_QUALIFIEDNAME = "javax.annotation.Nullable";
   public static final DAType NULLABLE_TYPE = DATypeFactory.declared(NULLABLE_QUALIFIEDNAME);
   public static final DAAnnotation NULLABLE_ANNOTATION = new DAAnnotationImpl(NULLABLE_TYPE);
 
-  public static final String NONNULL_QUALIFIEDNAME = Nonnull.class.getCanonicalName();
+  public static final String NONNULL_QUALIFIEDNAME = "javax.annotation.Nonnull";
   public static final DAType NONNULL_TYPE = DATypeFactory.declared(NONNULL_QUALIFIEDNAME);
   public static final DAAnnotation NONNULL_ANNOTATION = new DAAnnotationImpl(NONNULL_TYPE);
 
-  public static final String RESOURCE_QUALIFIEDNAME = Nonnull.class.getCanonicalName();
+  public static final String RESOURCE_QUALIFIEDNAME = "javax.annotation.Resource";
   public static final DAType RESOURCE_TYPE = DATypeFactory.declared(RESOURCE_QUALIFIEDNAME);
   public static final DAAnnotation RESOURCE_ANNOTATION = new DAAnnotationImpl(RESOURCE_TYPE);
 
@@ -46,10 +45,10 @@ public final class Jsr305Constants extends Constants {
   }
 
   @Nullable
-  private final static Class<?> jsr305NullableClass = loadClass(NULLABLE_QUALIFIEDNAME);
+  private final static Class<?> jsr305NonnullClass = loadClass(NONNULL_QUALIFIEDNAME);
 
-  public static boolean isNullablePresent() {
-    return jsr305NullableClass != null;
+  public static boolean isNonnullPresent() {
+    return jsr305NonnullClass != null;
   }
 
 }

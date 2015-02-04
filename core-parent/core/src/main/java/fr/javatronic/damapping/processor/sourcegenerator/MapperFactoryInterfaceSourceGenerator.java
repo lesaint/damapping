@@ -15,11 +15,13 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.constants.Jsr305Constants;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
@@ -28,6 +30,8 @@ import fr.javatronic.damapping.processor.sourcegenerator.writer.DAInterfaceWrite
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
 
 import static fr.javatronic.damapping.processor.model.constants.Jsr305Constants.NONNULL_ANNOTATION;
@@ -73,7 +77,7 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
     for (DAMethod method : from(sourceClass.getMethods()).filter(DAMethodPredicates.isMapperFactoryMethod()).toList()) {
       String name = isConstructor().apply(method) ? MAPPER_FACTORY_CONSTRUCTOR_METHOD_NAME : method.getName().getName();
       interfaceWriter.newMethod(name, mapperClass)
-                     .withAnnotations(NONNULL_ANNOTATION)
+                     .withAnnotations(computeMethodAnnotations())
                      .withParams(method.getParameters())
                      .write();
     }
@@ -83,6 +87,16 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
   }
 
   private Collection<DAImport> computeImports(GeneratedFileDescriptor descriptor) {
-    return support.appendImports(descriptor.getImports(), NONNULL_TYPE.getQualifiedName());
+    if (Jsr305Constants.isNonnullPresent()) {
+      return support.appendImports(descriptor.getImports(), NONNULL_TYPE.getQualifiedName());
+    }
+    return descriptor.getImports();
+  }
+
+  private static List<DAAnnotation> computeMethodAnnotations() {
+    if (Jsr305Constants.isNonnullPresent()) {
+      return Collections.singletonList(NONNULL_ANNOTATION);
+    }
+    return Collections.emptyList();
   }
 }
