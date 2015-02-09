@@ -20,9 +20,12 @@ import fr.javatronic.damapping.annotation.Mapper;
 import fr.javatronic.damapping.annotation.MapperFactory;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAName;
+import fr.javatronic.damapping.processor.model.constants.DAMappingConstants;
 import fr.javatronic.damapping.processor.model.constants.Jsr330Constants;
+import fr.javatronic.damapping.processor.model.function.DAAnnotationFunctions;
 import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicate;
+import fr.javatronic.damapping.util.Predicates;
 
 import javax.annotation.Nullable;
 
@@ -37,6 +40,10 @@ public final class DAAnnotationPredicates {
 
   private static final String MAPPER_ANNOTATION_QUALIFIEDNAME = Mapper.class.getName();
   private static final String MAPPERFACTORYMETHOD_ANNOTATION_QUALIFIEDNAME = MapperFactory.class.getName();
+  private static final Predicate<DAAnnotation> MAPPER_DEPENDENCY_ANNOTATION_PREDICATE = Predicates.compose(
+      Predicates.equalTo(DAMappingConstants.MAPPER_DEPENDENCY_DATYPE),
+      DAAnnotationFunctions.toType()
+  );
 
   private DAAnnotationPredicates() {
     // prevents instantiation
@@ -100,7 +107,7 @@ public final class DAAnnotationPredicates {
   }
 
   /**
-   * Precicate to find annotations with annotated with {@link Jsr330Constants#QUALIFIER_QUALIFIED_NAME} directly or
+   * Predicate to find annotations with annotated with {@link Jsr330Constants#QUALIFIER_QUALIFIED_NAME} directly or
    * indirectly.
    */
   public static Predicate<DAAnnotation> isQualifier() {
@@ -122,7 +129,7 @@ public final class DAAnnotationPredicates {
   }
 
   /**
-   * Precicate to find annotations with annotated with {@link Jsr330Constants#SCOPE_QUALIFIED_NAME} directly or
+   * Predicate to find annotations with annotated with {@link Jsr330Constants#SCOPE_QUALIFIED_NAME} directly or
    * indirectly.
    */
   public static Predicate<DAAnnotation> isScope() {
@@ -141,5 +148,12 @@ public final class DAAnnotationPredicates {
       Optional<DAName> qualifiedName = extractQualifiedName(daAnnotation);
       return qualifiedName.isPresent() && qualifiedName.get().compareTo(Jsr330Constants.SCOPE_DANAME) == 0;
     }
+  }
+
+  /**
+   * Predicate to find the {@link fr.javatronic.damapping.annotation.MapperDependency} annotation.
+   */
+  public static Predicate<DAAnnotation> isMapperDependency() {
+    return MAPPER_DEPENDENCY_ANNOTATION_PREDICATE;
   }
 }

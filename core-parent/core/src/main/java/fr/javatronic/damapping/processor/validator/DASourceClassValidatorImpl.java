@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 
 /**
  * DASourceClassValidator -
- * <p>
+ * <p/>
  * TODO add unit test coverage for DASourceClassValidatorImpl
  *
  * @author Sébastien Lesaint
@@ -41,7 +41,8 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
             new MapperFactoryMethodsValidationStep(),
             new JSR330InPathValidationStep(classpathChecker),
             new ConstructorValidationStep(),
-            new EnumValidationStep()
+            new EnumValidationStep(),
+            new MapperDependencyOnMapperFactoryValidationStep()
         );
   }
 

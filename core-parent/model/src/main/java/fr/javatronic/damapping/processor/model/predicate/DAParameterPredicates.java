@@ -16,10 +16,7 @@
 package fr.javatronic.damapping.processor.model.predicate;
 
 import fr.javatronic.damapping.processor.model.DAParameter;
-import fr.javatronic.damapping.processor.model.constants.DAMappingConstants;
-import fr.javatronic.damapping.processor.model.function.DAAnnotationFunctions;
 import fr.javatronic.damapping.util.Predicate;
-import fr.javatronic.damapping.util.Predicates;
 
 import javax.annotation.Nullable;
 
@@ -50,12 +47,7 @@ public final class DAParameterPredicates {
     public boolean apply(@Nullable DAParameter daParameter) {
       return daParameter != null
           && from(daParameter.getAnnotations())
-          .firstMatch(
-              Predicates.compose(
-                  Predicates.equalTo(DAMappingConstants.MAPPER_DEPENDENCY_DATYPE),
-                  DAAnnotationFunctions.toType()
-              )
-          )
+          .firstMatch(DAAnnotationPredicates.isMapperDependency())
           .isPresent();
     }
   }
