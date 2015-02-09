@@ -15,16 +15,21 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
+import fr.javatronic.damapping.processor.model.constants.JavaLangConstants;
+import fr.javatronic.damapping.processor.model.constants.Jsr305Constants;
+import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
+import fr.javatronic.damapping.processor.model.impl.DAParameterImpl;
 
 import com.google.common.collect.ImmutableList;
 
 import org.testng.annotations.Test;
 
+import static com.google.common.collect.ImmutableList.of;
 import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
+import static fr.javatronic.damapping.processor.model.factory.DATypeFactory.declared;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
-import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil
-    .FUNCTION_STRING_INTEGER_ARRAY_PARAMETER;
+import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.FUNCTION_STRING_INTEGER_ARRAY_PARAMETER;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.LINE_SEPARATOR;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.STRING_TITI_PARAMETER;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -75,7 +80,7 @@ public class DAInterfaceMethodWriterTest {
   }
 
   @Test
-  public void annoted_method() throws Exception {
+  public void annotated_method() throws Exception {
     FileContextTestImpl fileContext = new FileContextTestImpl();
     methodWriter("name", "java.lang.String", fileContext)
         .withAnnotations(OVERRIDE_ANNOTATION)
@@ -84,6 +89,29 @@ public class DAInterfaceMethodWriterTest {
     assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR
             + INDENT + "String name();" + LINE_SEPARATOR
+        );
+  }
+
+  @Test
+  public void empty_method_with_annotated_parameter() throws Exception {
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    methodWriter("name", "java.lang.String", fileContext)
+        .withParams(of(
+                DAParameterImpl.builder(DANameFactory.from("toto"), declared("java.lang.String"))
+                               .withAnnotations(
+                                   of(
+                                       JavaLangConstants.OVERRIDE_ANNOTATION,
+                                       Jsr305Constants.NONNULL_ANNOTATION
+                                   )
+                               )
+                               .build()
+            )
+        )
+        .write();
+
+    assertThat(fileContext.getRes())
+        .isEqualTo(
+            INDENT + "String name(@Override @Nonnull String toto);" + LINE_SEPARATOR
         );
   }
 

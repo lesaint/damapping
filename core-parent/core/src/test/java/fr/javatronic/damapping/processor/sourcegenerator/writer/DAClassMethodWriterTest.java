@@ -16,13 +16,17 @@
 package fr.javatronic.damapping.processor.sourcegenerator.writer;
 
 import fr.javatronic.damapping.processor.model.DAModifier;
+import fr.javatronic.damapping.processor.model.constants.JavaLangConstants;
+import fr.javatronic.damapping.processor.model.constants.Jsr305Constants;
+import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
-
-import com.google.common.collect.ImmutableList;
+import fr.javatronic.damapping.processor.model.impl.DAParameterImpl;
 
 import org.testng.annotations.Test;
 
+import static com.google.common.collect.ImmutableList.of;
 import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
+import static fr.javatronic.damapping.processor.model.factory.DATypeFactory.declared;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.CommonMethodsImpl.INDENT;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.FUNCTION_STRING_INTEGER_ARRAY_PARAMETER;
 import static fr.javatronic.damapping.processor.sourcegenerator.writer.DAWriterTestUtil.LINE_SEPARATOR;
@@ -71,7 +75,7 @@ public class DAClassMethodWriterTest {
   public void empty_method_one_parameter() throws Exception {
     FileContextTestImpl fileContext = new FileContextTestImpl();
     methodWriter("name", "java.lang.String", fileContext)
-        .withParams(ImmutableList.of(STRING_TOTO_PARAMETER))
+        .withParams(of(STRING_TOTO_PARAMETER))
         .start()
         .end();
 
@@ -85,9 +89,9 @@ public class DAClassMethodWriterTest {
   public void empty_method_two_parameters() throws Exception {
     FileContextTestImpl fileContext = new FileContextTestImpl();
     methodWriter("name", "java.lang.String", fileContext)
-        .withParams(ImmutableList.of(STRING_TITI_PARAMETER,
-            FUNCTION_STRING_INTEGER_ARRAY_PARAMETER
-        )
+        .withParams(of(STRING_TITI_PARAMETER,
+                FUNCTION_STRING_INTEGER_ARRAY_PARAMETER
+            )
         )
         .start()
         .end();
@@ -104,7 +108,7 @@ public class DAClassMethodWriterTest {
     FileContextTestImpl fileContext = new FileContextTestImpl();
     methodWriter("name", "java.lang.String", fileContext)
         .withModifiers(DAModifier.PUBLIC, DAModifier.STATIC)
-        .withParams(ImmutableList.of(FUNCTION_STRING_INTEGER_ARRAY_PARAMETER))
+        .withParams(of(FUNCTION_STRING_INTEGER_ARRAY_PARAMETER))
         .start()
         .end();
 
@@ -116,16 +120,39 @@ public class DAClassMethodWriterTest {
   }
 
   @Test
-  public void annoted_empty_method_with() throws Exception {
+  public void annotated_empty_method_with() throws Exception {
     FileContextTestImpl fileContext = new FileContextTestImpl();
     methodWriter("name", "java.lang.String", fileContext)
-        .withAnnotations(ImmutableList.of(OVERRIDE_ANNOTATION))
+        .withAnnotations(of(OVERRIDE_ANNOTATION))
         .start()
         .end();
 
     assertThat(fileContext.getRes())
         .isEqualTo(INDENT + "@Override" + LINE_SEPARATOR
-            + INDENT + "String name() {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
+                + INDENT + "String name() {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
+        );
+  }
+
+  @Test
+  public void empty_method_with_annotated_parameter() throws Exception {
+    FileContextTestImpl fileContext = new FileContextTestImpl();
+    methodWriter("name", "java.lang.String", fileContext)
+        .withParams(of(
+                DAParameterImpl.builder(DANameFactory.from("toto"), declared("java.lang.String"))
+                               .withAnnotations(
+                                   of(
+                                       JavaLangConstants.OVERRIDE_ANNOTATION,
+                                       Jsr305Constants.NONNULL_ANNOTATION
+                                   )
+                               )
+                               .build()
+            ))
+        .start()
+        .end();
+
+    assertThat(fileContext.getRes())
+        .isEqualTo(
+            INDENT + "String name(@Override @Nonnull String toto) {" + LINE_SEPARATOR + INDENT + "}" + LINE_SEPARATOR
         );
   }
 
