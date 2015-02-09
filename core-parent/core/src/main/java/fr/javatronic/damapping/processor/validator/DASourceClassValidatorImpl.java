@@ -35,15 +35,16 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
 
   public DASourceClassValidatorImpl(final ProcessorClasspathChecker classpathChecker) {
     this.steps = Lists.of(
-            new MapperAnnotationValidationStep(),
-            new ClassModifiersValidationStep(),
-            new MapperMethodsValidationStep(),
-            new MapperFactoryMethodsValidationStep(),
-            new JSR330InPathValidationStep(classpathChecker),
-            new ConstructorValidationStep(),
-            new EnumValidationStep(),
-            new MapperDependencyOnMapperFactoryValidationStep()
-        );
+        new MapperAnnotationValidationStep(),
+        new ClassModifiersValidationStep(),
+        new MapperMethodsValidationStep(),
+        new MapperFactoryMethodsValidationStep(),
+        new JSR330InPathValidationStep(classpathChecker),
+        new ConstructorValidationStep(),
+        new EnumValidationStep(),
+        new MapperDependencyOnMapperFactoryValidationStep(),
+        new MapperDependencyConsistencyValidationStep()
+    );
   }
 
   @Override

@@ -26,6 +26,13 @@ import org.testng.annotations.Test;
  * @author Sébastien Lesaint
  */
 public class MapperDependencyValidationTest extends AbstractCompilationTest {
+
+  private static final String MAPPER_DEPENDENCY_ON_WRONG_METHOD_ERROR_MSG = "Only parameters of a method annotated " +
+      "with @MapperFactory can be annotated with @MapperDependency";
+  private static final String INCONSISTENT_MAPPER_DEPENDENCIES_PARAMETERS_ERROR_MSG = "All methods annotated with " +
+      "@MapperFactory must have the same set of parameters annotated with" +
+      "@MapperDependency (same name, same type, order does not matter)";
+
   @Test
   public void compilation_fails_when_MapperDependency_annotates_a_param_of_static_method_not_MapperFactory() throws Exception {
     JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.MapperDependencyOnStaticMethod",
@@ -36,7 +43,7 @@ public class MapperDependencyValidationTest extends AbstractCompilationTest {
         "",
         "@Mapper",
         "public class MapperDependencyOnStaticMethod {",
-        "  public static String create(@MapperDependency Boolean top) {",
+        "  public static MapperDependencyOnStaticMethod create(@MapperDependency Boolean top) {",
         "    return null; // content does not matter",
         "  }",
         "",
@@ -48,9 +55,7 @@ public class MapperDependencyValidationTest extends AbstractCompilationTest {
 
     assertThat(fileObject)
         .failsToCompile()
-        .withErrorContaining(
-            "Only parameters of a method annotated with @MapperFactory can be annotated with @MapperDependency"
-        )
+        .withErrorContaining(MAPPER_DEPENDENCY_ON_WRONG_METHOD_ERROR_MSG)
         .in(fileObject)
         .onLine(7);
   }
@@ -66,7 +71,7 @@ public class MapperDependencyValidationTest extends AbstractCompilationTest {
         "@Mapper",
         "public class MapperDependencyOnConstructor {",
         "  public MapperDependencyOnConstructor(@MapperDependency Boolean top) {",
-        "    return null; // content does not matter",
+        "    // content does not matter",
         "  }",
         "",
         "  public String map(Integer input) {",
@@ -77,9 +82,7 @@ public class MapperDependencyValidationTest extends AbstractCompilationTest {
 
     assertThat(fileObject)
         .failsToCompile()
-        .withErrorContaining(
-            "Only parameters of a method annotated with @MapperFactory can be annotated with @MapperDependency"
-        )
+        .withErrorContaining(MAPPER_DEPENDENCY_ON_WRONG_METHOD_ERROR_MSG)
         .in(fileObject)
         .onLine(7);
   }
@@ -106,10 +109,116 @@ public class MapperDependencyValidationTest extends AbstractCompilationTest {
 
     assertThat(fileObject)
         .failsToCompile()
-        .withErrorContaining(
-            "Only parameters of a method annotated with @MapperFactory can be annotated with @MapperDependency"
-        )
+        .withErrorContaining(MAPPER_DEPENDENCY_ON_WRONG_METHOD_ERROR_MSG)
         .in(fileObject)
         .onLine(7);
+  }
+
+  @Test
+  public void compilation_fails_if_one_MapperFactory_methods_does_not_have_the_same_MapperDependency_parameters() throws Exception {
+    JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.InconsistentMapperDependenciesOnStaticMethod",
+        "package test;",
+        "",
+        "import fr.javatronic.damapping.annotation.Mapper;",
+        "import fr.javatronic.damapping.annotation.MapperDependency;",
+        "import fr.javatronic.damapping.annotation.MapperFactory;",
+        "",
+        "@Mapper",
+        "public class InconsistentMapperDependenciesOnStaticMethod {",
+        "  @MapperFactory",
+        "  public static InconsistentMapperDependenciesOnStaticMethod create(@MapperDependency Boolean top) {",
+        "    return null; // content does not matter",
+        "  }",
+        "",
+        "  @MapperFactory",
+        "  public static InconsistentMapperDependenciesOnStaticMethod create() {",
+        "    return null; // content does not matter",
+        "  }",
+        "",
+        "  public String map(Integer input) {",
+        "    return null;",
+        "  }",
+        "}"
+    );
+
+    assertThat(fileObject)
+        .failsToCompile()
+        .withErrorContaining(INCONSISTENT_MAPPER_DEPENDENCIES_PARAMETERS_ERROR_MSG)
+        .in(fileObject)
+        .onLine(14);
+  }
+
+  @Test
+  public void compilation_fails_if_one_MapperFactory_constructors_does_not_have_the_same_MapperDependency_parameters() throws Exception {
+    JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.InconsistentMapperDependenciesOnConstructor",
+        "package test;",
+        "",
+        "import fr.javatronic.damapping.annotation.Mapper;",
+        "import fr.javatronic.damapping.annotation.MapperDependency;",
+        "import fr.javatronic.damapping.annotation.MapperFactory;",
+        "",
+        "@Mapper",
+        "public class InconsistentMapperDependenciesOnConstructor {",
+        "  @MapperFactory",
+        "  public InconsistentMapperDependenciesOnConstructor() {",
+        "    // content does not matter",
+        "  }",
+        "",
+        "  @MapperFactory",
+        "  public InconsistentMapperDependenciesOnConstructor(String someParam, @MapperDependency Boolean top, @MapperDependency String label) {",
+        "    // content does not matter",
+        "  }",
+        "",
+        "  public String map(Integer input) {",
+        "    return null;",
+        "  }",
+        "}"
+    );
+
+    assertThat(fileObject)
+        .failsToCompile()
+        .withErrorContaining(INCONSISTENT_MAPPER_DEPENDENCIES_PARAMETERS_ERROR_MSG)
+        .in(fileObject)
+        .onLine(14);
+  }
+
+  @Test
+  public void compilation_succeeds_even_if_MapperDependency_parameters_order_change_and_if_mixed_with_other_parameters() throws Exception {
+    JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.MapperDependenciesMixed",
+        "package test;",
+        "",
+        "import fr.javatronic.damapping.annotation.Mapper;",
+        "import fr.javatronic.damapping.annotation.MapperDependency;",
+        "import fr.javatronic.damapping.annotation.MapperFactory;",
+        "",
+        "@Mapper",
+        "public class MapperDependenciesMixed {",
+        "  @MapperFactory",
+        "  public MapperDependenciesMixed(@MapperDependency Boolean top, @MapperDependency String label) {",
+        "    // content does not matter",
+        "  }",
+        "",
+        "  @MapperFactory",
+        "  public MapperDependenciesMixed(String someParam, @MapperDependency Boolean top, @MapperDependency String label) {",
+        "    // content does not matter",
+        "  }",
+        "",
+        "  @MapperFactory",
+        "  public MapperDependenciesMixed(@MapperDependency Boolean top, Integer intParam, @MapperDependency String label) {",
+        "    // content does not matter",
+        "  }",
+        "",
+        "  @MapperFactory",
+        "  public MapperDependenciesMixed(@MapperDependency String label, @MapperDependency Boolean top, float someFloat) {",
+        "    // content does not matter",
+        "  }",
+        "",
+        "  public MapperDependenciesMixed map(Integer input) {",
+        "    return null;",
+        "  }",
+        "}"
+    );
+
+    assertThat(fileObject).compilesWithoutError();
   }
 }
