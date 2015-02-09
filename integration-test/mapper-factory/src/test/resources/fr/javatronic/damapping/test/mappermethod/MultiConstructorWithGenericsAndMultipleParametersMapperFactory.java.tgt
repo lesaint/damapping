@@ -4,12 +4,13 @@ import fr.javatronic.damapping.test.mappermethod.sub.B;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 @javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
 public interface MultiConstructorWithGenericsAndMultipleParametersMapperFactory {
 
     @Nonnull
-    MultiConstructorWithGenericsAndMultipleParametersMapper get(Set<A> as);
+    MultiConstructorWithGenericsAndMultipleParametersMapper get(@Nullable Set<A> as);
 
     @Nonnull
     MultiConstructorWithGenericsAndMultipleParametersMapper get(List<B> bs);

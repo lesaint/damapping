@@ -15,7 +15,7 @@ public class MultiConstructorWithGenericsAndMultipleParametersMapperFactoryImpl 
 
     @Override
     @Nonnull
-    public MultiConstructorWithGenericsAndMultipleParametersMapper get(Set<A> as) {
+    public MultiConstructorWithGenericsAndMultipleParametersMapper get(@Nullable Set<A> as) {
         return new MultiConstructorWithGenericsAndMultipleParametersMapperImpl(new MultiConstructorWithGenericsAndMultipleParameters(as));
     }
 
