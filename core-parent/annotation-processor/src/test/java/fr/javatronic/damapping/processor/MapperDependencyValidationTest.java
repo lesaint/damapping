@@ -221,4 +221,41 @@ public class MapperDependencyValidationTest extends AbstractCompilationTest {
 
     assertThat(fileObject).compilesWithoutError();
   }
+
+  @Test
+  public void compilation_fails_if_one_MapperFactory_constructors_have_the_same_corresponding_method_in_MapperFactory_interface() throws Exception {
+    JavaFileObject fileObject = JavaFileObjects.forSourceLines("test.InconsistentMapperDependenciesOnConstructor",
+        "package test;",
+        "",
+        "import fr.javatronic.damapping.annotation.Mapper;",
+        "import fr.javatronic.damapping.annotation.MapperDependency;",
+        "import fr.javatronic.damapping.annotation.MapperFactory;",
+        "",
+        "@Mapper",
+        "public class InconsistentMapperDependenciesOnConstructor {",
+        "  @MapperFactory",
+        "  public InconsistentMapperDependenciesOnConstructor(@MapperDependency Boolean top, String someParam) {",
+        "    // content does not matter",
+        "  }",
+        "",
+        "  @MapperFactory",
+        "  public InconsistentMapperDependenciesOnConstructor(String someParam, @MapperDependency Boolean top) {",
+        "    // content does not matter",
+        "  }",
+        "",
+        "  public String map(Integer input) {",
+        "    return null;",
+        "  }",
+        "}"
+    );
+
+    assertThat(fileObject)
+        .failsToCompile()
+        .withErrorContaining(
+            "Can not have multiple methods/constructors annotated with @MapperFactory which have the same signature " +
+                "when parameters annotated with @MapperDependency are ignored."
+        )
+        .in(fileObject)
+        .onLine(14);
+  }
 }

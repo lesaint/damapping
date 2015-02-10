@@ -17,14 +17,10 @@ package fr.javatronic.damapping.processor.validator;
 
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAMethod;
-import fr.javatronic.damapping.processor.model.DAName;
-import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
-import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.predicate.DAAnnotationPredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAParameterPredicates;
-import fr.javatronic.damapping.util.Function;
 
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -48,7 +44,7 @@ public class MapperDependencyConsistencyValidationStep implements ValidationStep
     for (DAMethod daMethod : from(sourceClass.getMethods()).filter(DAMethodPredicates.isMapperFactoryMethod())) {
       Set<DAParameterIdentifier> currentMapperDependencies = from(daMethod.getParameters())
           .filter(DAParameterPredicates.hasMapperDependencyAnnotation())
-          .transform(ToDAParameterIdentifier.INSTANCE)
+          .transform(DAParameterIdentifier.fromDAParameter())
           .toSet();
 
       if (mapperDependencies == null) {
@@ -64,58 +60,10 @@ public class MapperDependencyConsistencyValidationStep implements ValidationStep
         );
       }
     }
-
   }
 
   private static DAAnnotation extractMapperFactoryAnnotation(DAMethod daMethod) {
     return from(daMethod.getAnnotations()).filter(DAAnnotationPredicates.isMapperFactoryMethod()).first().get();
   }
 
-  /**
-   * Represents the identifier of a DAParameter annotated with
-   * {@link fr.javatronic.damapping.annotation.MapperDependency} as far as we need to know to make sure all methods
-   * are using the same parameters annotated with {@link fr.javatronic.damapping.annotation.MapperDependency}: ie.
-   * the name and the type must be the same.
-   */
-  private static class DAParameterIdentifier {
-    @Nonnull
-    private final DAType type;
-    @Nonnull
-    private final DAName name;
-
-    public DAParameterIdentifier(@Nonnull DAType type, @Nonnull DAName name) {
-      this.type = type;
-      this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) {
-        return true;
-      }
-      if (o == null || getClass() != o.getClass()) {
-        return false;
-      }
-
-      DAParameterIdentifier that = (DAParameterIdentifier) o;
-      return name.equals(that.name) && type.equals(that.type);
-    }
-
-    @Override
-    public int hashCode() {
-      int result = type.hashCode();
-      result = 31 * result + name.hashCode();
-      return result;
-    }
-  }
-
-  private static enum ToDAParameterIdentifier implements Function<DAParameter, DAParameterIdentifier> {
-    INSTANCE;
-
-    @Nonnull
-    @Override
-    public DAParameterIdentifier apply(@Nonnull DAParameter daParameter) {
-      return new DAParameterIdentifier(daParameter.getType(), daParameter.getName());
-    }
-  }
 }

@@ -16,6 +16,7 @@
 package fr.javatronic.damapping.processor.model.function;
 
 import fr.javatronic.damapping.processor.model.DAParameter;
+import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.util.Function;
 
 import javax.annotation.Nullable;
@@ -47,4 +48,24 @@ public final class DAParameterFunctions {
     }
   }
 
+  /**
+   * Transforms a {@link fr.javatronic.damapping.processor.model.DAParameter} into the value of its
+   * {@link fr.javatronic.damapping.processor.model.DAParameter#getType()} method.
+   */
+  public static Function<DAParameter, DAType> toType() {
+    return DAParameterToDAType.INSTANCE;
+  }
+
+  private static enum DAParameterToDAType implements Function<DAParameter, DAType> {
+    INSTANCE;
+
+    @Nullable
+    @Override
+    public DAType apply(@Nullable DAParameter daParameter) {
+      if (daParameter == null) {
+        return null;
+      }
+      return daParameter.getType();
+    }
+  }
 }

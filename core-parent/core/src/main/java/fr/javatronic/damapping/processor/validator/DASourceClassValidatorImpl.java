@@ -43,7 +43,8 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
         new ConstructorValidationStep(),
         new EnumValidationStep(),
         new MapperDependencyOnMapperFactoryValidationStep(),
-        new MapperDependencyConsistencyValidationStep()
+        new MapperDependencyConsistencyValidationStep(),
+        new MapperFactoryMethodErasureValidationStep()
     );
   }
 
