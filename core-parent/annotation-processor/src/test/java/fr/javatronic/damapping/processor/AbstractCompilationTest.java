@@ -15,11 +15,13 @@
  */
 package fr.javatronic.damapping.processor;
 
+import java.util.Arrays;
 import javax.tools.JavaFileObject;
 
 import com.google.testing.compile.CompileTester;
 import com.google.testing.compile.JavaFileObjects;
 import com.google.testing.compile.JavaSourceSubjectFactory;
+import com.google.testing.compile.JavaSourcesSubjectFactory;
 import org.truth0.Truth;
 
 /**
@@ -34,7 +36,13 @@ public abstract class AbstractCompilationTest {
 
   protected CompileTester assertThat(JavaFileObject fileObject) {
     return Truth.ASSERT.about(JavaSourceSubjectFactory.javaSource())
-                .that(fileObject)
-                .processedWith(new DAAnnotationProcessor());
+                       .that(fileObject)
+                       .processedWith(new DAAnnotationProcessor());
+  }
+
+  protected CompileTester assertThat(JavaFileObject... fileObjects) {
+    return Truth.ASSERT.about(JavaSourcesSubjectFactory.javaSources())
+                       .that(Arrays.asList(fileObjects))
+                       .processedWith(new DAAnnotationProcessor());
   }
 }
