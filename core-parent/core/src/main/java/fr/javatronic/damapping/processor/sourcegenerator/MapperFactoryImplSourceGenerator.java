@@ -319,10 +319,10 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
 
   private void appendInnerClass(DAType mapperImpl,
                                 GeneratedFileDescriptor mapperInterfaceDescriptor,
-                                DAClassWriter<DAFileWriter> factortClassWriter)
+                                DAClassWriter<DAFileWriter> factoryClassWriter)
       throws IOException {
     DASourceClass sourceClass = mapperInterfaceDescriptor.getContext().getSourceClass();
-    DAClassWriter<DAClassWriter<DAFileWriter>> mapperClassWriter = factortClassWriter
+    DAClassWriter<DAClassWriter<DAFileWriter>> mapperClassWriter = factoryClassWriter
         .newClass(mapperImpl)
         .withModifiers(DAModifier.PRIVATE, DAModifier.STATIC)
         .withImplemented(Lists.of(mapperInterfaceDescriptor.getType()))

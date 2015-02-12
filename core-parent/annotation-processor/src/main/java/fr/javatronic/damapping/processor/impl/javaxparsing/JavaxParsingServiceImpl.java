@@ -35,7 +35,6 @@ import fr.javatronic.damapping.util.Predicates;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -113,9 +112,6 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
     List<DAInterface> interfaces = retrieveInterfaces(classElement, javaxExtractor);
     builder.withInterfaces(interfaces);
 
-    // pour le moment, on ne traite pas les classes abstraites implémentées par la class @Mapper ni les interfaces
-    // implémentées indirectement
-
     builder.withMethods(
         from(retrieveMethods(classElement, javaxExtractor))
             .transform(new JavaxToGuavaFunctionOrMapperMethod(interfaces))
@@ -123,6 +119,56 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
     );
 
     return new JavaxDASourceClass(builder.build(), classElement);
+  }
+
+  private List<DAInterface> retrieveInterfaces(final TypeElement classElement,
+                                               final JavaxExtractor javaxExtractor) {
+    List<TypeMirror> interfaces = new ArrayList<>();
+    List<TypeElement> classHierarchyAsList = extractClassHierarchyAsList(classElement);
+    for (TypeElement typeElement : classHierarchyAsList) {
+      extractInterfaces(typeElement, interfaces);
+    }
+
+    return from(interfaces)
+        .transform(new TypeMirrorToDAInterface(javaxExtractor))
+        .filter(notNull())
+        .toList();
+  }
+
+  private static void extractInterfaces(TypeElement typeElement, List<TypeMirror> res) {
+    List<? extends TypeMirror> interfaces = typeElement.getInterfaces();
+    if (interfaces == null) {
+      return;
+    }
+    res.addAll(interfaces);
+    for (TypeMirror anInterface : interfaces) {
+      TypeElement interfaceTypeElement = asTypeElement(anInterface);
+
+      if (interfaceTypeElement != null) {
+        extractInterfaces(interfaceTypeElement, res);
+      }
+    }
+  }
+
+  private static class TypeMirrorToDAInterface implements Function<TypeMirror, DAInterface> {
+    private final SimpleTypeVisitor6<DAInterface, Void> daInterfaceExtractor;
+
+    public TypeMirrorToDAInterface(final JavaxExtractor javaxExtractor) {
+      this.daInterfaceExtractor = new SimpleTypeVisitor6<DAInterface, Void>() {
+
+        // TOIMPROVE : le filtrage des interfaces de la classe annotée avec @Mapper sur DeclaredType est-il pertinent ?
+        @Override
+        public DAInterface visitDeclared(DeclaredType declaredType, Void aVoid) {
+          return new DAInterfaceImpl(javaxExtractor.extractType(declaredType));
+        }
+      };
+    }
+
+    @Nullable
+    @Override
+    public DAInterface apply(@Nullable TypeMirror o) {
+      return o.accept(daInterfaceExtractor, null);
+    }
   }
 
   @Nonnull
@@ -224,7 +270,7 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
     }
   }
 
-  public static String uncapitalize(String str) {
+  private static String uncapitalize(String str) {
     if (str == null || str.length() == 0) {
       return str;
     }
@@ -247,40 +293,6 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
             element
         )
     );
-  }
-
-  private List<DAInterface> retrieveInterfaces(final TypeElement classElement,
-                                               final JavaxExtractor javaxExtractor) {
-    List<? extends TypeMirror> interfaces = classElement.getInterfaces();
-    if (interfaces == null) {
-      return Collections.emptyList();
-    }
-
-    return from(interfaces)
-        .transform(new TypeMirrorToDAInterface(javaxExtractor))
-        .filter(notNull())
-        .toList();
-  }
-
-  private static class TypeMirrorToDAInterface implements Function<TypeMirror, DAInterface> {
-    private final SimpleTypeVisitor6<DAInterface, Void> daInterfaceExtracter;
-
-    public TypeMirrorToDAInterface(final JavaxExtractor javaxExtractor) {
-      this.daInterfaceExtracter = new SimpleTypeVisitor6<DAInterface, Void>() {
-
-        // TOIMPROVE : le filtrage des interfaces de la classe annotée avec @Mapper sur DeclaredType est-il pertinent ?
-        @Override
-        public DAInterface visitDeclared(DeclaredType declaredType, Void aVoid) {
-          return new DAInterfaceImpl(javaxExtractor.extractType(declaredType));
-        }
-      };
-    }
-
-    @Nullable
-    @Override
-    public DAInterface apply(@Nullable TypeMirror o) {
-      return o.accept(daInterfaceExtracter, null);
-    }
   }
 
   /**

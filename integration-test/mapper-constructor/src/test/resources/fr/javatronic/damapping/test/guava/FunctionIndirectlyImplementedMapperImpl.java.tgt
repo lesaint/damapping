@@ -1,0 +1,14 @@
+package fr.javatronic.damapping.test.guava;
+
+import javax.annotation.Nullable;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public class FunctionIndirectlyImplementedMapperImpl implements FunctionIndirectlyImplementedMapper {
+    private final FunctionIndirectlyImplemented dedicatedInstance = new FunctionIndirectlyImplemented();
+
+    @Override
+    @Nullable
+    public String apply(@Nullable Integer input) {
+        return this.dedicatedInstance.apply(input);
+    }
+}

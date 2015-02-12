@@ -22,10 +22,10 @@ import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.predicate.DAInterfacePredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAInterfaceWriter;
-import fr.javatronic.damapping.util.Function;
 import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Predicates;
 
@@ -34,9 +34,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
+import static fr.javatronic.damapping.processor.model.function.DAInterfaceFunctions.toDAType;
 import static fr.javatronic.damapping.util.FluentIterable.from;
+import static fr.javatronic.damapping.util.Predicates.notNull;
 
 /**
  * MapperSourceGenerator -
@@ -69,22 +70,22 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
     DASourceClass sourceClass = descriptor.getContext().getSourceClass();
     DAFileWriter fileWriter = new DAFileWriter(bw);
     if (sourceClass.getPackageName() != null) {
-        fileWriter.appendPackage(sourceClass.getPackageName());
+      fileWriter.appendPackage(sourceClass.getPackageName());
     }
     fileWriter.appendImports(descriptor.getImports())
-        .appendGeneratedAnnotation(DAMAPPING_ANNOTATION_PROCESSOR_QUALIFIED_NAME);
+              .appendGeneratedAnnotation(DAMAPPING_ANNOTATION_PROCESSOR_QUALIFIED_NAME);
 
     DAInterfaceWriter<DAFileWriter> interfaceWriter = fileWriter
         .newInterface(descriptor.getType().getSimpleName().getName())
         .withModifiers(filterModifiers(sourceClass.getModifiers()))
-        .withExtended(toDAType(sourceClass.getInterfaces())).start();
+        .withExtended(computeExtendedInterfaces(sourceClass.getInterfaces())).start();
 
     // declare mapper methods
     for (DAMethod mapperMethod : findMapperMethod(sourceClass)) {
       interfaceWriter.newMethod(mapperMethod.getName().getName(), mapperMethod.getReturnType())
-          .withAnnotations(computeMapperMethodAnnotations(mapperMethod))
-          .withParams(mapperMethod.getParameters())
-          .write();
+                     .withAnnotations(computeMapperMethodAnnotations(mapperMethod))
+                     .withParams(mapperMethod.getParameters())
+                     .write();
     }
 
     interfaceWriter.end();
@@ -104,21 +105,15 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
     return from(sourceClass.getMethods()).filter(DAMethodPredicates.isMapperMethod());
   }
 
-  private static List<DAType> toDAType(List<DAInterface> interfaces) {
-    return
-        from(interfaces)
-            .transform(new Function<DAInterface, DAType>() {
-              @Nullable
-              @Override
-              public DAType apply(@Nullable DAInterface daInterface) {
-                if (daInterface == null) {
-                  return null;
-                }
-                return daInterface.getType();
-              }
-            }
-            ).filter(Predicates.notNull())
-            .toList();
+  /**
+   * The only interface that can be extended by the Mapper interface is Guava's Function interface.
+   */
+  private static List<DAType> computeExtendedInterfaces(List<DAInterface> interfaces) {
+    return from(interfaces)
+        .filter(DAInterfacePredicates.isGuavaFunction())
+        .transform(toDAType())
+        .filter(notNull())
+        .toList();
   }
 
   private static Set<DAModifier> filterModifiers(Set<DAModifier> modifiers) {
