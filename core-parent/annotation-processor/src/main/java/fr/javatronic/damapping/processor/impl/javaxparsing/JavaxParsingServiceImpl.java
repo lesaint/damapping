@@ -16,6 +16,8 @@
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
 import fr.javatronic.damapping.annotation.Mapper;
+import fr.javatronic.damapping.processor.impl.javaxparsing.generics.GenericTypeContext;
+import fr.javatronic.damapping.processor.impl.javaxparsing.generics.GenericTypeContextImpl;
 import fr.javatronic.damapping.processor.impl.javaxparsing.model.JavaxDAMethod;
 import fr.javatronic.damapping.processor.impl.javaxparsing.model.JavaxDASourceClass;
 import fr.javatronic.damapping.processor.model.DAInterface;
@@ -39,12 +41,10 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.SimpleElementVisitor6;
 import javax.lang.model.util.SimpleTypeVisitor6;
 
 import static fr.javatronic.damapping.processor.model.impl.DAMethodImpl.makeGuavaFunctionApplyMethod;
@@ -107,148 +107,19 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
         from(classElement.getModifiers()).transform(javaxExtractor.toDAModifier()).toSet()
     );
 
-    // retrieve interfaces implemented (directly and if any) by the class with @Mapper (+ their generics)
-    // chercher si l'une d'elles est Function (Guava)
-    List<DAInterface> interfaces = retrieveInterfaces(classElement, javaxExtractor);
+    GenericTypeContext genericTypeContext = GenericTypeContextImpl.create(
+        processingEnv.getTypeUtils().asDeclaredType(classElement.asType())
+    );
+    List<DAInterface> interfaces = retrieveInterfaces(classElement, javaxExtractor, genericTypeContext);
     builder.withInterfaces(interfaces);
 
     builder.withMethods(
-        from(retrieveMethods(classElement, javaxExtractor))
+        from(retrieveMethods(classElement, javaxExtractor, genericTypeContext))
             .transform(new JavaxToGuavaFunctionOrMapperMethod(interfaces))
             .toList()
     );
 
     return new JavaxDASourceClass(builder.build(), classElement);
-  }
-
-  private List<DAInterface> retrieveInterfaces(final TypeElement classElement,
-                                               final JavaxExtractor javaxExtractor) {
-    List<TypeMirror> interfaces = new ArrayList<>();
-    List<TypeElement> classHierarchyAsList = extractClassHierarchyAsList(classElement);
-    for (TypeElement typeElement : classHierarchyAsList) {
-      extractInterfaces(typeElement, interfaces);
-    }
-
-    return from(interfaces)
-        .transform(new TypeMirrorToDAInterface(javaxExtractor))
-        .filter(notNull())
-        .toList();
-  }
-
-  private static void extractInterfaces(TypeElement typeElement, List<TypeMirror> res) {
-    List<? extends TypeMirror> interfaces = typeElement.getInterfaces();
-    if (interfaces == null) {
-      return;
-    }
-    res.addAll(interfaces);
-    for (TypeMirror anInterface : interfaces) {
-      TypeElement interfaceTypeElement = asTypeElement(anInterface);
-
-      if (interfaceTypeElement != null) {
-        extractInterfaces(interfaceTypeElement, res);
-      }
-    }
-  }
-
-  private static class TypeMirrorToDAInterface implements Function<TypeMirror, DAInterface> {
-    private final SimpleTypeVisitor6<DAInterface, Void> daInterfaceExtractor;
-
-    public TypeMirrorToDAInterface(final JavaxExtractor javaxExtractor) {
-      this.daInterfaceExtractor = new SimpleTypeVisitor6<DAInterface, Void>() {
-
-        // TOIMPROVE : le filtrage des interfaces de la classe annotée avec @Mapper sur DeclaredType est-il pertinent ?
-        @Override
-        public DAInterface visitDeclared(DeclaredType declaredType, Void aVoid) {
-          return new DAInterfaceImpl(javaxExtractor.extractType(declaredType));
-        }
-      };
-    }
-
-    @Nullable
-    @Override
-    public DAInterface apply(@Nullable TypeMirror o) {
-      return o.accept(daInterfaceExtractor, null);
-    }
-  }
-
-  @Nonnull
-  private List<JavaxDAMethod> retrieveMethods(final TypeElement classElement, final JavaxExtractor javaxExtractor) {
-    List<TypeElement> classHierarchy = extractClassHierarchyAsList(classElement);
-
-    List<JavaxDAMethod> res = Lists.of();
-    for (TypeElement clazz : classHierarchy) {
-      if (clazz.getEnclosedElements() == null) {
-        continue;
-      }
-
-      for (JavaxDAMethod javaxDAMethod : from(clazz.getEnclosedElements())
-          // methods are ExecutableElement
-          .filter(ExecutableElement.class)
-          // filter out super class constructors
-          .filter(
-              clazz.equals(classElement) ? Predicates.<ExecutableElement>alwaysTrue() : FilterOutConstructor.INSTANCE
-          )
-          // transform into object of the DAModel
-          .transform(new ExecutableElementToJavaxDAMethod(javaxExtractor, classElement))
-          .filter(notNull())) {
-        res.add(javaxDAMethod);
-      }
-    }
-
-    return res;
-  }
-
-  private static enum FilterOutConstructor implements Predicate<ExecutableElement> {
-    INSTANCE;
-
-    @Override
-    public boolean apply(@Nullable ExecutableElement executableElement) {
-      return executableElement != null && executableElement.getKind() != ElementKind.CONSTRUCTOR;
-    }
-  }
-
-  private List<TypeElement> extractClassHierarchyAsList(TypeElement classElement) {
-    return classElement.accept(SuperTypeElementsVisitor.getInstance(true), new ArrayList<TypeElement>());
-  }
-
-  @Nullable
-  private static TypeElement asTypeElement(TypeMirror t) {
-    DeclaredType declaredType = asDeclaredType(t);
-    if (declaredType == null) {
-      return null;
-    }
-    return declaredType.asElement().accept(AsTypeElementVisitor.INSTANCE, null);
-  }
-
-  private static class AsTypeElementVisitor extends SimpleElementVisitor6<TypeElement, Void> {
-    public static final AsTypeElementVisitor INSTANCE = new AsTypeElementVisitor();
-
-    private AsTypeElementVisitor() {
-      // prevents instantiation
-    }
-
-    @Override
-    public TypeElement visitType(TypeElement e, Void o) {
-      return e;
-    }
-  }
-
-  @Nullable
-  private static DeclaredType asDeclaredType(TypeMirror t) {
-    return t.accept(AsDeclaredTypeTypeVisitor.INSTANCE, null);
-  }
-
-  private static class AsDeclaredTypeTypeVisitor extends SimpleTypeVisitor6<DeclaredType, Object> {
-    public static final AsDeclaredTypeTypeVisitor INSTANCE = new AsDeclaredTypeTypeVisitor();
-
-    private AsDeclaredTypeTypeVisitor() {
-      // prevents instantiation
-    }
-
-    @Override
-    public DeclaredType visitDeclared(DeclaredType t, Object o) {
-      return t;
-    }
   }
 
   private static class JavaxToGuavaFunctionOrMapperMethod extends ToGuavaFunctionOrMapperMethod<JavaxDAMethod> {
@@ -267,6 +138,108 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
     @Nonnull
     protected DAMethod toGuavaFunction(@Nonnull JavaxDAMethod daMethod) {
       return new JavaxDAMethod(makeGuavaFunctionApplyMethod(daMethod), daMethod.getMethodElement());
+    }
+  }
+
+  private List<DAInterface> retrieveInterfaces(final TypeElement classElement,
+                                               final JavaxExtractor javaxExtractor,
+                                               GenericTypeContext genericTypeContext) {
+    List<TypeMirror> classHierarchyAsList = processingEnv.getTypeUtils().extractClassHierarchyAsList(classElement, true);
+
+    List<DAInterface> res = new ArrayList<>();
+    GenericTypeContext currentGenericTypeContext = genericTypeContext;
+    for (TypeMirror typeMirror : classHierarchyAsList) {
+      DeclaredType declaredType = processingEnv.getTypeUtils().asDeclaredType(typeMirror);
+      currentGenericTypeContext = currentGenericTypeContext.subContext(declaredType);
+      extractInterfaces(
+          processingEnv.getElementUtils().asTypeElement(declaredType.asElement()),
+          currentGenericTypeContext,
+          javaxExtractor,
+          res
+      );
+    }
+
+    return res;
+  }
+
+  private void extractInterfaces(TypeElement typeElement,
+                                 GenericTypeContext genericTypeContext,
+                                 JavaxExtractor javaxExtractor,
+                                 List<DAInterface> res) {
+    List<? extends TypeMirror> interfaces = typeElement.getInterfaces();
+    if (interfaces == null) {
+      return;
+    }
+    res.addAll(from(interfaces).transform(new TypeMirrorToDAInterfaceWithGeneric(javaxExtractor, genericTypeContext)).toList());
+    for (TypeMirror anInterface : interfaces) {
+      DeclaredType declaredType = processingEnv.getTypeUtils().asDeclaredType(anInterface);
+      TypeElement interfaceTypeElement = processingEnv.getElementUtils().asTypeElement(declaredType.asElement());
+
+      if (interfaceTypeElement != null) {
+        extractInterfaces(interfaceTypeElement, genericTypeContext, javaxExtractor, res);
+        genericTypeContext = genericTypeContext.subContext(declaredType);
+      }
+    }
+  }
+
+  private static class TypeMirrorToDAInterfaceWithGeneric implements Function<TypeMirror, DAInterface> {
+    private final SimpleTypeVisitor6<DAInterface, Void> daInterfaceExtractor;
+
+    public TypeMirrorToDAInterfaceWithGeneric(final JavaxExtractor javaxExtractor, final GenericTypeContext genericTypeContext) {
+      this.daInterfaceExtractor = new SimpleTypeVisitor6<DAInterface, Void>() {
+
+        @Override
+        public DAInterface visitDeclared(DeclaredType declaredType, Void aVoid) {
+          return new DAInterfaceImpl(javaxExtractor.extractType(declaredType, genericTypeContext));
+        }
+      };
+    }
+
+    @Nullable
+    @Override
+    public DAInterface apply(@Nullable TypeMirror o) {
+      return o.accept(daInterfaceExtractor, null);
+    }
+  }
+
+  @Nonnull
+  private List<JavaxDAMethod> retrieveMethods(final TypeElement classElement, final JavaxExtractor javaxExtractor,
+                                              final GenericTypeContext genericTypeContext) {
+    List<TypeMirror> classHierarchy = processingEnv.getTypeUtils().extractClassHierarchyAsList(classElement, true);
+
+    List<JavaxDAMethod> res = Lists.of();
+    GenericTypeContext currentGenericTypeContext = genericTypeContext;
+    for (TypeMirror typeMirror : classHierarchy) {
+      DeclaredType classType = processingEnv.getTypeUtils().asDeclaredType(typeMirror);
+      TypeElement clazz = processingEnv.getElementUtils().asTypeElement(classType.asElement());
+      if (clazz.getEnclosedElements() == null) {
+        continue;
+      }
+
+      currentGenericTypeContext = currentGenericTypeContext.subContext(classType);
+      for (JavaxDAMethod javaxDAMethod : from(clazz.getEnclosedElements())
+          // methods are ExecutableElement
+          .filter(ExecutableElement.class)
+          // filter out super class constructors
+          .filter(
+              clazz.equals(classElement) ? Predicates.<ExecutableElement>alwaysTrue() : FilterOutConstructor.INSTANCE
+          )
+          // transform into object of the DAModel
+          .transform(new ExecutableElementToJavaxDAMethod(javaxExtractor, classElement, currentGenericTypeContext))
+          .filter(notNull())) {
+        res.add(javaxDAMethod);
+      }
+    }
+
+    return res;
+  }
+
+  private static enum FilterOutConstructor implements Predicate<ExecutableElement> {
+    INSTANCE;
+
+    @Override
+    public boolean apply(@Nullable ExecutableElement executableElement) {
+      return executableElement != null && executableElement.getKind() != ElementKind.CONSTRUCTOR;
     }
   }
 
@@ -295,54 +268,16 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
     );
   }
 
-  /**
-   * A ElementVisitor that will builds the list of class in a class hierarchy, as TypeElement objects, of any
-   * TypeElement.
-   * <p>
-   * The list starts with the visited TypeElement and respects the order of the hierarchyTypeElement.
-   * </p>
-   * <p>
-   * Optionally, classes from {@code java.lang} package and its subpackages can be excluded (ie.
-   * {@link java.lang.Object}, {@link java.lang.Enum}). In such case, the returned list can be empty when the visited
-   * TypeElement belongs to the theses packages.
-   * </p>
-   */
-  private static class SuperTypeElementsVisitor extends SimpleElementVisitor6<List<TypeElement>, List<TypeElement>> {
-    private static final SuperTypeElementsVisitor WITH_JAVA_LANG = new SuperTypeElementsVisitor(false);
-    private static final SuperTypeElementsVisitor EXCLUDE_JAVA_LANG = new SuperTypeElementsVisitor(true);
-
-    public static ElementVisitor<List<TypeElement>, List<TypeElement>> getInstance(boolean excludeJavaLang) {
-      return excludeJavaLang ? EXCLUDE_JAVA_LANG : WITH_JAVA_LANG;
-    }
-
-    private final boolean excludeJavaLang;
-
-    private SuperTypeElementsVisitor(boolean excludeJavaLang) {
-      this.excludeJavaLang = excludeJavaLang;
-    }
-
-    @Override
-    public List<TypeElement> visitType(TypeElement e, List<TypeElement> typeElements) {
-      if (excludeJavaLang && e.getQualifiedName().toString().startsWith("java.lang.")) {
-        return typeElements;
-      }
-      TypeMirror superTypeMirror = e.getSuperclass();
-      typeElements.add(e);
-      TypeElement superTypeElement = asTypeElement(superTypeMirror);
-      if (superTypeElement != null) { // sanity check, can not happen
-        superTypeElement.accept(this, typeElements);
-      }
-      return typeElements;
-    }
-  }
-
   private class ExecutableElementToJavaxDAMethod implements Function<ExecutableElement, JavaxDAMethod> {
     private final JavaxExtractor javaxExtractor;
     private final TypeElement classElement;
+    private final GenericTypeContext genericTypeContext;
 
-    public ExecutableElementToJavaxDAMethod(JavaxExtractor javaxExtractor, TypeElement classElement) {
+    public ExecutableElementToJavaxDAMethod(JavaxExtractor javaxExtractor, TypeElement classElement,
+                                            GenericTypeContext genericTypeContext) {
       this.javaxExtractor = javaxExtractor;
       this.classElement = classElement;
+      this.genericTypeContext = genericTypeContext;
     }
 
     @Nullable
@@ -356,14 +291,14 @@ public class JavaxParsingServiceImpl implements JavaxParsingService {
       DAMethodImpl.Builder res = builder
           .withAnnotations(javaxExtractor.extractDAAnnotations(methodElement))
           .withModifiers(javaxExtractor.extractModifiers(methodElement))
-          .withParameters(javaxExtractor.extractParameters(methodElement));
+          .withParameters(javaxExtractor.extractParameters(methodElement, genericTypeContext));
       if (methodElement.getKind() == ElementKind.CONSTRUCTOR) {
         res.withName(DANameFactory.from(uncapitalize(classElement.getSimpleName().toString())));
-        res.withReturnType(javaxExtractor.extractType(classElement.asType()));
+        res.withReturnType(javaxExtractor.extractType(classElement.asType(), genericTypeContext));
       }
       else {
         res.withName(JavaxDANameFactory.from(methodElement.getSimpleName()));
-        res.withReturnType(javaxExtractor.extractReturnType(methodElement));
+        res.withReturnType(javaxExtractor.extractReturnType(methodElement, genericTypeContext));
       }
       return new JavaxDAMethod(res.build(), methodElement);
     }

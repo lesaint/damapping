@@ -1,0 +1,8 @@
+package fr.javatronic.damapping.test.guava;
+
+import com.google.common.base.Function;
+import java.math.BigDecimal;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public interface SubGenerifiedMapperFunctionMapper extends Function<String, BigDecimal> {
+}

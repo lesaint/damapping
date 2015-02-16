@@ -69,4 +69,9 @@ public class DAInterfaceImpl implements DAInterface {
   public int hashCode() {
     return type.hashCode();
   }
+
+  @Override
+  public String toString() {
+    return "DAInterfaceImpl{" + type + '}';
+  }
 }

@@ -39,6 +39,7 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.SimpleElementVisitor6;
 
 import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.MemberSelectTree;
@@ -119,6 +120,25 @@ public final class ElementUtilsFactory {
   private static abstract class BaseElementUtils<T extends Elements> implements ElementUtils {
     @Nonnull
     protected final T elements;
+
+    @Override
+    @Nullable
+    public TypeElement asTypeElement(Element element) {
+      return element.accept(AsTypeElementVisitor.INSTANCE, null);
+    }
+
+    private static class AsTypeElementVisitor extends SimpleElementVisitor6<TypeElement, Void> {
+      public static final AsTypeElementVisitor INSTANCE = new AsTypeElementVisitor();
+
+      private AsTypeElementVisitor() {
+        // prevents instantiation
+      }
+
+      @Override
+      public TypeElement visitType(TypeElement e, Void o) {
+        return e;
+      }
+    }
 
     protected BaseElementUtils(@Nonnull T elements) {
       this.elements = elements;

@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
+import fr.javatronic.damapping.processor.impl.javaxparsing.generics.GenericTypeContext;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAEnumValue;
 import fr.javatronic.damapping.processor.model.DAModifier;
@@ -45,13 +46,16 @@ public interface JavaxExtractor {
   DAType extractType(TypeMirror type);
 
   @Nonnull
+  DAType extractType(@Nonnull TypeMirror typeMirror, @Nonnull GenericTypeContext genericTypeContext);
+
+  @Nonnull
   DAType extractWildcardType(WildcardType wildcardType);
 
   @Nonnull
-  DAType extractReturnType(ExecutableElement methodElement);
+  DAType extractReturnType(ExecutableElement methodElement, GenericTypeContext genericTypeContext);
 
   @Nonnull
-  List<DAType> extractTypeArgs(TypeMirror typeMirror);
+  List<DAType> extractTypeArgs(TypeMirror typeMirror, GenericTypeContext genericTypeContext);
 
   @Nonnull
   Set<DAModifier> extractModifiers(ExecutableElement methodElement);
@@ -63,7 +67,7 @@ public interface JavaxExtractor {
   Function<AnnotationMirror,DAAnnotation> toDAAnnotation();
 
   @Nullable
-  List<DAParameter> extractParameters(ExecutableElement methodElement);
+  List<DAParameter> extractParameters(ExecutableElement methodElement, GenericTypeContext genericTypeContext);
 
   @Nullable
   DAName extractSimpleName(TypeMirror type);

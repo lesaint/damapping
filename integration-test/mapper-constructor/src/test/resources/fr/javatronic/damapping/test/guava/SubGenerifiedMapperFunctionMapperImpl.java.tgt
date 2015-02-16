@@ -1,0 +1,15 @@
+package fr.javatronic.damapping.test.guava;
+
+import java.math.BigDecimal;
+import javax.annotation.Nullable;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public class SubGenerifiedMapperFunctionMapperImpl implements SubGenerifiedMapperFunctionMapper {
+    private final SubGenerifiedMapperFunction dedicatedInstance = new SubGenerifiedMapperFunction();
+
+    @Override
+    @Nullable
+    public BigDecimal apply(String input) {
+        return this.dedicatedInstance.apply(input);
+    }
+}

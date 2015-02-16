@@ -33,11 +33,10 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.QualifiedNameable;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 /**
- * ProcessingEnvironmentWrapper - a Wrapper around {@link ProcessingEnvironment} that provides convenience methods.
+ * ProcessingEnvironmentWrapper - a Wrapper around {@link ProcessingEnvironment} that provides extra methods.
  *
  * @author Sébastien Lesaint
  */
@@ -47,11 +46,14 @@ public class ProcessingEnvironmentWrapper {
   @Nonnull
   private final ElementUtils elementUtils;
   @Nonnull
+  private final TypeUtils typeUtils;
+  @Nonnull
   private final ProcessorClasspathChecker classpathChecker;
 
   public ProcessingEnvironmentWrapper(@Nonnull ProcessingEnvironment processingEnvironment) {
     this.processingEnvironment = Preconditions.checkNotNull(processingEnvironment);
     this.elementUtils = ElementUtilsFactory.from(processingEnvironment.getElementUtils());
+    this.typeUtils = new TypeUtilsImpl(processingEnvironment.getTypeUtils());
     this.classpathChecker = new ElementsProcessorClasspathChecker(processingEnvironment.getElementUtils());
   }
 
@@ -164,8 +166,8 @@ public class ProcessingEnvironmentWrapper {
     return null;
   }
 
-  public Types getTypeUtils() {
-    return processingEnvironment.getTypeUtils();
+  public TypeUtils getTypeUtils() {
+    return typeUtils;
   }
 
   public ElementUtils getElementUtils() {

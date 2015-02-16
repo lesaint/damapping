@@ -26,11 +26,13 @@ import fr.javatronic.damapping.processor.model.predicate.DAInterfacePredicates;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAInterfaceWriter;
+import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Predicate;
 import fr.javatronic.damapping.util.Predicates;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -109,11 +111,15 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
    * The only interface that can be extended by the Mapper interface is Guava's Function interface.
    */
   private static List<DAType> computeExtendedInterfaces(List<DAInterface> interfaces) {
-    return from(interfaces)
+    Optional<DAType> functionInterface = from(interfaces)
         .filter(DAInterfacePredicates.isGuavaFunction())
         .transform(toDAType())
         .filter(notNull())
-        .toList();
+        .first();
+    if (functionInterface.isPresent()) {
+      return Collections.singletonList(functionInterface.get());
+    }
+    return  Collections.emptyList();
   }
 
   private static Set<DAModifier> filterModifiers(Set<DAModifier> modifiers) {

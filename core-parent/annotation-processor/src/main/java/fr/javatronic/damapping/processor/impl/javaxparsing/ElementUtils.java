@@ -17,7 +17,9 @@ package fr.javatronic.damapping.processor.impl.javaxparsing;
 
 import java.io.IOException;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
 
 /**
  * ElementUtils - This interface provide utility methods to work with {@link Element} objects.
@@ -41,5 +43,8 @@ public interface ElementUtils {
    */
   @Nonnull
   ElementImports findImports(@Nonnull Element e) throws IOException;
+
+  @Nullable
+  TypeElement asTypeElement(Element element);
 
 }

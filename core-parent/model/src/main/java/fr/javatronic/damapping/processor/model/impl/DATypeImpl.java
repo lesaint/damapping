@@ -19,13 +19,16 @@ import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.DATypeKind;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
+import fr.javatronic.damapping.util.FluentIterable;
+import fr.javatronic.damapping.util.Function;
 
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import static fr.javatronic.damapping.processor.model.util.ImmutabilityHelper.nonNullFrom;
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
 
 /**
@@ -69,7 +72,19 @@ public class DATypeImpl implements DAType {
     this.simpleName = checkNotNull(builder.simpleName);
     this.qualifiedName = builder.qualifiedName;
     this.packageName = DANameFactory.packageNameFromQualified(this.qualifiedName);
-    this.typeArgs = nonNullFrom(builder.typeArgs);
+    this.typeArgs = builder.typeArgs == null ? Collections.<DAType>emptyList() : FluentIterable
+        .from(builder.typeArgs)
+        .transform(new Function<DAType, DAType>() {
+                     @Nullable
+                     @Override
+                     public DAType apply(@Nullable DAType daType) {
+                       if (daType == SelfDAType.SELF) {
+                         return DATypeImpl.this;
+                       }
+                       return daType;
+                     }
+                   }
+        ).toList();
     this.superBound = builder.superBound;
     this.extendsBound = builder.extendsBound;
   }
@@ -210,6 +225,91 @@ public class DATypeImpl implements DAType {
 
     public DAType build() {
       return new DATypeImpl(this);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "DATypeImpl{" + kind + ":" + (qualifiedName == null ? simpleName : qualifiedName)
+        + toString(typeArgs)
+        + '}';
+  }
+
+  private static String toString(List<DAType> typeArgs) {
+    if (typeArgs.isEmpty()) {
+      return "";
+    }
+
+    StringBuilder res = new StringBuilder();
+    res.append('<');
+    Iterator<DAType> iterator = typeArgs.iterator();
+    while (iterator.hasNext()) {
+      res.append(iterator.next().getSimpleName());
+      if (iterator.hasNext()) {
+        res.append(',');
+      }
+    }
+    res.append('>');
+    return res.toString();
+  }
+
+  /**
+   * SelfDAType - Can be used as a DAType in the type argument provided to the builder to specify the current DAType as
+   * a type argument.
+   * <p>
+   * Eg. when building
+   * </p>
+   *
+   * @author Sébastien Lesaint
+   */
+  public static enum SelfDAType implements DAType {
+    SELF;
+
+    @Nonnull
+    @Override
+    public DATypeKind getKind() {
+      return DATypeKind.NONE;
+    }
+
+    @Nonnull
+    @Override
+    public DAName getSimpleName() {
+      return DANameFactory.from("<_self_>");
+    }
+
+    @Nullable
+    @Override
+    public DAName getQualifiedName() {
+      return null;
+    }
+
+    @Nullable
+    @Override
+    public DAName getPackageName() {
+      return null;
+    }
+
+    @Nonnull
+    @Override
+    public List<DAType> getTypeArgs() {
+      return Collections.emptyList();
+    }
+
+    @Nullable
+    @Override
+    public DAType getSuperBound() {
+      return null;
+    }
+
+    @Nullable
+    @Override
+    public DAType getExtendsBound() {
+      return null;
+    }
+
+    @Override
+    public boolean isArray() {
+      return false;
     }
   }
 }
