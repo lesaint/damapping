@@ -1,0 +1,13 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+import java.util.Set;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public class SubGenericMapperMapperImpl implements SubGenericMapperMapper {
+    private final SubGenericMapper dedicatedInstance = new SubGenericMapper();
+
+    @Override
+    public Set<String> some(Set<String> e) {
+        return this.dedicatedInstance.some(e);
+    }
+}

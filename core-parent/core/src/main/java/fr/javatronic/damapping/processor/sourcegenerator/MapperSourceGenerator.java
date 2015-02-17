@@ -100,7 +100,7 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
     if (mapperMethod.isGuavaFunctionApplyMethod()) {
       return support.computeOverrideMethodAnnotations(mapperMethod);
     }
-    return mapperMethod.getAnnotations();
+    return support.removeOverrideAnnotation(mapperMethod);
   }
 
   private Iterable<DAMethod> findMapperMethod(DASourceClass sourceClass) {

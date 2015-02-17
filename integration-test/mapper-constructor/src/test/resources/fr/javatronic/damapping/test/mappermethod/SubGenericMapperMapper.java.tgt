@@ -1,0 +1,9 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+import java.util.Set;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public interface SubGenericMapperMapper {
+
+    Set<String> some(Set<String> e);
+}

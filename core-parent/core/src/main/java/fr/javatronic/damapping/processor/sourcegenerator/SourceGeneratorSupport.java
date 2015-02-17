@@ -73,6 +73,13 @@ public class SourceGeneratorSupport {
   }
 
   @Nonnull
+  public List<DAAnnotation> removeOverrideAnnotation(@Nonnull DAMethod daMethod) {
+    return from(daMethod.getAnnotations())
+        .filter(NOT_OVERRIDE_ANNOTATION)
+        .toList();
+  }
+
+  @Nonnull
   public List<DAImport> appendImports(@Nonnull List<DAImport> imports, @Nullable DAName... names) {
     checkNotNull(imports);
     if (names == null) {

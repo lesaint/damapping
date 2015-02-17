@@ -19,6 +19,7 @@ import fr.javatronic.damapping.processor.model.DAInterface;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
+import fr.javatronic.damapping.processor.model.predicate.DAInterfacePredicates;
 import fr.javatronic.damapping.processor.model.visitor.DAModelVisitor;
 
 /**
@@ -35,6 +36,10 @@ public class MapperInterfaceImportsModelVisitor extends ImportListBuilder implem
 
   @Override
   public void visit(DAInterface daInterface) {
+    // the only implemented interface will be Guava's Function interface
+    if (!DAInterfacePredicates.isGuavaFunction().apply(daInterface)) {
+      return;
+    }
     addImports(daInterface.getType());
     for (DAType typeArg : daInterface.getType().getTypeArgs()) {
       addImports(typeArg);
