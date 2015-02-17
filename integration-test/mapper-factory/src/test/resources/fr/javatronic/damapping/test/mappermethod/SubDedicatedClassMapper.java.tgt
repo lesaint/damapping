@@ -1,0 +1,9 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+import java.math.BigDecimal;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public interface SubDedicatedClassMapper {
+
+    String map(BigDecimal bd);
+}

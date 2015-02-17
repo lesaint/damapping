@@ -1,0 +1,27 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+import java.math.BigDecimal;
+import javax.annotation.Nonnull;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public class SubDedicatedClassMapperFactoryImpl implements SubDedicatedClassMapperFactory {
+
+    @Override
+    @Nonnull
+    public SubDedicatedClassMapper get(boolean flag) {
+        return new SubDedicatedClassMapperImpl(new SubDedicatedClass(flag));
+    }
+
+    private static class SubDedicatedClassMapperImpl implements SubDedicatedClassMapper {
+        private final SubDedicatedClass instance;
+
+        public SubDedicatedClassMapperImpl(SubDedicatedClass instance) {
+            this.instance = instance;
+        }
+
+        @Override
+        public String map(BigDecimal bd) {
+            return instance.map(bd);
+        }
+    }
+}
