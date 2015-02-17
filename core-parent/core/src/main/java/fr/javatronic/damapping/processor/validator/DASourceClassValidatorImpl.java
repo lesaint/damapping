@@ -42,6 +42,7 @@ public class DASourceClassValidatorImpl implements DASourceClassValidator {
         new JSR330InPathValidationStep(classpathChecker),
         new ConstructorValidationStep(),
         new EnumValidationStep(),
+        new GenericParameterValidationStep(),
         new MapperDependencyOnMapperFactoryValidationStep(),
         new MapperDependencyConsistencyValidationStep(),
         new MapperFactoryMethodErasureValidationStep()
