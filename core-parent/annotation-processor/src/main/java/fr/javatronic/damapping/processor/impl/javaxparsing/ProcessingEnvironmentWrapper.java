@@ -15,6 +15,8 @@
  */
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
+import fr.javatronic.damapping.processor.ProcessorClasspathChecker;
+import fr.javatronic.damapping.processor.impl.ElementsProcessorClasspathChecker;
 import fr.javatronic.damapping.util.FluentIterable;
 import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Preconditions;
@@ -44,10 +46,13 @@ public class ProcessingEnvironmentWrapper {
   private final ProcessingEnvironment processingEnvironment;
   @Nonnull
   private final ElementUtils elementUtils;
+  @Nonnull
+  private final ProcessorClasspathChecker classpathChecker;
 
   public ProcessingEnvironmentWrapper(@Nonnull ProcessingEnvironment processingEnvironment) {
     this.processingEnvironment = Preconditions.checkNotNull(processingEnvironment);
     this.elementUtils = ElementUtilsFactory.from(processingEnvironment.getElementUtils());
+    this.classpathChecker = new ElementsProcessorClasspathChecker(processingEnvironment.getElementUtils());
   }
 
   /**
@@ -56,6 +61,14 @@ public class ProcessingEnvironmentWrapper {
   @Nonnull
   public ProcessingEnvironment getProcessingEnvironment() {
     return processingEnvironment;
+  }
+
+  /**
+   * @return a {@link ProcessorClasspathChecker}
+   */
+  @Nonnull
+  public ProcessorClasspathChecker getClasspathChecker() {
+    return classpathChecker;
   }
 
   public void printMessage(TypeElement annotation, Element element, Exception e) {

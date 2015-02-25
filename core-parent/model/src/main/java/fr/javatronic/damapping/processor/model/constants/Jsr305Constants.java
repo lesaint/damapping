@@ -20,14 +20,12 @@ import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl;
 
-import javax.annotation.Nullable;
-
 /**
  * Jsr305Constants -
  *
  * @author Sébastien Lesaint
  */
-public final class Jsr305Constants extends Constants {
+public interface Jsr305Constants {
   public static final String NULLABLE_QUALIFIEDNAME = "javax.annotation.Nullable";
   public static final DAType NULLABLE_TYPE = DATypeFactory.declared(NULLABLE_QUALIFIEDNAME);
   public static final DAAnnotation NULLABLE_ANNOTATION = new DAAnnotationImpl(NULLABLE_TYPE);
@@ -39,16 +37,5 @@ public final class Jsr305Constants extends Constants {
   public static final String RESOURCE_QUALIFIEDNAME = "javax.annotation.Resource";
   public static final DAType RESOURCE_TYPE = DATypeFactory.declared(RESOURCE_QUALIFIEDNAME);
   public static final DAAnnotation RESOURCE_ANNOTATION = new DAAnnotationImpl(RESOURCE_TYPE);
-
-  private Jsr305Constants() {
-    // prevents instantiation
-  }
-
-  @Nullable
-  private final static Class<?> jsr305NonnullClass = loadClass(NONNULL_QUALIFIEDNAME);
-
-  public static boolean isNonnullPresent() {
-    return jsr305NonnullClass != null;
-  }
 
 }

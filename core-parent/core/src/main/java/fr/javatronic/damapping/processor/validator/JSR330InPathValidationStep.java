@@ -15,9 +15,9 @@
  */
 package fr.javatronic.damapping.processor.validator;
 
+import fr.javatronic.damapping.processor.ProcessorClasspathChecker;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DASourceClass;
-import fr.javatronic.damapping.processor.model.constants.Jsr330Constants;
 import fr.javatronic.damapping.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -29,10 +29,16 @@ import javax.annotation.Nonnull;
  * @author Sébastien Lesaint
  */
 public class JSR330InPathValidationStep implements ValidationStep {
+  private final ProcessorClasspathChecker classpathChecker;
+
+  public JSR330InPathValidationStep(ProcessorClasspathChecker classpathChecker) {
+    this.classpathChecker = classpathChecker;
+  }
+
   @Override
   public void validate(@Nonnull DASourceClass sourceClass) throws ValidationError {
     Optional<DAAnnotation> injectableAnnotation = sourceClass.getInjectableAnnotation();
-    if (injectableAnnotation.isPresent() && !Jsr330Constants.isJSR330Present()) {
+    if (injectableAnnotation.isPresent() && !classpathChecker.isJSR330Present()) {
       throw new ValidationError(
           "Class annotated with @Mapper and @Injectable requires JSR 330's annotations (@Named, @Inject, ...) to be " +
               "available in classpath",

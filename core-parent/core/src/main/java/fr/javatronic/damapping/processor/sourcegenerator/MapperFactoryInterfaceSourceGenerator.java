@@ -15,13 +15,13 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.ProcessorClasspathChecker;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
-import fr.javatronic.damapping.processor.model.constants.Jsr305Constants;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates;
 import fr.javatronic.damapping.processor.sourcegenerator.writer.DAFileWriter;
@@ -49,13 +49,15 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
 
   protected static final String MAPPER_FACTORY_CONSTRUCTOR_METHOD_NAME = "get";
 
-  public MapperFactoryInterfaceSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor) {
-    super(descriptor, new SourceGeneratorSupport());
+  public MapperFactoryInterfaceSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
+                                               @Nonnull ProcessorClasspathChecker classpathChecker) {
+    super(descriptor, new SourceGeneratorSupport(), classpathChecker);
   }
 
   public MapperFactoryInterfaceSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
-                                               @Nonnull SourceGeneratorSupport support) {
-    super(descriptor, support);
+                                               @Nonnull SourceGeneratorSupport support,
+                                               @Nonnull ProcessorClasspathChecker classpathChecker) {
+    super(descriptor, support, classpathChecker);
   }
 
   @Override
@@ -87,14 +89,14 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
   }
 
   private Collection<DAImport> computeImports(GeneratedFileDescriptor descriptor) {
-    if (Jsr305Constants.isNonnullPresent()) {
+    if (classpathChecker.isNonnullPresent()) {
       return support.appendImports(descriptor.getImports(), NONNULL_TYPE.getQualifiedName());
     }
     return descriptor.getImports();
   }
 
-  private static List<DAAnnotation> computeMethodAnnotations() {
-    if (Jsr305Constants.isNonnullPresent()) {
+  private List<DAAnnotation> computeMethodAnnotations() {
+    if (classpathChecker.isNonnullPresent()) {
       return Collections.singletonList(NONNULL_ANNOTATION);
     }
     return Collections.emptyList();

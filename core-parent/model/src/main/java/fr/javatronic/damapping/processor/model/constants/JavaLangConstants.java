@@ -24,11 +24,7 @@ import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
  *
  * @author Sébastien Lesaint
  */
-public final class JavaLangConstants extends Constants {
+public interface JavaLangConstants {
   public static final DAAnnotation OVERRIDE_ANNOTATION = new DAAnnotationImpl(DATypeFactory.from(Override.class));
-
-  private JavaLangConstants() {
-    // prevents instantiation
-  }
 
 }

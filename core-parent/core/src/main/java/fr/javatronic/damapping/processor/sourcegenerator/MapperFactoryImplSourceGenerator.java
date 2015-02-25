@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.ProcessorClasspathChecker;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAMethod;
@@ -23,7 +24,6 @@ import fr.javatronic.damapping.processor.model.DAParameter;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.processor.model.DATypeKind;
-import fr.javatronic.damapping.processor.model.constants.Jsr305Constants;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
 import fr.javatronic.damapping.processor.model.impl.DAParameterImpl;
@@ -62,13 +62,15 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
 
   private static final Predicate<DAMethod> IMPLEMENTED_MAPPER_METHOD = or(isGuavaFunctionApply(), isMapperMethod());
 
-  public MapperFactoryImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor) {
-    super(descriptor, new SourceGeneratorSupport());
+  public MapperFactoryImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
+                                          @Nonnull ProcessorClasspathChecker classpathChecker) {
+    super(descriptor, new SourceGeneratorSupport(), classpathChecker);
   }
 
   public MapperFactoryImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
-                                          @Nonnull SourceGeneratorSupport support) {
-    super(descriptor, support);
+                                          @Nonnull SourceGeneratorSupport support,
+                                          @Nonnull ProcessorClasspathChecker classpathChecker) {
+    super(descriptor, support, classpathChecker);
   }
 
   @Override
@@ -115,7 +117,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
   }
 
   private  Collection<DAImport> computeImports(GeneratedFileDescriptor descriptor) {
-    if (Jsr305Constants.isNonnullPresent()) {
+    if (classpathChecker.isNonnullPresent()) {
       return support.appendImports(descriptor.getImports(), NONNULL_TYPE.getQualifiedName());
     }
     return descriptor.getImports();
@@ -156,8 +158,8 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
     }
   }
 
-  private static List<DAAnnotation> computeFactoryMethodAnnotations() {
-    if (Jsr305Constants.isNonnullPresent()) {
+  private List<DAAnnotation> computeFactoryMethodAnnotations() {
+    if (classpathChecker.isNonnullPresent()) {
       return Lists.of(OVERRIDE_ANNOTATION, NONNULL_ANNOTATION);
     }
     return Collections.singletonList(OVERRIDE_ANNOTATION);

@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.processor.model.constants;
+package fr.javatronic.damapping.processor;
 
 /**
- * Constants -
+ * ProcessorClasspathChecker - Exposes methods to check the Annotation Processor's classpath for classes/interfaces
+ * availability.
  *
  * @author Sébastien Lesaint
  */
-abstract class Constants {
-  protected static Class<?> loadClass(String qualifiedName) {
-    try {
-      return Class.forName(qualifiedName);
-    } catch (ClassNotFoundException e) {
-      return null;
-    }
-  }
+public interface ProcessorClasspathChecker {
+
+  /**
+   * Tells whether the JSR-330 classes and interfaces are available in the classpath of the annotation processor.
+   */
+  public boolean isJSR330Present();
+
+  /**
+   * Tells whether the {@code NonNull} annotation is available in the classpath of the annotation processor.
+   */
+  public boolean isNonnullPresent();
 }

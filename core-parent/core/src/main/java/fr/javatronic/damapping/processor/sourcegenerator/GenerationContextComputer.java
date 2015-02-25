@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.ProcessorClasspathChecker;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 
 import javax.annotation.Nonnull;
@@ -26,5 +27,5 @@ import javax.annotation.Nonnull;
  */
 public interface GenerationContextComputer {
   @Nonnull
-  GenerationContext compute(@Nonnull DASourceClass sourceClass);
+  GenerationContext compute(@Nonnull DASourceClass sourceClass, @Nonnull ProcessorClasspathChecker classpathChecker);
 }
