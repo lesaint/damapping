@@ -44,7 +44,7 @@ public interface DAParameter extends DAElement {
   /**
    * The modifiers of the parameter.
    *
-   * @return a {@linkn Set} of {@link DAModifier}
+   * @return a {@link Set} of {@link DAModifier}
    */
   @Nonnull
   Set<DAModifier> getModifiers();

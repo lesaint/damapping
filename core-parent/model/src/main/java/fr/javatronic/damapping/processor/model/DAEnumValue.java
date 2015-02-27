@@ -20,14 +20,14 @@ import javax.annotation.Nonnull;
 /**
  * DAEnumValue - Represents a value of an enum.
  * <p>
- * In the following example, there will be a DAEnumValue object for {@code BLUE}, {@link RED} and
+ * In the following example, there will be a DAEnumValue object for {@code BLUE}, {@code RED} and
  * {@code GREEN}.
+ * </p>
  * <pre>
  * public enum Color {
  *   BLUE, RED, GREEN;
  * }
  * </pre>
- * </p>
  *
  * @author Sébastien Lesaint
  */

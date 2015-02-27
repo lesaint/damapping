@@ -28,10 +28,10 @@ import javax.lang.model.util.SimpleElementVisitor6;
  * {@link javax.lang.model.element.Element} if is has one.
  * <p>
  * Usage:
+ * </p>
  * <pre>
  *  DAName qualifiedName = eleemnt.accept(QualifiedDANameExtractor.QUALIFIED_DANAME_EXTRACTOR, null);
  * </pre>
- * </p>
  *
  * @author Sébastien Lesaint
  */

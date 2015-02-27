@@ -20,14 +20,14 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.SimpleElementVisitor6;
 
 /**
- * QualifiedNameExtractor - {@link javax.lang.model.element.ElementVisitor} that extracts the qyalified name of a
+ * QualifiedNameExtractor - {@link javax.lang.model.element.ElementVisitor} that extracts the qualified name of a
  * {@link javax.lang.model.element.Element} as a {@link javax.lang.model.element.Name}, if it has one.
  * <p>
  * Usage:
+ * </p>
  * <pre>
  * Name qualifiedName = eleemnt.accept(QualifiedNameExtractor.QUALIFIED_NAME_EXTRACTOR, null);
  * </pre>
- * </p>
  *
  * @author Sébastien Lesaint
  */

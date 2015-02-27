@@ -73,7 +73,7 @@ public interface DASourceClass extends DAModelVisitable, DAElement {
   /**
    * The interfaces directly implemented by the source class.
    *
-   * @return a {@linkn List} of {@link DAInterface}
+   * @return a {@link List} of {@link DAInterface}
    */
   @Nonnull
   List<DAInterface> getInterfaces();
@@ -106,7 +106,7 @@ public interface DASourceClass extends DAModelVisitable, DAElement {
   /**
    * Enum indicating how this class/enum can be instanciated.
    *
-   * @return a {@linkn InstantiationType}
+   * @return a {@link InstantiationType}
    */
   @Nonnull
   InstantiationType getInstantiationType();

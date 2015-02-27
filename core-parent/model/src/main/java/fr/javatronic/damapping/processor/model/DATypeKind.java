@@ -18,10 +18,11 @@ package fr.javatronic.damapping.processor.model;
 
 /**
  * Fork of {@link javax.lang.model.type.TypeKind} - The kind of a type mirror.
- * <p/>
- * <p>Note that it is possible additional type kinds will be added to
+ * <p>
+ *   Note that it is possible additional type kinds will be added to
  * accommodate new, currently unknown, language structures added to
  * future versions of the Java&trade; programming language.
+ * </p>
  *
  * @author Joseph D. Darcy
  * @author Scott Seligman

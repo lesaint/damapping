@@ -30,8 +30,9 @@ import javax.annotation.Nullable;
 
 /**
  * DAConstructorWriter - Writer pour les constructeurs d'une classe
- * <p/>
+ * <p>
  * TODO améliorations de DAConstructorWriter
+ * </p>
  * <ul>
  * <li>contrôle sur les modifiers : seulement public, private ou protected</li>
  * <li>ajouter convenience method pour les invocations de super</li>

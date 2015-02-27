@@ -46,8 +46,9 @@ public final class DATypeFactory {
 
   /**
    * Créer un objet DAType à partir de la Class d'une enum/classe/annotation.
-   * <br/>
+   * <p>
    * La liste <code>typeArgs</code> est vide.
+   * </p>
    *
    * @param clazz une {@link Class}
    *
@@ -61,7 +62,8 @@ public final class DATypeFactory {
   /**
    * Créer un objet DAType à partir de la Class d'une enum/classe/annotation et la liste typeArgs.
    *
-   * @param clazz une {@link Class}
+   * @param clazz    une {@link Class}
+   * @param typeArgs une {@link List} de {@link DAType}
    *
    * @return un objet {@link DAType}
    */
@@ -73,11 +75,13 @@ public final class DATypeFactory {
   /**
    * Créer un objet DAType de type <code>TypeKind.DECLARED</code> à partir du nom qualifié d'une
    * enum/classe/interface.
-   * <br/>
+   * <p>
    * Le simpleName de l'objet retourné est inféré à partir du qualifiedName spécifié comme la sous string commençant
    * au caractère après le dernier point.
-   * <br/>
+   * </p>
+   * <p>
    * La liste <code>typeArgs</code> est vide.
+   * </p>
    *
    * @param qualifiedName un {@link String}
    *
@@ -91,9 +95,10 @@ public final class DATypeFactory {
   /**
    * Créer un objet DAType de type <code>TypeKind.DECLARED</code> à partir du nom qualifié d'une enum/classe/interface
    * et la liste typeArgs.
-   * <br/>
+   * <p>
    * Le simpleName de l'objet retourné est inféré à partir du qualifiedName spécifié comme la sous string commençant
    * au caractère après le dernier point
+   * </p>
    *
    * @param qualifiedName un {@link String}
    * @param typeArgs      une {@link List} de {@link DAType}

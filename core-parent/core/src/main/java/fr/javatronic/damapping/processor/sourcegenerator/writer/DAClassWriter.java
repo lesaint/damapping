@@ -28,8 +28,9 @@ import javax.annotation.Nullable;
 
 /**
  * DAClassWriter -
- * <p/>
+ * <p>
  * améliorations à réaliser de DAClassWriter
+ * </p>
  * <ul>
  * <li>ajouter un contrôle sur les modifiers autorisés pour une classe</li>
  * <li>ajouter un paramètre "boolean classOfJavaSource" pour refuser le modifier PUBLIC si ce paramètre est false</li>

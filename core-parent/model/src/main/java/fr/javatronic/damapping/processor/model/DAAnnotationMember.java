@@ -45,7 +45,7 @@ public interface DAAnnotationMember extends DAElement {
    *
    * @return a {@link String}
    *
-   * @see {@link javax.lang.model.element.AnnotationValue#toString()}
+   * @see javax.lang.model.element.AnnotationValue#toString()
    */
   @Nonnull
   String getValue();

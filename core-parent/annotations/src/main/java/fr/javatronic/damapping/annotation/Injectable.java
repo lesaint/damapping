@@ -25,7 +25,7 @@ package fr.javatronic.damapping.annotation;
  * <p>
  * In practice, if the dedicated class declares a non-default constructor, the generated MapperImpl class will declare a
  * constructor with the same parameters (as any Mapper class) but the constructor will additionally be annotated with
- * {@link javax.inject.Inject} (note that it implies that these arguments are beans which will be injected by the
+ * {@code javax.inject.Inject} (note that it implies that these arguments are beans which will be injected by the
  * Dependency Injection framework).
  * </p>
  * <p>
