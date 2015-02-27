@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.ProcessorClasspathChecker;
 import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.DASourceClass;
@@ -51,13 +52,13 @@ public class GenerationContextComputerImpl implements GenerationContextComputer 
 
   @Override
   @Nonnull
-  public GenerationContext compute(@Nonnull DASourceClass sourceClass) {
-    return new DefaultGenerationContext(
-        sourceClass, buildDescriptors(sourceClass)
-    );
+  public GenerationContext compute(@Nonnull DASourceClass sourceClass,
+                                   @Nonnull ProcessorClasspathChecker classpathChecker) {
+    return new DefaultGenerationContext(sourceClass, buildDescriptors(sourceClass, classpathChecker));
   }
 
-  private List<DefaultGenerationContext.PartialDescriptor> buildDescriptors(DASourceClass sourceClass) {
+  private List<DefaultGenerationContext.PartialDescriptor> buildDescriptors(DASourceClass sourceClass,
+                                                                            final ProcessorClasspathChecker classpathChecker) {
     List<DefaultGenerationContext.PartialDescriptor> res = Lists.of();
 
     res.add(
@@ -68,7 +69,7 @@ public class GenerationContextComputerImpl implements GenerationContextComputer 
             new SourceGeneratorFactory() {
               @Override
               public SourceGenerator instance(GeneratedFileDescriptor descriptor) {
-                return new MapperSourceGenerator(descriptor);
+                return new MapperSourceGenerator(descriptor, classpathChecker);
               }
             }
         )
@@ -82,7 +83,7 @@ public class GenerationContextComputerImpl implements GenerationContextComputer 
               new SourceGeneratorFactory() {
                 @Override
                 public SourceGenerator instance(GeneratedFileDescriptor descriptor) {
-                  return new MapperFactoryInterfaceSourceGenerator(descriptor);
+                  return new MapperFactoryInterfaceSourceGenerator(descriptor, classpathChecker);
                 }
               }
           )
@@ -97,7 +98,7 @@ public class GenerationContextComputerImpl implements GenerationContextComputer 
               new SourceGeneratorFactory() {
                 @Override
                 public SourceGenerator instance(GeneratedFileDescriptor descriptor) {
-                  return new MapperImplSourceGenerator(descriptor);
+                  return new MapperImplSourceGenerator(descriptor, classpathChecker);
                 }
               }
           )
@@ -112,7 +113,7 @@ public class GenerationContextComputerImpl implements GenerationContextComputer 
               new SourceGeneratorFactory() {
                 @Override
                 public SourceGenerator instance(GeneratedFileDescriptor descriptor) {
-                  return new MapperFactoryImplSourceGenerator(descriptor);
+                  return new MapperFactoryImplSourceGenerator(descriptor, classpathChecker);
                 }
               }
           )

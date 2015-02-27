@@ -35,7 +35,7 @@ import com.google.common.base.Optional;
 @Mapper
 public class MultiConstructorWithGenericsAndMultipleParameters {
   @MapperFactory
-  public MultiConstructorWithGenericsAndMultipleParameters(Set<A> as) {
+  public MultiConstructorWithGenericsAndMultipleParameters(@Nullable Set<A> as) {
     // implementation does not matter
   }
 

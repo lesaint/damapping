@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.ProcessorClasspathChecker;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAInterface;
 import fr.javatronic.damapping.processor.model.DAMethod;
@@ -46,13 +47,15 @@ public class MapperSourceGenerator extends AbstractSourceGenerator {
 
   private static final Predicate<DAModifier> NOT_FINAL = Predicates.not(Predicates.equalTo(DAModifier.FINAL));
 
-  public MapperSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor) {
-    super(descriptor, new SourceGeneratorSupport());
+  public MapperSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
+                               @Nonnull ProcessorClasspathChecker classpathChecker) {
+    super(descriptor, new SourceGeneratorSupport(), classpathChecker);
   }
 
   public MapperSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
-                               @Nonnull SourceGeneratorSupport support) {
-    super(descriptor, support);
+                               @Nonnull SourceGeneratorSupport support,
+                               @Nonnull ProcessorClasspathChecker classpathChecker) {
+    super(descriptor, support, classpathChecker);
   }
 
   @Override

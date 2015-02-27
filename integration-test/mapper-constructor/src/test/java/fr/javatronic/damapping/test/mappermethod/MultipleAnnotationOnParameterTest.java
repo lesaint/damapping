@@ -13,30 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.processor.model;
+package fr.javatronic.damapping.test.mappermethod;
 
-import javax.annotation.Nonnull;
+import fr.javatronic.damapping.test.AbstractMapperTest;
+
+import org.testng.annotations.Test;
 
 /**
- * DAEnumValue - Represents a value of an enum.
- * <p>
- * In the following example, there will be a DAEnumValue object for {@code BLUE}, {@code RED} and
- * {@code GREEN}.
- * </p>
- * <pre>
- * public enum Color {
- *   BLUE, RED, GREEN;
- * }
- * </pre>
+ * MultipleAnnotationOnParameterTest -
  *
  * @author Sébastien Lesaint
  */
-public interface DAEnumValue extends CharSequence, DAElement {
-  /**
-   * The name of the enum value, ie. the value returned by the {@link Enum#name()} method.
-   *
-   * @return a {@link String}
-   */
-  @Nonnull
-  String getName();
+public class MultipleAnnotationOnParameterTest extends AbstractMapperTest {
+
+  public MultipleAnnotationOnParameterTest() {
+    super(MultipleAnnotationOnParameter.class);
+  }
+
+  @Test
+  public void check_generated_mapper_file() throws Exception {
+    testUtil.checkGeneratedFile(getClass(), "Mapper");
+  }
+
+  @Test
+  public void check_generated_mapperImpl_file() throws Exception {
+    testUtil.checkGeneratedFile(getClass(), "MapperImpl");
+  }
+
 }

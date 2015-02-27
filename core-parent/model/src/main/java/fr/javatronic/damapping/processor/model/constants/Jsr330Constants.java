@@ -16,21 +16,19 @@
 package fr.javatronic.damapping.processor.model.constants;
 
 import fr.javatronic.damapping.processor.model.DAAnnotation;
-import fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl;
 import fr.javatronic.damapping.processor.model.DAImport;
-import fr.javatronic.damapping.processor.model.impl.DAImportImpl;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.processor.model.factory.DATypeFactory;
-
-import javax.annotation.Nullable;
+import fr.javatronic.damapping.processor.model.impl.DAAnnotationImpl;
+import fr.javatronic.damapping.processor.model.impl.DAImportImpl;
 
 /**
  * Jsr330Constants -
  *
  * @author Sébastien Lesaint
  */
-public final class Jsr330Constants {
+public interface Jsr330Constants {
 
   public static final String NAMED_QUALIFIEDNAME = "javax.inject.Named";
   public static final DAName NAMED_DANAME = DANameFactory.from(NAMED_QUALIFIEDNAME);
@@ -59,24 +57,4 @@ public final class Jsr330Constants {
       DATypeFactory.declared(SCOPE_QUALIFIED_NAME)
   );
 
-  @Nullable
-  private final static Class<?> jsr330NamedClass = loadJSR330InjectClass(NAMED_QUALIFIEDNAME);
-  @Nullable
-  private final static Class<?> jsr330InjectClass = loadJSR330InjectClass(INJECT_QUALIFIEDNAME);
-
-  private static Class<?> loadJSR330InjectClass(String qualifiedName) {
-    try {
-      return Class.forName(qualifiedName);
-    } catch (ClassNotFoundException e) {
-      return null;
-    }
-  }
-
-  public static boolean isJSR330Present() {
-    return jsr330InjectClass != null && jsr330NamedClass != null;
-  }
-
-  private Jsr330Constants() {
-    // prevents instantiation
-  }
 }

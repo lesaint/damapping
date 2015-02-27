@@ -43,6 +43,7 @@ public class MapperFactoryInterfaceImportsModelVisitor extends ImportListBuilder
     if (daMethod.isMapperFactoryMethod()) {
       for (DAParameter parameter : daMethod.getParameters()) {
         addImports(parameter.getType());
+        addImports(parameter.getAnnotations());
       }
     }
   }

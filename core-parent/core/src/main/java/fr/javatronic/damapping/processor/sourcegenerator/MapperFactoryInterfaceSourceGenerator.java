@@ -15,6 +15,8 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.ProcessorClasspathChecker;
+import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
@@ -28,10 +30,12 @@ import fr.javatronic.damapping.processor.sourcegenerator.writer.DAInterfaceWrite
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
 
-import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.NONNULL_ANNOTATION;
-import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.NONNULL_TYPE;
+import static fr.javatronic.damapping.processor.model.constants.Jsr305Constants.NONNULL_ANNOTATION;
+import static fr.javatronic.damapping.processor.model.constants.Jsr305Constants.NONNULL_TYPE;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
 import static fr.javatronic.damapping.util.FluentIterable.from;
 
@@ -45,13 +49,15 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
 
   protected static final String MAPPER_FACTORY_CONSTRUCTOR_METHOD_NAME = "get";
 
-  public MapperFactoryInterfaceSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor) {
-    super(descriptor, new SourceGeneratorSupport());
+  public MapperFactoryInterfaceSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
+                                               @Nonnull ProcessorClasspathChecker classpathChecker) {
+    super(descriptor, new SourceGeneratorSupport(), classpathChecker);
   }
 
   public MapperFactoryInterfaceSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
-                                               @Nonnull SourceGeneratorSupport support) {
-    super(descriptor, support);
+                                               @Nonnull SourceGeneratorSupport support,
+                                               @Nonnull ProcessorClasspathChecker classpathChecker) {
+    super(descriptor, support, classpathChecker);
   }
 
   @Override
@@ -73,7 +79,7 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
     for (DAMethod method : from(sourceClass.getMethods()).filter(DAMethodPredicates.isMapperFactoryMethod()).toList()) {
       String name = isConstructor().apply(method) ? MAPPER_FACTORY_CONSTRUCTOR_METHOD_NAME : method.getName().getName();
       interfaceWriter.newMethod(name, mapperClass)
-                     .withAnnotations(NONNULL_ANNOTATION)
+                     .withAnnotations(computeMethodAnnotations())
                      .withParams(method.getParameters())
                      .write();
     }
@@ -83,6 +89,16 @@ public class MapperFactoryInterfaceSourceGenerator extends AbstractSourceGenerat
   }
 
   private Collection<DAImport> computeImports(GeneratedFileDescriptor descriptor) {
-    return support.appendImports(descriptor.getImports(), NONNULL_TYPE.getQualifiedName());
+    if (classpathChecker.isNonnullPresent()) {
+      return support.appendImports(descriptor.getImports(), NONNULL_TYPE.getQualifiedName());
+    }
+    return descriptor.getImports();
+  }
+
+  private List<DAAnnotation> computeMethodAnnotations() {
+    if (classpathChecker.isNonnullPresent()) {
+      return Collections.singletonList(NONNULL_ANNOTATION);
+    }
+    return Collections.emptyList();
   }
 }

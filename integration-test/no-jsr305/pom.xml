@@ -25,42 +25,16 @@
     <version>0.7.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>use-mapper</artifactId>
-  <name>Integration tests - using generated types</name>
-  <description>testing use of generated types in other piece of code</description>
+  <artifactId>no-jsr305</artifactId>
+  <name>Integration tests - no JSR305 dependency</name>
+  <description>testing type generation when target project does not use the JSR305 annotations</description>
 
   <dependencies>
     <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>cglib</groupId>
-      <artifactId>cglib-nodep</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.squareup.dagger</groupId>
-      <artifactId>dagger</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.squareup.dagger</groupId>
-      <artifactId>dagger-compiler</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>integration-test-core</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

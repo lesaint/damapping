@@ -13,30 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.processor.model;
-
-import javax.annotation.Nonnull;
+package fr.javatronic.damapping.test.mappermethod;
 
 /**
- * DAEnumValue - Represents a value of an enum.
- * <p>
- * In the following example, there will be a DAEnumValue object for {@code BLUE}, {@code RED} and
- * {@code GREEN}.
- * </p>
- * <pre>
- * public enum Color {
- *   BLUE, RED, GREEN;
- * }
- * </pre>
+ * ParamAnnot - Some dummy parameter annotation.
  *
  * @author Sébastien Lesaint
  */
-public interface DAEnumValue extends CharSequence, DAElement {
-  /**
-   * The name of the enum value, ie. the value returned by the {@link Enum#name()} method.
-   *
-   * @return a {@link String}
-   */
-  @Nonnull
-  String getName();
+@java.lang.annotation.Target({java.lang.annotation.ElementType.PARAMETER})
+@java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.SOURCE)
+public @interface ParamAnnot {
 }

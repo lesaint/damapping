@@ -108,9 +108,6 @@ class CommonMethodsImpl implements CommonMethods {
       DAAnnotation annotation = iterator.next();
       append("@").append(annotation.getType().getSimpleName());
       appendAnnotationMembers(annotation.getAnnotationMembers());
-      if (iterator.hasNext()) {
-        append(",");
-      }
       append(" ");
     }
   }

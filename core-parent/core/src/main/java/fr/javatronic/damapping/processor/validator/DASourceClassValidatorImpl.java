@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.validator;
 
+import fr.javatronic.damapping.processor.ProcessorClasspathChecker;
 import fr.javatronic.damapping.processor.model.DASourceClass;
 import fr.javatronic.damapping.util.Lists;
 import fr.javatronic.damapping.util.Preconditions;
@@ -32,13 +33,13 @@ import javax.annotation.Nonnull;
 public class DASourceClassValidatorImpl implements DASourceClassValidator {
   private final List<ValidationStep> steps;
 
-  public DASourceClassValidatorImpl() {
+  public DASourceClassValidatorImpl(final ProcessorClasspathChecker classpathChecker) {
     this.steps = Lists.of(
             new MapperAnnotationValidationStep(),
             new ClassModifiersValidationStep(),
             new MapperMethodsValidationStep(),
             new MapperFactoryMethodsValidationStep(),
-            new JSR330InPathValidationStep(),
+            new JSR330InPathValidationStep(classpathChecker),
             new ConstructorValidationStep(),
             new EnumValidationStep()
         );

@@ -1,0 +1,13 @@
+package fr.javatronic.damapping.test.mappermethod;
+
+import javax.annotation.Nonnull;
+
+@javax.annotation.Generated("fr.javatronic.damapping.processor.DAAnnotationProcessor")
+public class MultipleAnnotationOnParameterMapperImpl implements MultipleAnnotationOnParameterMapper {
+    private final MultipleAnnotationOnParameter dedicatedInstance = new MultipleAnnotationOnParameter();
+
+    @Override
+    public Integer map(@Nonnull @ParamAnnot String a) {
+        return this.dedicatedInstance.map(a);
+    }
+}

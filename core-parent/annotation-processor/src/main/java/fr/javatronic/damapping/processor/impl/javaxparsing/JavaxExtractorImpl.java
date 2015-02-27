@@ -70,7 +70,7 @@ import static fr.javatronic.damapping.util.Predicates.notNull;
 
 
 /**
- * JavaxExtractorImpl - This implementation of {@link JavaxExtractor} supports creating {@DAType} from Element with
+ * JavaxExtractorImpl - This implementation of {@link JavaxExtractor} supports creating {@link DAType} from Element with
  * unresolved references (ie. {@link TypeMirror} with type {@link TypeKind#ERROR}) using the fixed resolution provided
  * by a {@link ReferenceScanResult} instance.
  * <p>

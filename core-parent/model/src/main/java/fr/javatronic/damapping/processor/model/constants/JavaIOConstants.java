@@ -25,10 +25,7 @@ import java.io.Serializable;
  *
  * @author Sébastien Lesaint
  */
-public final class JavaIOConstants {
+public interface JavaIOConstants {
   public static final DAType SERIALIZABLE_TYPE = DATypeFactory.from(Serializable.class);
 
-  private JavaIOConstants() {
-    // prevents instantiation
-  }
 }

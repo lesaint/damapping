@@ -15,6 +15,8 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.ProcessorClasspathChecker;
+
 import javax.annotation.Nonnull;
 
 import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
@@ -32,9 +34,14 @@ abstract class AbstractSourceGenerator implements SourceGenerator {
   protected final GeneratedFileDescriptor descriptor;
   @Nonnull
   protected final SourceGeneratorSupport support;
+  @Nonnull
+  protected final ProcessorClasspathChecker classpathChecker;
 
-  protected AbstractSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor, @Nonnull SourceGeneratorSupport support) {
+  protected AbstractSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
+                                    @Nonnull SourceGeneratorSupport support,
+                                    @Nonnull ProcessorClasspathChecker classpathChecker) {
     this.descriptor = checkNotNull(descriptor);
     this.support = checkNotNull(support);
+    this.classpathChecker = checkNotNull(classpathChecker);
   }
 }

@@ -113,7 +113,10 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
   private void generateFiles(ParsingResult parsingResult) throws IOException {
     GenerationContextComputer generationContextComputer = new GenerationContextComputerImpl();
     SourceGenerationService sourceGenerationService = new SourceGenerationServiceImpl();
-    GenerationContext generationContext = generationContextComputer.compute(parsingResult.getSourceClass());
+    GenerationContext generationContext = generationContextComputer.compute(
+        parsingResult.getSourceClass(),
+        processingEnv.getClasspathChecker()
+    );
     sourceGenerationService.generateAll(
         generationContext,
         new JavaxSourceWriterDelegate(processingEnv.getProcessingEnvironment(), parsingResult.getClassElement())
@@ -122,7 +125,7 @@ public class MapperAnnotationProcessor extends AbstractAnnotationProcessor<Mappe
 
   private boolean validate(ParsingResult parsingResult) {
     try {
-      DASourceClassValidator checker = new DASourceClassValidatorImpl();
+      DASourceClassValidator checker = new DASourceClassValidatorImpl(processingEnv.getClasspathChecker());
       checker.validate(parsingResult.getSourceClass());
       return true;
     } catch (ValidationError e) {

@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.ProcessorClasspathChecker;
 import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAMethod;
@@ -56,13 +57,15 @@ public class MapperImplSourceGenerator extends AbstractSourceGenerator {
   private static final String DEDICATED_CLASS_INSTANCE_PROPERTY_NAME = "dedicatedInstance";
   private static final Predicate<DAMethod> IMPLEMENTED_METHOD = or(isGuavaFunctionApply(), isMapperMethod());
 
-  public MapperImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor) {
-    this(descriptor, new SourceGeneratorSupport());
+  public MapperImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
+                                   @Nonnull ProcessorClasspathChecker classpathChecker) {
+    this(descriptor, new SourceGeneratorSupport(), classpathChecker);
   }
 
   public MapperImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
-                                   @Nonnull SourceGeneratorSupport support) {
-    super(descriptor, support);
+                                   @Nonnull SourceGeneratorSupport support,
+                                   @Nonnull ProcessorClasspathChecker classpathChecker) {
+    super(descriptor, support, classpathChecker);
   }
 
   @Override

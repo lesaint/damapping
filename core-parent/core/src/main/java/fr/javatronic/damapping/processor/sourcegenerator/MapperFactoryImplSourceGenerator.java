@@ -15,6 +15,8 @@
  */
 package fr.javatronic.damapping.processor.sourcegenerator;
 
+import fr.javatronic.damapping.processor.ProcessorClasspathChecker;
+import fr.javatronic.damapping.processor.model.DAAnnotation;
 import fr.javatronic.damapping.processor.model.DAImport;
 import fr.javatronic.damapping.processor.model.DAMethod;
 import fr.javatronic.damapping.processor.model.DAModifier;
@@ -36,11 +38,13 @@ import fr.javatronic.damapping.util.Predicate;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
 
 import static fr.javatronic.damapping.processor.model.constants.JavaLangConstants.OVERRIDE_ANNOTATION;
-import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.NONNULL_ANNOTATION;
-import static fr.javatronic.damapping.processor.model.constants.JavaxConstants.NONNULL_TYPE;
+import static fr.javatronic.damapping.processor.model.constants.Jsr305Constants.NONNULL_ANNOTATION;
+import static fr.javatronic.damapping.processor.model.constants.Jsr305Constants.NONNULL_TYPE;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isConstructor;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isGuavaFunctionApply;
 import static fr.javatronic.damapping.processor.model.predicate.DAMethodPredicates.isMapperMethod;
@@ -58,13 +62,15 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
 
   private static final Predicate<DAMethod> IMPLEMENTED_MAPPER_METHOD = or(isGuavaFunctionApply(), isMapperMethod());
 
-  public MapperFactoryImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor) {
-    super(descriptor, new SourceGeneratorSupport());
+  public MapperFactoryImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
+                                          @Nonnull ProcessorClasspathChecker classpathChecker) {
+    super(descriptor, new SourceGeneratorSupport(), classpathChecker);
   }
 
   public MapperFactoryImplSourceGenerator(@Nonnull GeneratedFileDescriptor descriptor,
-                                          @Nonnull SourceGeneratorSupport support) {
-    super(descriptor, support);
+                                          @Nonnull SourceGeneratorSupport support,
+                                          @Nonnull ProcessorClasspathChecker classpathChecker) {
+    super(descriptor, support, classpathChecker);
   }
 
   @Override
@@ -111,7 +117,10 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
   }
 
   private  Collection<DAImport> computeImports(GeneratedFileDescriptor descriptor) {
-    return support.appendImports(descriptor.getImports(), NONNULL_TYPE.getQualifiedName());
+    if (classpathChecker.isNonnullPresent()) {
+      return support.appendImports(descriptor.getImports(), NONNULL_TYPE.getQualifiedName());
+    }
+    return descriptor.getImports();
   }
 
   private void appendFactoryMethods(DASourceClass sourceClass, GeneratedFileDescriptor mapperInterfaceDescriptor,
@@ -122,7 +131,7 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
       String name = isConstructor().apply(method) ? MAPPER_FACTORY_CONSTRUCTOR_METHOD_NAME : method.getName().getName();
       DAClassMethodWriter<DAClassWriter<DAFileWriter>> methodWriter = classWriter
           .newMethod(name, mapperInterfaceDescriptor.getType())
-          .withAnnotations(Lists.of(OVERRIDE_ANNOTATION, NONNULL_ANNOTATION))
+          .withAnnotations(computeFactoryMethodAnnotations())
           .withModifiers(DAModifier.PUBLIC)
           .withParams(method.getParameters())
           .start();
@@ -147,6 +156,13 @@ public class MapperFactoryImplSourceGenerator extends AbstractSourceGenerator {
 
       methodWriter.end();
     }
+  }
+
+  private List<DAAnnotation> computeFactoryMethodAnnotations() {
+    if (classpathChecker.isNonnullPresent()) {
+      return Lists.of(OVERRIDE_ANNOTATION, NONNULL_ANNOTATION);
+    }
+    return Collections.singletonList(OVERRIDE_ANNOTATION);
   }
 
   private void appendInnerClass(DAType mapperImpl,

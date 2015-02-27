@@ -13,30 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.processor.model;
-
-import javax.annotation.Nonnull;
+package fr.javatronic.damapping.processor;
 
 /**
- * DAEnumValue - Represents a value of an enum.
- * <p>
- * In the following example, there will be a DAEnumValue object for {@code BLUE}, {@code RED} and
- * {@code GREEN}.
- * </p>
- * <pre>
- * public enum Color {
- *   BLUE, RED, GREEN;
- * }
- * </pre>
+ * ProcessorClasspathChecker - Exposes methods to check the Annotation Processor's classpath for classes/interfaces
+ * availability.
  *
  * @author Sébastien Lesaint
  */
-public interface DAEnumValue extends CharSequence, DAElement {
+public interface ProcessorClasspathChecker {
+
   /**
-   * The name of the enum value, ie. the value returned by the {@link Enum#name()} method.
-   *
-   * @return a {@link String}
+   * Tells whether the JSR-330 classes and interfaces are available in the classpath of the annotation processor.
    */
-  @Nonnull
-  String getName();
+  public boolean isJSR330Present();
+
+  /**
+   * Tells whether the {@code NonNull} annotation is available in the classpath of the annotation processor.
+   */
+  public boolean isNonnullPresent();
 }

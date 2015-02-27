@@ -54,7 +54,7 @@ public interface DAType extends DAElement {
   /**
    * The qualified name of the type (ie. the simpleName prepended with the package name).
    * <p>
-   * It can be {@link null} when the current type referenced is unresolved.
+   * It can be {@code null} when the current type referenced is unresolved.
    * </p>
    *
    * @return a {@link DAName} or {@code null}

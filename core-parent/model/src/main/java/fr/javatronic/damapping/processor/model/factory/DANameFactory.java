@@ -54,9 +54,10 @@ public final class DANameFactory {
 
   /**
    * Crée un objet DAName à partir d'un DATypeKind représentant un type primitif
-   * <p/>
+   * <p>
    * TOIMPROVE : DAName for each DATypeKind with flag primitive = true can be
    * cached into a Map and used as constants
+   * </p>
    *
    * @param kind un {@link DATypeKind} primitif
    *
@@ -72,9 +73,10 @@ public final class DANameFactory {
 
   /**
    * Crée un objet DAName contenant un simpleName à partir du DAName spécifié.
-   * <br/>
+   * <p>
    * En pratique, cela consiste à parser le name de {@code daName} et extraire tout ce qui suit le dernier point
    * (s'il y en a un).
+   * </p>
    *
    * @param daName a {@link fr.javatronic.damapping.processor.model.impl.DANameImpl}
    *
@@ -88,9 +90,10 @@ public final class DANameFactory {
   /**
    * Crée un objet DAName contenant un simpleName à partir de la String spécifiée représentant un qualifiedName ou
    * un name..
-   * <br/>
+   * <p>
    * En pratique, cela consiste à parser la String {@code qualifiedName} et extraire tout ce qui suit le dernier point
    * (s'il y en a un).
+   * </p>
    *
    * @param qualifiedName a {@link String}
    *
