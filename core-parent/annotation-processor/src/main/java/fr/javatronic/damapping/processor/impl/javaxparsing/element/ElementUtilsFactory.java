@@ -13,33 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.processor.impl.javaxparsing;
+package fr.javatronic.damapping.processor.impl.javaxparsing.element;
 
+import fr.javatronic.damapping.processor.impl.javaxparsing.ElementUtils;
 import fr.javatronic.damapping.processor.model.DAName;
 import fr.javatronic.damapping.processor.model.factory.DANameFactory;
 import fr.javatronic.damapping.util.Maps;
-import fr.javatronic.damapping.util.Optional;
 
 import java.io.IOException;
-import java.io.Writer;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
-import javax.lang.model.util.SimpleElementVisitor6;
 
 import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.MemberSelectTree;
@@ -49,17 +39,16 @@ import com.sun.tools.javac.model.JavacElements;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.Pair;
 
-import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
+import static fr.javatronic.damapping.processor.impl.javaxparsing.element.EmptyElementImports.EMPTY_ELEMENT_IMPORTS;
 
 /**
- * ElementUtilsFactory - Factory for {@link ElementUtils} objects.
+ * ElementUtilsFactory - Factory for {@link fr.javatronic.damapping.processor.impl.javaxparsing.ElementUtils} objects.
  *
  * @author Sébastien Lesaint
  */
 public final class ElementUtilsFactory {
 
   private static final QualifiedIdentifierVisitor IMPORT_QUALIFIED_NAME_VISITOR = new QualifiedIdentifierVisitor();
-  // FIXME this pattern does not support with blank characters _inside_ the qualified name such as the following
 
   private ElementUtilsFactory() {
     // prevents instantiation
@@ -74,7 +63,7 @@ public final class ElementUtilsFactory {
     return new DefaultElementUtils(elements);
   }
 
-  private static void addAllImplicitImports(Elements elements, Element e, Map<Name, String> elementBySimpleName) {
+  private static void addAllImplicitImports(Elements elements, TypeElement e, Map<Name, String> elementBySimpleName) {
     // add class from specified element's package which are implicitly imported
     // add it first so that if it exists any explicit import with a simpleName of a class in the current package,
     // it will overwrite the one from the current package in the map
@@ -117,94 +106,6 @@ public final class ElementUtilsFactory {
     }
   }
 
-  private static abstract class BaseElementUtils<T extends Elements> implements ElementUtils {
-    @Nonnull
-    protected final T elements;
-
-    @Override
-    @Nullable
-    public TypeElement asTypeElement(Element element) {
-      return element.accept(AsTypeElementVisitor.INSTANCE, null);
-    }
-
-    private static class AsTypeElementVisitor extends SimpleElementVisitor6<TypeElement, Void> {
-      public static final AsTypeElementVisitor INSTANCE = new AsTypeElementVisitor();
-
-      private AsTypeElementVisitor() {
-        // prevents instantiation
-      }
-
-      @Override
-      public TypeElement visitType(TypeElement e, Void o) {
-        return e;
-      }
-    }
-
-    protected BaseElementUtils(@Nonnull T elements) {
-      this.elements = elements;
-    }
-
-    public PackageElement getPackageElement(CharSequence name) {
-      return elements.getPackageElement(name);
-    }
-
-    public TypeElement getTypeElement(CharSequence name) {
-      return elements.getTypeElement(name);
-    }
-
-    public Map<? extends ExecutableElement, ? extends AnnotationValue> getElementValuesWithDefaults(
-        AnnotationMirror a) {
-      return elements.getElementValuesWithDefaults(a);
-    }
-
-    public String getDocComment(Element e) {
-      return elements.getDocComment(e);
-    }
-
-    public boolean isDeprecated(Element e) {
-      return elements.isDeprecated(e);
-    }
-
-    public Name getBinaryName(TypeElement type) {
-      return elements.getBinaryName(type);
-    }
-
-    public PackageElement getPackageOf(Element type) {
-      return elements.getPackageOf(type);
-    }
-
-    public List<? extends Element> getAllMembers(TypeElement type) {
-      return elements.getAllMembers(type);
-    }
-
-    public List<? extends AnnotationMirror> getAllAnnotationMirrors(Element e) {
-      return elements.getAllAnnotationMirrors(e);
-    }
-
-    public boolean hides(Element hider, Element hidden) {
-      return elements.hides(hider, hidden);
-    }
-
-    public boolean overrides(ExecutableElement overrider,
-                             ExecutableElement overridden,
-                             TypeElement type) {
-      return elements.overrides(overrider, overridden, type);
-    }
-
-    public String getConstantExpression(Object value) {
-      return elements.getConstantExpression(value);
-    }
-
-    public void printElements(Writer w, Element... elements) {
-      this.elements.printElements(w, elements);
-    }
-
-    public Name getName(CharSequence cs) {
-      return elements.getName(cs);
-    }
-
-  }
-
   /**
    * This a {@link com.sun.source.tree.TreeVisitor} implemented extending {@link SimpleTreeVisitor} to extract the
    * qualified identifier as a String from a {@link MemberSelectTree}.
@@ -222,8 +123,7 @@ public final class ElementUtilsFactory {
    *                                |
    *                                --> [MemberSelectTree: expression= identifier=[IdentifierTree: name="bar"]]
    *                                                                  |
-   *                                                                  --> [MemberSelectTree: expression=null
-   *                                                                  identifier=[IdentifierTree: name="foo"]]
+   *                                                                  --> [MemberSelectTree: expression=null identifier=[IdentifierTree: name="foo"]]
    * </pre>
    * </p>
    */
@@ -239,29 +139,6 @@ public final class ElementUtilsFactory {
     public StringBuffer visitIdentifier(IdentifierTree identifierTree, StringBuffer buffer) {
       buffer.append(identifierTree.getName().toString());
       return buffer;
-    }
-  }
-
-  /**
-   * Simple implements of the ElementImports interface which uses a {@link Map} of qualifiedName as {@link String}
-   * by simple names as {@link Name}.
-   */
-  private static class ElementImportsImpl implements ElementImports {
-    @Nonnull
-    private final Map<Name, String> elementBySimpleName;
-    @Nonnull
-    private final Elements elements;
-
-    private ElementImportsImpl(@Nonnull Map<Name, String> elementBySimpleName,
-                               @Nonnull Elements elements) {
-      this.elementBySimpleName = checkNotNull(elementBySimpleName);
-      this.elements = checkNotNull(elements);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<String> findBySimpleName(@Nullable CharSequence simpleName) {
-      return Optional.fromNullable(elementBySimpleName.get(elements.getName(simpleName)));
     }
   }
 
@@ -289,16 +166,21 @@ public final class ElementUtilsFactory {
     @Nonnull
     @Override
     public ElementImports findImports(@Nonnull Element e) throws IOException {
+      TypeElement typeElement = asTypeElement(e);
+      if (typeElement == null) {
+        return EMPTY_ELEMENT_IMPORTS;
+      }
+
       Map<Name, String> elementBySimpleName = Maps.newHashMap();
 
-      addAllImplicitImports(elements, e, elementBySimpleName);
+      addAllImplicitImports(elements, typeElement, elementBySimpleName);
 
-      Pair<JCTree, JCTree.JCCompilationUnit> treeAndTopLevel = elements.getTreeAndTopLevel(e, null, null);
+      Pair<JCTree, JCTree.JCCompilationUnit> treeAndTopLevel = elements.getTreeAndTopLevel(typeElement, null, null);
       if (treeAndTopLevel == null || treeAndTopLevel.snd == null) {
-        addAllFromSourceFile(elementBySimpleName, e);
+        addAllFromSourceFile(elementBySimpleName, typeElement);
       }
       else {
-        addAllFromJCImports(elementBySimpleName, treeAndTopLevel.snd, e);
+        addAllFromJCImports(elementBySimpleName, treeAndTopLevel.snd, typeElement);
       }
 
       return new ElementImportsImpl(elementBySimpleName, elements);
@@ -326,11 +208,10 @@ public final class ElementUtilsFactory {
       }
     }
 
-    private void addAllFromSourceFile(Map<Name, String> elementBySimpleName, Element element) throws IOException {
+    private void addAllFromSourceFile(Map<Name, String> elementBySimpleName, TypeElement element) throws IOException {
       // so:
       // => we need to parse the source file of dedicated classes which does not compile to get the imports
       // written in source
-      // when the source file does not compile, even if a previous round of annotation processing make
 
       // ((Symbol.ClassSymbol) e).sourcefile.getCharContent(true) to retrieve file content
       //  - alternative: ((Symbol.ClassSymbol) e).sourcefile.openReader(true)
@@ -339,7 +220,7 @@ public final class ElementUtilsFactory {
       // FIXME reimplement parsing import statement with a reader to avoid reading all the file and loading it
       // all in memory
 
-      for (String qualifiedImport : ImportStatementParserImpl.INSTANCE.parse(sourceContent)) {
+      for (String qualifiedImport : SimplePatternImportStatementParser.INSTANCE.qualifiedNames(sourceContent)) {
         if (qualifiedImport == null || qualifiedImport.isEmpty()) {
           continue;
         }
@@ -349,58 +230,9 @@ public final class ElementUtilsFactory {
     }
   }
 
-  private static interface ImportStatementParser {
-
-    @Nonnull
-    Iterable<String> parse(@Nullable CharSequence charSequence);
-
-  }
-
-  private static enum ImportStatementParserImpl implements ImportStatementParser {
-    INSTANCE;
-
-    // TODO improve import statement parsing as they can have any number of blank characters before and after each identifier (even line returns)
-    // "         import    javax.   lang.   model.   type  .    DeclaredType    ;     "
-    private static final Pattern IMPORT_STMT_PATTERN = Pattern.compile("^\\s*import\\s*([\\w\\.]+)\\s*;s*$",
-        Pattern.MULTILINE
-    );
-
-    @Nonnull
-    @Override
-    public Iterable<String> parse(@Nullable CharSequence charSequence) {
-      if (charSequence == null  || charSequence.length() == 0) {
-        return Collections.emptyList();
-      }
-
-      final Matcher matcher = IMPORT_STMT_PATTERN.matcher(charSequence);
-
-      return new Iterable<String>() {
-        @Override
-        public Iterator<String> iterator() {
-          return new Iterator<String>() {
-            @Override
-            public boolean hasNext() {
-              return matcher.find();
-            }
-
-            @Override
-            public String next() {
-              return matcher.group(1);
-            }
-
-            @Override
-            public void remove() {
-              throw new UnsupportedOperationException("remove is not supported by this implementation of Iterator");
-            }
-          };
-        }
-      };
-    }
-  }
-
   /**
    * This is an implementation of {@link ElementUtils} interface which provides a {@code findImports(Element)] method
-   * which only supports implicite imports.
+   * which only supports implicit imports.
    */
   private static class DefaultElementUtils extends BaseElementUtils<Elements> {
 
@@ -411,13 +243,17 @@ public final class ElementUtilsFactory {
     @Nonnull
     @Override
     public ElementImports findImports(@Nonnull Element e) {
+      TypeElement typeElement = asTypeElement(e);
+      if (typeElement == null) {
+        return EMPTY_ELEMENT_IMPORTS;
+      }
 
       Map<Name, String> elementBySimpleName = Maps.newHashMap();
 
-      addAllImplicitImports(elements, e, elementBySimpleName);
+      addAllImplicitImports(elements, typeElement, elementBySimpleName);
 
       return new ElementImportsImpl(elementBySimpleName, elements);
     }
-
   }
+
 }

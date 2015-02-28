@@ -15,6 +15,7 @@
  */
 package fr.javatronic.damapping.processor.impl.javaxparsing;
 
+import fr.javatronic.damapping.processor.impl.javaxparsing.element.ElementImports;
 import fr.javatronic.damapping.processor.model.DAType;
 import fr.javatronic.damapping.util.Maps;
 import fr.javatronic.damapping.util.Optional;

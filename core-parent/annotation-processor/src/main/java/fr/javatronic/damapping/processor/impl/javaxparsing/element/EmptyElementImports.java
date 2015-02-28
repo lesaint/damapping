@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.javatronic.damapping.processor.impl.javaxparsing;
+package fr.javatronic.damapping.processor.impl.javaxparsing.element;
 
 import fr.javatronic.damapping.util.Optional;
 
@@ -21,19 +21,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * ElementImports -
- *
- * @author Sébastien Lesaint
+ * Implementation of {@link ElementImports} which holds no imports at all.
  */
-public interface ElementImports {
+enum EmptyElementImports implements ElementImports {
+  EMPTY_ELEMENT_IMPORTS;
 
-  /**
-   * Lookup amoung the explicit qualified imports, the explicit star imports and the implicit imports of the current
-   * Element if any type has the specified simpleName.
-   *
-   * @param simpleName a {@link CharSequence} or {@code null}
-   * @return a {@link Optional} of a {@link String} representing the qualified name of the imported type
-   */
   @Nonnull
-  Optional<String> findBySimpleName(@Nullable CharSequence simpleName);
+  @Override
+  public Optional<String> findBySimpleName(@Nullable CharSequence simpleName) {
+    return Optional.absent();
+  }
 }

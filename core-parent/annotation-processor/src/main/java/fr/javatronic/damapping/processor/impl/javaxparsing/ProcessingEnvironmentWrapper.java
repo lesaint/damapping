@@ -17,6 +17,8 @@ package fr.javatronic.damapping.processor.impl.javaxparsing;
 
 import fr.javatronic.damapping.processor.ProcessorClasspathChecker;
 import fr.javatronic.damapping.processor.impl.ElementsProcessorClasspathChecker;
+import fr.javatronic.damapping.processor.impl.javaxparsing.element.ElementUtilsFactory;
+import fr.javatronic.damapping.processor.impl.javaxparsing.type.TypeUtilsImpl;
 import fr.javatronic.damapping.util.FluentIterable;
 import fr.javatronic.damapping.util.Optional;
 import fr.javatronic.damapping.util.Preconditions;
@@ -54,7 +56,7 @@ public class ProcessingEnvironmentWrapper {
     this.processingEnvironment = Preconditions.checkNotNull(processingEnvironment);
     this.elementUtils = ElementUtilsFactory.from(processingEnvironment.getElementUtils());
     this.typeUtils = new TypeUtilsImpl(processingEnvironment.getTypeUtils());
-    this.classpathChecker = new ElementsProcessorClasspathChecker(processingEnvironment.getElementUtils());
+    this.classpathChecker = new ElementsProcessorClasspathChecker(elementUtils);
   }
 
   /**

@@ -16,10 +16,10 @@
 package fr.javatronic.damapping.processor.impl;
 
 import fr.javatronic.damapping.processor.ProcessorClasspathChecker;
+import fr.javatronic.damapping.processor.impl.javaxparsing.ElementUtils;
 import fr.javatronic.damapping.processor.model.constants.Jsr305Constants;
 
 import javax.annotation.Nonnull;
-import javax.lang.model.util.Elements;
 
 import static fr.javatronic.damapping.processor.model.constants.Jsr330Constants.INJECT_QUALIFIEDNAME;
 import static fr.javatronic.damapping.processor.model.constants.Jsr330Constants.SCOPE_QUALIFIED_NAME;
@@ -32,9 +32,9 @@ import static fr.javatronic.damapping.util.Preconditions.checkNotNull;
  */
 public class ElementsProcessorClasspathChecker implements ProcessorClasspathChecker {
   @Nonnull
-  private final Elements elements;
+  private final ElementUtils elements;
 
-  public ElementsProcessorClasspathChecker(@Nonnull Elements elements) {
+  public ElementsProcessorClasspathChecker(@Nonnull ElementUtils elements) {
     this.elements = checkNotNull(elements);
   }
 
